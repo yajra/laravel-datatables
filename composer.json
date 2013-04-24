@@ -1,0 +1,28 @@
+{
+    "name": "bllim/datatables",
+    "version" : "1.0.0",
+    "description": "Server-side handler of DataTables Jquery Plugin for Laravel 4",
+    "keywords" : ["laravel4","laravel","datatables","datatable","datatables jquery plugin"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bilal Gultekin",
+            "email": "bilal@bilal.im"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "illuminate/support": "4.0.x",
+        "illuminate/view": "4.0.x",
+        "illuminate/filesystem": "4.0.x"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations"
+        ],
+        "psr-0": {
+            "Bllim\\Datatables": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
