@@ -47,7 +47,7 @@ It is better, you know these:
 - When you use select method on Eloquent or Fluent Query, you choose columns
 - You can easily edit columns by using edit_column($column,$content)
 - You can remove any column by using remove_column($column) method
-- You can add columns by using add_column($column_name, $content)
+- You can add columns by using add_column($column_name, $content, $order)
 - You can use Blade Template Engine in your $content values
 - The name of columns is set by returned array. 
     - That means, for 'posts.id' it is 'id' and also for 'owner.name as ownername' it is 'ownername'
