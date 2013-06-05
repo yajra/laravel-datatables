@@ -35,6 +35,8 @@ class Datatables
 	protected	$result_array		= array();
 	protected	$result_array_r		= array();
 
+	protected   $mDataSupport;
+
 
 	/**
 	 *	Gets query and returns instance of class
@@ -54,8 +56,9 @@ class Datatables
 	 *	@return null
 	 */
 
-	public function make()
+	public function make($mDataSupport=false)
 	{
+		$this->mDataSupport = $mDataSupport;
 		$this->create_last_columns();
 		$this->init();
 		$this->get_result();
@@ -170,18 +173,18 @@ class Datatables
 				elseif (is_callable($value['content'])):
 					$value['content'] = $value['content']($rvalue);
 				endif;
-				
+
 				$rvalue = $this->include_in_array($value,$rvalue);
 			}
 
 			foreach ($this->edit_columns as $key => $value) {
-				
+
 				if (is_string($value['content'])):
 					$value['content'] = $this->blader($value['content'], $rvalue);
 				elseif (is_callable($value['content'])):
 					$value['content'] = $value['content']($rvalue);
 				endif;
-				
+
 				$rvalue[$value['name']] = $value['content'];
 
 			}
@@ -197,12 +200,16 @@ class Datatables
 
 	private function regulate_array()
 	{
-		foreach ($this->result_array as $key => $value) {
-			foreach ($this->excess_columns as $evalue) {
-				unset($value[$evalue]);
-			}
+		if($this->mDataSupport){
+			$this->result_array_r = $this->result_array;
+		}else{
+			foreach ($this->result_array as $key => $value) {
+				foreach ($this->excess_columns as $evalue) {
+					unset($value[$evalue]);
+				}
 
-			$this->result_array_r[] = array_values($value);
+				$this->result_array_r[] = array_values($value);
+			}
 		}
 	}
 
