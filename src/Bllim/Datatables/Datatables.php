@@ -456,8 +456,7 @@ class Datatables
 		//Get columns to temp var.
 		$columns = $this->query->getQuery()->columns;
 		
-		$copy_query = $this->query;
-		$this->count_all = $copy_query->count();
+		$this->count_all = $this->query->count();
 		
 		//Put columns back.
 		$this->query->select($columns);
