@@ -454,7 +454,8 @@ class Datatables
 	private function count()
 	{
 		//Get columns to temp var.
-		$columns = $this->query->getQuery()->columns;
+                $query_type = get_class($this->query) == 'Illuminate\Database\Query\Builder' ? 'fluent' : 'eloquent';
+		$columns = $query_type == 'eloquent' ? $this->query->getQuery()->columns : $this->query->columns;
 		
 		$this->count_all = $this->query->count();
 		
