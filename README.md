@@ -69,8 +69,8 @@ It is better, you know these:
 
 
     return Datatables::of($place)
-    ->add_column('operations','<a href="{{ URL::to_route( \'admin.post\', array( \'edit\',$id )) }}">edit</a>
-                    <a href="{{ URL::to_route( \'admin.post\', array( \'delete\',$id )) }}">delete</a>
+    ->add_column('operations','<a href="{{ URL::route( \'admin.post\', array( \'edit\',$id )) }}">edit</a>
+                    <a href="{{ URL::route( \'admin.post\', array( \'delete\',$id )) }}">delete</a>
                 ')
     ->edit_column('status','@if($status) 
                                 Active 
