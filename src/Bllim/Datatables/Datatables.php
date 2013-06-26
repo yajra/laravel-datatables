@@ -11,6 +11,7 @@
 * @author     Bilal Gultekin <bilal@bilal.im>
 */
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Response;
@@ -26,10 +27,10 @@ class Datatables
 	protected 	$excess_columns		= array();
 	protected 	$edit_columns		= array();
 
-	public 		$columns 			= array();
+	public 		$columns 		= array();
 	public 		$last_columns 		= array();
 
-	protected	$count_all			= 0;
+	protected	$count_all		= 0;
 
 	protected	$result_object;
 	protected	$result_array		= array();
