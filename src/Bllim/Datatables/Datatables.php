@@ -429,7 +429,7 @@ class Datatables
 	            $wild .= $str[$i].'%';
 	        }
 	    }
-	    if($lowercase) $wild = Str::lower($wild);
+	    if($lowercase) $wild = strtolower($wild);
 	    return $wild;
 	}
 
