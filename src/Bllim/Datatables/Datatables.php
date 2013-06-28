@@ -476,7 +476,6 @@ class Datatables
 
 	private function getColumnName($str)
 	{
-		$str = $str;
 
 		if(strpos($str,' as '))
 		{
