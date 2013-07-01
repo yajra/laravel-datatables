@@ -244,8 +244,8 @@ class Datatables
 				$count++; $i--; continue;
 			}
 
-			$temp = explode(' as ', $this->columns[$i]);
-			$last_columns[$count] = trim(array_pop($temp));
+			preg_match('#^(\S*?)\s+as\s+(\S*?)$#si',$this->columns[$i],$matches);
+			$last_columns[$count] = empty($matches) ? $this->columns[$i] : $matches[2];
 			$count++;
 		}
 
@@ -376,8 +376,9 @@ class Datatables
 				{
 					if (Input::get('bSearchable_'.$i) == "true")
 					{
-						$column = explode(' as ', $copy_this->columns[$i]);
-						$column = array_shift($column);
+
+						preg_match('#^(\S*?)\s+as\s+(\S*?)$#si',$copy_this->columns[$i],$matches);
+						$column = empty($matches) ? $copy_this->columns[$i] : $matches[1];
 						$keyword = '%'.Input::get('sSearch').'%';
 
 						if(Config::get('datatables.search.use_wildcards', false)) {
@@ -458,7 +459,7 @@ class Datatables
 	private function count()
 	{
 		//Get columns to temp var.
-                $query_type = get_class($this->query) == 'Illuminate\Database\Query\Builder' ? 'fluent' : 'eloquent';
+        $query_type = get_class($this->query) == 'Illuminate\Database\Query\Builder' ? 'fluent' : 'eloquent';
 		$columns = $query_type == 'eloquent' ? $this->query->getQuery()->columns : $this->query->columns;
 		
 		$this->count_all = $this->query->count();
@@ -477,10 +478,11 @@ class Datatables
 	private function getColumnName($str)
 	{
 
-		if(strpos($str,' as '))
+		preg_match('#^(\S*?)\s+as\s+(\S*?)$#si',$str,$matches);
+
+		if(!empty($matches))
 		{
-			$array = explode(' as ', $str);
-			return array_pop($array);
+			return $matches[2];
 		}
 		elseif(strpos($str,'.'))
 		{
