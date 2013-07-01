@@ -125,7 +125,7 @@ class Datatables
 
 	public function edit_column($name,$content)
 	{
-		$this->edit_columns[] = array('name' => strtolower($name), 'content' => $content);
+		$this->edit_columns[] = array('name' => $name, 'content' => $content);
 		return $this;
 	}
 
@@ -244,7 +244,7 @@ class Datatables
 				$count++; $i--; continue;
 			}
 
-			$temp = explode(' as ', strtolower($this->columns[$i]));
+			$temp = explode(' as ', $this->columns[$i]);
 			$last_columns[$count] = trim(array_pop($temp));
 			$count++;
 		}
@@ -360,7 +360,8 @@ class Datatables
 
 	private function filtering()
 	{
-
+		
+		
 		if (Input::get('sSearch','') != '')
 		{
 			$copy_this = $this;
@@ -368,12 +369,14 @@ class Datatables
 			$this->query->where(function($query) use ($copy_this) {
 
 				$db_prefix = $copy_this->database_prefix();
+				
+				
 
 				for ($i=0,$c=count($copy_this->columns);$i<$c;$i++)
 				{
 					if (Input::get('bSearchable_'.$i) == "true")
 					{
-						$column = explode(' as ',strtolower($copy_this->columns[$i]));
+						$column = explode(' as ', $copy_this->columns[$i]);
 						$column = array_shift($column);
 						$keyword = '%'.Input::get('sSearch').'%';
 
@@ -392,7 +395,7 @@ class Datatables
 			});
 
 		}
-
+    
 		$db_prefix = $this->database_prefix();
 
 		for ($i=0,$c=count($this->columns);$i<$c;$i++)
@@ -473,7 +476,6 @@ class Datatables
 
 	private function getColumnName($str)
 	{
-		$str = strtolower($str);
 
 		if(strpos($str,' as '))
 		{
