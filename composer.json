@@ -12,9 +12,9 @@
     ],
     "require": {
         "php": ">=5.3.0",
-        "illuminate/support": "4.0.x",
-        "illuminate/view": "4.0.x",
-        "illuminate/filesystem": "4.0.x"
+        "illuminate/support": ">=4.0.0",
+        "illuminate/view": ">=4.0.0",
+        "illuminate/filesystem": ">=4.0.0"
     },
     "autoload": {
         "classmap": [
