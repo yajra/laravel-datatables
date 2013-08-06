@@ -385,11 +385,38 @@ class Datatables
 							$keyword = $copy_this->wildcard_like_string(Input::get('sSearch'));
 						}
 						
-						// TODO: Check the current $column type and if it's a VARCHAR set its max size instead of 255
+						// Check the current $column type and if it's a VARCHAR, set its max size instead of 255
 						$column_max_size = 255;
+						preg_match('#([^.]+)\.(.+)$#si', $column, $table_infos);
+						if(empty($table_infos)) {
+							throw new \Exception("Invalid table and column names format '".$column."'");
+						} else {
+							if(empty($table_infos[1])){
+								throw new \Exception("Empty table");
+							} elseif (empty($table_infos[2])) {
+								throw new \Exception("Empty column");
+							}
+							$table = $table_infos[1];
+							$target_column = $table_infos[2];
+							$schema = \DB::getDoctrineSchemaManager($table);
+							$columns = $schema->listTableColumns($table);
+							foreach ($columns as $column_infos) {
+								if($column_infos->getName() === $target_column) {
+									// $name = $column_infos->getName();
+									// $type =  $column_infos->getType()->getName();
+									$length = $column_infos->getLength();
+									// $default = $column_infos->getDefault();
+									// var_dump($length);//debug
+									if(!empty($length) && $length < $column_max_size)
+									$column_max_size = $length;
+									break;
+								}
+							}
+						}
+
 						if(Config::get('datatables.search.case_insensitive', false)) {
 							$column = $db_prefix . $column;
-							$query->orwhere(DB::raw('CAST(LOWER('.$column.') as CHAR('.$column_max_size.'))'), 'LIKE', $keyword);
+							$query->orwhere(DB::raw('CAST(LOWER('.$column.') as CHAR('.$column_max_size.')'), 'LIKE', $keyword);
 						} else {
 							$query->orwhere(DB::raw('CAST('.$column.' as CHAR('.$column_max_size.'))'), 'LIKE', $keyword);
 						}
