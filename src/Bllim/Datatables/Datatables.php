@@ -402,13 +402,10 @@ class Datatables
 							$columns = $schema->listTableColumns($table);
 							foreach ($columns as $column_infos) {
 								if($column_infos->getName() === $target_column) {
-									// $name = $column_infos->getName();
-									// $type =  $column_infos->getType()->getName();
-									$length = $column_infos->getLength();
-									// $default = $column_infos->getDefault();
-									// var_dump($length);//debug
-									if(!empty($length) && $length < $column_max_size)
-									$column_max_size = $length;
+									$length = $column_infos->getLength();									
+									if(!empty($length) && $length < $column_max_size) {
+										$column_max_size = $length;
+									}
 									break;
 								}
 							}
