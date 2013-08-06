@@ -387,9 +387,9 @@ class Datatables
 
 						if(Config::get('datatables.search.case_insensitive', false)) {
 							$column = $db_prefix . $column;
-							$query->orwhere(DB::raw('LOWER('.$column.')'), 'LIKE', $keyword);
+							$query->orwhere(DB::raw('CAST(LOWER('.$column.') as CHAR)'), 'LIKE', $keyword);
 						} else {
-							$query->orwhere($column, 'LIKE', $keyword);
+							$query->orwhere(DB::raw('CAST('.$column.' as CHAR)'), 'LIKE', $keyword);
 						}
 					}
 				}
