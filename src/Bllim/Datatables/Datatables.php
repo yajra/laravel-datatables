@@ -384,12 +384,14 @@ class Datatables
 						if(Config::get('datatables.search.use_wildcards', false)) {
 							$keyword = $copy_this->wildcard_like_string(Input::get('sSearch'));
 						}
-
+						
+						// TODO: Check the current $column type and if it's a VARCHAR set its max size instead of 255
+						$column_max_size = 255;
 						if(Config::get('datatables.search.case_insensitive', false)) {
 							$column = $db_prefix . $column;
-							$query->orwhere(DB::raw('CAST(LOWER('.$column.') as CHAR)'), 'LIKE', $keyword);
+							$query->orwhere(DB::raw('CAST(LOWER('.$column.') as CHAR('.$column_max_size.'))'), 'LIKE', $keyword);
 						} else {
-							$query->orwhere(DB::raw('CAST('.$column.' as CHAR)'), 'LIKE', $keyword);
+							$query->orwhere(DB::raw('CAST('.$column.' as CHAR('.$column_max_size.'))'), 'LIKE', $keyword);
 						}
 					}
 				}
