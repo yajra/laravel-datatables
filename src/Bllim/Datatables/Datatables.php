@@ -416,7 +416,7 @@ class Datatables
 
 						if(Config::get('datatables.search.case_insensitive', false)) {
 							$column = $db_prefix . $column;
-							$query->orwhere(DB::raw('CAST(LOWER('.$column.') as CHAR('.$column_max_size.'))'), 'LIKE', $keyword);
+							$query->orwhere(DB::raw('LOWER(CAST('.$column.' as CHAR('.$column_max_size.')))'), 'LIKE', $keyword);
 						} else {
 							$query->orwhere(DB::raw('CAST('.$column.' as CHAR('.$column_max_size.'))'), 'LIKE', $keyword);
 						}
