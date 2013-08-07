@@ -405,7 +405,7 @@ class Datatables
 							$type = $doctrine_column->getType()->getName();
 							if( !in_array($type, array('string', 'text', 'blob')) ) {
 								$cast_begin = "CAST(";
-			                    $cast_end = " as CHAR(".$column_max_length."))";
+								$cast_end = " as CHAR(".$column_max_length."))";
 							}
 						}
 
