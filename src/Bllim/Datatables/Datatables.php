@@ -401,16 +401,16 @@ class Datatables
 							}
 							$table = $table_infos[1];
 							$target_column = $table_infos[2];
-							$doctrine_column = DB::getDoctrineColumn($table, $target_column);
+							$doctrine_column = DB::getDoctrineColumn($db_prefix . $table, $target_column);
 							$type = $doctrine_column->getType()->getName();
 							if( !in_array($type, array('string', 'text', 'blob')) ) {
 								$cast_begin = "CAST(";
 								$cast_end = " as CHAR(".$column_max_length."))";
 							}
 						}
-
+						
+						$column = $db_prefix . $column;
 						if(Config::get('datatables.search.case_insensitive', false)) {
-							$column = $db_prefix . $column;
 							$query->orwhere(DB::raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', $keyword);
 						} else {
 							$query->orwhere(DB::raw($cast_begin.$column.$cast_end), 'LIKE', $keyword);
