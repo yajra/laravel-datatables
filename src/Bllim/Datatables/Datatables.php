@@ -385,7 +385,10 @@ class Datatables
 							$keyword = $copy_this->wildcard_like_string(Input::get('sSearch'));
 						}
 						
-						// Check the current $column type and if it's a String, set its max length instead of 255
+						// Check the current $column type
+						// If it isn't a string/text/blob, cast it to a string of 255 characters
+						$cast_begin = null;
+						$cast_end = null;
 						$column_max_length = 255;
 						preg_match('#([^.]+)\.(.+)$#si', $column, $table_infos);
 						if(empty($table_infos)) {
@@ -399,19 +402,18 @@ class Datatables
 							$table = $table_infos[1];
 							$target_column = $table_infos[2];
 							$doctrine_column = DB::getDoctrineColumn($db_prefix . $table, $target_column);
-							$type = $doctrine_column->getType();
-							$length = $doctrine_column->getLength();
-							if($type instanceof \Doctrine\DBAL\Types\StringType && $length < $column_max_length) {
-								$column_max_length = $length;
+							$type = $doctrine_column->getType()->getName();
+							if( !in_array($type, array('string', 'text', 'blob')) ) {
+								$cast_begin = "CAST(";
+								$cast_end = " as CHAR(".$column_max_length."))";
 							}
 						}
 						
 						$column = $db_prefix . $column;
-
 						if(Config::get('datatables.search.case_insensitive', false)) {
-							$query->orwhere(DB::raw('LOWER(CAST('.$column.' as CHAR('.$column_max_length.')))'), 'LIKE', $keyword);
+							$query->orwhere(DB::raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', $keyword);
 						} else {
-							$query->orwhere(DB::raw('CAST('.$column.' as CHAR('.$column_max_length.'))'), 'LIKE', $keyword);
+							$query->orwhere(DB::raw($cast_begin.$column.$cast_end), 'LIKE', $keyword);
 						}
 					}
 				}
