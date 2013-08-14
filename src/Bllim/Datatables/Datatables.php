@@ -379,6 +379,8 @@ class Datatables
 
 						preg_match('#^(\S*?)\s+as\s+(\S*?)$#si',$copy_this->columns[$i],$matches);
 						$column = empty($matches) ? $copy_this->columns[$i] : $matches[1];
+						if (stripos($column, ' AS ') !== false) 
+							$column = substr($column, stripos($column, ' AS ')+4);
 						$keyword = '%'.Input::get('sSearch').'%';
 
 						if(Config::get('datatables.search.use_wildcards', false)) {
