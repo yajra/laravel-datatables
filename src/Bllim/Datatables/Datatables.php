@@ -385,28 +385,13 @@ class Datatables
 							$keyword = $copy_this->wildcard_like_string(Input::get('sSearch'));
 						}
 						
-						// Check the current $column type
-						// If it isn't a string/text/blob, cast it to a string of 255 characters
+						// Check if the database driver is PostgreSQL
+						// If it is, cast the current column to TEXT datatype
 						$cast_begin = null;
 						$cast_end = null;
-						$column_max_length = 255;
-						preg_match('#([^.]+)\.(.+)$#si', $column, $table_infos);
-						if(empty($table_infos)) {
-							throw new \Exception("Invalid table and column names format for '".$column."'");
-						} else {
-							if(empty($table_infos[1])){
-								throw new \Exception("Empty table for '".$column."'");
-							} elseif (empty($table_infos[2])) {
-								throw new \Exception("Empty column for '".$column."'");
-							}
-							$table = $table_infos[1];
-							$target_column = $table_infos[2];
-							$doctrine_column = DB::getDoctrineColumn($db_prefix . $table, $target_column);
-							$type = $doctrine_column->getType()->getName();
-							if( !in_array($type, array('string', 'text', 'blob')) ) {
-								$cast_begin = "CAST(";
-								$cast_end = " as CHAR(".$column_max_length."))";
-							}
+						if( DB::getDriverName() === 'pgsql') {
+							$cast_begin = "CAST(";
+							$cast_end = " as TEXT)";
 						}
 						
 						$column = $db_prefix . $column;
