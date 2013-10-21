@@ -172,7 +172,7 @@ class Datatables
 				if (is_string($value['content'])):
 					$value['content'] = $this->blader($value['content'], $rvalue);
 				elseif (is_callable($value['content'])):
-					$value['content'] = $value['content']($rvalue);
+					$value['content'] = $value['content']($this->result_object[$rkey]);
 				endif;
 
 				$rvalue = $this->include_in_array($value,$rvalue);
@@ -183,7 +183,7 @@ class Datatables
 				if (is_string($value['content'])):
 					$value['content'] = $this->blader($value['content'], $rvalue);
 				elseif (is_callable($value['content'])):
-					$value['content'] = $value['content']($rvalue);
+					$value['content'] = $value['content']($this->result_object[$rkey]);
 				endif;
 
 				$rvalue[$value['name']] = $value['content'];
