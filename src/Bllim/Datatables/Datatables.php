@@ -47,7 +47,7 @@ class Datatables
 	 */
 	public static function of($query)
 	{
-		$ins = with(new static);
+		$ins = new static;
 		$ins->save_query($query);
 		return $ins;
 	}
