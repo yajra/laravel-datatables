@@ -26,6 +26,7 @@ class Datatables
 	protected 	$extra_columns		= array();
 	protected 	$excess_columns		= array();
 	protected 	$edit_columns		= array();
+	protected	$sColumns			= array();
 
 	public 		$columns 		= array();
 	public 		$last_columns 		= array();
@@ -113,6 +114,8 @@ class Datatables
 
 	public function add_column($name,$content,$order = false)
 	{
+		$this->sColumns[] = $name;
+
 		$this->extra_columns[] = array('name' => $name, 'content' => $content, 'order' => $order);
 		return $this;
 	}
@@ -510,11 +513,14 @@ class Datatables
 
 	private function output()
 	{
+		$sColumns = array_merge_recursive($this->columns,$this->sColumns);
+
 		$output = array(
 			"sEcho" => intval(Input::get('sEcho')),
 			"iTotalRecords" => $this->count_all,
 			"iTotalDisplayRecords" => $this->count_all,
-			"aaData" => $this->result_array_r
+			"aaData" => $this->result_array_r,
+			"sColumns" => $sColumns
 		);
 
 		if(Config::get('application.profiler', false)) {
