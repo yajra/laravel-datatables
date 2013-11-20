@@ -472,14 +472,8 @@ class Datatables
 
 	private function count()
 	{
-		//Get columns to temp var.
-        $query_type = get_class($this->query) == 'Illuminate\Database\Query\Builder' ? 'fluent' : 'eloquent';
-		$columns = $query_type == 'eloquent' ? $this->query->getQuery()->columns : $this->query->columns;
-		
-		$this->count_all = $this->query->count();
-		
-		//Put columns back.
-		$this->query->select($columns);
+		//Count the number of rows in the select
+        	$this->count_all = DB::table(DB::raw('('.$this->query->toSql().') AS count_row_table'))->count();
 	}
 
 
