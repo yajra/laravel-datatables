@@ -99,8 +99,9 @@ class Datatables
 
 	private function init()
 	{
+		$this->count('count_all'); //Total records
 		$this->filtering();
-		$this->count();
+		$this->count('display_all'); // Filtered records
 		$this->paging();
 		$this->ordering();
 	}
@@ -469,14 +470,14 @@ class Datatables
 
 	/**
 	 *	Counts current query
-	 *
+	 *  @param string $count variable to store to 'count_all' for iTotalRecords, 'display_all' for iTotalDisplayRecords
 	 *	@return null
 	 */
 
-	private function count()
+	private function count($count  = 'count_all')
 	{
 		//Count the number of rows in the select
-        	$this->count_all = DB::table(DB::raw('('.$this->query->toSql().') AS count_row_table'))
+    $this->$count = DB::table(DB::raw('('.$this->query->toSql().') AS count_row_table'))
         	->setBindings($this->query->getBindings())->count();
 	}
 
@@ -519,7 +520,7 @@ class Datatables
 		$output = array(
 			"sEcho" => intval(Input::get('sEcho')),
 			"iTotalRecords" => $this->count_all,
-			"iTotalDisplayRecords" => $this->count_all,
+			"iTotalDisplayRecords" => $this->display_all,
 			"aaData" => $this->result_array_r,
 			"sColumns" => $sColumns
 		);
