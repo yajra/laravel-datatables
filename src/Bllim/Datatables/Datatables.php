@@ -248,8 +248,9 @@ class Datatables
 				$count++; $i--; continue;
 			}
 
-			preg_match('#^(\S*?)\s+as\s+(\S*?)$#si',$this->columns[$i],$matches);
-			$last_columns[$count] = empty($matches) ? $this->columns[$i] : $matches[2];
+			// previous regex #^(\S*?)\s+as\s+(\S*?)$# prevented subqueries and functions from being detected as alias
+			preg_match('#\s+as\s+(\S*?)$#si',$this->columns[$i],$matches);
+			$last_columns[$count] = empty($matches) ? $this->columns[$i] : $matches[1];
 			$count++;
 		}
 
