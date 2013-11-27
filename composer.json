@@ -1,12 +1,12 @@
 {
-    "name": "bllim/datatables",
+    "name": "yajra/datatables-oracle",
     "description": "Server-side handler of DataTables Jquery Plugin for Laravel 4",
     "keywords" : ["laravel4","laravel","datatables","datatable","datatables jquery plugin"],
     "license": "MIT",
     "authors": [
         {
-            "name": "Bilal Gultekin",
-            "email": "bilal@bilal.im"
+            "name": "yajra - Arjay Angeles",
+            "email": "aqangeles@gmail.com"
         }
     ],
     "require": {
@@ -20,7 +20,7 @@
             "src/migrations"
         ],
         "psr-0": {
-            "Bllim\\Datatables": "src/"
+            "yajra\\Datatables": "src/"
         }
     },
     "minimum-stability": "dev"

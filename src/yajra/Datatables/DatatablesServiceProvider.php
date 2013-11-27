@@ -1,4 +1,4 @@
-<?php namespace Bllim\Datatables;
+<?php namespace yajra\Datatables;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -18,7 +18,7 @@ class DatatablesServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->package('bllim/datatables');
+		$this->package('yajra/datatables');
 	}
 
 	/**

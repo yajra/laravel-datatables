@@ -1,4 +1,4 @@
-<?php namespace Bllim\Datatables;
+<?php namespace yajra\Datatables;
 
 /**
 * Laravel Datatable Bundle

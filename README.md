@@ -12,13 +12,13 @@ This bundle is created to handle server-side works of DataTables Jquery Plugin (
 
 ### Installation
 
-Add the `bllim/datatables` under the `require` key after that run the `composer update`.
+Add the `yajra/datatables` under the `require` key after that run the `composer update`.
 
     {
         "require": {
             "laravel/framework": "4.0.*",
             ...
-            "bllim/datatables": "*"
+            "yajra/datatables": "*"
         }
         ...
     }
@@ -27,14 +27,14 @@ Composer will download the package. After package downloaded, open "app/config/a
 
     'providers' => array(
         ...
-        'Bllim\Datatables\DatatablesServiceProvider',
+        'yajra\Datatables\DatatablesServiceProvider',
     ),
 
 
- 
+
     'aliases' => array(
         ...
-        'Datatables'      => 'Bllim\Datatables\Datatables',
+        'Datatables'      => 'yajra\Datatables\Datatables',
     ),
 
 
@@ -49,7 +49,7 @@ It is better, you know these:
 - You can remove any column by using remove_column($column) method
 - You can add columns by using add_column($column_name, $content, $order)
 - You can use Blade Template Engine in your $content values
-- The name of columns is set by returned array. 
+- The name of columns is set by returned array.
     - That means, for 'posts.id' it is 'id' and also for 'owner.name as ownername' it is 'ownername'
 
 
@@ -72,19 +72,21 @@ It is better, you know these:
     ->add_column('operations','<a href="{{ URL::route( \'admin.post\', array( \'edit\',$id )) }}">edit</a>
                     <a href="{{ URL::route( \'admin.post\', array( \'delete\',$id )) }}">delete</a>
                 ')
-    ->edit_column('status','@if($status) 
-                                Active 
-                            @else 
-                                Passive 
+    ->edit_column('status','@if($status)
+                                Active
+                            @else
+                                Passive
                             @endif')
     // you can also give a function as parameter to edit_column and add_column instead of blade string
     ->edit_column('ownername','Author of this post is {{ $ownername }}')
     ->remove_column('id')
     ->make();
 
-**Notice:** If you use double quotes while giving content of add_column or edit_column, you should escape variables with backslash (\) else you get error. For example: 
-    
+**Notice:** If you use double quotes while giving content of add_column or edit_column, you should escape variables with backslash (\) else you get error. For example:
+
     edit_column('id',"- {{ \$id }}") .
 
+
+forked from bllim/laravel4-datatables-package (https://github.com/bllim/laravel4-datatables-package)
 
 **License:** Licensed under the MIT License

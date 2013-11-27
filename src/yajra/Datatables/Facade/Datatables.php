@@ -1,4 +1,4 @@
-<?php namespace Bllim\Datatables\Facades;
+<?php namespace yajra\Datatables\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
