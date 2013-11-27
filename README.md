@@ -18,7 +18,7 @@ Add the `yajra/datatables` under the `require` key after that run the `composer 
         "require": {
             "laravel/framework": "4.0.*",
             ...
-            "yajra/datatables": "*"
+            "yajra/laravel-datatables-oracle": "*"
         }
         ...
     }
