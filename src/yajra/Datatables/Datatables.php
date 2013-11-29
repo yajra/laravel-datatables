@@ -365,8 +365,8 @@ class Datatables
 
 	private function filtering()
 	{
-		
-		
+
+
 		if (Input::get('sSearch','') != '')
 		{
 			$copy_this = $this;
@@ -374,8 +374,8 @@ class Datatables
 			$this->query->where(function($query) use ($copy_this) {
 
 				$db_prefix = $copy_this->database_prefix();
-				
-				
+
+
 
 				for ($i=0,$c=count($copy_this->columns);$i<$c;$i++)
 				{
@@ -384,17 +384,17 @@ class Datatables
 
 						preg_match('#^(\S*?)\s+as\s+(\S*?)$#si',$copy_this->columns[$i],$matches);
 						$column = empty($matches) ? $copy_this->columns[$i] : $matches[1];
-						
-						if (stripos($column, ' AS ') !== false){ 
+
+						if (stripos($column, ' AS ') !== false){
 							$column = substr($column, stripos($column, ' AS ')+4);
 						}
-						
+
 						$keyword = '%'.Input::get('sSearch').'%';
 
 						if(Config::get('datatables.search.use_wildcards', false)) {
 							$keyword = $copy_this->wildcard_like_string(Input::get('sSearch'));
 						}
-						
+
 						// Check if the database driver is PostgreSQL
 						// If it is, cast the current column to TEXT datatype
 						$cast_begin = null;
@@ -403,7 +403,7 @@ class Datatables
 							$cast_begin = "CAST(";
 							$cast_end = " as TEXT)";
 						}
-						
+
 						$column = $db_prefix . $column;
 						if(Config::get('datatables.search.case_insensitive', false)) {
 							$query->orwhere(DB::raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', $keyword);
@@ -415,7 +415,7 @@ class Datatables
 			});
 
 		}
-    
+
 		$db_prefix = $this->database_prefix();
 
 		for ($i=0,$c=count($this->columns);$i<$c;$i++)
@@ -529,8 +529,8 @@ class Datatables
 			"sColumns" => $sColumns
 		);
 
-		if(Config::get('application.profiler', false)) {
-			Log::write('$this->result_array', '<pre>'.print_r($this->result_array, true).'</pre>');
+		if(Config::get('app.debug', false)) {
+			$output['aQueries'] = DB::getQueryLog();
 		}
 		return Response::json($output);
 	}
