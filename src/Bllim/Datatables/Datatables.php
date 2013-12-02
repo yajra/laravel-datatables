@@ -382,7 +382,7 @@ class Datatables
 					if (Input::get('bSearchable_'.$i) == "true")
 					{
 
-						preg_match('#^(\S*?)\s+as\s+(\S*?)$#si',$copy_this->columns[$i],$matches);
+						preg_match('#^(.*?)\s+as\s+(\S*?)$#si',$copy_this->columns[$i],$matches);
 						$column = empty($matches) ? $copy_this->columns[$i] : $matches[1];
 						
 						if (stripos($column, ' AS ') !== false){ 
