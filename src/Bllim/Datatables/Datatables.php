@@ -28,10 +28,10 @@ class Datatables
 	protected 	$edit_columns		= array();
 	protected	$sColumns			= array();
 
-	public 		$columns 		= array();
+	public 		$columns 		    = array();
 	public 		$last_columns 		= array();
 
-	protected	$count_all		= 0;
+	protected	$count_all		    = 0;
 
 	protected	$result_object;
 	protected	$result_array		= array();
@@ -344,17 +344,46 @@ class Datatables
 
 		if(!is_null(Input::get('iSortCol_0')))
 		{
+			$columns = $this->cleanColumns( $this->last_columns );
 
 			for ( $i=0, $c=intval(Input::get('iSortingCols')); $i<$c ; $i++ )
 			{
 				if ( Input::get('bSortable_'.intval(Input::get('iSortCol_'.$i))) == "true" )
 				{
-					if(isset($this->last_columns[intval(Input::get('iSortCol_'.$i))]))
-					$this->query->orderBy($this->last_columns[intval(Input::get('iSortCol_'.$i))],Input::get('sSortDir_'.$i));
+					if(isset($columns[intval(Input::get('iSortCol_'.$i))]))
+					$this->query->orderBy($columns[intval(Input::get('iSortCol_'.$i))],Input::get('sSortDir_'.$i));
 				}
 			}
 
 		}
+	}
+
+	private function cleanColumns( $cols )
+	{
+		$_search = [
+			'GROUP_CONCAT( ',
+			'CONCAT( ',
+			'DISTINCT( ',
+			',',
+			' )',
+			'as',
+		];
+
+		foreach ( $cols as $col )
+		{
+			$_column = explode( ' ' , str_replace( $_search, '', $col, $count ) );
+
+			if ( $count > 0 )
+			{
+				$columns[] = array_shift( $_column );
+			}
+			else
+			{
+				$columns[] = end( $_column );
+			}
+		}
+
+		return $columns;
 	}
 
 	/**
@@ -365,11 +394,12 @@ class Datatables
 
 	private function filtering()
 	{
-		
+		$columns = $this->cleanColumns( $this->columns );
 		
 		if (Input::get('sSearch','') != '')
 		{
 			$copy_this = $this;
+			$copy_this->columns = $columns;
 
 			$this->query->where(function($query) use ($copy_this) {
 
@@ -418,7 +448,7 @@ class Datatables
     
 		$db_prefix = $this->database_prefix();
 
-		for ($i=0,$c=count($this->columns);$i<$c;$i++)
+		for ($i=0,$c=count($columns);$i<$c;$i++)
 		{
 			if (Input::get('bSearchable_'.$i) == "true" && Input::get('sSearch_'.$i) != '')
 			{
@@ -429,10 +459,10 @@ class Datatables
 				}
 
 				if(Config::get('datatables.search.case_insensitive', false)) {
-					$column = $db_prefix . $this->columns[$i];
+					$column = $db_prefix . $columns[$i];
 					$this->query->where(DB::raw('LOWER('.$column.')'),'LIKE', $keyword);
 				} else {
-					$this->query->where($this->columns[$i], 'LIKE', $keyword);
+					$this->query->where($columns[$i], 'LIKE', $keyword);
 				}
 			}
 		}
