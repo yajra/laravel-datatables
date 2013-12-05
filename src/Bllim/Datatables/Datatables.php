@@ -7,7 +7,7 @@
 *
 * @package    Laravel
 * @category   Bundle
-* @version    1.3
+* @version    1.3.1
 * @author     Bilal Gultekin <bilal@bilal.im>
 */
 
@@ -23,21 +23,22 @@ class Datatables
 	public 		$query;
 	protected	$query_type;
 
-	protected 	$extra_columns		= array();
-	protected 	$excess_columns		= array();
-	protected 	$edit_columns		= array();
-	protected	$sColumns			= array();
+	protected $extra_columns		= array();
+	protected $excess_columns		= array();
+	protected $edit_columns			= array();
+	protected $sColumns					= array();
 
-	public 		$columns 		    = array();
+	public 		$columns 		    	= array();
 	public 		$last_columns 		= array();
 
 	protected	$count_all		    = 0;
+	protected	$display_all	    = 0;
 
 	protected	$result_object;
-	protected	$result_array		= array();
+	protected	$result_array			= array();
 	protected	$result_array_r		= array();
 
-	protected   $mDataSupport;
+	protected $mDataSupport;
 
 
 	/**
@@ -357,33 +358,20 @@ class Datatables
 
 		}
 	}
-
+	/**
+	 * @param array $cols
+	 * @return array
+	 */
 	private function cleanColumns( $cols )
 	{
-		$_search = [
-			'GROUP_CONCAT( ',
-			'CONCAT( ',
-			'DISTINCT( ',
-			',',
-			' )',
-			'as',
-		];
-
-		foreach ( $cols as $col )
+		$return = array();
+		foreach ( $cols as  $i=> $col )
 		{
-			$_column = explode( ' ' , str_replace( $_search, '', $col, $count ) );
-
-			if ( $count > 0 )
-			{
-				$columns[] = array_shift( $_column );
-			}
-			else
-			{
-				$columns[] = end( $_column );
-			}
+			preg_match('#^(.*?)\s+as\s+(\S*?)$#si',$col,$matches);
+			$return[$i] = empty($matches) ? $col : $matches[2]; 
 		}
 
-		return $columns;
+		return $return;
 	}
 
 	/**
@@ -411,9 +399,7 @@ class Datatables
 				{
 					if (Input::get('bSearchable_'.$i) == "true")
 					{
-
-						preg_match('#^(.*?)\s+as\s+(\S*?)$#si',$copy_this->columns[$i],$matches);
-						$column = empty($matches) ? $copy_this->columns[$i] : $matches[1];
+						$column = $copy_this->columns[$i];
 						
 						if (stripos($column, ' AS ') !== false){ 
 							$column = substr($column, stripos($column, ' AS ')+4);
