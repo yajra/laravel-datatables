@@ -7,7 +7,7 @@
 *
 * @package    Laravel
 * @category   Bundle
-* @version    1.3
+* @version    1.3.1
 * @author     Bilal Gultekin <bilal@bilal.im>
 */
 
@@ -23,21 +23,22 @@ class Datatables
 	public 		$query;
 	protected	$query_type;
 
-	protected 	$extra_columns		= array();
-	protected 	$excess_columns		= array();
-	protected 	$edit_columns		= array();
-	protected	$sColumns			= array();
+	protected $extra_columns		= array();
+	protected $excess_columns		= array();
+	protected $edit_columns			= array();
+	protected $sColumns					= array();
 
-	public 		$columns 		= array();
+	public 		$columns 		    	= array();
 	public 		$last_columns 		= array();
 
-	protected	$count_all		= 0;
+	protected	$count_all		    = 0;
+	protected	$display_all	    = 0;
 
 	protected	$result_object;
-	protected	$result_array		= array();
+	protected	$result_array			= array();
 	protected	$result_array_r		= array();
 
-	protected   $mDataSupport;
+	protected $mDataSupport;
 
 
 	/**
@@ -344,17 +345,34 @@ class Datatables
 
 		if(!is_null(Input::get('iSortCol_0')))
 		{
+			$columns = $this->cleanColumns( $this->last_columns );
 
 			for ( $i=0, $c=intval(Input::get('iSortingCols')); $i<$c ; $i++ )
 			{
 				if ( Input::get('bSortable_'.intval(Input::get('iSortCol_'.$i))) == "true" )
 				{
-					if(isset($this->last_columns[intval(Input::get('iSortCol_'.$i))]))
-					$this->query->orderBy($this->last_columns[intval(Input::get('iSortCol_'.$i))],Input::get('sSortDir_'.$i));
+					if(isset($columns[intval(Input::get('iSortCol_'.$i))]))
+					$this->query->orderBy($columns[intval(Input::get('iSortCol_'.$i))],Input::get('sSortDir_'.$i));
 				}
 			}
 
 		}
+	}
+
+	/**
+	 * @param array $cols
+	 * @return array
+	 */
+	private function cleanColumns( $cols )
+	{
+		$return = array();
+		foreach ( $cols as  $i=> $col )
+		{
+			preg_match('#^(.*?)\s+as\s+(\S*?)$#si',$col,$matches);
+			$return[$i] = empty($matches) ? $col : $matches[2];
+		}
+
+		return $return;
 	}
 
 	/**
@@ -365,11 +383,12 @@ class Datatables
 
 	private function filtering()
 	{
-
+		$columns = $this->cleanColumns( $this->columns );
 
 		if (Input::get('sSearch','') != '')
 		{
 			$copy_this = $this;
+			$copy_this->columns = $columns;
 
 			$this->query->where(function($query) use ($copy_this) {
 
@@ -381,9 +400,7 @@ class Datatables
 				{
 					if (Input::get('bSearchable_'.$i) == "true")
 					{
-
-						preg_match('#^(\S*?)\s+as\s+(\S*?)$#si',$copy_this->columns[$i],$matches);
-						$column = empty($matches) ? $copy_this->columns[$i] : $matches[1];
+						$column = $copy_this->columns[$i];
 
 						if (stripos($column, ' AS ') !== false){
 							$column = substr($column, stripos($column, ' AS ')+4);
@@ -418,7 +435,7 @@ class Datatables
 
 		$db_prefix = $this->database_prefix();
 
-		for ($i=0,$c=count($this->columns);$i<$c;$i++)
+		for ($i=0,$c=count($columns);$i<$c;$i++)
 		{
 			if (Input::get('bSearchable_'.$i) == "true" && Input::get('sSearch_'.$i) != '')
 			{
@@ -429,10 +446,10 @@ class Datatables
 				}
 
 				if(Config::get('datatables.search.case_insensitive', false)) {
-					$column = $db_prefix . $this->columns[$i];
+					$column = $db_prefix . $columns[$i];
 					$this->query->where(DB::raw('LOWER('.$column.')'),'LIKE', $keyword);
 				} else {
-					$this->query->where($this->columns[$i], 'LIKE', $keyword);
+					$this->query->where($columns[$i], 'LIKE', $keyword);
 				}
 			}
 		}
