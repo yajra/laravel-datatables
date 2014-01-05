@@ -450,7 +450,7 @@ class Datatables
 					$this->query->where(DB::raw('LOWER('.$column.')'),'LIKE', $keyword);
 				} else {
 					$col = strstr($columns[$i],'(')?DB::raw($columns[$i]):$columns[$i];
-					$this->query->where($col], 'LIKE', $keyword);
+					$this->query->where($col, 'LIKE', $keyword);
 				}
 			}
 		}
