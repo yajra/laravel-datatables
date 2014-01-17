@@ -7,7 +7,7 @@
 *
 * @package    Laravel
 * @category   Bundle
-* @version    1.3.1
+* @version    1.3.3
 * @author     Bilal Gultekin <bilal@bilal.im>
 */
 
@@ -158,7 +158,7 @@ class Datatables
 	private function save_query($query)
 	{
 		$this->query = $query;
-		$this->query_type = get_class($query) == 'Illuminate\Database\Query\Builder' ? 'fluent' : 'eloquent';
+		$this->query_type = $query instanceof \Illuminate\Database\Query\Builder ? 'fluent' : 'eloquent';
 		$this->columns = $this->query_type == 'eloquent' ? $this->query->getQuery()->columns : $this->query->columns;
 	}
 
@@ -495,8 +495,7 @@ class Datatables
 	private function count($count  = 'count_all')
 	{
 		//Get columns to temp var.
-		$query_type = get_class($this->query) == 'Illuminate\Database\Query\Builder' ? 'fluent' : 'eloquent';
-		$query  = $query_type == 'eloquent' ? $this->query->getQuery() : $this->query;
+		$query  = $this->query_type == 'eloquent' ? $this->query->getQuery() : $this->query;
 		//Count the number of rows in the select
 		$this->$count = DB::table(DB::raw('('.$query->toSql().') count_row_table'))
 		->setBindings($query->getBindings())->count();
