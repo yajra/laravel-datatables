@@ -1,8 +1,8 @@
-## Datatables Bundle for Laravel 4
+## Datatables Bundle for Laravel 4 (Oracle Support)
 
 **About**
 
-This bundle is created to handle server-side works of DataTables Jquery Plugin (http://datatables.net) by using Eloquent ORM or Fluent Query Builder.
+This bundle is created to handle server-side works of [DataTables](http://datatables.net) Jquery Plugin by using Eloquent ORM or Fluent Query Builder.
 
 ### Feature Overview
 - Supporting Eloquent ORM and Fluent Query Builder
@@ -37,6 +37,11 @@ Composer will download the package. After package downloaded, open "app/config/a
         'Datatables'      => 'yajra\Datatables\Datatables',
     ),
 
+Finally you need to publish a configuration file by running the following Artisan command.
+
+```
+$ php artisan config:publish yajra/laravel-datatables-oracle
+```
 
 ### Usage
 
@@ -87,6 +92,7 @@ It is better, you know these:
     edit_column('id',"- {{ \$id }}") .
 
 
-forked from bllim/laravel4-datatables-package (https://github.com/bllim/laravel4-datatables-package)
-
 **License:** Licensed under the MIT License
+
+### Credits
+* [bllim/laravel4-datatables-package](https://github.com/bllim/laravel4-datatables-package)
