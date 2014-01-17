@@ -423,7 +423,7 @@ class Datatables
 
 						$column = $db_prefix . $column;
 						if(Config::get('datatables.search.case_insensitive', false)) {
-							$query->orwhere(DB::raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', $keyword);
+							$query->orwhere(DB::raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', strtolower($keyword));
 						} else {
 							$query->orwhere(DB::raw($cast_begin.$column.$cast_end), 'LIKE', $keyword);
 						}
@@ -447,7 +447,7 @@ class Datatables
 
 				if(Config::get('datatables.search.case_insensitive', false)) {
 					$column = $db_prefix . $columns[$i];
-					$this->query->where(DB::raw('LOWER('.$column.')'),'LIKE', $keyword);
+					$this->query->where(DB::raw('LOWER('.$column.')'),'LIKE', strtolower($keyword));
 				} else {
 					$this->query->where($columns[$i], 'LIKE', $keyword);
 				}
