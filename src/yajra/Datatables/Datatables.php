@@ -345,7 +345,7 @@ class Datatables
 
 		if(!is_null(Input::get('iSortCol_0')))
 		{
-			$columns = $this->cleanColumns( $this->last_columns );
+			$columns = $this->clean_columns( $this->last_columns );
 
 			for ( $i=0, $c=intval(Input::get('iSortingCols')); $i<$c ; $i++ )
 			{
@@ -363,13 +363,13 @@ class Datatables
 	 * @param array $cols
 	 * @return array
 	 */
-	private function cleanColumns( $cols )
+	private function clean_columns( $cols, $use_alias  = true )
 	{
 		$return = array();
 		foreach ( $cols as  $i=> $col )
 		{
 			preg_match('#^(.*?)\s+as\s+(\S*?)$#si',$col,$matches);
-			$return[$i] = empty($matches) ? $col : $matches[2];
+			$return[$i] = empty($matches) ? $col : $matches[$use_alias?2:1];
 		}
 
 		return $return;
@@ -383,7 +383,7 @@ class Datatables
 
 	private function filtering()
 	{
-		$columns = $this->cleanColumns( $this->columns );
+		$columns = $this->clean_columns( $this->columns, false );
 
 		if (Input::get('sSearch','') != '')
 		{
@@ -449,7 +449,8 @@ class Datatables
 					$column = $db_prefix . $columns[$i];
 					$this->query->where(DB::raw('LOWER('.$column.')'),'LIKE', strtolower($keyword));
 				} else {
-					$this->query->where($columns[$i], 'LIKE', $keyword);
+					$col = strstr($columns[$i],'(')?DB::raw($columns[$i]):$columns[$i];
+					$this->query->where($col, 'LIKE', $keyword);
 				}
 			}
 		}
