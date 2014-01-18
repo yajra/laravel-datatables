@@ -158,7 +158,7 @@ class Datatables
 	private function save_query($query)
 	{
 		$this->query = $query;
-		$this->query_type = $query instanceof Illuminate\Database\Query\Builder ? 'fluent' : 'eloquent';
+		$this->query_type = $query instanceof \Illuminate\Database\Query\Builder ? 'fluent' : 'eloquent';
 		$this->columns = $this->query_type == 'eloquent' ? $this->query->getQuery()->columns : $this->query->columns;
 	}
 
