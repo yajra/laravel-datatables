@@ -6,6 +6,6 @@ php:
 
 before_script:
   - curl -s http://getcomposer.org/installer | php
-  - php composer.phar install --dev --prefer-dist
+  - COMPOSER_PROCESS_TIMEOUT=4000 php composer.phar install --dev --prefer-dist
 
 script: phpunit
