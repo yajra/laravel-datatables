@@ -369,7 +369,7 @@ class Datatables
 		foreach ( $cols as  $i=> $col )
 		{
 			preg_match('#^(.*?)\s+as\s+(\S*?)$#si',$col,$matches);
-			$return[$i] = empty($matches) ? $col : $matches[$use_alias?2:1]; 
+			$return[$i] = empty($matches) ? $col : $matches[$use_alias?2:1];
 		}
 
 		return $return;
@@ -384,7 +384,7 @@ class Datatables
 	private function filtering()
 	{
 		$columns = $this->clean_columns( $this->columns, false );
-		
+
 		if (Input::get('sSearch','') != '')
 		{
 			$copy_this = $this;
@@ -393,25 +393,25 @@ class Datatables
 			$this->query->where(function($query) use ($copy_this) {
 
 				$db_prefix = $copy_this->database_prefix();
-				
-				
+
+
 
 				for ($i=0,$c=count($copy_this->columns);$i<$c;$i++)
 				{
 					if (Input::get('bSearchable_'.$i) == "true")
 					{
 						$column = $copy_this->columns[$i];
-						
-						if (stripos($column, ' AS ') !== false){ 
+
+						if (stripos($column, ' AS ') !== false){
 							$column = substr($column, stripos($column, ' AS ')+4);
 						}
-						
+
 						$keyword = '%'.Input::get('sSearch').'%';
 
 						if(Config::get('datatables.search.use_wildcards', false)) {
 							$keyword = $copy_this->wildcard_like_string(Input::get('sSearch'));
 						}
-						
+
 						// Check if the database driver is PostgreSQL
 						// If it is, cast the current column to TEXT datatype
 						$cast_begin = null;
@@ -420,10 +420,10 @@ class Datatables
 							$cast_begin = "CAST(";
 							$cast_end = " as TEXT)";
 						}
-						
+
 						$column = $db_prefix . $column;
 						if(Config::get('datatables.search.case_insensitive', false)) {
-							$query->orwhere(DB::raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', $keyword);
+							$query->orwhere(DB::raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', strtolower($keyword));
 						} else {
 							$query->orwhere(DB::raw($cast_begin.$column.$cast_end), 'LIKE', $keyword);
 						}
@@ -432,7 +432,7 @@ class Datatables
 			});
 
 		}
-    
+
 		$db_prefix = $this->database_prefix();
 
 		for ($i=0,$c=count($columns);$i<$c;$i++)
@@ -447,7 +447,7 @@ class Datatables
 
 				if(Config::get('datatables.search.case_insensitive', false)) {
 					$column = $db_prefix . $columns[$i];
-					$this->query->where(DB::raw('LOWER('.$column.')'),'LIKE', $keyword);
+					$this->query->where(DB::raw('LOWER('.$column.')'),'LIKE', strtolower($keyword));
 				} else {
 					$col = strstr($columns[$i],'(')?DB::raw($columns[$i]):$columns[$i];
 					$this->query->where($col, 'LIKE', $keyword);
