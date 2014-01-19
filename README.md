@@ -1,7 +1,5 @@
 ## Datatables Bundle for Laravel 4 (Oracle Support)
 
-[![Latest Stable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/stable.png)](https://packagist.org/packages/yajra/laravel-datatables-oracle) [![Total Downloads](https://poser.pugx.org/yajra/laravel-datatables-oracle/downloads.png)](https://packagist.org/packages/yajra/laravel-datatables-oracle) [![Build Status](https://travis-ci.org/yajra/laravel-datatables-oracle.png)](https://travis-ci.org/yajra/laravel-datatables-oracle)
-
 **About**
 
 This bundle is created to handle server-side works of [DataTables](http://datatables.net) Jquery Plugin by using Eloquent ORM or Fluent Query Builder.
