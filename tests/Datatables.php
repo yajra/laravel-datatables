@@ -16,7 +16,7 @@ class DatatablesTest extends Illuminate\Foundation\Testing\TestCase  {
 
 		$testEnvironment = 'testing';
 
-		return require __DIR__.'/../bootstrap/start.php';
+		return require __DIR__.'/bootstrap/start.php';
 	}
 
 	public function setUp()
@@ -48,7 +48,7 @@ class DatatablesTest extends Illuminate\Foundation\Testing\TestCase  {
 	{
 		$demo = DB::table('demos')->select('id','name');
 		$output = Datatables::of($demo)->make();
-		$this->assertTrue( $output instanceof Illuminate\Http\JsonResponse ? true : false );
+		$this->assertInstanceOf('Illuminate\Http\JsonResponse', $output);
 	}
 
 
