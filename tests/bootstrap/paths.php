@@ -13,7 +13,7 @@ return array(
 	|
 	*/
 
-	'app' => __DIR__.'/../vendor/laravel/laravel/app',
+	'app' => __DIR__.'/../../vendor/laravel/laravel/app',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -26,7 +26,7 @@ return array(
 	|
 	*/
 
-	'public' => __DIR__.'/../vendor/laravel/laravel/public',
+	'public' => __DIR__.'/../../vendor/laravel/laravel/public',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -39,7 +39,7 @@ return array(
 	|
 	*/
 
-	'base' => __DIR__.'/..',
+	'base' => __DIR__.'/../..',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -52,6 +52,6 @@ return array(
 	|
 	*/
 
-	'storage' => __DIR__.'/../vendor/laravel/laravel/app/storage',
+	'storage' => __DIR__.'/../../vendor/laravel/laravel/app/storage',
 
 );
