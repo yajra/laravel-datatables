@@ -546,8 +546,8 @@ class Datatables
 			"sColumns" => $sColumns
 		);
 
-		if(Config::get('application.profiler', false)) {
-			Log::write('$this->result_array', '<pre>'.print_r($this->result_array, true).'</pre>');
+		if(Config::get('app.debug', false)) {
+			$output['aQueries'] = DB::getQueryLog();
 		}
 		return Response::json($output);
 	}
