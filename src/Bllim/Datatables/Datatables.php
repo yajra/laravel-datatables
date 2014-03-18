@@ -58,7 +58,7 @@ class Datatables
      *
      * @return null
      */
-    public function make($mDataSupport=false)
+    public function make($mDataSupport=false,$raw=false)
     {
         $this->mDataSupport = $mDataSupport;
         $this->create_last_columns();
@@ -67,7 +67,7 @@ class Datatables
         $this->init_columns();
         $this->regulate_array();
 
-        return $this->output();
+        return $this->output($raw);
     }
 
     /**
@@ -508,7 +508,7 @@ class Datatables
      *
      * @return null
      */
-    private function output()
+    private function output($raw=false)
     {
         $sColumns = array_merge_recursive($this->columns,$this->sColumns);
 
@@ -523,6 +523,11 @@ class Datatables
         if(Config::get('app.debug', false)) {
             $output['aQueries'] = DB::getQueryLog();
         }
-        return Response::json($output);
+        if($raw) {
+            return $output;
+        }
+        else {
+            return Response::json($output);
+        }
     }
 }
