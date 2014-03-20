@@ -471,13 +471,22 @@ class Datatables
      * @param string $count variable to store to 'count_all' for iTotalRecords, 'display_all' for iTotalDisplayRecords
      * @return null
      */
-    private function count($count = 'count_all')
+	private function count($count = 'count_all')
     {
-        //Get columns to temp var.
-        $query = $this->query_type == 'eloquent' ? $this->query->getQuery() : $this->query;
-        //Count the number of rows in the select
-        $this->$count = DB::table(DB::raw('('.$query->toSql().') AS count_row_table'))
-        ->setBindings($query->getBindings())->count();
+        //Get columns to temp var.   
+        
+        if($this->query_type == 'eloquent') {
+            $query = $this->query->getQuery();
+            $connection = $this->query->getModel()->getConnection()->getName();
+        }
+        else {
+            $query = $this->query;
+            $connection = $query->getConnection()->getName();
+        }
+        //Count the number of rows in the select with the proper connection       
+        $this->$count = DB::connection($connection)
+            ->table(DB::raw('('.$query->toSql().') AS count_row_table'))
+            ->setBindings($query->getBindings())->count();
     }
 
     /**
