@@ -40,7 +40,7 @@ Composer will download the package. After package downloaded, open "app/config/a
 Finally you need to publish a configuration file by running the following Artisan command.
 
 ```php
-$ php artisan config:publish bllim/datatables
+$ php artisan config:publish bllim/laravel4-datatables-package
 ```
 
 ### Usage
