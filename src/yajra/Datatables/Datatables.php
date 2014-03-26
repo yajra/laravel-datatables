@@ -7,7 +7,7 @@
 *
 * @package    Laravel
 * @category   Bundle
-* @version    1.3.3
+* @version    1.5.0
 * @author     Bilal Gultekin <bilal@bilal.im>
 */
 
@@ -23,22 +23,22 @@ class Datatables
 	public 		$query;
 	protected	$query_type;
 
-	protected $extra_columns		= array();
-	protected $excess_columns		= array();
-	protected $edit_columns			= array();
-	protected $sColumns					= array();
+	protected 	$extra_columns = array();
+	protected 	$excess_columns = array();
+	protected 	$edit_columns = array();
+	protected 	$sColumns = array();
 
-	public 		$columns 		    	= array();
-	public 		$last_columns 		= array();
+	public 		$columns = array();
+	public 		$last_columns = array();
 
-	protected	$count_all		    = 0;
-	protected	$display_all	    = 0;
+	protected	$count_all = 0;
+	protected	$display_all = 0;
 
 	protected	$result_object;
-	protected	$result_array			= array();
-	protected	$result_array_r		= array();
+	protected	$result_array = array();
+	protected	$result_array_r = array();
 
-	protected $mDataSupport;
+	protected 	$mDataSupport;
 
 
 	/**
@@ -49,7 +49,7 @@ class Datatables
 	public static function of($query)
 	{
 		$ins = new static;
-		$ins->save_query($query);
+		$ins->saveQuery($query);
 		return $ins;
 	}
 
@@ -62,11 +62,11 @@ class Datatables
 	public function make($mDataSupport=false)
 	{
 		$this->mDataSupport = $mDataSupport;
-		$this->create_last_columns();
+		$this->createLastColumn();
 		$this->init();
-		$this->get_result();
-		$this->init_columns();
-		$this->regulate_array();
+		$this->getResult();
+		$this->initColumns();
+		$this->regulateArray();
 
 		return $this->output();
 	}
@@ -78,7 +78,7 @@ class Datatables
 	 *	@return null
 	 */
 
-	private function get_result()
+	private function getResult()
 	{
 		if($this->query_type == 'eloquent')
 		{
@@ -107,14 +107,15 @@ class Datatables
 		$this->ordering();
 	}
 
-
 	/**
 	 *	Adds extra columns to extra_columns
 	 *
 	 *	@return $this
 	 */
 
-	public function add_column($name,$content,$order = false)
+	public function addColumn($name, $content, $order = false) { return $this->add_column($name, $content, $order = false); }
+
+	public function add_column($name, $content, $order = false)
 	{
 		$this->sColumns[] = $name;
 
@@ -128,7 +129,9 @@ class Datatables
 	 *	@return $this
 	 */
 
-	public function edit_column($name,$content)
+	public function editColumn($name, $content) { return $this->edit_column($name, $content); }
+
+	public function edit_column($name, $content)
 	{
 		$this->edit_columns[] = array('name' => $name, 'content' => $content);
 		return $this;
@@ -141,10 +144,12 @@ class Datatables
 	 *	@return $this
 	 */
 
+	public function removeColumn() { return $this->remove_column(); }
+
 	public function remove_column()
 	{
 		$names = func_get_args();
-		$this->excess_columns = array_merge($this->excess_columns,$names);
+		$this->excess_columns = array_merge($this->excess_columns, $names);
 		return $this;
 	}
 
@@ -155,7 +160,7 @@ class Datatables
 	 *	@return null
 	 */
 
-	private function save_query($query)
+	private function saveQuery($query)
 	{
 		$this->query = $query;
 		$this->query_type = $query instanceof \Illuminate\Database\Query\Builder ? 'fluent' : 'eloquent';
@@ -168,7 +173,7 @@ class Datatables
 	 *	@return null
 	 */
 
-	private function init_columns()
+	private function initColumns()
 	{
 		foreach ($this->result_array as $rkey => &$rvalue) {
 
@@ -180,7 +185,7 @@ class Datatables
 					$value['content'] = $value['content']($this->result_object[$rkey]);
 				endif;
 
-				$rvalue = $this->include_in_array($value,$rvalue);
+				$rvalue = $this->includeInArray($value,$rvalue);
 			}
 
 			foreach ($this->edit_columns as $key => $value) {
@@ -204,7 +209,7 @@ class Datatables
 	 *	@return null
 	 */
 
-	private function regulate_array()
+	private function regulateArray()
 	{
 		if($this->mDataSupport){
 			$this->result_array_r = $this->result_array;
@@ -226,7 +231,7 @@ class Datatables
 	 *	@return null
 	 */
 
-	private function create_last_columns()
+	private function createLastColumn()
 	{
 		$extra_columns_indexes = array();
 		$last_columns = array();
@@ -296,7 +301,7 @@ class Datatables
 	 *	@return null
 	 */
 
-	private function include_in_array($item,$array)
+	private function includeInArray($item,$array)
 	{
 		if($item['order'] === false)
 		{
@@ -345,7 +350,7 @@ class Datatables
 
 		if(!is_null(Input::get('iSortCol_0')))
 		{
-			$columns = $this->clean_columns( $this->last_columns );
+			$columns = $this->cleanColumns( $this->last_columns );
 
 			for ( $i=0, $c=intval(Input::get('iSortingCols')); $i<$c ; $i++ )
 			{
@@ -363,7 +368,7 @@ class Datatables
 	 * @param array $cols
 	 * @return array
 	 */
-	private function clean_columns( $cols, $use_alias  = true )
+	private function cleanColumns( $cols, $use_alias  = true )
 	{
 		$return = array();
 		foreach ( $cols as  $i=> $col )
@@ -383,7 +388,7 @@ class Datatables
 
 	private function filtering()
 	{
-		$columns = $this->clean_columns( $this->columns, false );
+		$columns = $this->cleanColumns( $this->columns, false );
 
 		if (Input::get('sSearch','') != '')
 		{
@@ -392,7 +397,7 @@ class Datatables
 
 			$this->query->where(function($query) use ($copy_this) {
 
-				$db_prefix = $copy_this->database_prefix();
+				$db_prefix = $copy_this->getDatabasePrefix();
 
 
 
@@ -409,7 +414,7 @@ class Datatables
 						$keyword = '%'.Input::get('sSearch').'%';
 
 						if(Config::get('datatables.search.use_wildcards', false)) {
-							$keyword = $copy_this->wildcard_like_string(Input::get('sSearch'));
+							$keyword = $copy_this->wildcardLikeString(Input::get('sSearch'));
 						}
 
 						// Check if the database driver is PostgreSQL
@@ -433,7 +438,7 @@ class Datatables
 
 		}
 
-		$db_prefix = $this->database_prefix();
+		$db_prefix = $this->getDatabasePrefix();
 
 		for ($i=0,$c=count($columns);$i<$c;$i++)
 		{
@@ -442,7 +447,7 @@ class Datatables
 				$keyword = '%'.Input::get('sSearch_'.$i).'%';
 
 				if(Config::get('datatables.search.use_wildcards', false)) {
-					$keyword = $copy_this->wildcard_like_string(Input::get('sSearch_'.$i));
+					$keyword = $copy_this->wildcardLikeString(Input::get('sSearch_'.$i));
 				}
 
 				if(Config::get('datatables.search.case_insensitive', false)) {
@@ -463,7 +468,7 @@ class Datatables
 	 *  @return string
 	 */
 
-	public function wildcard_like_string($str, $lowercase = true) {
+	public function wildcardLikeString($str, $lowercase = true) {
 	    $wild = '%';
 	    $length = strlen($str);
 	    if($length) {
@@ -482,7 +487,7 @@ class Datatables
 	 *  @return string
 	 */
 
-	public function database_prefix() {
+	public function getDatabasePrefix() {
 	    return Config::get('database.connections.'.Config::get('database.default').'.prefix', '');
 	}
 

@@ -13,18 +13,18 @@ This bundle is created to handle server-side works of [DataTables](http://datata
 ### Installation
 
 Add the `yajra/datatables` under the `require` key after that run the `composer update`.
-
+```php
     {
         "require": {
-            "laravel/framework": "4.0.*",
+            "laravel/framework": "4.1.*",
             ...
             "yajra/laravel-datatables-oracle": "*"
         }
         ...
     }
-
+```
 Composer will download the package. After package downloaded, open "app/config/app.php" and edit like below:
-
+```php
     'providers' => array(
         ...
         'yajra\Datatables\DatatablesServiceProvider',
@@ -36,7 +36,7 @@ Composer will download the package. After package downloaded, open "app/config/a
         ...
         'Datatables'      => 'yajra\Datatables\Datatables',
     ),
-
+```
 Finally you need to publish a configuration file by running the following Artisan command.
 
 ```
@@ -50,9 +50,9 @@ You are free to use all Eloquent ORM and Fluent Query Builder features.
 
 It is better, you know these:
 - When you use select method on Eloquent or Fluent Query, you choose columns
-- You can easily edit columns by using edit_column($column,$content)
-- You can remove any column by using remove_column($column) method
-- You can add columns by using add_column($column_name, $content, $order)
+- You can easily edit columns by using ```editColumn($column, $content)```
+- You can remove any column by using ```removeColumn($column)``` method
+- You can add columns by using ```addColumn($column_name, $content, $order)```
 - You can use Blade Template Engine in your $content values
 - The name of columns is set by returned array.
     - That means, for 'posts.id' it is 'id' and also for 'owner.name as ownername' it is 'ownername'
@@ -61,36 +61,36 @@ It is better, you know these:
 ### Examples
 
 **Example 1:**
-
+```php
     $posts = Post::select(array('posts.id','posts.name','posts.created_at','posts.status'));
 
     return Datatables::of($posts)->make();
-
+```
 
 **Example 2:**
-
-    $place = Place::left_join('owner','places.author_id','=','owner.id')
+```php
+    $place = Place::leftJoin('owner','places.author_id','=','owner.id')
                     ->select(array('places.id','places.name','places.created_at','owner.name as ownername','places.status'));
 
 
     return Datatables::of($place)
-    ->add_column('operations','<a href="{{ URL::route( \'admin.post\', array( \'edit\',$id )) }}">edit</a>
+    ->addColumn('operations','<a href="{{ URL::route( \'admin.post\', array( \'edit\',$id )) }}">edit</a>
                     <a href="{{ URL::route( \'admin.post\', array( \'delete\',$id )) }}">delete</a>
                 ')
-    ->edit_column('status','@if($status)
+    ->editColumn('status','@if($status)
                                 Active
                             @else
                                 Passive
                             @endif')
-    // you can also give a function as parameter to edit_column and add_column instead of blade string
-    ->edit_column('ownername','Author of this post is {{ $ownername }}')
-    ->remove_column('id')
+    // you can also give a function as parameter to editColumn and addColumn instead of blade string
+    ->editColumn('ownername','Author of this post is {{ $ownername }}')
+    ->removeColumn('id')
     ->make();
-
-**Notice:** If you use double quotes while giving content of add_column or edit_column, you should escape variables with backslash (\) else you get error. For example:
-
-    edit_column('id',"- {{ \$id }}") .
-
+```
+**Notice:** If you use double quotes while giving content of addColumn or editColumn, you should escape variables with backslash (\\) else you get error. For example:
+```php
+    editColumn('id',"- {{ \$id }}") .
+```
 
 **License:** Licensed under the MIT License
 
