@@ -495,11 +495,28 @@ class Datatables
 
 	private function count($count  = 'count_all')
 	{
+
 		//Get columns to temp var.
-		$query  = $this->query_type == 'eloquent' ? $this->query->getQuery() : $this->query;
-		//Count the number of rows in the select
-		$this->$count = DB::table(DB::raw('('.$query->toSql().') count_row_table'))
-		->setBindings($query->getBindings())->count();
+		if($this->query_type == 'eloquent') {
+			$query = $this->query->getQuery();
+			$connection = $this->query->getModel()->getConnection()->getName();
+		}
+		else {
+			$query = $this->query;
+			$connection = $query->getConnection()->getName();
+		}
+
+        // if its a normal query ( no union ) replace the select with static text to improve performance
+		$myQuery = clone $query;
+		if( !preg_match( '/UNION/i', strtoupper($myQuery->toSql()) ) ){
+			$myQuery->select( DB::Raw("'1' as row_count") );
+		}
+
+
+		$this->$count = DB::connection($connection)
+		->table(DB::raw('('.$myQuery->toSql().') count_row_table'))
+		->setBindings($myQuery->getBindings())->remember(1)->count();
+
 	}
 
 
