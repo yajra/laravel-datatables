@@ -32,14 +32,15 @@ class Datatables
 	public 		$columns = array();
 	public 		$last_columns = array();
 
-	protected	$count_all = 0;
-	protected	$display_all = 0;
+	protected	$totalRecords = 0;
+	protected	$filteredRecords = 0;
 
 	protected	$result_object;
 	protected	$result_array = array();
 	protected	$result_array_r = array();
 
 	protected 	$mDataSupport;
+	protected 	$autoFilter = true;
 
 
 	public function __construct()
@@ -56,12 +57,14 @@ class Datatables
 		$ins = new static;
 		$ins->saveQuery($query);
 
-		//Get columns to temp var.
+		// set connection and query variable
 		if($ins->query_type == 'eloquent') {
 			$ins->connection = $ins->query->getModel()->getConnection();
+			$ins->query = $ins->query->getQuery();
 		}
 		else {
 			$ins->connection = $query->getConnection();
+			$ins->query = $query;
 		}
 
 		return $ins;
@@ -74,7 +77,9 @@ class Datatables
 	 */
 	public function make($mDataSupport=false)
 	{
+		// set mData support flag
 		$this->mDataSupport = $mDataSupport;
+
 		$this->createLastColumn();
 		$this->init();
 		$this->getResult();
@@ -83,7 +88,6 @@ class Datatables
 
 		return $this->output();
 	}
-
 
 	/**
 	 *	Gets results from prepared query
@@ -109,21 +113,24 @@ class Datatables
 	 */
 	private function init()
 	{
-		$this->count('count_all'); //Total records
-		$this->filtering();
-		$this->count('display_all'); // Filtered records
-		$this->paging();
-		$this->ordering();
+		$this->getTotalRecords(); //Total records
+		$this->doFiltering();
+		$this->getFilteredRecords(); // Filtered records
+		$this->doPaging();
+		$this->doOrdering();
 	}
 
 	/**
-	 * alias for add_column to follow Laravel's coding style
+	 * alias for addColumn for backward compatibility
 	 * @param string  $name
 	 * @param string  $content
 	 * @param int $order
 	 * @return Datatables
 	 */
-	public function addColumn($name, $content, $order = false) { return $this->add_column($name, $content, $order = false); }
+	public function add_column($name, $content, $order = false)
+	{
+		return $this->addColumn($name, $content, $order = false);
+	}
 
 	/**
 	 * Add column in collection
@@ -132,7 +139,7 @@ class Datatables
 	 * @param int $order
 	 * @return Datatables
 	 */
-	public function add_column($name, $content, $order = false)
+	public function addColumn($name, $content, $order = false)
 	{
 		$this->sColumns[] = $name;
 
@@ -141,12 +148,15 @@ class Datatables
 	}
 
 	/**
-	 * alias for edit_column
+	 * alias for editColumn for backward compatibility
 	 * @param  string    $name
 	 * @param  string $content
 	 * @return Datatables
 	 */
-	public function editColumn($name, $content) { return $this->edit_column($name, $content); }
+	public function edit_column($name, $content)
+	{
+		return $this->editColumn($name, $content);
+	}
 
 	/**
 	 * edit column's content
@@ -154,29 +164,31 @@ class Datatables
 	 * @param  string $content
 	 * @return Datatables
 	 */
-	public function edit_column($name, $content)
+	public function editColumn($name, $content)
 	{
 		$this->edit_columns[] = array('name' => $name, 'content' => $content);
 		return $this;
 	}
 
 	/**
-	 * alias for remove_column
+	 * alias for removeColumn for backward compatibility
 	 * @return Datatables
 	 */
-	public function removeColumn() { return $this->remove_column(); }
+	public function remove_column()
+	{
+		return $this->removeColumn();
+	}
 
 	/**
 	 * remove column from collection
 	 * @return Datatables
 	 */
-	public function remove_column()
+	public function removeColumn()
 	{
 		$names = func_get_args();
 		$this->excess_columns = array_merge($this->excess_columns, $names);
 		return $this;
 	}
-
 
 	/**
 	 *	Saves given query and determines its type
@@ -341,7 +353,7 @@ class Datatables
 	 *	Datatables paging
 	 *	@return null
 	 */
-	private function paging()
+	private function doPaging()
 	{
 		if(!is_null($this->input->get('iDisplayStart')) && $this->input->get('iDisplayLength') != -1)
 		{
@@ -353,9 +365,9 @@ class Datatables
 	 *	Datatable ordering
 	 *	@return null
 	 */
-	private function ordering()
+	private function doOrdering()
 	{
-		if(!is_null($this->input->get('iSortCol_0')))
+		if( !is_null($this->input->get('iSortCol_0')) )
 		{
 			$columns = $this->cleanColumns( $this->last_columns );
 
@@ -388,17 +400,26 @@ class Datatables
 	}
 
 	/**
+	 * set auto filter off
+	 * @return [type] [description]
+	 */
+	public function noFiltering()
+	{
+		$this->autoFilter = false;
+	}
+
+	/**
 	 *	Datatable filtering
 	 *	@return null
 	 */
-	private function filtering()
+	private function doFiltering()
 	{
 		$columns = $this->cleanColumns( $this->columns, false );
 		$db_prefix = $this->getDatabasePrefix();
 		$input = $this->input;
 		$connection = $this->connection;
 
-		if ($this->input->get('sSearch','') != '')
+		if ($this->input->get('sSearch','') != '' and $this->autoFilter)
 		{
 			$this->query->where(function($query) use ($columns, $db_prefix, $input, $connection) {
 
@@ -491,7 +512,7 @@ class Datatables
 	 *  @param string $count variable to store to 'count_all' for iTotalRecords, 'display_all' for iTotalDisplayRecords
 	 *	@return null
 	 */
-	private function count($count  = 'count_all')
+	private function count()
 	{
 		// Get columns to temp var.
 		if($this->query_type == 'eloquent') {
@@ -507,8 +528,26 @@ class Datatables
 			$myQuery->select( $this->connection->Raw("'1' as row_count") );
 		}
 
-		$this->$count = $this->connection->table($this->connection->raw('('.$myQuery->toSql().') count_row_table'))
+		return $this->connection->table($this->connection->raw('('.$myQuery->toSql().') count_row_table'))
 				->setBindings($myQuery->getBindings())->remember(1)->count();
+	}
+
+	/**
+	 * get filtered records
+	 * @return int
+	 */
+	private function getFilteredRecords()
+	{
+        return $this->filteredRecords = $this->count();
+	}
+
+	/**
+	 * get total records
+	 * @return int
+	 */
+	private function getTotalRecords()
+	{
+        return $this->totalRecords = $this->count();
 	}
 
 	/**
@@ -518,7 +557,6 @@ class Datatables
 	 */
 	private function getColumnName($str)
 	{
-
 		preg_match('#^(\S*?)\s+as\s+(\S*?)$#si',$str,$matches);
 
 		if(!empty($matches))
@@ -544,8 +582,8 @@ class Datatables
 
 		$output = array(
 			"sEcho" => intval($this->input->get('sEcho')),
-			"iTotalRecords" => $this->count_all,
-			"iTotalDisplayRecords" => $this->display_all,
+			"iTotalRecords" => $this->totalRecords,
+			"iTotalDisplayRecords" => $this->filteredRecords,
 			"aaData" => $this->result_array_r,
 			"sColumns" => $sColumns
 		);
