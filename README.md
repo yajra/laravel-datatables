@@ -1,4 +1,6 @@
-## Datatables Bundle for Laravel 4 (Oracle Support)
+## Datatables Package for Laravel 4 (Oracle Support)
+
+[![Latest Stable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/stable.png)](https://packagist.org/packages/yajra/laravel-datatables-oracle) [![Total Downloads](https://poser.pugx.org/yajra/laravel-datatables-oracle/downloads.png)](https://packagist.org/packages/yajra/laravel-datatables-oracle) [![Build Status](https://travis-ci.org/yajra/laravel-datatables-oracle.png?branch=master)](https://travis-ci.org/yajra/laravel-datatables-oracle)
 
 **About**
 
@@ -53,6 +55,7 @@ It is better, you know these:
 - You can easily edit columns by using ```editColumn($column, $content)```
 - You can remove any column by using ```removeColumn($column)``` method
 - You can add columns by using ```addColumn($column_name, $content, $order)```
+- You can override the default filter function by using ```filter(function($query){})```
 - You can use Blade Template Engine in your $content values
 - The name of columns is set by returned array.
     - That means, for 'posts.id' it is 'id' and also for 'owner.name as ownername' it is 'ownername'
@@ -87,6 +90,18 @@ It is better, you know these:
     ->removeColumn('id')
     ->make();
 ```
+
+**Example 3:**
+```php
+    $posts = Post::select(array('posts.id','posts.name','posts.created_at','posts.status'));
+
+    return Datatables::of($posts)->filter(function($query){
+            if (Input::get('id')) {
+                $query->where('id','=',Input::get('id'));
+            }
+        })->make();
+```
+
 **Notice:** If you use double quotes while giving content of addColumn or editColumn, you should escape variables with backslash (\\) else you get error. For example:
 ```php
     editColumn('id',"- {{ \$id }}") .
