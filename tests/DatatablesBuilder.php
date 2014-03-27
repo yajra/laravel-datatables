@@ -84,7 +84,7 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		$builder->shouldReceive('remember')->times(2)->with(true)->andReturn($builder);
 		$builder->shouldReceive('count')->times(2)->andReturn(2);
 
-		Config::shouldReceive('get')->times(5);
+		Config::shouldReceive('get');
 
 		// set Input variables
 		$_GET['sEcho'] = 1;
@@ -132,7 +132,7 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		$builder->shouldReceive('remember')->times(2)->with(true)->andReturn($builder);
 		$builder->shouldReceive('count')->times(2)->andReturn(2);
 
-		Config::shouldReceive('get')->times(5);
+		Config::shouldReceive('get');
 
 		// set Input variables
 		$_GET['sEcho'] = 1;

@@ -295,7 +295,7 @@ class Datatables
 	 *	Parses and compiles strings by using Blade Template System
 	 *	@return string
 	 */
-	private function blader($str,$data = array())
+	private function blader($str, $data = array())
 	{
 		$empty_filesystem_instance = new Filesystem;
 		$blade = new BladeCompiler($empty_filesystem_instance,'datatables');
@@ -324,7 +324,7 @@ class Datatables
 	 *	Places item of extra columns into result_array by care of their order
 	 *	@return null
 	 */
-	private function includeInArray($item,$array)
+	private function includeInArray($item, $array)
 	{
 		if($item['order'] === false)
 		{
@@ -459,8 +459,6 @@ class Datatables
 			});
 
 		}
-
-		$db_prefix = $this->getDatabasePrefix();
 
 		for ($i=0,$c=count($columns);$i<$c;$i++)
 		{
