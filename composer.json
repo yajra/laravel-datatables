@@ -11,14 +11,14 @@
     ],
     "require": {
         "php": ">=5.3.0",
-        "illuminate/support": ">=4.0.0",
-        "illuminate/database": ">=4.0.0",
-        "illuminate/view": ">=4.0.0",
-        "illuminate/http": ">=4.0.0",
-        "illuminate/filesystem": ">=4.0.0"
+        "illuminate/support": "4.*",
+        "illuminate/database": "4.*",
+        "illuminate/view": "4.*",
+        "illuminate/http": "4.*",
+        "illuminate/filesystem": "4.*"
     },
     "require-dev": {
-        "illuminate/foundation": ">=4.0.0",
+        "illuminate/foundation": "4.*",
         "mockery/mockery": "0.9.*",
         "phpunit/phpunit": "4.0.*"
     },
