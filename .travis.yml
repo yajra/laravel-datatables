@@ -3,9 +3,16 @@ language: php
 php:
   - 5.3
   - 5.4
+  - 5.5
+  - hhvm
 
 before_script:
-  - curl -s http://getcomposer.org/installer | php
-  - COMPOSER_PROCESS_TIMEOUT=4000 php composer.phar install --dev --prefer-dist
+  - composer self-update
+  - composer install --prefer-source --no-interaction --dev
 
-script: phpunit
+script: phpunit -d memory_limit=1024M
+
+matrix:
+  allow_failures:
+    - php: hhvm
+  fast_finish: true
