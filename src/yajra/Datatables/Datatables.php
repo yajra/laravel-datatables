@@ -175,7 +175,9 @@ class Datatables
 	 */
 	public function remove_column()
 	{
-		return $this->removeColumn();
+		$names = func_get_args();
+		$this->excess_columns = array_merge($this->excess_columns, $names);
+		return $this;
 	}
 
 	/**
