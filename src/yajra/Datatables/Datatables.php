@@ -1,26 +1,27 @@
 <?php namespace yajra\Datatables;
 
 /**
-* Laravel Datatable Bundle
+* Laravel Datatables Package
 *
-* This bundle is created to handle server-side works of DataTables Jquery Plugin (http://datatables.net)
+* This Package is created to handle server-side works of DataTables Jquery Plugin (http://datatables.net)
 *
 * @package    Laravel
-* @category   Bundle
-* @version    1.5.0
-* @author     Bilal Gultekin <bilal@bilal.im>
+* @category   Package
+* @version    2.0
+* @author     Arjay Angeles <aqangeles@gmail.com>
 */
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Response;
 use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Http\Request as Input;
 
 class Datatables
 {
+	public 		$connection;
 	public 		$query;
+	public 		$input;
 	protected	$query_type;
 
 	protected 	$extra_columns = array();
@@ -41,15 +42,28 @@ class Datatables
 	protected 	$mDataSupport;
 
 
+	public function __construct()
+	{
+		$this->input = new Input($_GET, $_POST);
+	}
+
 	/**
 	 *	Gets query and returns instance of class
-	 *
 	 *	@return null
 	 */
 	public static function of($query)
 	{
 		$ins = new static;
 		$ins->saveQuery($query);
+
+		//Get columns to temp var.
+		if($ins->query_type == 'eloquent') {
+			$ins->connection = $ins->query->getModel()->getConnection();
+		}
+		else {
+			$ins->connection = $query->getConnection();
+		}
+
 		return $ins;
 	}
 
@@ -58,7 +72,6 @@ class Datatables
 	 *
 	 *	@return null
 	 */
-
 	public function make($mDataSupport=false)
 	{
 		$this->mDataSupport = $mDataSupport;
@@ -74,30 +87,26 @@ class Datatables
 
 	/**
 	 *	Gets results from prepared query
-	 *
 	 *	@return null
 	 */
-
 	private function getResult()
 	{
+		$this->result_object = $this->query->get();
+
 		if($this->query_type == 'eloquent')
 		{
-			$this->result_object = $this->query->get();
 			$this->result_array = $this->result_object->toArray();
 		}
 		else
 		{
-			$this->result_object = $this->query->get();
 			$this->result_array = array_map(function($object) { return (array) $object; }, $this->result_object);
 		}
 	}
 
 	/**
 	 *	Prepares variables according to Datatables parameters
-	 *
 	 *	@return null
 	 */
-
 	private function init()
 	{
 		$this->count('count_all'); //Total records
@@ -108,13 +117,21 @@ class Datatables
 	}
 
 	/**
-	 *	Adds extra columns to extra_columns
-	 *
-	 *	@return $this
+	 * alias for add_column to follow Laravel's coding style
+	 * @param string  $name
+	 * @param string  $content
+	 * @param int $order
+	 * @return Datatables
 	 */
-
 	public function addColumn($name, $content, $order = false) { return $this->add_column($name, $content, $order = false); }
 
+	/**
+	 * Add column in collection
+	 * @param string  $name
+	 * @param string  $content
+	 * @param int $order
+	 * @return Datatables
+	 */
 	public function add_column($name, $content, $order = false)
 	{
 		$this->sColumns[] = $name;
@@ -124,28 +141,35 @@ class Datatables
 	}
 
 	/**
-	 *	Adds column names to edit_columns
-	 *
-	 *	@return $this
+	 * alias for edit_column
+	 * @param  string    $name
+	 * @param  string $content
+	 * @return Datatables
 	 */
-
 	public function editColumn($name, $content) { return $this->edit_column($name, $content); }
 
+	/**
+	 * edit column's content
+	 * @param  string    $name
+	 * @param  string $content
+	 * @return Datatables
+	 */
 	public function edit_column($name, $content)
 	{
 		$this->edit_columns[] = array('name' => $name, 'content' => $content);
 		return $this;
 	}
 
-
 	/**
-	 *	Adds excess columns to excess_columns
-	 *
-	 *	@return $this
+	 * alias for remove_column
+	 * @return Datatables
 	 */
-
 	public function removeColumn() { return $this->remove_column(); }
 
+	/**
+	 * remove column from collection
+	 * @return Datatables
+	 */
 	public function remove_column()
 	{
 		$names = func_get_args();
@@ -156,10 +180,8 @@ class Datatables
 
 	/**
 	 *	Saves given query and determines its type
-	 *
 	 *	@return null
 	 */
-
 	private function saveQuery($query)
 	{
 		$this->query = $query;
@@ -169,10 +191,8 @@ class Datatables
 
 	/**
 	 *	Places extra columns
-	 *
 	 *	@return null
 	 */
-
 	private function initColumns()
 	{
 		foreach ($this->result_array as $rkey => &$rvalue) {
@@ -197,7 +217,6 @@ class Datatables
 				endif;
 
 				$rvalue[$value['name']] = $value['content'];
-
 			}
 		}
 	}
@@ -205,15 +224,13 @@ class Datatables
 
 	/**
 	 *	Converts result_array number indexed array and consider excess columns
-	 *
 	 *	@return null
 	 */
-
 	private function regulateArray()
 	{
 		if($this->mDataSupport){
 			$this->result_array_r = $this->result_array;
-		}else{
+		} else {
 			foreach ($this->result_array as $key => $value) {
 				foreach ($this->excess_columns as $evalue) {
 					unset($value[$evalue]);
@@ -227,10 +244,8 @@ class Datatables
 
 	/**
 	 *	Creates an array which contains published last columns in sql with their index
-	 *
 	 *	@return null
 	 */
-
 	private function createLastColumn()
 	{
 		$extra_columns_indexes = array();
@@ -266,10 +281,8 @@ class Datatables
 
 	/**
 	 *	Parses and compiles strings by using Blade Template System
-	 *
 	 *	@return string
 	 */
-
 	private function blader($str,$data = array())
 	{
 		$empty_filesystem_instance = new Filesystem;
@@ -297,10 +310,8 @@ class Datatables
 
 	/**
 	 *	Places item of extra columns into result_array by care of their order
-	 *
 	 *	@return null
 	 */
-
 	private function includeInArray($item,$array)
 	{
 		if($item['order'] === false)
@@ -327,44 +338,40 @@ class Datatables
 	}
 
 	/**
-	 *	Datatable paging
-	 *
+	 *	Datatables paging
 	 *	@return null
 	 */
 	private function paging()
 	{
-		if(!is_null(Input::get('iDisplayStart')) && Input::get('iDisplayLength') != -1)
+		if(!is_null($this->input->get('iDisplayStart')) && $this->input->get('iDisplayLength') != -1)
 		{
-			$this->query->skip(Input::get('iDisplayStart'))->take(Input::get('iDisplayLength',10));
+			$this->query->skip($this->input->get('iDisplayStart'))->take($this->input->get('iDisplayLength',10));
 		}
 	}
 
 	/**
 	 *	Datatable ordering
-	 *
 	 *	@return null
 	 */
 	private function ordering()
 	{
-
-
-		if(!is_null(Input::get('iSortCol_0')))
+		if(!is_null($this->input->get('iSortCol_0')))
 		{
 			$columns = $this->cleanColumns( $this->last_columns );
 
-			for ( $i=0, $c=intval(Input::get('iSortingCols')); $i<$c ; $i++ )
+			for ( $i=0, $c=intval($this->input->get('iSortingCols')); $i<$c ; $i++ )
 			{
-				if ( Input::get('bSortable_'.intval(Input::get('iSortCol_'.$i))) == "true" )
+				if ( $this->input->get('bSortable_'.intval($this->input->get('iSortCol_'.$i))) == "true" )
 				{
-					if(isset($columns[intval(Input::get('iSortCol_'.$i))]))
-					$this->query->orderBy($columns[intval(Input::get('iSortCol_'.$i))],Input::get('sSortDir_'.$i));
+					if(isset($columns[intval($this->input->get('iSortCol_'.$i))]))
+					$this->query->orderBy($columns[intval($this->input->get('iSortCol_'.$i))],$this->input->get('sSortDir_'.$i));
 				}
 			}
-
 		}
 	}
 
 	/**
+	 * clean columns name
 	 * @param array $cols
 	 * @return array
 	 */
@@ -382,55 +389,49 @@ class Datatables
 
 	/**
 	 *	Datatable filtering
-	 *
 	 *	@return null
 	 */
-
 	private function filtering()
 	{
 		$columns = $this->cleanColumns( $this->columns, false );
+		$db_prefix = $this->getDatabasePrefix();
+		$input = $this->input;
+		$connection = $this->connection;
 
-		if (Input::get('sSearch','') != '')
+		if ($this->input->get('sSearch','') != '')
 		{
-			$copy_this = $this;
-			$copy_this->columns = $columns;
+			$this->query->where(function($query) use ($columns, $db_prefix, $input, $connection) {
 
-			$this->query->where(function($query) use ($copy_this) {
-
-				$db_prefix = $copy_this->getDatabasePrefix();
-
-
-
-				for ($i=0,$c=count($copy_this->columns);$i<$c;$i++)
+				for ($i=0,$c=count($columns);$i<$c;$i++)
 				{
-					if (Input::get('bSearchable_'.$i) == "true")
+					if ($input->get('bSearchable_'.$i) == "true")
 					{
-						$column = $copy_this->columns[$i];
+						$column = $columns[$i];
 
 						if (stripos($column, ' AS ') !== false){
 							$column = substr($column, stripos($column, ' AS ')+4);
 						}
 
-						$keyword = '%'.Input::get('sSearch').'%';
+						$keyword = '%'.$input->get('sSearch').'%';
 
 						if(Config::get('datatables.search.use_wildcards', false)) {
-							$keyword = $copy_this->wildcardLikeString(Input::get('sSearch'));
+							$keyword = $copy_this->wildcardLikeString($input->get('sSearch'));
 						}
 
 						// Check if the database driver is PostgreSQL
 						// If it is, cast the current column to TEXT datatype
 						$cast_begin = null;
 						$cast_end = null;
-						if( DB::getDriverName() === 'pgsql') {
+						if( $connection->getDriverName() === 'pgsql') {
 							$cast_begin = "CAST(";
 							$cast_end = " as TEXT)";
 						}
 
 						$column = $db_prefix . $column;
 						if(Config::get('datatables.search.case_insensitive', false)) {
-							$query->orwhere(DB::raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', strtolower($keyword));
+							$query->orwhere($connection->raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', strtolower($keyword));
 						} else {
-							$query->orwhere(DB::raw($cast_begin.$column.$cast_end), 'LIKE', $keyword);
+							$query->orwhere($connection->raw($cast_begin.$column.$cast_end), 'LIKE', $keyword);
 						}
 					}
 				}
@@ -442,32 +443,29 @@ class Datatables
 
 		for ($i=0,$c=count($columns);$i<$c;$i++)
 		{
-			if (Input::get('bSearchable_'.$i) == "true" && Input::get('sSearch_'.$i) != '')
+			if ($this->input->get('bSearchable_'.$i) == "true" && $this->input->get('sSearch_'.$i) != '')
 			{
-				$keyword = '%'.Input::get('sSearch_'.$i).'%';
+				$keyword = '%'.$this->input->get('sSearch_'.$i).'%';
 
 				if(Config::get('datatables.search.use_wildcards', false)) {
-					$keyword = $copy_this->wildcardLikeString(Input::get('sSearch_'.$i));
+					$keyword = $copy_this->wildcardLikeString($this->input->get('sSearch_'.$i));
 				}
 
 				if(Config::get('datatables.search.case_insensitive', false)) {
 					$column = $db_prefix . $columns[$i];
-					$this->query->where(DB::raw('LOWER('.$column.')'),'LIKE', strtolower($keyword));
+					$this->query->where($this->connection->raw('LOWER('.$column.')'),'LIKE', strtolower($keyword));
 				} else {
-					$col = strstr($columns[$i],'(')?DB::raw($columns[$i]):$columns[$i];
+					$col = strstr($columns[$i],'(')?$this->connection->raw($columns[$i]):$columns[$i];
 					$this->query->where($col, 'LIKE', $keyword);
 				}
 			}
 		}
 	}
 
-
 	/**
 	 *  Adds % wildcards to the given string
-	 *
 	 *  @return string
 	 */
-
 	public function wildcardLikeString($str, $lowercase = true) {
 	    $wild = '%';
 	    $length = strlen($str);
@@ -480,57 +478,44 @@ class Datatables
 	    return $wild;
 	}
 
-
 	/**
 	 *  Returns current database prefix
-	 *
 	 *  @return string
 	 */
-
 	public function getDatabasePrefix() {
 	    return Config::get('database.connections.'.Config::get('database.default').'.prefix', '');
 	}
-
 
 	/**
 	 *	Counts current query
 	 *  @param string $count variable to store to 'count_all' for iTotalRecords, 'display_all' for iTotalDisplayRecords
 	 *	@return null
 	 */
-
 	private function count($count  = 'count_all')
 	{
-
-		//Get columns to temp var.
+		// Get columns to temp var.
 		if($this->query_type == 'eloquent') {
 			$query = $this->query->getQuery();
-			$connection = $this->query->getModel()->getConnection()->getName();
 		}
 		else {
 			$query = $this->query;
-			$connection = $query->getConnection()->getName();
 		}
 
         // if its a normal query ( no union ) replace the select with static text to improve performance
 		$myQuery = clone $query;
 		if( !preg_match( '/UNION/i', strtoupper($myQuery->toSql()) ) ){
-			$myQuery->select( DB::Raw("'1' as row_count") );
+			$myQuery->select( $this->connection->Raw("'1' as row_count") );
 		}
 
-
-		$this->$count = DB::connection($connection)
-		->table(DB::raw('('.$myQuery->toSql().') count_row_table'))
-		->setBindings($myQuery->getBindings())->remember(1)->count();
-
+		$this->$count = $this->connection->table($this->connection->raw('('.$myQuery->toSql().') count_row_table'))
+				->setBindings($myQuery->getBindings())->remember(1)->count();
 	}
 
-
 	/**
-	 *	Returns column name from <table>.<column>
-	 *
-	 *	@return null
+	 * get column name from string
+	 * @param  string $str
+	 * @return string
 	 */
-
 	private function getColumnName($str)
 	{
 
@@ -549,19 +534,16 @@ class Datatables
 		return $str;
 	}
 
-
 	/**
-	 *	Prints output
-	 *
-	 *	@return null
+	 * Render json response
+	 * @return JsonReponse
 	 */
-
 	private function output()
 	{
-		$sColumns = array_merge_recursive($this->columns,$this->sColumns);
+		$sColumns = array_merge_recursive($this->columns, $this->sColumns);
 
 		$output = array(
-			"sEcho" => intval(Input::get('sEcho')),
+			"sEcho" => intval($this->input->get('sEcho')),
 			"iTotalRecords" => $this->count_all,
 			"iTotalDisplayRecords" => $this->display_all,
 			"aaData" => $this->result_array_r,
@@ -569,8 +551,9 @@ class Datatables
 		);
 
 		if(Config::get('app.debug', false)) {
-			$output['aQueries'] = DB::getQueryLog();
+			$output['aQueries'] = $this->connection->getQueryLog();
 		}
 		return Response::json($output);
 	}
+
 }

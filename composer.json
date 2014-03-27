@@ -5,7 +5,7 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "yajra - Arjay Angeles",
+            "name": "Arjay Angeles",
             "email": "aqangeles@gmail.com"
         }
     ],
@@ -14,12 +14,13 @@
         "illuminate/support": ">=4.0.0",
         "illuminate/database": ">=4.0.0",
         "illuminate/view": ">=4.0.0",
+        "illuminate/http": ">=4.0.0",
         "illuminate/filesystem": ">=4.0.0"
     },
     "require-dev": {
-        "laravel/laravel": ">=4.0.0",
-        "mockery/mockery": "0.7.2",
-        "phpunit/phpunit": "3.7.*"
+        "illuminate/foundation": ">=4.0.0",
+        "mockery/mockery": "0.9.*",
+        "phpunit/phpunit": "4.0.*"
     },
     "autoload": {
         "classmap": [
