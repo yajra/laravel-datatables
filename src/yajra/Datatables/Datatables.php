@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Request as Input;
+use Closure;
 
 class Datatables
 {
@@ -67,6 +68,10 @@ class Datatables
 			$ins->query = $query;
 		}
 
+		$ins->createLastColumn();
+
+		$ins->getTotalRecords(); //Total records
+
 		return $ins;
 	}
 
@@ -80,8 +85,15 @@ class Datatables
 		// set mData support flag
 		$this->mDataSupport = $mDataSupport;
 
-		$this->createLastColumn();
-		$this->init();
+		// check if auto filtering was overidden
+		if ($this->autoFilter) {
+			$this->doFiltering();
+		}
+
+		$this->getFilteredRecords(); // Filtered records
+		$this->doPaging();
+		$this->doOrdering();
+
 		$this->getResult();
 		$this->initColumns();
 		$this->regulateArray();
@@ -105,19 +117,6 @@ class Datatables
 		{
 			$this->result_array = array_map(function($object) { return (array) $object; }, $this->result_object);
 		}
-	}
-
-	/**
-	 *	Prepares variables according to Datatables parameters
-	 *	@return null
-	 */
-	private function init()
-	{
-		$this->getTotalRecords(); //Total records
-		$this->doFiltering();
-		$this->getFilteredRecords(); // Filtered records
-		$this->doPaging();
-		$this->doOrdering();
 	}
 
 	/**
@@ -403,9 +402,14 @@ class Datatables
 	 * set auto filter off
 	 * @return [type] [description]
 	 */
-	public function noFiltering()
+	public function filter(Closure $callback)
 	{
 		$this->autoFilter = false;
+
+		$query = $this->query;
+		call_user_func($callback, $query);
+
+		return $this;
 	}
 
 	/**
