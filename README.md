@@ -18,7 +18,7 @@ Add the `bllim/datatables` under the `require` key after that run the `composer 
         "require": {
             "laravel/framework": "4.0.*",
             ...
-            "bllim/datatables": "*"
+            "bllim/datatables": "dev-master"
         }
         ...
     }
@@ -40,7 +40,7 @@ Composer will download the package. After package downloaded, open "app/config/a
 Finally you need to publish a configuration file by running the following Artisan command.
 
 ```php
-$ php artisan config:publish bllim/laravel4-datatables-package
+$ php artisan config:publish bllim/datatables
 ```
 
 ### Usage
