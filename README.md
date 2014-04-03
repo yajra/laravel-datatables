@@ -18,7 +18,7 @@ Add the `bllim/datatables` under the `require` key after that run the `composer 
         "require": {
             "laravel/framework": "4.0.*",
             ...
-            "bllim/datatables": "dev-master"
+            "bllim/datatables": "*"
         }
         ...
     }
