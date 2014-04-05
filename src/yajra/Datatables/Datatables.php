@@ -7,7 +7,7 @@
 *
 * @package    Laravel
 * @category   Package
-* @version    2.0
+* @version    2.0.2
 * @author     Arjay Angeles <aqangeles@gmail.com>
 */
 
@@ -108,15 +108,7 @@ class Datatables
 	private function getResult()
 	{
 		$this->result_object = $this->query->get();
-
-		if($this->query_type == 'eloquent')
-		{
-			$this->result_array = $this->result_object->toArray();
-		}
-		else
-		{
-			$this->result_array = array_map(function($object) { return (array) $object; }, $this->result_object);
-		}
+		$this->result_array = array_map(function($object) { return (array) $object; }, $this->result_object);
 	}
 
 	/**
@@ -518,13 +510,7 @@ class Datatables
 	 */
 	private function count()
 	{
-		// Get columns to temp var.
-		if($this->query_type == 'eloquent') {
-			$query = $this->query->getQuery();
-		}
-		else {
-			$query = $this->query;
-		}
+		$query = $this->query;
 
         // if its a normal query ( no union ) replace the select with static text to improve performance
 		$myQuery = clone $query;
