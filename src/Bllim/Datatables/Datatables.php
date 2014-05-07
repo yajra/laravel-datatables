@@ -40,6 +40,8 @@ class Datatables
 
     protected $mDataSupport;
 
+	protected $index_column;
+
 
     /**
      * Gets query and returns instance of class
@@ -142,6 +144,17 @@ class Datatables
         return $this;
     }
 
+	/**
+	 * Sets the DataTables index column (as used to set, e.g., id of the <tr> tags) to the named column
+	 *
+	 * @param $name
+	 * @return $this
+	 */
+	public function set_index_column($name) {
+		$this->index_column = $name;
+		return $this;
+	}
+
     /**
      * Saves given query and determines its type
      *
@@ -203,7 +216,14 @@ class Datatables
                     unset($value[$evalue]);
                 }
 
-                $this->result_array_r[] = array_values($value);
+	            $row = array_values($value);
+	            if ($this->index_column) {
+		            if (!array_key_exists($this->index_column, $value)) {
+			            throw new \Exception('Index column set to non-existent column "' . $this->index_column . '"');
+		            }
+		            $row['DT_RowId'] = $value[$this->index_column];
+	            }
+                $this->result_array_r[] = $row;
             }
         }
     }
