@@ -77,7 +77,7 @@ class Datatables
      *
      * @return null
      */
-    private function get_result()
+    protected function get_result()
     {
         if($this->query_type == 'eloquent')
         {
@@ -98,7 +98,7 @@ class Datatables
      *
      * @return null
      */
-    private function init()
+    protected function init()
     {
         $this->count('count_all'); //Total records
         $this->filtering();
@@ -160,7 +160,7 @@ class Datatables
      *
      * @return null
      */
-    private function save_query($query)
+    protected function save_query($query)
     {
         $this->query = $query;
         $this->query_type = $query instanceof \Illuminate\Database\Query\Builder ? 'fluent' : 'eloquent';
@@ -172,7 +172,7 @@ class Datatables
      *
      * @return null
      */
-    private function init_columns()
+    protected function init_columns()
     {
         foreach ($this->result_array as $rkey => &$rvalue) {
 
@@ -206,7 +206,7 @@ class Datatables
      *
      * @return null
      */
-    private function regulate_array()
+    protected function regulate_array()
     {
         if($this->mDataSupport){
             $this->result_array_r = $this->result_array;
@@ -233,7 +233,7 @@ class Datatables
      *
      * @return null
      */
-    private function create_last_columns()
+    protected function create_last_columns()
     {
         $extra_columns_indexes = array();
         $last_columns = array();
@@ -270,7 +270,7 @@ class Datatables
      *
      * @return string
      */
-    private function blader($str,$data = array())
+    protected function blader($str,$data = array())
     {
         $empty_filesystem_instance = new Filesystem;
         $blade = new BladeCompiler($empty_filesystem_instance,'datatables');
@@ -299,7 +299,7 @@ class Datatables
      *
      * @return null
      */
-    private function include_in_array($item,$array)
+    protected function include_in_array($item,$array)
     {
         if($item['order'] === false)
         {
@@ -329,7 +329,7 @@ class Datatables
      *
      * @return null
      */
-    private function paging()
+    protected function paging()
     {
         if(!is_null(Input::get('iDisplayStart')) && Input::get('iDisplayLength') != -1)
         {
@@ -342,7 +342,7 @@ class Datatables
      *
      * @return null
      */
-    private function ordering()
+    protected function ordering()
     {
 
 
@@ -367,7 +367,7 @@ class Datatables
      * @param bool $use_alias weather to get the column/function or the alias
      * @return array
      */
-    private function clean_columns( $cols, $use_alias = true)
+    protected function clean_columns( $cols, $use_alias = true)
     {
         $return = array();
         foreach ( $cols as $i=> $col )
@@ -384,7 +384,7 @@ class Datatables
      *
      * @return null
      */
-    private function filtering()
+    protected function filtering()
     {
         $columns = $this->clean_columns( $this->columns, false );
 
@@ -491,7 +491,7 @@ class Datatables
      * @param string $count variable to store to 'count_all' for iTotalRecords, 'display_all' for iTotalDisplayRecords
      * @return null
      */
-     private function count($count  = 'count_all')
+     protected function count($count  = 'count_all')
      {   
 
 		//Get columns to temp var.
@@ -522,7 +522,7 @@ class Datatables
      *
      * @return null
      */
-    private function getColumnName($str)
+    protected function getColumnName($str)
     {
 
         preg_match('#^(\S*?)\s+as\s+(\S*?)$#si',$str,$matches);
@@ -545,7 +545,7 @@ class Datatables
      *
      * @return null
      */
-    private function output($raw=false)
+    protected function output($raw=false)
     {
         $sColumns = array_merge_recursive($this->columns,$this->sColumns);
 
