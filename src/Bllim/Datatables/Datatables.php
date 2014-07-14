@@ -393,6 +393,16 @@ class Datatables
             $copy_this = $this;
             $copy_this->columns = $columns;
 
+            for ($i=0,$c=count($copy_this->columns);$i<$c;$i++)
+            {
+                if(in_array($this->getColumnName($copy_this->columns[$i]), $this->excess_columns))
+                {
+                    unset($copy_this->columns[$i]);
+                }
+            }
+
+            $copy_this->columns = array_values($copy_this->columns);
+
             $this->query->where(function($query) use ($copy_this) {
 
                 $db_prefix = $copy_this->database_prefix();
