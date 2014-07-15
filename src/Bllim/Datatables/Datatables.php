@@ -454,6 +454,7 @@ class Datatables
                         if (stripos($column, ' AS ') !== false){
                             $column = substr($column, stripos($column, ' AS ')+4);
                         }
+                        $column = $this->getColumnName($column);
 
                         if (isset($this->filter_columns[$column]))
                         {
@@ -508,6 +509,7 @@ class Datatables
                 if (stripos($column, ' AS ') !== false){
                     $column = substr($column, stripos($column, ' AS ')+4);
                 }
+                $column = $this->getColumnName($column);
                 
                 if (isset($this->filter_columns[$column]))
                 {
