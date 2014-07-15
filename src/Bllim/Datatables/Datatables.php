@@ -26,6 +26,7 @@ class Datatables
     protected $extra_columns = array();
     protected $excess_columns = array();
     protected $edit_columns = array();
+    protected $filter_columns = array();
     protected $sColumns = array();
 
     public $columns = array();
@@ -144,6 +145,19 @@ class Datatables
         return $this;
     }
 
+    /**
+    * Adds column filter to filter_columns
+    *
+    * @return $this
+    */
+	public function filter_column($column,$method)
+	{
+		$params = func_get_args();
+		$this->filter_columns[$column] = array('method' => $method, 'parameters' => array_splice($params,2) );
+		return $this;
+	}
+
+
 	/**
 	 * Sets the DataTables index column (as used to set, e.g., id of the <tr> tags) to the named column
 	 *
@@ -227,6 +241,38 @@ class Datatables
             }
         }
     }
+
+	/**
+	 * 
+	 * Inject searched string into $1 in filter_column parameters
+	 * 
+	 * @param array $params
+	 * @return array
+	 */
+	private function inject_variable($params,$value)
+	{
+		if (is_array($params))
+		{
+			foreach($params as $key => $param)
+			{
+				$params[$key] = $this->inject_variable($param, $value);
+			}
+			
+		} elseif ($params instanceof \Illuminate\Database\Query\Expression)
+		{
+			$params = DB::raw(str_replace('$1',$value,$params));
+			
+		} elseif (is_callable($params))
+		{
+			$params = $params($value);
+			
+		} elseif (is_string($params))
+		{
+			$params = str_replace('$1',$value,$params);
+		}
+		
+		return $params;
+	}
 
     /**
      * Creates an array which contains published last columns in sql with their index
@@ -409,27 +455,44 @@ class Datatables
                             $column = substr($column, stripos($column, ' AS ')+4);
                         }
 
-                        $keyword = '%'.Input::get('sSearch').'%';
+						if (isset($this->filter_columns[$column]))
+						{
+							call_user_func_array(
+								array(
+									$query,
+									$this->filter_columns[$column]['method']
+								),
+								$this->inject_variable(
+									$this->filter_columns[$column]['parameters'],
+									Input::get('sSearch')
+								)
+							);
+							
+						} else
+						{
 
-                        if(Config::get('datatables.search.use_wildcards', false)) {
-                            $keyword = $copy_this->wildcard_like_string(Input::get('sSearch'));
-                        }
-
-                        // Check if the database driver is PostgreSQL
-                        // If it is, cast the current column to TEXT datatype
-                        $cast_begin = null;
-                        $cast_end = null;
-                        if( DB::getDriverName() === 'pgsql') {
-                            $cast_begin = "CAST(";
-                            $cast_end = " as TEXT)";
-                        }
-
-                        $column = $db_prefix . $column;
-                        if(Config::get('datatables.search.case_insensitive', false)) {
-                            $query->orwhere(DB::raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', strtolower($keyword));
-                        } else {
-                            $query->orwhere(DB::raw($cast_begin.$column.$cast_end), 'LIKE', $keyword);
-                        }
+	                        $keyword = '%'.Input::get('sSearch').'%';
+	
+	                        if(Config::get('datatables.search.use_wildcards', false)) {
+	                            $keyword = $copy_this->wildcard_like_string(Input::get('sSearch'));
+	                        }
+	
+	                        // Check if the database driver is PostgreSQL
+	                        // If it is, cast the current column to TEXT datatype
+	                        $cast_begin = null;
+	                        $cast_end = null;
+	                        if( DB::getDriverName() === 'pgsql') {
+	                            $cast_begin = "CAST(";
+	                            $cast_end = " as TEXT)";
+	                        }
+	
+	                        $column = $db_prefix . $column;
+	                        if(Config::get('datatables.search.case_insensitive', false)) {
+	                            $query->orwhere(DB::raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', strtolower($keyword));
+	                        } else {
+	                            $query->orwhere(DB::raw($cast_begin.$column.$cast_end), 'LIKE', $keyword);
+	                        }
+						}
                     }
                 }
             });
@@ -442,19 +505,40 @@ class Datatables
         {
             if (Input::get('bSearchable_'.$i) == "true" && Input::get('sSearch_'.$i) != '')
             {
-                $keyword = '%'.Input::get('sSearch_'.$i).'%';
+				$column = $this->columns[$i];
+				if (stripos($column, ' AS ') !== false){
+					$column = substr($column, stripos($column, ' AS ')+4);
+				}
 
-                if(Config::get('datatables.search.use_wildcards', false)) {
-                    $keyword = $copy_this->wildcard_like_string(Input::get('sSearch_'.$i));
-                }
+				if (isset($this->filter_columns[$column]))
+				{
+					call_user_func_array(
+						array(
+							$this->query,
+							$this->filter_columns[$column]['method']
+						),
+						$this->inject_variable(
+							$this->filter_columns[$column]['parameters'],
+							Input::get('sSearch_'.$i)
+						)
+					);
 
-                if(Config::get('datatables.search.case_insensitive', false)) {
-                    $column = $db_prefix . $columns[$i];
-                    $this->query->where(DB::raw('LOWER('.$column.')'),'LIKE', strtolower($keyword));
-                } else {
-                    $col = strstr($columns[$i],'(')?DB::raw($columns[$i]):$columns[$i];
-                    $this->query->where($col, 'LIKE', $keyword);
-                }
+				} else
+				{		            	
+	                $keyword = '%'.Input::get('sSearch_'.$i).'%';
+	
+	                if(Config::get('datatables.search.use_wildcards', false)) {
+	                    $keyword = $copy_this->wildcard_like_string(Input::get('sSearch_'.$i));
+	                }
+	
+	                if(Config::get('datatables.search.case_insensitive', false)) {
+	                    $column = $db_prefix . $columns[$i];
+	                    $this->query->where(DB::raw('LOWER('.$column.')'),'LIKE', strtolower($keyword));
+	                } else {
+	                    $col = strstr($columns[$i],'(')?DB::raw($columns[$i]):$columns[$i];
+	                    $this->query->where($col, 'LIKE', $keyword);
+	                }
+				}
             }
         }
     }
