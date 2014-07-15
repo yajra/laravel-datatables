@@ -454,20 +454,22 @@ class Datatables
                         if (stripos($column, ' AS ') !== false){
                             $column = substr($column, stripos($column, ' AS ')+4);
                         }
-                        $column = $this->getColumnName($column);
 
                         if (isset($this->filter_columns[$column]))
                         {
-                            call_user_func_array(
-                                array(
-                                    $query,
-                                    $this->filter_columns[$column]['method']
-                                ),
-                                $this->inject_variable(
-                                    $this->filter_columns[$column]['parameters'],
-                                    Input::get('sSearch')
-                                )
-                            );
+                            $method_name = 'or' . ucfirst($this->filter_columns[$column]['method']);
+							              if (method_exists($query, $method_name)) {
+                                call_user_func_array(
+                                    array(
+                                        $query,
+                                        $method_name
+                                    ),
+                                    $this->inject_variable(
+                                        $this->filter_columns[$column]['parameters'],
+                                        Input::get('sSearch')
+                                    )
+                                );
+							              }
                         } else
                         {
                         
@@ -505,11 +507,10 @@ class Datatables
         {
             if (Input::get('bSearchable_'.$i) == "true" && Input::get('sSearch_'.$i) != '')
             {
-                $column = $this->columns[$i];
+                $column = $columns[$i];
                 if (stripos($column, ' AS ') !== false){
                     $column = substr($column, stripos($column, ' AS ')+4);
                 }
-                $column = $this->getColumnName($column);
                 
                 if (isset($this->filter_columns[$column]))
                 {
