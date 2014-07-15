@@ -41,7 +41,7 @@ class Datatables
 
     protected $mDataSupport;
 
-    protected $index_column;
+	protected $index_column;
 
 
     /**
