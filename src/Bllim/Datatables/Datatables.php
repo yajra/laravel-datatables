@@ -41,7 +41,7 @@ class Datatables
 
     protected $mDataSupport;
 
-	protected $index_column;
+    protected $index_column;
 
 
     /**
@@ -150,12 +150,12 @@ class Datatables
     *
     * @return $this
     */
-	public function filter_column($column,$method)
-	{
-		$params = func_get_args();
-		$this->filter_columns[$column] = array('method' => $method, 'parameters' => array_splice($params,2) );
-		return $this;
-	}
+    public function filter_column($column,$method)
+    {
+        $params = func_get_args();
+        $this->filter_columns[$column] = array('method' => $method, 'parameters' => array_splice($params,2) );
+        return $this;
+    }
 
 
 	/**
@@ -455,44 +455,43 @@ class Datatables
                             $column = substr($column, stripos($column, ' AS ')+4);
                         }
 
-						if (isset($this->filter_columns[$column]))
-						{
-							call_user_func_array(
-								array(
-									$query,
-									$this->filter_columns[$column]['method']
-								),
-								$this->inject_variable(
-									$this->filter_columns[$column]['parameters'],
-									Input::get('sSearch')
-								)
-							);
-							
-						} else
-						{
-
-	                        $keyword = '%'.Input::get('sSearch').'%';
-	
-	                        if(Config::get('datatables.search.use_wildcards', false)) {
-	                            $keyword = $copy_this->wildcard_like_string(Input::get('sSearch'));
-	                        }
-	
-	                        // Check if the database driver is PostgreSQL
-	                        // If it is, cast the current column to TEXT datatype
-	                        $cast_begin = null;
-	                        $cast_end = null;
-	                        if( DB::getDriverName() === 'pgsql') {
-	                            $cast_begin = "CAST(";
-	                            $cast_end = " as TEXT)";
-	                        }
-	
-	                        $column = $db_prefix . $column;
-	                        if(Config::get('datatables.search.case_insensitive', false)) {
-	                            $query->orwhere(DB::raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', strtolower($keyword));
-	                        } else {
-	                            $query->orwhere(DB::raw($cast_begin.$column.$cast_end), 'LIKE', $keyword);
-	                        }
-						}
+                        if (isset($this->filter_columns[$column]))
+                        {
+                            call_user_func_array(
+                                array(
+                                    $query,
+                                    $this->filter_columns[$column]['method']
+                                ),
+                                $this->inject_variable(
+                                    $this->filter_columns[$column]['parameters'],
+                                    Input::get('sSearch')
+                                )
+                            );
+                        } else
+                        {
+                        
+                            $keyword = '%'.Input::get('sSearch').'%';
+                        
+                            if(Config::get('datatables.search.use_wildcards', false)) {
+                                $keyword = $copy_this->wildcard_like_string(Input::get('sSearch'));
+                            }
+                        
+                            // Check if the database driver is PostgreSQL
+                            // If it is, cast the current column to TEXT datatype
+                            $cast_begin = null;
+                            $cast_end = null;
+                            if( DB::getDriverName() === 'pgsql') {
+                                $cast_begin = "CAST(";
+                                $cast_end = " as TEXT)";
+                            }
+                        
+                            $column = $db_prefix . $column;
+                            if(Config::get('datatables.search.case_insensitive', false)) {
+                                $query->orwhere(DB::raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', strtolower($keyword));
+                            } else {
+                                $query->orwhere(DB::raw($cast_begin.$column.$cast_end), 'LIKE', $keyword);
+                            }
+                        }
                     }
                 }
             });
@@ -505,40 +504,40 @@ class Datatables
         {
             if (Input::get('bSearchable_'.$i) == "true" && Input::get('sSearch_'.$i) != '')
             {
-				$column = $this->columns[$i];
-				if (stripos($column, ' AS ') !== false){
-					$column = substr($column, stripos($column, ' AS ')+4);
-				}
-
-				if (isset($this->filter_columns[$column]))
-				{
-					call_user_func_array(
-						array(
-							$this->query,
-							$this->filter_columns[$column]['method']
-						),
-						$this->inject_variable(
-							$this->filter_columns[$column]['parameters'],
-							Input::get('sSearch_'.$i)
-						)
-					);
-
-				} else
-				{		            	
-	                $keyword = '%'.Input::get('sSearch_'.$i).'%';
-	
-	                if(Config::get('datatables.search.use_wildcards', false)) {
-	                    $keyword = $copy_this->wildcard_like_string(Input::get('sSearch_'.$i));
-	                }
-	
-	                if(Config::get('datatables.search.case_insensitive', false)) {
-	                    $column = $db_prefix . $columns[$i];
-	                    $this->query->where(DB::raw('LOWER('.$column.')'),'LIKE', strtolower($keyword));
-	                } else {
-	                    $col = strstr($columns[$i],'(')?DB::raw($columns[$i]):$columns[$i];
-	                    $this->query->where($col, 'LIKE', $keyword);
-	                }
-				}
+                $column = $this->columns[$i];
+                if (stripos($column, ' AS ') !== false){
+                    $column = substr($column, stripos($column, ' AS ')+4);
+                }
+                
+                if (isset($this->filter_columns[$column]))
+                {
+                    call_user_func_array(
+                        array(
+                            $this->query,
+                            $this->filter_columns[$column]['method']
+                        ),
+                            $this->inject_variable(
+                            $this->filter_columns[$column]['parameters'],
+                            Input::get('sSearch_'.$i)
+                        )
+                    );
+                    
+                } else
+                {		            	
+                    $keyword = '%'.Input::get('sSearch_'.$i).'%';
+                    
+                    if(Config::get('datatables.search.use_wildcards', false)) {
+                        $keyword = $copy_this->wildcard_like_string(Input::get('sSearch_'.$i));
+                    }
+                    
+                    if(Config::get('datatables.search.case_insensitive', false)) {
+                        $column = $db_prefix . $columns[$i];
+                        $this->query->where(DB::raw('LOWER('.$column.')'),'LIKE', strtolower($keyword));
+                    } else {
+                        $col = strstr($columns[$i],'(')?DB::raw($columns[$i]):$columns[$i];
+                        $this->query->where($col, 'LIKE', $keyword);
+                    }
+                }
             }
         }
     }
