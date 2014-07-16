@@ -437,28 +437,32 @@ class Datatables
         if (Input::get('sSearch','') != '')
         {
             $copy_this = $this;
-            $copy_this->columns = $columns;
 
-            $this->query->where(function($query) use ($copy_this) {
-
+            $this->query->where(function($query) use ($copy_this, $columns) {
+				
                 $db_prefix = $copy_this->database_prefix();
-
-
 
                 for ($i=0,$c=count($copy_this->columns);$i<$c;$i++)
                 {
                     if (Input::get('bSearchable_'.$i) == "true")
                     {
                         $column = $copy_this->columns[$i];
-
-                        if (stripos($column, ' AS ') !== false){
+						if (stripos($column, ' AS ') !== false){
                             $column = substr($column, stripos($column, ' AS ')+4);
                         }
+						$column = $this->getColumnName($column);
 
+						// if filter column exists for this columns then use user defined method
                         if (isset($this->filter_columns[$column]))
                         {
-                            $method_name = 'or' . ucfirst($this->filter_columns[$column]['method']);
-							              if (method_exists($query, $method_name)) {
+							// check if "or" equivalent exists for given function
+							// and if the number of parameters given is not excess 
+							// than call the "or" equivalent
+							
+							$method_name = 'or' . ucfirst($this->filter_columns[$column]['method']);
+							
+							if ( method_exists($query->getQuery(), $method_name) && count($this->filter_columns[$column]['parameters']) <= with(new \ReflectionMethod($query->getQuery(),$method_name))->getNumberOfParameters() )
+							{
                                 call_user_func_array(
                                     array(
                                         $query,
@@ -469,8 +473,9 @@ class Datatables
                                         Input::get('sSearch')
                                     )
                                 );
-							              }
+							}
                         } else
+						// otherwise do simple LIKE search					
                         {
                         
                             $keyword = '%'.Input::get('sSearch').'%';
@@ -488,7 +493,7 @@ class Datatables
                                 $cast_end = " as TEXT)";
                             }
                         
-                            $column = $db_prefix . $column;
+                            $column = $db_prefix . $columns[$i];
                             if(Config::get('datatables.search.case_insensitive', false)) {
                                 $query->orwhere(DB::raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', strtolower($keyword));
                             } else {
@@ -507,11 +512,13 @@ class Datatables
         {
             if (Input::get('bSearchable_'.$i) == "true" && Input::get('sSearch_'.$i) != '')
             {
-                $column = $columns[$i];
+                $column = $this->columns[$i];
                 if (stripos($column, ' AS ') !== false){
                     $column = substr($column, stripos($column, ' AS ')+4);
                 }
-                
+				$column = $this->getColumnName($column);
+
+				// if filter column exists for this columns then use user defined method
                 if (isset($this->filter_columns[$column]))
                 {
                     call_user_func_array(
@@ -526,6 +533,7 @@ class Datatables
                     );
                     
                 } else
+				// otherwise do simple LIKE search
                 {		            	
                     $keyword = '%'.Input::get('sSearch_'.$i).'%';
                     
