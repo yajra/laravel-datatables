@@ -432,25 +432,39 @@ class Datatables
      */
     protected function filtering()
     {
-        $columns = $this->clean_columns( $this->columns, false );
+		
+		// copy of $this->columns without columns removed by remove_column
+		$columns_copy = $this->columns;
+		for ($i=0,$c=count($columns_copy);$i<$c;$i++)
+		{
+			if(in_array($this->getColumnName($columns_copy[$i]), $this->excess_columns))
+			{
+				unset($columns_copy[$i]);
+			}
+		}
+		$columns_copy = array_values($columns_copy);
 
+		// copy of $this->columns cleaned for database queries
+        $columns_clean = $this->clean_columns( $columns_copy, false );
+
+		// global search
         if (Input::get('sSearch','') != '')
         {
             $copy_this = $this;
 
-            $this->query->where(function($query) use ($copy_this, $columns) {
+            $this->query->where(function($query) use ($copy_this, $columns_copy, $columns_clean) {
 				
                 $db_prefix = $copy_this->database_prefix();
 
-                for ($i=0,$c=count($copy_this->columns);$i<$c;$i++)
+                for ($i=0,$c=count($columns_copy);$i<$c;$i++)
                 {
                     if (Input::get('bSearchable_'.$i) == "true")
                     {
-                        $column = $copy_this->columns[$i];
+                        $column = $columns_copy[$i];
 						if (stripos($column, ' AS ') !== false){
                             $column = substr($column, stripos($column, ' AS ')+4);
                         }
-						$column = $this->getColumnName($column);
+						$column = $copy_this->getColumnName($column);
 
 						// if filter column exists for this columns then use user defined method
                         if (isset($this->filter_columns[$column]))
@@ -493,7 +507,7 @@ class Datatables
                                 $cast_end = " as TEXT)";
                             }
                         
-                            $column = $db_prefix . $columns[$i];
+                            $column = $db_prefix . $columns_clean[$i];
                             if(Config::get('datatables.search.case_insensitive', false)) {
                                 $query->orwhere(DB::raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', strtolower($keyword));
                             } else {
@@ -507,12 +521,13 @@ class Datatables
         }
 
         $db_prefix = $this->database_prefix();
-
-        for ($i=0,$c=count($columns);$i<$c;$i++)
+		
+		// column search
+        for ($i=0,$c=count($columns_clean);$i<$c;$i++)
         {
             if (Input::get('bSearchable_'.$i) == "true" && Input::get('sSearch_'.$i) != '')
             {
-                $column = $this->columns[$i];
+                $column = $columns_copy[$i];
                 if (stripos($column, ' AS ') !== false){
                     $column = substr($column, stripos($column, ' AS ')+4);
                 }
@@ -542,10 +557,10 @@ class Datatables
                     }
                     
                     if(Config::get('datatables.search.case_insensitive', false)) {
-                        $column = $db_prefix . $columns[$i];
+                        $column = $db_prefix . $columns_clean[$i];
                         $this->query->where(DB::raw('LOWER('.$column.')'),'LIKE', strtolower($keyword));
                     } else {
-                        $col = strstr($columns[$i],'(')?DB::raw($columns[$i]):$columns[$i];
+                        $col = strstr($columns_clean[$i],'(')?DB::raw($columns_clean[$i]):$columns_clean[$i];
                         $this->query->where($col, 'LIKE', $keyword);
                     }
                 }
