@@ -616,15 +616,29 @@ class Datatables
         // if its a normal query ( no union ) replace the slect with static text to improve performance
         $myQuery = clone $query;
         if( !preg_match( '/UNION/i', $myQuery->toSql() ) ){
-        	$myQuery->select( DB::Raw("'1' as row") );	        	
+        	$myQuery->select( DB::raw("'1' as row") );	 
+			
+			// if query has "having" clause add select columns
+			if ($myQuery->havings) {
+				foreach($myQuery->havings as $having) {
+					if (isset($having['column'])) {
+						$myQuery->addSelect($having['column']);
+					} else {
+						// a little nasty solution for raw queries
+						// the column name is considered to be everything before first space char
+						if (preg_match('/(.*?) /', $having['sql'], $matches)) {
+							$myQuery->addSelect(trim($matches[0]));
+						}
+					}
+				}
+			}
         }
-
 
         $this->$count = DB::connection($connection)
         ->table(DB::raw('('.$myQuery->toSql().') AS count_row_table'))
         ->setBindings($myQuery->getBindings())->remember(1)->count();
 
-     }
+	}
 
     /**
      * Returns column name from <table>.<column>
