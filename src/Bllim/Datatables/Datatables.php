@@ -39,11 +39,60 @@ class Datatables
     protected $result_array = array();
     protected $result_array_r = array();
 
+    protected $input = array();
     protected $mDataSupport;
 
     protected $index_column;
 
 
+    /**
+     * Read Input into $this->input according to jquery.dataTables.js version
+     */
+    public function __construct() {
+        
+        if (Input::has('draw')) {
+            
+            // version 1.10+
+            $this->input = Input::get();
+            
+        } else {
+            
+            // version < 1.10
+            
+            $this->input['draw'] = Input::get('sEcho','');
+            $this->input['start'] = Input::get('iDisplayStart','');
+            $this->input['length'] = Input::get('iDisplayLength','');
+            $this->input['search'] = array(
+                'value' => Input::get('sSearch',''),
+                'regex' => Input::get('bRegex',''),
+            );
+            $this->input['_'] = Input::get('_','');
+
+            $columns = explode(',',Input::get('sColumns',''));
+            $this->input['columns'] = array();
+            for($i=0;$i<Input::get('iColumns',0);$i++) {
+                $arr = array();
+                $arr['name'] = $columns[$i];
+                $arr['searchable'] = Input::get('bSearchable_'.$i,'');
+                $arr['search'] = array();
+                $arr['search']['value'] = Input::get('sSearch_'.$i,'');
+                $arr['search']['regex'] = Input::get('bRegex_'.$i,'');
+                $arr['orderable'] = Input::get('bSortable_'.$i,'');
+                $this->input['columns'][] = $arr;
+            }
+            
+            $this->input['order'] = array();
+            for($i=0;$i<Input::get('iSortingCols',0);$i++) {
+                $arr = array();
+                $arr['column'] = Input::get('iSortCol_'.$i,'');
+                $arr['dir'] = Input::get('sSortDir_'.$i,'');
+                $this->input['order'][] = $arr;
+            }
+        }
+
+        return $this;
+    }
+    
     /**
      * Gets query and returns instance of class
      *
@@ -377,9 +426,9 @@ class Datatables
      */
     protected function paging()
     {
-        if(!is_null(Input::get('iDisplayStart')) && Input::get('iDisplayLength') != -1)
+        if(!is_null($this->input['start']) && $this->input['start'] != -1)
         {
-            $this->query->skip(Input::get('iDisplayStart'))->take(Input::get('iDisplayLength',10));
+            $this->query->skip($this->input['start'])->take((int)$this->input['length']>0?$this->input['length']:10);
         }
     }
 
@@ -390,18 +439,18 @@ class Datatables
      */
     protected function ordering()
     {
-
-
-        if(!is_null(Input::get('iSortCol_0')))
+        if(count($this->input['order'])>0)
         {
             $columns = $this->clean_columns( $this->last_columns );
 
-            for ( $i=0, $c=intval(Input::get('iSortingCols')); $i<$c ; $i++ )
+            for ( $i=0, $c=count($this->input['order']); $i<$c ; $i++ )
             {
-                if ( Input::get('bSortable_'.intval(Input::get('iSortCol_'.$i))) == "true" )
-                {
-                    if(isset($columns[intval(Input::get('iSortCol_'.$i))]))
-                        $this->query->orderBy($columns[intval(Input::get('iSortCol_'.$i))],Input::get('sSortDir_'.$i));
+                $order_col = (int)$this->input['order'][$i]['column'];
+                if (isset($columns[$order_col])) {
+                    if ( $this->input['columns'][$order_col]['orderable'] == "true" )
+                    {
+                        $this->query->orderBy($columns[$order_col],$this->input['order'][$i]['dir']);
+                    }
                 }
             }
 
@@ -419,7 +468,7 @@ class Datatables
         foreach ( $cols as $i=> $col )
         {
             preg_match('#^(.*?)\s+as\s+(\S*?)$#si',$col,$matches);
-            $return[$i] = empty($matches) ? $col : $matches[$use_alias?2:1];
+            $return[$i] = empty($matches) ? ($use_alias?$this->getColumnName($col):$col) : $matches[$use_alias?2:1];
         }
 
         return $return;
@@ -442,40 +491,34 @@ class Datatables
                 unset($columns_copy[$i]);
             }
         }
-        $columns_copy = array_values($columns_copy);
 
         // copy of $this->columns cleaned for database queries
         $columns_clean = $this->clean_columns( $columns_copy, false );
+        $columns_copy = $this->clean_columns( $columns_copy, true );
 
         // global search
-        if (Input::get('sSearch','') != '')
+        if ($this->input['search']['value'] != '')
         {
             $copy_this = $this;
 
             $this->query->where(function($query) use ($copy_this, $columns_copy, $columns_clean) {
                 
                 $db_prefix = $copy_this->database_prefix();
-
-                for ($i=0,$c=count($columns_copy);$i<$c;$i++)
+ 
+               for ($i=0,$c=count($columns_copy);$i<$c;$i++)
                 {
-                    if (Input::get('bSearchable_'.$i) == "true")
+                    if ($this->input['columns'][$i]['orderable'] == "true")
                     {
-                        $column = $columns_copy[$i];
-                        if (stripos($column, ' AS ') !== false){
-                            $column = substr($column, stripos($column, ' AS ')+4);
-                        }
-                        $column = $copy_this->getColumnName($column);
-
                         // if filter column exists for this columns then use user defined method
-                        if (isset($this->filter_columns[$column]))
+                        if (isset($this->filter_columns[$columns_copy[$i]]))
                         {
                             // check if "or" equivalent exists for given function
                             // and if the number of parameters given is not excess 
                             // than call the "or" equivalent
                             
-                            $method_name = 'or' . ucfirst($this->filter_columns[$column]['method']);
+                            $method_name = 'or' . ucfirst($this->filter_columns[$columns_copy[$i]]['method']);
                             
-                            if ( method_exists($query->getQuery(), $method_name) && count($this->filter_columns[$column]['parameters']) <= with(new \ReflectionMethod($query->getQuery(),$method_name))->getNumberOfParameters() )
+                            if ( method_exists($query->getQuery(), $method_name) && count($this->filter_columns[$columns_copy[$i]]['parameters']) <= with(new \ReflectionMethod($query->getQuery(),$method_name))->getNumberOfParameters() )
                             {
                                 call_user_func_array(
                                     array(
@@ -483,8 +526,8 @@ class Datatables
                                         $method_name
                                     ),
                                     $this->inject_variable(
-                                        $this->filter_columns[$column]['parameters'],
-                                        Input::get('sSearch')
+                                        $this->filter_columns[$columns_copy[$i]]['parameters'],
+                                        $this->input['search']['value']
                                     )
                                 );
                             }
@@ -492,10 +535,10 @@ class Datatables
                         // otherwise do simple LIKE search                    
                         {
                         
-                            $keyword = '%'.Input::get('sSearch').'%';
+                            $keyword = '%'.$this->input['search']['value'].'%';
                         
                             if(Config::get('datatables.search.use_wildcards', false)) {
-                                $keyword = $copy_this->wildcard_like_string(Input::get('sSearch'));
+                                $keyword = $copy_this->wildcard_like_string($this->input['search']['value']);
                             }
                         
                             // Check if the database driver is PostgreSQL
@@ -508,6 +551,7 @@ class Datatables
                             }
                         
                             $column = $db_prefix . $columns_clean[$i];
+                            
                             if(Config::get('datatables.search.case_insensitive', false)) {
                                 $query->orwhere(DB::raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', strtolower($keyword));
                             } else {
@@ -525,35 +569,29 @@ class Datatables
         // column search
         for ($i=0,$c=count($columns_clean);$i<$c;$i++)
         {
-            if (Input::get('bSearchable_'.$i) == "true" && Input::get('sSearch_'.$i) != '')
+            if ($this->input['columns'][$i]['orderable'] == "true" && $this->input['columns'][$i]['search']['value'] != '')
             {
-                $column = $columns_copy[$i];
-                if (stripos($column, ' AS ') !== false){
-                    $column = substr($column, stripos($column, ' AS ')+4);
-                }
-                $column = $this->getColumnName($column);
-
                 // if filter column exists for this columns then use user defined method
-                if (isset($this->filter_columns[$column]))
+                if (isset($this->filter_columns[$columns_copy[$i]]))
                 {
                     call_user_func_array(
                         array(
                             $this->query,
-                            $this->filter_columns[$column]['method']
+                            $this->filter_columns[$columns_copy[$i]]['method']
                         ),
                             $this->inject_variable(
-                            $this->filter_columns[$column]['parameters'],
-                            Input::get('sSearch_'.$i)
+                            $this->filter_columns[$columns_copy[$i]]['parameters'],
+                            $this->input['columns'][$i]['search']['value']
                         )
                     );
                     
                 } else
                 // otherwise do simple LIKE search
                 {                        
-                    $keyword = '%'.Input::get('sSearch_'.$i).'%';
+                    $keyword = '%'.$this->input['columns'][$i]['search']['value'].'%';
                     
                     if(Config::get('datatables.search.use_wildcards', false)) {
-                        $keyword = $copy_this->wildcard_like_string(Input::get('sSearch_'.$i));
+                        $keyword = $copy_this->wildcard_like_string($this->input['columns'][$i]['search']['value']);
                     }
                     
                     if(Config::get('datatables.search.case_insensitive', false)) {
@@ -686,16 +724,28 @@ class Datatables
      */
     protected function output($raw=false)
     {
-        $sColumns = array_merge_recursive($this->columns,$this->sColumns);
+        if (Input::has('draw')) {
+            
+            $output = array(
+                    "draw" => intval($this->input['draw']),
+                    "recordsTotal" => $this->count_all,
+                    "recordsFiltered" => $this->display_all,
+                    "data" => $this->result_array_r,
+            );
+            
+        } else {
+            
+            $sColumns = array_merge_recursive($this->columns,$this->sColumns);
 
-        $output = array(
-                "sEcho" => intval(Input::get('sEcho')),
-                "iTotalRecords" => $this->count_all,
-                "iTotalDisplayRecords" => $this->display_all,
-                "aaData" => $this->result_array_r,
-                "sColumns" => $sColumns
-        );
+            $output = array(
+                    "sEcho" => intval($this->input['draw']),
+                    "iTotalRecords" => $this->count_all,
+                    "iTotalDisplayRecords" => $this->display_all,
+                    "aaData" => $this->result_array_r,
+                    "sColumns" => $sColumns
+            );
 
+        }
         if(Config::get('app.debug', false)) {
             $output['aQueries'] = DB::getQueryLog();
         }
@@ -706,4 +756,5 @@ class Datatables
             return Response::json($output);
         }
     }
+
 }
