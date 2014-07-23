@@ -491,6 +491,7 @@ class Datatables
                 unset($columns_copy[$i]);
             }
         }
+        $columns_copy = array_values($columns_copy);
 
         // copy of $this->columns cleaned for database queries
         $columns_clean = $this->clean_columns( $columns_copy, false );
