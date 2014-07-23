@@ -763,5 +763,18 @@ class Datatables
             return Response::json($output);
         }
     }
-
+    
+    /**
+     * PR #93
+     * camelCase to snake_case magic method
+     */
+    public function __call($name, $arguments)
+    {
+        $name = strtolower(preg_replace('/([^A-Z])([A-Z])/', "$1_$2", $name));
+        if (method_exists($this, $name)) {
+            return call_user_func_array(array($this, $name),$arguments);
+        } else {
+            trigger_error('Call to undefined method '.__CLASS__.'::'.$name.'()', E_USER_ERROR);
+        }
+    }
 }
