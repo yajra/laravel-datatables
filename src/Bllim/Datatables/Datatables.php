@@ -512,7 +512,7 @@ class Datatables
                 
                 $db_prefix = $copy_this->database_prefix();
  
-               for ($i=0,$c=count($columns_copy);$i<$c;$i++)
+               for ($i=0,$c=count($this->input['columns']);$i<$c;$i++)
                 {
                     if ($this->input['columns'][$i]['orderable'] == "true")
                     {
@@ -574,7 +574,7 @@ class Datatables
         $db_prefix = $this->database_prefix();
         
         // column search
-        for ($i=0,$c=count($columns_clean);$i<$c;$i++)
+        for ($i=0,$c=count($this->input['columns']);$i<$c;$i++)
         {
             if ($this->input['columns'][$i]['orderable'] == "true" && $this->input['columns'][$i]['search']['value'] != '')
             {
