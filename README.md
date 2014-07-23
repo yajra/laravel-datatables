@@ -82,7 +82,7 @@ Some things you should know:
         ->add_column('operations', '<a href="{{ URL::route( \'admin.post\', array( \'edit\',$id )) }}">edit</a>
                         <a href="{{ URL::route( \'admin.post\', array( \'delete\',$id )) }}">delete</a>
                     ')
-        ->edit_column('status', '{{ \$status ? 'Active' : 'Passive' }}')
+        ->edit_column('status', '{{ $status ? 'Active' : 'Passive' }}')
         ->edit_column('ownername', function($row) {
             return "The author of this post is {$row->ownername}";
         })
