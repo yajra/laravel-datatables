@@ -132,5 +132,27 @@ Usage: `filter_column (  $column_name,  $method,  $param_1,  $param_2,  ...,  $p
     * The callable must return a value that will be passed to the QueryBuilder's function.
 
 
+**Example 4: Returning an array of objects*
 
+    $posts = Post::select(array('posts.id','posts.name','posts.created_at','posts.status'));
+
+    return Datatables::of($posts)->make(true);
+
+This returns a JSON array with data like below:
+
+    data: {
+        {
+            id: 12,
+            name: 'Dummy Post',
+            created_at: '1974-06-20 13:09:51'
+            status: true
+        }
+        {
+            id: 15,
+            name: 'Test post please ignore',
+            created_at: '1974-06-20 13:15:51',
+            status: true
+        }
+    }
+    
 **License:** Licensed under the MIT License
