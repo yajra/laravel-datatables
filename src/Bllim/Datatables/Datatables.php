@@ -356,6 +356,12 @@ class Datatables
             $count = 0;
             $last = $array;
             $first = array();
+            
+            if(count($array) <= $item['order'])
+            {
+		        return $array + array($item['name']=>$item['content']);
+            }
+	    
             foreach ($array as $key => $value) {
                 if($count == $item['order'])
                 {
