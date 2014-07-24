@@ -1,14 +1,14 @@
-<?php namespace Bllim\Datatables\Facades;
+<?php namespace Bllim\Datatables\Facade;
 
 use Illuminate\Support\Facades\Facade;
 
-class Profiler extends Facade {
+class Datatables extends Facade {
 
     /**
      * Get the registered name of the component.
      *
      * @return string
      */
-    protected static function getFacadeAccessor() { return 'Datatables'; }
+    protected static function getFacadeAccessor() { return 'datatables'; }
 
 }
