@@ -132,7 +132,7 @@ Usage: `filter_column (  $column_name,  $method,  $param_1,  $param_2,  ...,  $p
     * The callable must return a value that will be passed to the QueryBuilder's function.
 
 
-**Example 4: Returning an array of objects*
+**Example 4: Returning an array of objects**
 
     $posts = Post::select(array('posts.id','posts.name','posts.created_at','posts.status'));
 
