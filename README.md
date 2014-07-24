@@ -35,7 +35,7 @@ Composer will download the package. After the package is downloaded, open `app/c
 
     'aliases' => array(
         ...
-        'Datatables'      => 'Bllim\Datatables\Datatables',
+        'Datatables'      => 'Bllim\Datatables\Facade\Datatables',
     ),
 
 Finally you need to publish a configuration file by running the following Artisan command.
