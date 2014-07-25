@@ -7,7 +7,7 @@
  *
  * @package Laravel
  * @category Bundle
- * @version 1.4.0
+ * @version 1.4.1
  * @author Bilal Gultekin <bilal@bilal.im>
  */
 
@@ -514,10 +514,10 @@ class Datatables
  
                for ($i=0,$c=count($this->input['columns']);$i<$c;$i++)
                 {
-                    if ($this->input['columns'][$i]['orderable'] == "true")
+                    if (isset($columns_copy[$i]) && $this->input['columns'][$i]['orderable'] == "true")
                     {
                         // if filter column exists for this columns then use user defined method
-                        if (isset($columns_copy[$i]) && isset($this->filter_columns[$columns_copy[$i]]))
+                        if (isset($this->filter_columns[$columns_copy[$i]]))
                         {
                             // check if "or" equivalent exists for given function
                             // and if the number of parameters given is not excess 
@@ -557,16 +557,12 @@ class Datatables
                                 $cast_end = " as TEXT)";
                             }
                         
-                            // When there's an added column during filtering DT return it and the number of $this->input['search'] is greater than $columns_clean
-                            if (count($columns_clean) > $i)
-                            {
-                                $column = $db_prefix . $columns_clean[$i];
-                            
-                                if(Config::get('datatables.search.case_insensitive', false)) {
-                                    $query->orwhere(DB::raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', strtolower($keyword));
-                                } else {
-                                    $query->orwhere(DB::raw($cast_begin.$column.$cast_end), 'LIKE', $keyword);
-                                }
+                            $column = $db_prefix . $columns_clean[$i];
+                        
+                            if(Config::get('datatables.search.case_insensitive', false)) {
+                                $query->orwhere(DB::raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', strtolower($keyword));
+                            } else {
+                                $query->orwhere(DB::raw($cast_begin.$column.$cast_end), 'LIKE', $keyword);
                             }
                         }
                     }
@@ -580,10 +576,10 @@ class Datatables
         // column search
         for ($i=0,$c=count($this->input['columns']);$i<$c;$i++)
         {
-            if ($this->input['columns'][$i]['orderable'] == "true" && $this->input['columns'][$i]['search']['value'] != '')
+            if (isset($columns_copy[$i]) && $this->input['columns'][$i]['orderable'] == "true" && $this->input['columns'][$i]['search']['value'] != '')
             {
                 // if filter column exists for this columns then use user defined method
-                if (isset($columns_copy[$i]) && isset($this->filter_columns[$columns_copy[$i]]))
+                if (isset($this->filter_columns[$columns_copy[$i]]))
                 {
                     call_user_func_array(
                         array(
