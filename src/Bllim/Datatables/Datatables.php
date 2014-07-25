@@ -72,7 +72,7 @@ class Datatables
             $this->input['columns'] = array();
             for($i=0;$i<Input::get('iColumns',0);$i++) {
                 $arr = array();
-                $arr['name'] = $columns[$i];
+                $arr['name'] = isset($columns[$i]) ? $columns[$i] : '';
                 $arr['searchable'] = Input::get('bSearchable_'.$i,'');
                 $arr['search'] = array();
                 $arr['search']['value'] = Input::get('sSearch_'.$i,'');
@@ -517,7 +517,7 @@ class Datatables
                     if ($this->input['columns'][$i]['orderable'] == "true")
                     {
                         // if filter column exists for this columns then use user defined method
-                        if (isset($this->filter_columns[$columns_copy[$i]]))
+                        if (isset($columns_copy[$i]) && isset($this->filter_columns[$columns_copy[$i]]))
                         {
                             // check if "or" equivalent exists for given function
                             // and if the number of parameters given is not excess 
@@ -579,7 +579,7 @@ class Datatables
             if ($this->input['columns'][$i]['orderable'] == "true" && $this->input['columns'][$i]['search']['value'] != '')
             {
                 // if filter column exists for this columns then use user defined method
-                if (isset($this->filter_columns[$columns_copy[$i]]))
+                if (isset($columns_copy[$i]) && isset($this->filter_columns[$columns_copy[$i]]))
                 {
                     call_user_func_array(
                         array(
