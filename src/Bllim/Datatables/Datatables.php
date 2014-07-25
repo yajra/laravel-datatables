@@ -60,8 +60,8 @@ class Datatables
             // version < 1.10
             
             $this->input['draw'] = Input::get('sEcho','');
-            $this->input['start'] = Input::get('iDisplayStart','');
-            $this->input['length'] = Input::get('iDisplayLength','');
+            $this->input['start'] = Input::get('iDisplayStart');
+            $this->input['length'] = Input::get('iDisplayLength');
             $this->input['search'] = array(
                 'value' => Input::get('sSearch',''),
                 'regex' => Input::get('bRegex',''),
@@ -432,7 +432,7 @@ class Datatables
      */
     protected function paging()
     {
-        if(!is_null($this->input['start']) && $this->input['start'] != -1)
+        if(!is_null($this->input['start']) && !is_null($this->input['length']))
         {
             $this->query->skip($this->input['start'])->take((int)$this->input['length']>0?$this->input['length']:10);
         }
