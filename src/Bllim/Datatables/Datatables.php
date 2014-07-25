@@ -557,12 +557,16 @@ class Datatables
                                 $cast_end = " as TEXT)";
                             }
                         
-                            $column = $db_prefix . $columns_clean[$i];
+                            // When there's an added column during filtering DT return it and the number of $this->input['search'] is greater than $columns_clean
+                            if (count($columns_clean) > $i)
+                            {
+                                $column = $db_prefix . $columns_clean[$i];
                             
-                            if(Config::get('datatables.search.case_insensitive', false)) {
-                                $query->orwhere(DB::raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', strtolower($keyword));
-                            } else {
-                                $query->orwhere(DB::raw($cast_begin.$column.$cast_end), 'LIKE', $keyword);
+                                if(Config::get('datatables.search.case_insensitive', false)) {
+                                    $query->orwhere(DB::raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', strtolower($keyword));
+                                } else {
+                                    $query->orwhere(DB::raw($cast_begin.$column.$cast_end), 'LIKE', $keyword);
+                                }
                             }
                         }
                     }
