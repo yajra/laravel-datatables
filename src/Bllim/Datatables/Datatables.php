@@ -473,7 +473,7 @@ class Datatables
         $return = array();
         foreach ( $cols as $i=> $col )
         {
-            preg_match('#^(.*?)\s+as\s+(\S*?)$#si',$col,$matches);
+            preg_match('#^(.*?)\s+as\s+(\S*?)\s*$#si',$col,$matches);
             $return[$i] = empty($matches) ? ($use_alias?$this->getColumnName($col):$col) : $matches[$use_alias?2:1];
         }
 
