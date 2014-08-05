@@ -544,7 +544,7 @@ class Datatables
                         
                             $keyword = '%'.$this->input['search']['value'].'%';
                         
-                            if(Config::get('datatables.search.use_wildcards', false)) {
+                            if(Config::get('datatables::search.use_wildcards', false)) {
                                 $keyword = $copy_this->wildcard_like_string($this->input['search']['value']);
                             }
                         
@@ -559,7 +559,7 @@ class Datatables
                         
                             $column = $db_prefix . $columns_clean[$i];
                         
-                            if(Config::get('datatables.search.case_insensitive', false)) {
+                            if(Config::get('datatables::search.case_insensitive', false)) {
                                 $query->orwhere(DB::raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', strtolower($keyword));
                             } else {
                                 $query->orwhere(DB::raw($cast_begin.$column.$cast_end), 'LIKE', $keyword);
@@ -597,11 +597,11 @@ class Datatables
                 {                        
                     $keyword = '%'.$this->input['columns'][$i]['search']['value'].'%';
                     
-                    if(Config::get('datatables.search.use_wildcards', false)) {
+                    if(Config::get('datatables::search.use_wildcards', false)) {
                         $keyword = $copy_this->wildcard_like_string($this->input['columns'][$i]['search']['value']);
                     }
                     
-                    if(Config::get('datatables.search.case_insensitive', false)) {
+                    if(Config::get('datatables::search.case_insensitive', false)) {
                         $column = $db_prefix . $columns_clean[$i];
                         $this->query->where(DB::raw('LOWER('.$column.')'),'LIKE', strtolower($keyword));
                     } else {
