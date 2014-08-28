@@ -519,7 +519,7 @@ class Datatables
 		}
 
 		return $this->connection->table($this->connection->raw('('.$myQuery->toSql().') count_row_table'))
-				->setBindings($myQuery->getBindings())->remember(1)->count();
+				->setBindings($myQuery->getBindings())->count();
 	}
 
 	/**
