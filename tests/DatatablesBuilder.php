@@ -23,32 +23,6 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		m::close();
 	}
 
-	public function test_datatables_make_response()
-	{
-		$cache = m::mock('stdClass');
-		$driver = m::mock('stdClass');
-
-		$builder = $this->getBuilder();
-		$builder->select('id','name')->from('users');
-
-		$builder->getConnection()->shouldReceive('raw');
-		$builder->getConnection()->shouldReceive('table')->andReturn($builder);
-		$builder->getConnection()->shouldReceive('getName')->andReturn('foo');
-		// $builder->getConnection()->shouldReceive('setBindings')->andReturn($builder);
-
-		$builder->getConnection()->shouldReceive('getCacheManager')->times(3)->andReturn($cache);
-		$cache->shouldReceive('driver')->times(3)->andReturn($driver);
-		$driver->shouldReceive('remember')->times(3)->andReturn(array());
-
-		// $builder->getConnection()->shouldReceive('count')->andReturn(2);
-
-		Config::shouldReceive('get');
-
-		$response = Datatables::of($builder)->make();
-
-		$this->assertInstanceOf('Illuminate\Http\JsonResponse', $response);
-	}
-
 	public function test_datatables_make_with_data()
 	{
 		$cache = m::mock('stdClass');
@@ -81,7 +55,7 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		$builder->getConnection()->shouldReceive('table')->times(2)->andReturn($builder);
 		$builder->shouldReceive('getBindings')->times(2)->andReturn(array());
 		$builder->shouldReceive('setBindings')->times(2)->with(array())->andReturn($builder);
-		$builder->shouldReceive('remember')->times(2)->with(true)->andReturn($builder);
+		// $builder->shouldReceive('remember')->times(2)->with(true)->andReturn($builder);
 		$builder->shouldReceive('count')->times(2)->andReturn(2);
 
 		Config::shouldReceive('get');
@@ -129,7 +103,7 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		$builder->getConnection()->shouldReceive('table')->times(2)->andReturn($builder);
 		$builder->shouldReceive('getBindings')->times(2)->andReturn(array());
 		$builder->shouldReceive('setBindings')->times(2)->with(array())->andReturn($builder);
-		$builder->shouldReceive('remember')->times(2)->with(true)->andReturn($builder);
+		// $builder->shouldReceive('remember')->times(2)->with(true)->andReturn($builder);
 		$builder->shouldReceive('count')->times(2)->andReturn(2);
 
 		Config::shouldReceive('get');
@@ -181,7 +155,7 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		$builder->getConnection()->shouldReceive('table')->times(2)->andReturn($builder);
 		$builder->shouldReceive('getBindings')->times(2)->andReturn(array());
 		$builder->shouldReceive('setBindings')->times(2)->with(array())->andReturn($builder);
-		$builder->shouldReceive('remember')->times(2)->with(true)->andReturn($builder);
+		// $builder->shouldReceive('remember')->times(2)->with(true)->andReturn($builder);
 		$builder->shouldReceive('count')->times(2)->andReturn(2);
 
 		Config::shouldReceive('get');
