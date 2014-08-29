@@ -103,8 +103,8 @@ It is better, you know these:
         })->make();
 ```
 
-**Example 4: Accessing Carbon object on timestamps**
-> Note: You cannot access Carbon object using blade templating approach
+**Example 4: Accessing Carbon object on timestamps and/or any objects in model**
+> Note: Only applicable if you use Eloquent object.
 
 ```php
     $posts = Post::select(array('posts.id','posts.name','posts.created_at','posts.status'));

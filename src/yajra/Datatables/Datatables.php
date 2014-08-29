@@ -7,7 +7,7 @@
 *
 * @package    Laravel
 * @category   Package
-* @version    2.0.2
+* @version    2.2.0
 * @author     Arjay Angeles <aqangeles@gmail.com>
 */
 
@@ -207,10 +207,17 @@ class Datatables
 	{
 		foreach ($this->result_array as $rkey => &$rvalue) {
 
+			// Convert data array to object value
+			$data = array();
+			foreach ($rvalue as $key => $value) {
+				$data[$key] = $this->result_object[$rkey]->$key;
+			}
+
+			// Process add columns
 			foreach ($this->extra_columns as $key => $value) {
 
 				if (is_string($value['content'])):
-					$value['content'] = $this->blader($value['content'], $rvalue);
+					$value['content'] = $this->blader($value['content'], $data);
 				elseif (is_callable($value['content'])):
 					$value['content'] = $value['content']($this->result_object[$rkey]);
 				endif;
@@ -218,10 +225,10 @@ class Datatables
 				$rvalue = $this->includeInArray($value,$rvalue);
 			}
 
+			// Process edit columns
 			foreach ($this->edit_columns as $key => $value) {
-
 				if (is_string($value['content'])):
-					$value['content'] = $this->blader($value['content'], $rvalue);
+					$value['content'] = $this->blader($value['content'], $data);
 				elseif (is_callable($value['content'])):
 					$value['content'] = $value['content']($this->result_object[$rkey]);
 				endif;
