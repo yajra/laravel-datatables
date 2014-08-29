@@ -7,7 +7,6 @@
 *
 * @package    Laravel
 * @category   Package
-* @version    2.2.0
 * @author     Arjay Angeles <aqangeles@gmail.com>
 */
 
@@ -112,7 +111,7 @@ class Datatables
 			$this->result_array = array_map(function($object) { return (array) $object; }, $this->result_object->toArray());
 		}
 		else {
-			$this->result_array = array_map(function($object) { return (array) $object; }, (array) $this->result_object);
+			$this->result_array = array_map(function($object) { return (array) $object; }, $this->result_object);
 		}
 	}
 
@@ -210,7 +209,12 @@ class Datatables
 			// Convert data array to object value
 			$data = array();
 			foreach ($rvalue as $key => $value) {
-				$data[$key] = $this->result_object[$rkey]->$key;
+				if ( is_object($this->result_object[$rkey]) ) {
+					$data[$key] = $this->result_object[$rkey]->$key;
+				}
+				else {
+					$data[$key] = $value;
+				}
 			}
 
 			// Process add columns
@@ -222,7 +226,7 @@ class Datatables
 					$value['content'] = $value['content']($this->result_object[$rkey]);
 				endif;
 
-				$rvalue = $this->includeInArray($value,$rvalue);
+				$rvalue = $this->includeInArray($value,$data);
 			}
 
 			// Process edit columns
