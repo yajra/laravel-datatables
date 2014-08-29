@@ -61,7 +61,7 @@ class Datatables
 		// set connection and query variable
 		if($ins->query_type == 'eloquent') {
 			$ins->connection = $ins->query->getModel()->getConnection();
-			$ins->query = $ins->query->getQuery();
+			$ins->query = $query;
 		}
 		else {
 			$ins->connection = $query->getConnection();
@@ -108,7 +108,12 @@ class Datatables
 	private function getResult()
 	{
 		$this->result_object = $this->query->get();
-		$this->result_array = array_map(function($object) { return (array) $object; }, $this->result_object);
+		if ($this->query_type == 'eloquent') {
+			$this->result_array = array_map(function($object) { return (array) $object; }, $this->result_object->toArray());
+		}
+		else {
+			$this->result_array = array_map(function($object) { return (array) $object; }, (array) $this->result_object);
+		}
 	}
 
 	/**
@@ -393,8 +398,9 @@ class Datatables
 	}
 
 	/**
-	 * set auto filter off
-	 * @return [type] [description]
+	 * set auto filter off and run your own filter
+	 * @param Closure
+	 * @return Datatables
 	 */
 	public function filter(Closure $callback)
 	{

@@ -18,7 +18,7 @@ Add the `yajra/datatables` under the `require` key after that run the `composer 
 ```php
     {
         "require": {
-            "laravel/framework": "4.1.*",
+            "laravel/framework": "4.2.*",
             ...
             "yajra/laravel-datatables-oracle": "*"
         }
@@ -91,11 +91,27 @@ It is better, you know these:
     ->make();
 ```
 
-**Example 3:**
+**Example 3: Overriding default filter option**
 ```php
     $posts = Post::select(array('posts.id','posts.name','posts.created_at','posts.status'));
 
-    return Datatables::of($posts)->filter(function($query){
+    return Datatables::of($posts)
+        ->filter(function($query){
+            if (Input::get('id')) {
+                $query->where('id','=',Input::get('id'));
+            }
+        })->make();
+```
+
+**Example 4: Accessing Carbon object on timestamps**
+> Note: You cannot access Carbon object using blade templating approach
+
+```php
+    $posts = Post::select(array('posts.id','posts.name','posts.created_at','posts.status'));
+
+    return Datatables::of($posts)
+        ->editColumn('created_at', function($data){ $data->created_at->toDateTimeString() })
+        ->filter(function($query){
             if (Input::get('id')) {
                 $query->where('id','=',Input::get('id'));
             }
