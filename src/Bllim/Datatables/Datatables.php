@@ -514,7 +514,7 @@ class Datatables
  
                for ($i=0,$c=count($this->input['columns']);$i<$c;$i++)
                 {
-                    if (isset($columns_copy[$i]) && $this->input['columns'][$i]['orderable'] == "true")
+                    if (isset($columns_copy[$i]) && $this->input['columns'][$i]['searchable'] == "true")
                     {
                         // if filter column exists for this columns then use user defined method
                         if (isset($this->filter_columns[$columns_copy[$i]]))
