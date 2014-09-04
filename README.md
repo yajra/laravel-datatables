@@ -60,6 +60,8 @@ Some things you should know:
 - The column identifiers are set by the returned array.
     - That means, for `posts.id` the relevant identifier is `id`, and for `owner.name as ownername` it is `ownername`
 - You can set the "index" column (http://datatables.net/reference/api/row().index()) using `set_index_column($name)`
+- You can add class (DT_RowClass) to each row `using set_row_class($content)` function.
+- You can add jquery's data (DT_RowData) to each row `using set_row_data($name,$content)` function.
 - You can add customized search filters for each column to override the default search functionality
 - You can call `make(true)` to return an array of objects instead of an array of arrays. (see Example 4)
 
@@ -155,4 +157,16 @@ This returns a JSON array with data like below:
         }
     }
     
+**Example 5: DT_RowID, DT_RowClass and DT_RowData**
+
+```php
+$todo = ToDoList::select(array('todo.id','todo.name','todo.created_at','todo.status'));
+
+return Datatables::of($todo)
+    ->set_index_column('id')
+    ->set_row_class('@if($status=="done") success @endif')
+    ->set_row_data('created_at','{{$created_at}}')
+    ->make();
+```
+
 **License:** Licensed under the MIT License
