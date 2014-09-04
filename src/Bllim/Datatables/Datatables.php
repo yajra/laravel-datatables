@@ -506,35 +506,35 @@ class Datatables
         // global search
         if ($this->input['search']['value'] != '')
         {
-            $copy_this = $this;
+            $_this = $this;
 
-            $this->query->where(function($query) use ($copy_this, $columns_copy, $columns_clean) {
+            $this->query->where(function($query) use (&$_this, $columns_copy, $columns_clean) {
                 
-                $db_prefix = $copy_this->database_prefix();
+                $db_prefix = $_this->database_prefix();
  
-               for ($i=0,$c=count($this->input['columns']);$i<$c;$i++)
+               for ($i=0,$c=count($_this->input['columns']);$i<$c;$i++)
                 {
-                    if (isset($columns_copy[$i]) && $this->input['columns'][$i]['searchable'] == "true")
+                    if (isset($columns_copy[$i]) && $_this->input['columns'][$i]['searchable'] == "true")
                     {
                         // if filter column exists for this columns then use user defined method
-                        if (isset($this->filter_columns[$columns_copy[$i]]))
+                        if (isset($_this->filter_columns[$columns_copy[$i]]))
                         {
                             // check if "or" equivalent exists for given function
                             // and if the number of parameters given is not excess 
                             // than call the "or" equivalent
                             
-                            $method_name = 'or' . ucfirst($this->filter_columns[$columns_copy[$i]]['method']);
+                            $method_name = 'or' . ucfirst($_this->filter_columns[$columns_copy[$i]]['method']);
                             
-                            if ( method_exists($query->getQuery(), $method_name) && count($this->filter_columns[$columns_copy[$i]]['parameters']) <= with(new \ReflectionMethod($query->getQuery(),$method_name))->getNumberOfParameters() )
+                            if ( method_exists($query->getQuery(), $method_name) && count($_this->filter_columns[$columns_copy[$i]]['parameters']) <= with(new \ReflectionMethod($query->getQuery(),$method_name))->getNumberOfParameters() )
                             {
                                 call_user_func_array(
                                     array(
                                         $query,
                                         $method_name
                                     ),
-                                    $this->inject_variable(
-                                        $this->filter_columns[$columns_copy[$i]]['parameters'],
-                                        $this->input['search']['value']
+                                    $_this->inject_variable(
+                                        $_this->filter_columns[$columns_copy[$i]]['parameters'],
+                                        $_this->input['search']['value']
                                     )
                                 );
                             }
@@ -542,10 +542,10 @@ class Datatables
                         // otherwise do simple LIKE search                    
                         {
                         
-                            $keyword = '%'.$this->input['search']['value'].'%';
+                            $keyword = '%'.$_this->input['search']['value'].'%';
                         
                             if(Config::get('datatables::search.use_wildcards', false)) {
-                                $keyword = $copy_this->wildcard_like_string($this->input['search']['value']);
+                                $keyword = $_this->wildcard_like_string($_this->input['search']['value']);
                             }
                         
                             // Check if the database driver is PostgreSQL
@@ -598,7 +598,7 @@ class Datatables
                     $keyword = '%'.$this->input['columns'][$i]['search']['value'].'%';
                     
                     if(Config::get('datatables::search.use_wildcards', false)) {
-                        $keyword = $copy_this->wildcard_like_string($this->input['columns'][$i]['search']['value']);
+                        $keyword = $this->wildcard_like_string($this->input['columns'][$i]['search']['value']);
                     }
                     
                     if(Config::get('datatables::search.case_insensitive', false)) {
