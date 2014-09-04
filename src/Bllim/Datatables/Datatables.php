@@ -43,6 +43,8 @@ class Datatables
     protected $mDataSupport;
 
     protected $index_column;
+    protected $row_class_tmpl = null;
+    protected $row_data_tmpls = array();    
 
 
     /**
@@ -217,7 +219,31 @@ class Datatables
         $this->index_column = $name;
         return $this;
     }
+    
+    /**
+     * Sets DT_RowClass template
+     * result: <tr class="output_from_your_template">
+     *
+     * @param $content
+     * @return $this
+     */
+    public function set_row_class($content) {
+        $this->row_class_tmpl = $content;
+        return $this;
+    }    
 
+    /**
+     * Sets DT_RowData template for given attribute name
+     * result: Datatables invoking $(row).data(name, output_from_your_template)
+     *
+     * @param $content
+     * @return $this
+     */
+    public function set_row_data($name, $content) {
+        $this->row_data_tmpls[$name] = $content;
+        return $this;
+    }    
+    
     /**
      * Saves given query and determines its type
      *
@@ -286,6 +312,30 @@ class Datatables
                     }
                     $row['DT_RowId'] = $value[$this->index_column];
                 }
+                
+                if($this->row_class_tmpl!==null) {
+                    $content = '';
+                    if (is_string($this->row_class_tmpl)) {
+                        $content = $this->blader($this->row_class_tmpl, $value);
+                    } else if(is_callable($this->row_class_tmpl)) {
+                        $content = $this->row_class_tmpl($this->result_object[$key]);
+                    }
+                    $row['DT_RowClass'] = $content;
+                }
+
+                if(count($this->row_data_tmpls)) {
+                    $row['DT_RowData'] = array();
+                    foreach($this->row_data_tmpls as $tkey => $tvalue) {
+                        $content = '';
+                        if (is_string($tvalue)) {
+                            $content = $this->blader($tvalue, $value);
+                        } else if(is_callable($tvalue)) {
+                            $content = $tvalue($this->result_object[$key]);
+                        }
+                        $row['DT_RowData'][$tkey] = $content;
+                    }
+                }
+                
                 $this->result_array_r[] = $row;
             }
         }
