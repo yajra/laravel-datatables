@@ -42,10 +42,51 @@ class Datatables
 	protected 	$mDataSupport;
 	protected 	$autoFilter = true;
 
+	protected 	$new_version = false;
 
 	public function __construct()
 	{
-		$this->input = new Input($_GET, $_POST);
+		$oInput = new Input($_GET, $_POST);
+
+		if ($this->new_version = $oInput->has('draw')) {
+
+            // version 1.10+
+			$this->input = $oInput->input();
+
+		} else {
+
+            // version < 1.10
+
+			$this->input['draw'] = $oInput->input('sEcho','');
+			$this->input['start'] = $oInput->input('iDisplayStart');
+			$this->input['length'] = $oInput->input('iDisplayLength');
+			$this->input['search'] = array(
+				'value' => $oInput->input('sSearch',''),
+				'regex' => $oInput->input('bRegex',''),
+				);
+			$this->input['_'] = $oInput->input('_','');
+
+			$columns = explode(',',$oInput->input('sColumns',''));
+			$this->input['columns'] = array();
+			for($i=0;$i<$oInput->input('iColumns',0);$i++) {
+				$arr = array();
+				$arr['name'] = isset($columns[$i]) ? $columns[$i] : '';
+				$arr['searchable'] = $oInput->input('bSearchable_'.$i,'');
+				$arr['search'] = array();
+				$arr['search']['value'] = $oInput->input('sSearch_'.$i,'');
+				$arr['search']['regex'] = $oInput->input('bRegex_'.$i,'');
+				$arr['orderable'] = $oInput->input('bSortable_'.$i,'');
+				$this->input['columns'][] = $arr;
+			}
+
+			$this->input['order'] = array();
+			for($i=0;$i<$oInput->input('iSortingCols',0);$i++) {
+				$arr = array();
+				$arr['column'] = $oInput->input('iSortCol_'.$i,'');
+				$arr['dir'] = $oInput->input('sSortDir_'.$i,'');
+				$this->input['order'][] = $arr;
+			}
+		}
 	}
 
 	/**
@@ -364,9 +405,9 @@ class Datatables
 	 */
 	private function doPaging()
 	{
-		if(!is_null($this->input->get('iDisplayStart')) && $this->input->get('iDisplayLength') != -1)
+		if( !is_null($this->input['start']) && !is_null($this->input['length']) )
 		{
-			$this->query->skip($this->input->get('iDisplayStart'))->take($this->input->get('iDisplayLength',10));
+			$this->query->skip($this->input['start'])->take((int)$this->input['length']>0 ? $this->input['length'] : 10);
 		}
 	}
 
@@ -376,16 +417,20 @@ class Datatables
 	 */
 	private function doOrdering()
 	{
-		if( !is_null($this->input->get('iSortCol_0')) )
+		if ( count($this->input['order'])>0 )
 		{
 			$columns = $this->cleanColumns( $this->last_columns );
 
-			for ( $i=0, $c=intval($this->input->get('iSortingCols')); $i<$c ; $i++ )
+			for ( $i=0, $c=count($this->input['order']); $i<$c ; $i++ )
 			{
-				if ( $this->input->get('bSortable_'.intval($this->input->get('iSortCol_'.$i))) == "true" )
-				{
-					if(isset($columns[intval($this->input->get('iSortCol_'.$i))]))
-					$this->query->orderBy($columns[intval($this->input->get('iSortCol_'.$i))],$this->input->get('sSortDir_'.$i));
+				$order_col = (int)$this->input['order'][$i]['column'];
+				$order_dir = $this->input['order'][$i]['dir'];
+				foreach ($this->input['columns'] as $column) {
+					if ($column['data'] == $order_col)
+					{
+						if ( $column['orderable'] == "true" )
+							$this->query->orderBy($columns[$order_col],$order_dir);
+					}
 				}
 			}
 		}
@@ -434,13 +479,12 @@ class Datatables
 		$input = $this->input;
 		$connection = $this->connection;
 
-		if ($this->input->get('sSearch','') != '' and $this->autoFilter)
+		if ( $this->input['search']['value'] != '' )
 		{
 			$this->query->where(function($query) use ($columns, $db_prefix, $input, $connection) {
-
-				for ($i=0,$c=count($columns);$i<$c;$i++)
+				for ($i=0,$c=count($input['columns']);$i<$c;$i++)
 				{
-					if ($input->get('bSearchable_'.$i) == "true")
+					if ( $input['columns'][$i]['searchable'] == "true" )
 					{
 						$column = $columns[$i];
 
@@ -448,9 +492,9 @@ class Datatables
 							$column = substr($column, stripos($column, ' AS ')+4);
 						}
 
-						$keyword = '%'.$input->get('sSearch').'%';
+						$keyword = '%'.$input['search']['value'].'%';
 						if(Config::get('datatables::search.use_wildcards')) {
-							$keyword = $copy_this->wildcardLikeString($input->get('sSearch'));
+							$keyword = $copy_this->wildcardLikeString($input['search']['value']);
 						}
 
 						// Check if the database driver is PostgreSQL
@@ -459,14 +503,14 @@ class Datatables
 						$cast_end = null;
 						if( $connection->getDriverName() === 'pgsql') {
 							$cast_begin = "CAST(";
-							$cast_end = " as TEXT)";
+								$cast_end = " as TEXT)";
 						}
 
 						$column = $db_prefix . $column;
 						if(Config::get('datatables::search.case_insensitive', false)) {
-							$query->orwhere($connection->raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', strtolower($keyword));
+							$query->orWhere($connection->raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', strtolower($keyword));
 						} else {
-							$query->orwhere($connection->raw($cast_begin.$column.$cast_end), 'LIKE', $keyword);
+							$query->orWhere($connection->raw($cast_begin.$column.$cast_end), 'LIKE', $keyword);
 						}
 					}
 				}
@@ -474,22 +518,25 @@ class Datatables
 
 		}
 
-		for ($i=0,$c=count($columns);$i<$c;$i++)
+		// column search
+        for ($i=0,$c=count($this->input['columns']);$i<$c;$i++)
 		{
-			if ($this->input->get('bSearchable_'.$i) == "true" && $this->input->get('sSearch_'.$i) != '')
+			if ($this->input['columns'][$i]['searchable'] == "true" && $this->input['columns'][$i]['search']['value'] != '')
 			{
-				$keyword = '%'.$this->input->get('sSearch_'.$i).'%';
+				$keyword = '%'.$this->input['columns'][$i]['search']['value'].'%';
 
 				if(Config::get('datatables::search.use_wildcards', false)) {
-					$keyword = $copy_this->wildcardLikeString($this->input->get('sSearch_'.$i));
+					$keyword = $copy_this->wildcardLikeString($this->input['columns'][$i]['search']['value']);
 				}
 
 				if(Config::get('datatables::search.case_insensitive', false)) {
 					$column = $db_prefix . $columns[$i];
 					$this->query->where($this->connection->raw('LOWER('.$column.')'),'LIKE', strtolower($keyword));
-				} else {
+				}
+				else
+				{
 					$col = strstr($columns[$i],'(')?$this->connection->raw($columns[$i]):$columns[$i];
-					$this->query->where($col, 'LIKE', $keyword);
+						$this->query->where($col, 'LIKE', $keyword);
 				}
 			}
 		}
@@ -500,15 +547,15 @@ class Datatables
 	 *  @return string
 	 */
 	public function wildcardLikeString($str, $lowercase = true) {
-	    $wild = '%';
-	    $length = strlen($str);
-	    if($length) {
-	        for ($i=0; $i < $length; $i++) {
-	            $wild .= $str[$i].'%';
-	        }
-	    }
-	    if($lowercase) $wild = strtolower($wild);
-	    return $wild;
+		$wild = '%';
+		$length = strlen($str);
+		if($length) {
+			for ($i=0; $i < $length; $i++) {
+				$wild .= $str[$i].'%';
+			}
+		}
+		if($lowercase) $wild = strtolower($wild);
+		return $wild;
 	}
 
 	/**
@@ -516,7 +563,7 @@ class Datatables
 	 *  @return string
 	 */
 	public function getDatabasePrefix() {
-	    return Config::get('database.connections.'.Config::get('database.default').'.prefix', '');
+		return Config::get('database.connections.'.Config::get('database.default').'.prefix', '');
 	}
 
 	/**
@@ -535,7 +582,7 @@ class Datatables
 		}
 
 		return $this->connection->table($this->connection->raw('('.$myQuery->toSql().') count_row_table'))
-				->setBindings($myQuery->getBindings())->count();
+		->setBindings($myQuery->getBindings())->count();
 	}
 
 	/**
@@ -544,7 +591,7 @@ class Datatables
 	 */
 	private function getFilteredRecords()
 	{
-        return $this->filteredRecords = $this->count();
+		return $this->filteredRecords = $this->count();
 	}
 
 	/**
@@ -553,7 +600,7 @@ class Datatables
 	 */
 	private function getTotalRecords()
 	{
-        return $this->totalRecords = $this->count();
+		return $this->totalRecords = $this->count();
 	}
 
 	/**
@@ -584,17 +631,25 @@ class Datatables
 	 */
 	private function output()
 	{
-		$sColumns = array_merge_recursive($this->columns, $this->sColumns);
+		if ( $this->new_version ) {
+			$output = array(
+				"draw" => intval($this->input['draw']),
+				"recordsTotal" => $this->totalRecords,
+				"recordsFiltered" => $this->filteredRecords,
+				"data" => $this->result_array_r,
+				);
+		} else {
+			$sColumns = array_merge_recursive($this->columns, $this->sColumns);
+			$output = array(
+				"sEcho" => intval($this->input['draw']),
+				"iTotalRecords" => $this->totalRecords,
+				"iTotalDisplayRecords" => $this->filteredRecords,
+				"aaData" => $this->result_array_r,
+				"sColumns" => $sColumns
+				);
+		}
 
-		$output = array(
-			"sEcho" => intval($this->input->get('sEcho')),
-			"iTotalRecords" => $this->totalRecords,
-			"iTotalDisplayRecords" => $this->filteredRecords,
-			"aaData" => $this->result_array_r,
-			"sColumns" => $sColumns
-		);
-
-		if(Config::get('app.debug', false)) {
+		if ( Config::get('app.debug', false) ) {
 			$output['aQueries'] = $this->connection->getQueryLog();
 		}
 		return Response::json($output);
