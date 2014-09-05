@@ -425,13 +425,22 @@ class Datatables
 			{
 				$order_col = (int)$this->input['order'][$i]['column'];
 				$order_dir = $this->input['order'][$i]['dir'];
-				foreach ($this->input['columns'] as $column) {
-					if ($column['data'] == $order_col)
-					{
-						if ( $column['orderable'] == "true" )
-							$this->query->orderBy($columns[$order_col],$order_dir);
+				if ($this->new_version) {
+					foreach ($this->input['columns'] as $column) {
+						if ($column['data'] == $order_col)
+						{
+							if ( $column['orderable'] == "true" )
+								$this->query->orderBy($columns[$order_col],$order_dir);
+						}
 					}
-				}
+				} else {
+					if (isset($columns[$order_col])) {
+	                    if ( $this->input['columns'][$order_col]['orderable'] == "true" )
+	                    {
+	                        $this->query->orderBy($columns[$order_col],$order_dir);
+	                    }
+	                }
+	            }
 			}
 		}
 	}
