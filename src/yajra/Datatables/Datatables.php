@@ -417,7 +417,7 @@ class Datatables
 	 */
 	private function doOrdering()
 	{
-		if ( count($this->input['order'])>0 )
+		if(array_key_exists('order', $this->input) && count($this->input['order'])>0)
 		{
 			$columns = $this->cleanColumns( $this->last_columns );
 
