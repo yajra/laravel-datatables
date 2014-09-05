@@ -747,7 +747,7 @@ class Datatables
 
         $this->$count = DB::connection($connection)
         ->table(DB::raw('('.$myQuery->toSql().') AS count_row_table'))
-        ->setBindings($myQuery->getBindings())->remember(1)->count();
+        ->setBindings($myQuery->getBindings())->count();
 
     }
 
