@@ -493,7 +493,7 @@ class Datatables
 			$this->query->where(function($query) use ($columns, $db_prefix, $input, $connection) {
 				for ($i=0,$c=count($input['columns']);$i<$c;$i++)
 				{
-					if ( $input['columns'][$i]['searchable'] == "true" )
+					if ( $input['columns'][$i]['searchable'] == "true" && isset($columns[$i]) )
 					{
 						$column = $columns[$i];
 
