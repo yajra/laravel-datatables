@@ -500,8 +500,13 @@ class Datatables
 					{
 						$column = $columns[$i];
 
-						if (stripos($column, ' AS ') !== false){
+						if (stripos($column, ' AS ') !== false) {
 							$column = substr($column, stripos($column, ' AS ')+4);
+						}
+
+						// if column name was set on DT, use it instead
+						if (!empty($input['columns'][$i]['name'])) {
+							$column = $input['columns'][$i]['name'];
 						}
 
 						$keyword = '%'.$input['search']['value'].'%';
