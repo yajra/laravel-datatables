@@ -262,7 +262,7 @@ class Datatables
 	{
 		// unset db driver specific columns
 		foreach ($this->columns as $key => $value) {
-			if (in_array($value, ['rn','row_num']))
+			if (in_array($value, array('rn','row_num')))
 				unset ($this->columns[$key]);
 		}
 		return $this->columns = array_values($this->columns);
