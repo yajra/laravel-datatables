@@ -99,7 +99,7 @@ class Datatables
 		$ins->saveQuery($query);
 
 		// set connection and query variable
-		if($ins->query_type == 'eloquent') {
+		if ($ins->query_type == 'eloquent') {
 			$ins->connection = $ins->query->getModel()->getConnection();
 			$ins->query = $query;
 		}
@@ -237,6 +237,35 @@ class Datatables
 		$this->query = $query;
 		$this->query_type = $query instanceof \Illuminate\Database\Query\Builder ? 'fluent' : 'eloquent';
 		$this->columns = $this->query_type == 'eloquent' ? $this->query->getQuery()->columns : $this->query->columns;
+		$this->removeDBDriverColumns();
+	}
+
+	/**
+	 * Use data columns
+	 * @return array
+	 */
+	public function useDataColumns()
+	{
+		if ($this->query_type == 'eloquent') {
+			$this->columns = array_keys((array) $this->query->getQuery()->first());
+		} else {
+			$this->columns = array_keys((array) $this->query->first());
+		}
+		return $this->removeDBDriverColumns();
+	}
+
+	/**
+	 * remove DB driver specific columns
+	 * @return array
+	 */
+	public function removeDBDriverColumns()
+	{
+		// unset db driver specific columns
+		foreach ($this->columns as $key => $value) {
+			if (in_array($value, ['rn','row_num']))
+				unset ($this->columns[$key]);
+		}
+		return $this->columns = array_values($this->columns);
 	}
 
 	/**
@@ -290,7 +319,7 @@ class Datatables
 	 */
 	private function regulateArray()
 	{
-		if($this->mDataSupport){
+		if ($this->mDataSupport){
 			$this->result_array_r = $this->result_array;
 		} else {
 			foreach ($this->result_array as $key => $value) {
@@ -315,18 +344,18 @@ class Datatables
 		$count = 0;
 
 		foreach ($this->extra_columns as $key => $value) {
-			if($value['order'] === false) continue;
+			if ($value['order'] === false) continue;
 			$extra_columns_indexes[] = $value['order'];
 		}
 
 		for ($i=0,$c=count($this->columns);$i<$c;$i++) {
 
-			if(in_array($this->getColumnName($this->columns[$i]), $this->excess_columns))
+			if (in_array($this->getColumnName($this->columns[$i]), $this->excess_columns))
 			{
 				continue;
 			}
 
-			if(in_array($count, $extra_columns_indexes))
+			if (in_array($count, $extra_columns_indexes))
 			{
 				$count++; $i--; continue;
 			}
@@ -376,7 +405,7 @@ class Datatables
 	 */
 	private function includeInArray($item, $array)
 	{
-		if($item['order'] === false)
+		if ($item['order'] === false)
 		{
 			return array_merge($array,array($item['name']=>$item['content']));
 		}
@@ -386,7 +415,7 @@ class Datatables
 			$last = $array;
 			$first = array();
 			foreach ($array as $key => $value) {
-				if($count == $item['order'])
+				if ($count == $item['order'])
 				{
 					return array_merge($first,array($item['name']=>$item['content']),$last);
 				}
@@ -405,7 +434,7 @@ class Datatables
 	 */
 	private function doPaging()
 	{
-		if( !is_null($this->input['start']) && !is_null($this->input['length']) )
+		if ( !is_null($this->input['start']) && !is_null($this->input['length']) )
 		{
 			$this->query->skip($this->input['start'])->take((int)$this->input['length']>0 ? $this->input['length'] : 10);
 		}
@@ -417,7 +446,7 @@ class Datatables
 	 */
 	private function doOrdering()
 	{
-		if(array_key_exists('order', $this->input) && count($this->input['order'])>0)
+		if (array_key_exists('order', $this->input) && count($this->input['order'])>0)
 		{
 			$columns = $this->cleanColumns( $this->last_columns );
 
@@ -487,6 +516,10 @@ class Datatables
 	private function doFiltering()
 	{
 		$columns = $this->cleanColumns( $this->columns, false );
+		if ($this->mDataSupport) {
+			$columns = $this->useDataColumns();
+		}
+
 		$db_prefix = $this->getDatabasePrefix();
 		$input = $this->input;
 		$connection = $this->connection;
@@ -510,7 +543,7 @@ class Datatables
 						}
 
 						$keyword = '%'.$input['search']['value'].'%';
-						if(Config::get('datatables::search.use_wildcards')) {
+						if (Config::get('datatables::search.use_wildcards')) {
 							$keyword = $copy_this->wildcardLikeString($input['search']['value']);
 						}
 
@@ -518,13 +551,13 @@ class Datatables
 						// If it is, cast the current column to TEXT datatype
 						$cast_begin = null;
 						$cast_end = null;
-						if( $connection->getDriverName() === 'pgsql') {
+						if ( $connection->getDriverName() === 'pgsql') {
 							$cast_begin = "CAST(";
 								$cast_end = " as TEXT)";
 						}
 
 						$column = $db_prefix . $column;
-						if(Config::get('datatables::search.case_insensitive', false)) {
+						if (Config::get('datatables::search.case_insensitive', false)) {
 							$query->orWhere($connection->raw('LOWER('.$cast_begin.$column.$cast_end.')'), 'LIKE', strtolower($keyword));
 						} else {
 							$query->orWhere($connection->raw($cast_begin.$column.$cast_end), 'LIKE', $keyword);
@@ -542,11 +575,11 @@ class Datatables
 			{
 				$keyword = '%'.$this->input['columns'][$i]['search']['value'].'%';
 
-				if(Config::get('datatables::search.use_wildcards', false)) {
+				if (Config::get('datatables::search.use_wildcards', false)) {
 					$keyword = $copy_this->wildcardLikeString($this->input['columns'][$i]['search']['value']);
 				}
 
-				if(Config::get('datatables::search.case_insensitive', false)) {
+				if (Config::get('datatables::search.case_insensitive', false)) {
 					$column = $db_prefix . $columns[$i];
 					$this->query->where($this->connection->raw('LOWER('.$column.')'),'LIKE', strtolower($keyword));
 				}
@@ -566,12 +599,12 @@ class Datatables
 	public function wildcardLikeString($str, $lowercase = true) {
 		$wild = '%';
 		$length = strlen($str);
-		if($length) {
+		if ($length) {
 			for ($i=0; $i < $length; $i++) {
 				$wild .= $str[$i].'%';
 			}
 		}
-		if($lowercase) $wild = strtolower($wild);
+		if ($lowercase) $wild = strtolower($wild);
 		return $wild;
 	}
 
@@ -594,7 +627,7 @@ class Datatables
 
         // if its a normal query ( no union ) replace the select with static text to improve performance
 		$myQuery = clone $query;
-		if( !preg_match( '/UNION/i', strtoupper($myQuery->toSql()) ) ){
+		if ( !preg_match( '/UNION/i', strtoupper($myQuery->toSql()) ) ){
 			$myQuery->select( $this->connection->Raw("'1' as row_count") );
 		}
 
@@ -629,11 +662,11 @@ class Datatables
 	{
 		preg_match('#^(\S*?)\s+as\s+(\S*?)$#si',$str,$matches);
 
-		if(!empty($matches))
+		if (!empty($matches))
 		{
 			return $matches[2];
 		}
-		elseif(strpos($str,'.'))
+		elseif (strpos($str,'.'))
 		{
 			$array = explode('.', $str);
 			return array_pop($array);

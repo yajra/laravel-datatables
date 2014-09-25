@@ -157,6 +157,7 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		$builder->shouldReceive('setBindings')->times(2)->with(array())->andReturn($builder);
 		// $builder->shouldReceive('remember')->times(2)->with(true)->andReturn($builder);
 		$builder->shouldReceive('count')->times(2)->andReturn(2);
+		$builder->shouldReceive('first')->once()->andReturn(array('id'=>'id','name'=>'name'));
 
 		Config::shouldReceive('get');
 
