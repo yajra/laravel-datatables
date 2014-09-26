@@ -246,10 +246,11 @@ class Datatables
 	 */
 	public function useDataColumns()
 	{
+		$query = clone $this->query;
 		if ($this->query_type == 'eloquent') {
-			$this->columns = array_keys((array) $this->query->getQuery()->first());
+			$this->columns = array_keys((array) $query->getQuery()->first());
 		} else {
-			$this->columns = array_keys((array) $this->query->first());
+			$this->columns = array_keys((array) $query->first());
 		}
 		return $this->removeDBDriverColumns();
 	}
