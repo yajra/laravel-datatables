@@ -322,7 +322,7 @@ class Datatables {
 					$value['content'] = $value['content']($this->result_object[$rkey]);
 				endif;
 
-				$rvalue = $this->includeInArray($value,$data);
+				$rvalue = $this->includeInArray($value, $rvalue);
 			}
 
 			// Process edit columns
