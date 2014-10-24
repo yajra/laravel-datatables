@@ -482,19 +482,21 @@ class Datatables {
 		{
 			$columns = $this->cleanColumns( $this->last_columns );
 
-			for ( $i=0, $c=count($this->input['order']); $i<$c ; $i++ )
+			for ($i=0, $c=count($this->input['order']); $i<$c ; $i++)
 			{
 				$order_col = (int)$this->input['order'][$i]['column'];
 				$order_dir = $this->input['order'][$i]['dir'];
 				if ($this->new_version)
 				{
 					$column = $this->input['columns'][$order_col];
-					if ( $column['orderable'] == "true" )
+					if ($column['orderable'] == "true")
 					{
 						if (!empty($column['name']))
 						{
 							$this->query->orderBy($column['name'],$order_dir);
-						} else {
+						}
+						elseif (isset($columns[$order_col]))
+						{
 							$this->query->orderBy($columns[$order_col],$order_dir);
 						}
 					}
@@ -503,7 +505,7 @@ class Datatables {
 				{
 					if (isset($columns[$order_col]))
 					{
-	                    if ( $this->input['columns'][$order_col]['orderable'] == "true" )
+	                    if ($this->input['columns'][$order_col]['orderable'] == "true")
 	                    {
 	                        $this->query->orderBy($columns[$order_col],$order_dir);
 	                    }
@@ -519,10 +521,10 @@ class Datatables {
 	 * @param array $cols
 	 * @return array
 	 */
-	private function cleanColumns($cols, $use_alias  = true )
+	private function cleanColumns($cols, $use_alias  = true)
 	{
 		$return = array();
-		foreach ( $cols as  $i=> $col )
+		foreach ($cols as  $i=> $col)
 		{
 			preg_match('#^(.*?)\s+as\s+(\S*?)$#si',$col,$matches);
 			$return[$i] = empty($matches) ? $col : $matches[$use_alias?2:1];
