@@ -1,7 +1,7 @@
 {
     "name": "yajra/laravel-datatables-oracle",
-    "description": "Server-side handler of DataTables Jquery Plugin for Laravel 4",
-    "keywords" : ["laravel5","laravel","datatables","datatable","datatables jquery plugin"],
+    "description": "Server-side handler of DataTables jQuery Plugin for Laravel 4|5",
+    "keywords" : ["laravel4","laravel5","laravel","datatables","datatable","datatables jquery plugin"],
     "license": "MIT",
     "authors": [
         {
