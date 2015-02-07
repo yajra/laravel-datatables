@@ -8,7 +8,7 @@
 
 **About**
 
-This bundle is created to handle server-side works of [DataTables](http://datatables.net) Jquery Plugin by using Eloquent ORM or Fluent Query Builder.
+This package is created to handle server-side works of [DataTables](http://datatables.net) jQuery Plugin by using Eloquent ORM or Fluent Query Builder.
 
 ### Feature Overview
 - Supporting Eloquent ORM and Fluent Query Builder
@@ -136,6 +136,13 @@ It is better, you know these:
                 $query->where('id','=',Input::get('id'));
             }
         })->make();
+```
+
+**Example 5:** Returning object data source
+```php
+    $posts = Post::select(array('posts.id','posts.name','posts.created_at','posts.status'));
+
+    return Datatables::of($posts)->make(true);
 ```
 
 **Notice:** If you use double quotes while giving content of addColumn or editColumn, you should escape variables with backslash (\\) else you get error. For example:
