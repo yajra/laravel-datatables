@@ -1,6 +1,10 @@
-## Datatables Package for Laravel 4 (Oracle Support)
+## Datatables Package for Laravel 4|5 (Oracle Support)
 
-[![Latest Stable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/stable.png)](https://packagist.org/packages/yajra/laravel-datatables-oracle) [![Total Downloads](https://poser.pugx.org/yajra/laravel-datatables-oracle/downloads.png)](https://packagist.org/packages/yajra/laravel-datatables-oracle) [![Build Status](https://travis-ci.org/yajra/laravel-datatables-oracle.png?branch=master)](https://travis-ci.org/yajra/laravel-datatables-oracle)
+[![Latest Stable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/stable.png)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
+[![Total Downloads](https://poser.pugx.org/yajra/laravel-datatables-oracle/downloads.png)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
+[![Build Status](https://travis-ci.org/yajra/laravel-datatables-oracle.png?branch=master)](https://travis-ci.org/yajra/laravel-datatables-oracle)
+[![Latest Unstable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/unstable.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
+[![License](https://poser.pugx.org/yajra/laravel-datatables-oracle/license.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 
 **About**
 
@@ -12,19 +16,35 @@ This bundle is created to handle server-side works of [DataTables](http://datata
 - Templating new or current columns via Blade Template Engine
 
 
-### Installation
+### Laravel 4 Installation
 
 Add the `yajra/datatables` under the `require` key after that run the `composer update`.
 ```php
     {
         "require": {
-            "laravel/framework": "4.2.*",
+            "laravel/framework": "~4.0",
             ...
-            "yajra/laravel-datatables-oracle": "*"
+            "yajra/laravel-datatables-oracle": "~3.0"
         }
         ...
     }
 ```
+
+### Laravel 5 Installation
+
+Add the `yajra/datatables` under the `require` key after that run the `composer update`.
+```php
+    {
+        "require": {
+            "laravel/framework": "~5.0",
+            ...
+            "yajra/laravel-datatables-oracle": "~4.0"
+        }
+        ...
+    }
+```
+
+
 Composer will download the package. After package downloaded, open "app/config/app.php" and edit like below:
 ```php
     'providers' => array(
