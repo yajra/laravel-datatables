@@ -12,16 +12,6 @@ class DatatablesServiceProvider extends ServiceProvider {
 	protected $defer = false;
 
 	/**
-	 * Bootstrap the application events.
-	 *
-	 * @return void
-	 */
-	public function boot()
-	{
-		$this->package('yajra/datatables');
-	}
-
-	/**
 	 * Register the service provider.
 	 *
 	 * @return void
