@@ -11,6 +11,19 @@ class DatatablesServiceProvider extends ServiceProvider {
 	 */
 	protected $defer = false;
 
+    /**
+     * Bootstrap the application events.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        // Publish config files
+        $this->publishes([
+            __DIR__.'/../config/config.php' => config_path('datatables.php'),
+        ], 'config');
+    }
+
 	/**
 	 * Register the service provider.
 	 *

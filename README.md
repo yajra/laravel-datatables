@@ -61,8 +61,14 @@ Composer will download the package. After package downloaded, open "app/config/a
 ```
 Finally you need to publish a configuration file by running the following Artisan command.
 
+** Laravel 4 **
 ```
 $ php artisan config:publish yajra/laravel-datatables-oracle
+```
+
+** Laravel 5 **
+```php
+$ php artisan vendor:publish --provider="yajra\Datatables\DatatablesServiceProvider" --tag="config"
 ```
 
 ### Usage
