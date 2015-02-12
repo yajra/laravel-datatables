@@ -20,7 +20,7 @@ class DatatablesServiceProvider extends ServiceProvider {
     {
         // Publish config files
         $this->publishes([
-            __DIR__.'/../config/config.php' => config_path('datatables.php'),
+            __DIR__.'/config/config.php' => config_path('datatables.php'),
         ], 'config');
     }
 
