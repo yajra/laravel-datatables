@@ -590,7 +590,7 @@ class Datatables {
 						$keyword = '%'.$input['search']['value'].'%';
 						if (Config::get('datatables.search.use_wildcards'))
 						{
-							$keyword = $copy_this->wildcardLikeString($input['search']['value']);
+							$keyword = $this->wildcardLikeString($input['search']['value']);
 						}
 
 						// Check if the database driver is PostgreSQL
@@ -627,7 +627,7 @@ class Datatables {
 
 				if (Config::get('datatables.search.use_wildcards', false))
 				{
-					$keyword = $copy_this->wildcardLikeString($this->input['columns'][$i]['search']['value']);
+					$keyword = $this->wildcardLikeString($this->input['columns'][$i]['search']['value']);
 				}
 
 				if (Config::get('datatables.search.case_insensitive', false))
