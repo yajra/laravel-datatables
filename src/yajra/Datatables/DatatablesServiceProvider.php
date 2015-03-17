@@ -18,7 +18,7 @@ class DatatablesServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->package('yajra/datatables');
+		$this->package('yajra/laravel-datatables-oracle', 'datatables', __DIR__.'/../..');
 	}
 
 	/**
