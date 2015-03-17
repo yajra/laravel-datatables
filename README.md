@@ -151,7 +151,7 @@ It is better, you know these:
     return Datatables::of($posts)->make(true);
 ```
 
-**Example View and Controller
+###Example View and Controller
 On your view:
 ```php
 <table id="users" class="table table-hover table-condensed">
