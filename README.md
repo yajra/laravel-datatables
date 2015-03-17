@@ -151,6 +151,49 @@ It is better, you know these:
     return Datatables::of($posts)->make(true);
 ```
 
+**Example View and Controller
+On your view:
+```php
+<table id="users" class="table table-hover table-condensed">
+    <thead>
+        <tr>
+            <th class="col-md-3">{{{ Lang::get('users/table.username') }}}</th>
+            <th class="col-md-3">{{{ Lang::get('users/table.email') }}}</th>
+            <th class="col-md-3">{{{ Lang::get('users/table.created_at') }}}</th>
+            <th class="col-md-3">{{{ Lang::get('table.actions') }}}</th>
+        </tr>
+    </thead>
+</table>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    oTable = $('#users').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": "/users/data",
+        "columns": [
+            {data: 'username', name: 'username'},
+            {data: 'email', name: 'email'},
+            {data: 'created_at', name: 'created_at'},
+            {data: 'actions', name: 'actions'}
+        ]
+    });
+});
+</script>
+```
+On your controller:
+```php
+public function getData()
+{
+    $users = $this->users->select('*');
+
+    return Datatables::of($users)
+        ->addColumn('action', 'action here')
+        ->make(true);
+}
+```
+
+
 **Notice:** If you use double quotes while giving content of addColumn or editColumn, you should escape variables with backslash (\\) else you get error. For example:
 ```php
     editColumn('id',"- {{ \$id }}") .
