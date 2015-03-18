@@ -423,7 +423,7 @@ class Datatables
             $column = $this->databasePrefix() . $column['name'];
         }
 
-        return $column;
+        return $column['name'];
     }
 
     /**
