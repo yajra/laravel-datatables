@@ -300,6 +300,9 @@ class Datatables
                             $column = $input['columns'][$i]['name'];
                         }
 
+                        // there's no need to put the prefix unless the column name is prefixed with the table name.
+                        $column = $this->prefixColumn($column);
+
                         $keyword = '%' . $input['search']['value'] . '%';
                         if (Config::get('datatables::search.use_wildcards')) {
                             $keyword = $this->wildcardLikeString($input['search']['value']);
@@ -313,9 +316,6 @@ class Datatables
                             $cast_begin = "CAST(";
                             $cast_end = " as TEXT)";
                         }
-
-                        // there's no need to put the prefix unless the column name is prefixed with the table name.
-                        $column = $this->prefixColumn($this->input['columns'][$i]);
 
                         if (Config::get('datatables::search.case_insensitive', false)) {
                             $query->orWhere($connection->raw('LOWER(' . $cast_begin . $column . $cast_end . ')'),
@@ -339,7 +339,6 @@ class Datatables
                 }
 
                 if (Config::get('datatables::search.case_insensitive', false)) {
-                    $column = $this->prefixColumn($this->input['columns'][$i]);
                     $this->query->where($this->connection->raw('LOWER(' . $column . ')'), 'LIKE', strtolower($keyword));
                 } else {
                     $col = strstr($columns[$i], '(') ? $this->connection->raw($columns[$i]) : $columns[$i];
@@ -417,13 +416,13 @@ class Datatables
     {
         $table_names = $this->tableNames();
         if (count(array_filter($table_names, function ($value) use (&$column) {
-            return strpos($column['name'], $value . ".") === 0;
+            return strpos($column, $value . ".") === 0;
         }))) {
             //the column starts with one of the table names
-            $column = $this->databasePrefix() . $column['name'];
+            $column = $this->databasePrefix() . $column;
         }
 
-        return $column['name'];
+        return $column;
     }
 
     /**
