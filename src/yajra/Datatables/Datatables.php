@@ -10,10 +10,11 @@
  */
 
 use Closure;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Response;
 use Illuminate\View\Compilers\BladeCompiler;
 
 class Datatables
@@ -25,6 +26,10 @@ class Datatables
 
     public $input;
 
+    public $columns = [];
+
+    public $last_columns = [];
+
     protected $query_type;
 
     protected $extra_columns = [];
@@ -34,10 +39,6 @@ class Datatables
     protected $edit_columns = [];
 
     protected $sColumns = [];
-
-    public $columns = [];
-
-    public $last_columns = [];
 
     protected $totalRecords = 0;
 
@@ -98,9 +99,10 @@ class Datatables
 
 
     /**
-     *    Gets query and returns instance of class
+     *  Gets query and returns instance of class
      *
-     * @return null
+     * @param $query
+     * @return static
      */
     public static function of($query)
     {
@@ -123,9 +125,126 @@ class Datatables
         return $ins;
     }
 
+    /**
+     *  Saves given query and determines its type
+     *
+     * @param $query
+     */
+    private function saveQuery($query)
+    {
+        $this->query = $query;
+        $this->query_type = $query instanceof Builder ? 'fluent' : 'eloquent';
+        $this->columns = $this->query_type == 'eloquent' ? $this->query->getQuery()->columns : $this->query->columns;
+        $this->removeDBDriverColumns();
+    }
 
     /**
-     *    Organizes works
+     * remove DB driver specific columns
+     *
+     * @return array
+     */
+    public function removeDBDriverColumns()
+    {
+        // unset db driver specific columns
+        foreach ($this->columns as $key => $value) {
+            if (in_array($value, ['rn', 'row_num'])) {
+                unset ($this->columns[$key]);
+            }
+        }
+
+        return $this->columns = array_values($this->columns);
+    }
+
+    /**
+     *  Creates an array which contains published last columns in sql with their index
+     *
+     * @return null
+     */
+    private function createLastColumn()
+    {
+        $extra_columns_indexes = [];
+        $last_columns = [];
+        $count = 0;
+
+        foreach ($this->extra_columns as $key => $value) {
+            if ($value['order'] === false) {
+                continue;
+            }
+            $extra_columns_indexes[] = $value['order'];
+        }
+
+        for ($i = 0, $c = count($this->columns); $i < $c; $i++) {
+
+            if (in_array($this->getColumnName($this->columns[$i]), $this->excess_columns)) {
+                continue;
+            }
+
+            if (in_array($count, $extra_columns_indexes)) {
+                $count++;
+                $i--;
+                continue;
+            }
+
+            preg_match('#\s+as\s+(\S*?)$#si', $this->columns[$i], $matches);
+            $last_columns[$count] = empty($matches) ? $this->columns[$i] : $matches[1];
+            $count++;
+        }
+
+        $this->last_columns = $last_columns;
+    }
+
+    /**
+     * get column name from string
+     *
+     * @param  string $str
+     * @return string
+     */
+    private function getColumnName($str)
+    {
+        preg_match('#^(\S*?)\s+as\s+(\S*?)$#si', $str, $matches);
+
+        if ( ! empty($matches)) {
+            return $matches[2];
+        } elseif (strpos($str, '.')) {
+            $array = explode('.', $str);
+
+            return array_pop($array);
+        }
+
+        return $str;
+    }
+
+    /**
+     * get total records
+     *
+     * @return int
+     */
+    private function getTotalRecords()
+    {
+        return $this->totalRecords = $this->count();
+    }
+
+    /**
+     *  Counts current query
+     *
+     * @return int
+     */
+    private function count()
+    {
+        $query = $this->query;
+
+        // if its a normal query ( no union ) replace the select with static text to improve performance
+        $myQuery = clone $query;
+        if ( ! preg_match('/UNION/i', strtoupper($myQuery->toSql()))) {
+            $myQuery->select($this->connection->Raw("'1' as row_count"));
+        }
+
+        return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
+            ->setBindings($myQuery->getBindings())->count();
+    }
+
+    /**
+     *  Organizes works
      *
      * @param bool $mDataSupport
      * @return null
@@ -151,129 +270,102 @@ class Datatables
         return $this->output();
     }
 
-
     /**
-     *    Gets results from prepared query
+     *  Datatable filtering
      *
      * @return null
      */
-    private function getResult()
+    private function doFiltering()
     {
-        $this->result_object = $this->query->get();
-        if ($this->query_type == 'eloquent') {
-            $this->result_array = array_map(function ($object) {
-                return (array) $object;
-            }, $this->result_object->toArray());
-        } else {
-            $this->result_array = array_map(function ($object) {
-                return (array) $object;
-            }, $this->result_object);
+        $columns = $this->cleanColumns($this->columns, false);
+        if ($this->mDataSupport) {
+            $columns = $this->useDataColumns();
+        }
+
+        $input = $this->input;
+        $connection = $this->connection;
+
+        if ($this->input['search']['value'] != '') {
+            $this->query->where(function ($query) use ($columns, $input, $connection) {
+                for ($i = 0, $c = count($input['columns']); $i < $c; $i++) {
+                    if ($input['columns'][$i]['searchable'] == "true" && isset($columns[$i])) {
+                        $column = $columns[$i];
+
+                        if (stripos($column, ' AS ') !== false) {
+                            $column = substr($column, stripos($column, ' AS ') + 4);
+                        }
+
+                        // if column name was set on DT, use it instead
+                        if ( ! empty($input['columns'][$i]['name'])) {
+                            $column = $input['columns'][$i]['name'];
+                        }
+
+                        $keyword = '%' . $input['search']['value'] . '%';
+                        if (Config::get('datatables::search.use_wildcards')) {
+                            $keyword = $this->wildcardLikeString($input['search']['value']);
+                        }
+
+                        // Check if the database driver is PostgreSQL
+                        // If it is, cast the current column to TEXT datatype
+                        $cast_begin = null;
+                        $cast_end = null;
+                        if ($connection->getDriverName() === 'pgsql') {
+                            $cast_begin = "CAST(";
+                            $cast_end = " as TEXT)";
+                        }
+
+                        // there's no need to put the prefix unless the column name is prefixed with the table name.
+                        $column = $this->prefixColumn($this->input['columns'][$i]);
+
+                        if (Config::get('datatables::search.case_insensitive', false)) {
+                            $query->orWhere($connection->raw('LOWER(' . $cast_begin . $column . $cast_end . ')'),
+                                'LIKE', strtolower($keyword));
+                        } else {
+                            $query->orWhere($connection->raw($cast_begin . $column . $cast_end), 'LIKE', $keyword);
+                        }
+                    }
+                }
+            });
+
+        }
+
+        // column search
+        for ($i = 0, $c = count($this->input['columns']); $i < $c; $i++) {
+            if ($this->input['columns'][$i]['searchable'] == "true" && $this->input['columns'][$i]['search']['value'] != '') {
+                $keyword = '%' . $this->input['columns'][$i]['search']['value'] . '%';
+
+                if (Config::get('datatables::search.use_wildcards', false)) {
+                    $keyword = $this->wildcardLikeString($this->input['columns'][$i]['search']['value']);
+                }
+
+                if (Config::get('datatables::search.case_insensitive', false)) {
+                    $column = $this->prefixColumn($this->input['columns'][$i]);
+                    $this->query->where($this->connection->raw('LOWER(' . $column . ')'), 'LIKE', strtolower($keyword));
+                } else {
+                    $col = strstr($columns[$i], '(') ? $this->connection->raw($columns[$i]) : $columns[$i];
+                    $this->query->where($col, 'LIKE', $keyword);
+                }
+            }
         }
     }
 
-
     /**
-     * alias for addColumn for backward compatibility
+     * clean columns name
      *
-     * @param string $name
-     * @param string $content
-     * @param bool|int $order
-     * @return Datatables
+     * @param array $cols
+     * @param bool $use_alias
+     * @return array
      */
-    public function add_column($name, $content, $order = false)
+    private function cleanColumns($cols, $use_alias = true)
     {
-        return $this->addColumn($name, $content, $order);
+        $return = [];
+        foreach ($cols as $i => $col) {
+            preg_match('#^(.*?)\s+as\s+(\S*?)$#si', $col, $matches);
+            $return[$i] = empty($matches) ? $col : $matches[$use_alias ? 2 : 1];
+        }
+
+        return $return;
     }
-
-
-    /**
-     * Add column in collection
-     *
-     * @param string $name
-     * @param string $content
-     * @param bool|int $order
-     * @return Datatables
-     */
-    public function addColumn($name, $content, $order = false)
-    {
-        $this->sColumns[] = $name;
-
-        $this->extra_columns[] = ['name' => $name, 'content' => $content, 'order' => $order];
-
-        return $this;
-    }
-
-
-    /**
-     * alias for editColumn for backward compatibility
-     *
-     * @param  string $name
-     * @param  string $content
-     * @return Datatables
-     */
-    public function edit_column($name, $content)
-    {
-        return $this->editColumn($name, $content);
-    }
-
-
-    /**
-     * edit column's content
-     *
-     * @param  string $name
-     * @param  string $content
-     * @return Datatables
-     */
-    public function editColumn($name, $content)
-    {
-        $this->edit_columns[] = ['name' => $name, 'content' => $content];
-
-        return $this;
-    }
-
-
-    /**
-     * alias for removeColumn for backward compatibility
-     *
-     * @return Datatables
-     */
-    public function remove_column()
-    {
-        $names = func_get_args();
-        $this->excess_columns = array_merge($this->excess_columns, $names);
-
-        return $this;
-    }
-
-
-    /**
-     * remove column from collection
-     *
-     * @return Datatables
-     */
-    public function removeColumn()
-    {
-        $names = func_get_args();
-        $this->excess_columns = array_merge($this->excess_columns, $names);
-
-        return $this;
-    }
-
-
-    /**
-     *    Saves given query and determines its type
-     *
-     * @param $query
-     * @return null
-     */
-    private function saveQuery($query)
-    {
-        $this->query = $query;
-        $this->query_type = $query instanceof \Illuminate\Database\Query\Builder ? 'fluent' : 'eloquent';
-        $this->columns = $this->query_type == 'eloquent' ? $this->query->getQuery()->columns : $this->query->columns;
-        $this->removeDBDriverColumns();
-    }
-
 
     /**
      * Use data columns
@@ -292,27 +384,164 @@ class Datatables
         return $this->removeDBDriverColumns();
     }
 
+    /**
+     * Adds % wildcards to the given string
+     *
+     * @param string $str
+     * @param bool $lowercase
+     * @return string
+     */
+    public function wildcardLikeString($str, $lowercase = true)
+    {
+        $wild = '%';
+        $length = strlen($str);
+        if ($length) {
+            for ($i = 0; $i < $length; $i++) {
+                $wild .= $str[$i] . '%';
+            }
+        }
+        if ($lowercase) {
+            $wild = strtolower($wild);
+        }
+
+        return $wild;
+    }
 
     /**
-     * remove DB driver specific columns
+     * Will prefix column if needed
+     *
+     * @param string $column
+     * @return string
+     */
+    protected function prefixColumn($column)
+    {
+        $table_names = $this->tableNames();
+        if (count(array_filter($table_names, function ($value) use (&$column) {
+            return strpos($column['name'], $value . ".") === 0;
+        }))) {
+            //the column starts with one of the table names
+            $column = $this->databasePrefix() . $column['name'];
+        }
+
+        return $column;
+    }
+
+    /**
+     * Will look through the query and all it's joins to determine the table names
      *
      * @return array
      */
-    public function removeDBDriverColumns()
+    protected function tableNames()
     {
-        // unset db driver specific columns
-        foreach ($this->columns as $key => $value) {
-            if (in_array($value, ['rn', 'row_num'])) {
-                unset ($this->columns[$key]);
+        $names = [];
+        $query = ($this->query_type == 'eloquent') ? $this->query->getQuery() : $this->query;
+        $names[] = $query->from;
+        $joins = $query->joins ?: [];
+        $databasePrefix = $this->databasePrefix();
+        foreach ($joins as $join) {
+            $table = preg_split("/ as /i", $join->table);
+            $names[] = $table[0];
+            if (isset($table[1]) && ! empty($databasePrefix) && strpos($table[1], $databasePrefix) == 0) {
+                $names[] = preg_replace('/^' . $databasePrefix . '/', '', $table[1]);
             }
         }
 
-        return $this->columns = array_values($this->columns);
+        return $names;
     }
 
+    /**
+     * Returns current database prefix
+     *
+     * @return string
+     */
+    public function databasePrefix()
+    {
+        if ($this->query_type == 'eloquent') {
+            $query = $this->query->getQuery();
+        } else {
+            $query = $this->query;
+        }
+
+        return $query->getGrammar()->getTablePrefix();
+    }
 
     /**
-     *    Places extra columns
+     * get filtered records
+     *
+     * @return int
+     */
+    private function getFilteredRecords()
+    {
+        return $this->filteredRecords = $this->count();
+    }
+
+    /**
+     *  Datatables paging
+     *
+     * @return null
+     */
+    private function doPaging()
+    {
+        if ( ! is_null($this->input['start']) && ! is_null($this->input['length'])) {
+            $this->query->skip($this->input['start'])
+                ->take((int) $this->input['length'] > 0 ? $this->input['length'] : 10);
+        }
+    }
+
+    /**
+     *  Datatable ordering
+     *
+     * @return null
+     */
+    private function doOrdering()
+    {
+        if (array_key_exists('order', $this->input) && count($this->input['order']) > 0) {
+            $columns = $this->cleanColumns($this->last_columns);
+
+            for ($i = 0, $c = count($this->input['order']); $i < $c; $i++) {
+                $order_col = (int) $this->input['order'][$i]['column'];
+                $order_dir = $this->input['order'][$i]['dir'];
+                if ($this->new_version) {
+                    $column = $this->input['columns'][$order_col];
+                    if ($column['orderable'] == "true") {
+                        if ( ! empty($column['name'])) {
+                            $this->query->orderBy($column['name'], $order_dir);
+                        } elseif (isset($columns[$order_col])) {
+                            $this->query->orderBy($columns[$order_col], $order_dir);
+                        }
+                    }
+                } else {
+                    if (isset($columns[$order_col])) {
+                        if ($this->input['columns'][$order_col]['orderable'] == "true") {
+                            $this->query->orderBy($columns[$order_col], $order_dir);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     *  Gets results from prepared query
+     *
+     * @return null
+     */
+    private function getResult()
+    {
+        $this->result_object = $this->query->get();
+        if ($this->query_type == 'eloquent') {
+            $this->result_array = array_map(function ($object) {
+                return (array) $object;
+            }, $this->result_object->toArray());
+        } else {
+            $this->result_array = array_map(function ($object) {
+                return (array) $object;
+            }, $this->result_object);
+        }
+    }
+
+    /**
+     *  Places extra columns
      *
      * @return null
      */
@@ -354,75 +583,10 @@ class Datatables
         }
     }
 
-
     /**
-     *    Converts result_array number indexed array and consider excess columns
+     *  Parses and compiles strings by using Blade Template System
      *
-     * @return null
-     */
-    private function regulateArray()
-    {
-        if ($this->mDataSupport) {
-            $this->result_array_r = $this->result_array;
-        } else {
-            foreach ($this->result_array as $key => $value) {
-                foreach ($this->excess_columns as $evalue) {
-                    unset($value[$evalue]);
-                }
-
-                $this->result_array_r[] = array_values($value);
-            }
-        }
-    }
-
-
-    /**
-     *    Creates an array which contains published last columns in sql with their index
-     *
-     * @return null
-     */
-    private function createLastColumn()
-    {
-        $extra_columns_indexes = [];
-        $last_columns = [];
-        $count = 0;
-
-        foreach ($this->extra_columns as $key => $value) {
-            if ($value['order'] === false) {
-                continue;
-            }
-            $extra_columns_indexes[] = $value['order'];
-        }
-
-        for ($i = 0, $c = count($this->columns); $i < $c; $i++) {
-
-            if (in_array($this->getColumnName($this->columns[$i]), $this->excess_columns)) {
-                continue;
-            }
-
-            if (in_array($count, $extra_columns_indexes)) {
-                $count++;
-                $i--;
-                continue;
-            }
-
-            // previous regex #^(\S*?)\s+as\s+(\S*?)$# prevented subqueries and functions from being detected as alias
-            preg_match('#\s+as\s+(\S*?)$#si', $this->columns[$i], $matches);
-            $last_columns[$count] = empty($matches) ? $this->columns[$i] : $matches[1];
-            $count++;
-        }
-
-        $this->last_columns = $last_columns;
-    }
-
-
-    /**
-     *    Parses and compiles strings by using Blade Template System
-     *
-     * @param $str
-     * @param array $data
      * @return string
-     * @throws \Exception
      */
     private function blader($str, $data = [])
     {
@@ -445,9 +609,8 @@ class Datatables
         return $str;
     }
 
-
     /**
-     *    Places item of extra columns into result_array by care of their order
+     *  Places item of extra columns into result_array by care of their order
      *
      * @return null
      */
@@ -472,271 +635,30 @@ class Datatables
         }
     }
 
-
     /**
-     *    Datatables paging
+     *  Converts result_array number indexed array and consider excess columns
      *
      * @return null
      */
-    private function doPaging()
+    private function regulateArray()
     {
-        if ( ! is_null($this->input['start']) && ! is_null($this->input['length'])) {
-            $this->query->skip($this->input['start'])
-                ->take((int) $this->input['length'] > 0 ? $this->input['length'] : 10);
-        }
-    }
-
-
-    /**
-     *    Datatable ordering
-     *
-     * @return null
-     */
-    private function doOrdering()
-    {
-        if (array_key_exists('order', $this->input) && count($this->input['order']) > 0) {
-            $columns = $this->cleanColumns($this->last_columns);
-
-            for ($i = 0, $c = count($this->input['order']); $i < $c; $i++) {
-                $order_col = (int) $this->input['order'][$i]['column'];
-                $order_dir = $this->input['order'][$i]['dir'];
-                if ($this->new_version) {
-                    $column = $this->input['columns'][$order_col];
-                    if ($column['orderable'] == "true") {
-                        if ( ! empty($column['name'])) {
-                            $this->query->orderBy($column['name'], $order_dir);
-                        } elseif (isset($columns[$order_col])) {
-                            $this->query->orderBy($columns[$order_col], $order_dir);
-                        }
-                    }
-                } else {
-                    if (isset($columns[$order_col])) {
-                        if ($this->input['columns'][$order_col]['orderable'] == "true") {
-                            $this->query->orderBy($columns[$order_col], $order_dir);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-
-    /**
-     * clean columns name
-     *
-     * @param array $cols
-     * @return array
-     */
-    private function cleanColumns($cols, $use_alias = true)
-    {
-        $return = [];
-        foreach ($cols as $i => $col) {
-            preg_match('#^(.*?)\s+as\s+(\S*?)$#si', $col, $matches);
-            $return[$i] = empty($matches) ? $col : $matches[$use_alias ? 2 : 1];
-        }
-
-        return $return;
-    }
-
-
-    /**
-     * set auto filter off and run your own filter
-     *
-     * @param Closure
-     * @return Datatables
-     */
-    public function filter(Closure $callback)
-    {
-        $this->autoFilter = false;
-
-        $query = $this->query;
-        call_user_func($callback, $query);
-
-        return $this;
-    }
-
-
-    /**
-     *    Datatable filtering
-     *
-     * @return null
-     */
-    private function doFiltering()
-    {
-        $columns = $this->cleanColumns($this->columns, false);
         if ($this->mDataSupport) {
-            $columns = $this->useDataColumns();
-        }
-
-        $db_prefix = $this->getDatabasePrefix();
-        $input = $this->input;
-        $connection = $this->connection;
-
-        if ($this->input['search']['value'] != '') {
-            $this->query->where(function ($query) use ($columns, $db_prefix, $input, $connection) {
-                for ($i = 0, $c = count($input['columns']); $i < $c; $i++) {
-                    if ($input['columns'][$i]['searchable'] == "true" && isset($columns[$i])) {
-                        $column = $columns[$i];
-
-                        if (stripos($column, ' AS ') !== false) {
-                            $column = substr($column, stripos($column, ' AS ') + 4);
-                        }
-
-                        // if column name was set on DT, use it instead
-                        if ( ! empty($input['columns'][$i]['name'])) {
-                            $column = $input['columns'][$i]['name'];
-                        }
-
-                        $keyword = '%' . $input['search']['value'] . '%';
-                        if (Config::get('datatables::search.use_wildcards')) {
-                            $keyword = $this->wildcardLikeString($input['search']['value']);
-                        }
-
-                        // Check if the database driver is PostgreSQL
-                        // If it is, cast the current column to TEXT datatype
-                        $cast_begin = null;
-                        $cast_end = null;
-                        if ($connection->getDriverName() === 'pgsql') {
-                            $cast_begin = "CAST(";
-                            $cast_end = " as TEXT)";
-                        }
-
-                        $column = $db_prefix . $column;
-                        if (Config::get('datatables::search.case_insensitive', false)) {
-                            $query->orWhere($connection->raw('LOWER(' . $cast_begin . $column . $cast_end . ')'),
-                                'LIKE', strtolower($keyword));
-                        } else {
-                            $query->orWhere($connection->raw($cast_begin . $column . $cast_end), 'LIKE', $keyword);
-                        }
-                    }
-                }
-            });
-
-        }
-
-        // column search
-        for ($i = 0, $c = count($this->input['columns']); $i < $c; $i++) {
-            if ($this->input['columns'][$i]['searchable'] == "true" && $this->input['columns'][$i]['search']['value'] != '') {
-                $keyword = '%' . $this->input['columns'][$i]['search']['value'] . '%';
-
-                if (Config::get('datatables.search.use_wildcards', false)) {
-                    $keyword = $this->wildcardLikeString($this->input['columns'][$i]['search']['value']);
+            $this->result_array_r = $this->result_array;
+        } else {
+            foreach ($this->result_array as $key => $value) {
+                foreach ($this->excess_columns as $evalue) {
+                    unset($value[$evalue]);
                 }
 
-                if (Config::get('datatables.search.case_insensitive', false)) {
-                    $column = $db_prefix . $columns[$i];
-                    $this->query->where($this->connection->raw('LOWER(' . $column . ')'), 'LIKE', strtolower($keyword));
-                } else {
-                    $col = strstr($columns[$i], '(') ? $this->connection->raw($columns[$i]) : $columns[$i];
-                    $this->query->where($col, 'LIKE', $keyword);
-                }
+                $this->result_array_r[] = array_values($value);
             }
         }
     }
-
-
-    /**
-     *  Adds % wildcards to the given string
-     *
-     * @return string
-     */
-    public function wildcardLikeString($str, $lowercase = true)
-    {
-        $wild = '%';
-        $length = strlen($str);
-        if ($length) {
-            for ($i = 0; $i < $length; $i++) {
-                $wild .= $str[$i] . '%';
-            }
-        }
-        if ($lowercase) {
-            $wild = strtolower($wild);
-        }
-
-        return $wild;
-    }
-
-
-    /**
-     *  Returns current database prefix
-     *
-     * @return string
-     */
-    public function getDatabasePrefix()
-    {
-        return Config::get('database.connections.' . Config::get('database.default') . '.prefix', '');
-    }
-
-
-    /**
-     *    Counts current query
-     *
-     * @param string $count variable to store to 'count_all' for iTotalRecords, 'display_all' for iTotalDisplayRecords
-     * @return null
-     */
-    private function count()
-    {
-        $query = $this->query;
-
-        // if its a normal query ( no union ) replace the select with static text to improve performance
-        $myQuery = clone $query;
-        if ( ! preg_match('/UNION/i', strtoupper($myQuery->toSql()))) {
-            $myQuery->select($this->connection->Raw("'1' as row_count"));
-        }
-
-        return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
-            ->setBindings($myQuery->getBindings())->count();
-    }
-
-
-    /**
-     * get filtered records
-     *
-     * @return int
-     */
-    private function getFilteredRecords()
-    {
-        return $this->filteredRecords = $this->count();
-    }
-
-
-    /**
-     * get total records
-     *
-     * @return int
-     */
-    private function getTotalRecords()
-    {
-        return $this->totalRecords = $this->count();
-    }
-
-
-    /**
-     * get column name from string
-     *
-     * @param  string $str
-     * @return string
-     */
-    private function getColumnName($str)
-    {
-        preg_match('#^(\S*?)\s+as\s+(\S*?)$#si', $str, $matches);
-
-        if ( ! empty($matches)) {
-            return $matches[2];
-        } elseif (strpos($str, '.')) {
-            $array = explode('.', $str);
-
-            return array_pop($array);
-        }
-
-        return $str;
-    }
-
 
     /**
      * Render json response
      *
-     * @return JsonReponse
+     * @return JsonResponse
      */
     private function output()
     {
@@ -762,7 +684,120 @@ class Datatables
             $output['aQueries'] = $this->connection->getQueryLog();
         }
 
-        return Response::json($output);
+        return new JsonResponse($output);
+    }
+
+    /**
+     * alias for addColumn for backward compatibility
+     *
+     * @param string $name
+     * @param string $content
+     * @param bool|int $order
+     * @return Datatables
+     */
+    public function add_column($name, $content, $order = false)
+    {
+        return $this->addColumn($name, $content, $order);
+    }
+
+    /**
+     * Add column in collection
+     *
+     * @param string $name
+     * @param string $content
+     * @param bool|int $order
+     * @return Datatables
+     */
+    public function addColumn($name, $content, $order = false)
+    {
+        $this->sColumns[] = $name;
+
+        $this->extra_columns[] = ['name' => $name, 'content' => $content, 'order' => $order];
+
+        return $this;
+    }
+
+    /**
+     * alias for editColumn for backward compatibility
+     *
+     * @param  string $name
+     * @param  string $content
+     * @return Datatables
+     */
+    public function edit_column($name, $content)
+    {
+        return $this->editColumn($name, $content);
+    }
+
+    /**
+     * edit column's content
+     *
+     * @param  string $name
+     * @param  string $content
+     * @return Datatables
+     */
+    public function editColumn($name, $content)
+    {
+        $this->edit_columns[] = ['name' => $name, 'content' => $content];
+
+        return $this;
+    }
+
+    /**
+     * alias for removeColumn for backward compatibility
+     *
+     * @return Datatables
+     */
+    public function remove_column()
+    {
+        $names = func_get_args();
+        $this->excess_columns = array_merge($this->excess_columns, $names);
+
+        return $this;
+    }
+
+    /**
+     * remove column from collection
+     *
+     * @return Datatables
+     */
+    public function removeColumn()
+    {
+        $names = func_get_args();
+        $this->excess_columns = array_merge($this->excess_columns, $names);
+
+        return $this;
+    }
+
+    /**
+     * set auto filter off and run your own filter
+     *
+     * @param callable $callback
+     * @return Datatables
+     * @internal param $Closure
+     */
+    public function filter(Closure $callback)
+    {
+        $this->autoFilter = false;
+
+        $query = $this->query;
+        call_user_func($callback, $query);
+
+        return $this;
+    }
+
+    /**
+     * Returns current database driver
+     */
+    protected function databaseDriver()
+    {
+        if ($this->query_type == 'eloquent') {
+            $query = $this->query->getQuery();
+        } else {
+            $query = $this->query;
+        }
+
+        return $query->getConnection()->getDriverName();
     }
 
 }
