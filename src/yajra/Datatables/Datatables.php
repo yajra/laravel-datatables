@@ -7,6 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
+ * @version    3.3.11
  */
 
 use Closure;
