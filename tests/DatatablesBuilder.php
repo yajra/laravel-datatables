@@ -23,13 +23,10 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		m::close();
 	}
 
-	public function test_dummy()
+	public function test_datatables_make_with_data()
 	{
-		$this->assertTrue(true);
-	}
-
-	public function xtest_datatables_make_with_data()
-	{
+		$cache = m::mock('stdClass');
+		$driver = m::mock('stdClass');
 		$data = array(
 			array('id' => 1, 'name' => 'foo'),
 			array('id' => 2, 'name' => 'bar'),
@@ -58,7 +55,8 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		$builder->getConnection()->shouldReceive('table')->times(2)->andReturn($builder);
 		$builder->shouldReceive('getBindings')->times(2)->andReturn(array());
 		$builder->shouldReceive('setBindings')->times(2)->with(array())->andReturn($builder);
-		// $builder->shouldReceive('remember')->times(2)->with(true)->andReturn($builder);
+		$builder->shouldReceive('skip')->once()->andReturn($builder);
+		$builder->shouldReceive('take')->once()->andReturn($builder);
 		$builder->shouldReceive('count')->times(2)->andReturn(2);
 
 		Config::shouldReceive('get');
@@ -74,8 +72,10 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		$this->assertEquals($expected, $actual);
 	}
 
-	public function xtest_datatables_make_with_data_overriding_filter()
+	public function test_datatables_make_with_data_overriding_filter()
 	{
+		$cache = m::mock('stdClass');
+		$driver = m::mock('stdClass');
 		$data = array(
 			array('id' => 1, 'name' => 'foo'),
 			array('id' => 2, 'name' => 'bar'),
@@ -104,7 +104,8 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		$builder->getConnection()->shouldReceive('table')->times(2)->andReturn($builder);
 		$builder->shouldReceive('getBindings')->times(2)->andReturn(array());
 		$builder->shouldReceive('setBindings')->times(2)->with(array())->andReturn($builder);
-		// $builder->shouldReceive('remember')->times(2)->with(true)->andReturn($builder);
+		$builder->shouldReceive('skip')->once()->andReturn($builder);
+		$builder->shouldReceive('take')->once()->andReturn($builder);
 		$builder->shouldReceive('count')->times(2)->andReturn(2);
 
 		Config::shouldReceive('get');
@@ -124,8 +125,10 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		$this->assertEquals($expected, $actual);
 	}
 
-	public function xtest_datatables_make_with_data_and_uses_mdata()
+	public function test_datatables_make_with_data_and_uses_mdata()
 	{
+		$cache = m::mock('stdClass');
+		$driver = m::mock('stdClass');
 		$data = array(
 			array('id' => 1, 'name' => 'foo'),
 			array('id' => 2, 'name' => 'bar'),
@@ -154,9 +157,9 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		$builder->getConnection()->shouldReceive('table')->times(2)->andReturn($builder);
 		$builder->shouldReceive('getBindings')->times(2)->andReturn(array());
 		$builder->shouldReceive('setBindings')->times(2)->with(array())->andReturn($builder);
-		// $builder->shouldReceive('remember')->times(2)->with(true)->andReturn($builder);
+		$builder->shouldReceive('skip')->once()->andReturn($builder);
+		$builder->shouldReceive('take')->once()->andReturn($builder);
 		$builder->shouldReceive('count')->times(2)->andReturn(2);
-		$builder->shouldReceive('first')->once()->andReturn(array('id'=>'id','name'=>'name'));
 
 		Config::shouldReceive('get');
 

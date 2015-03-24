@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    4.0.7
+ * @version    4.0.8
  */
 
 use Closure;
@@ -17,6 +17,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\View\Compilers\BladeCompiler;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class Datatables
 {
@@ -57,47 +59,84 @@ class Datatables
 
     protected $new_version = false;
 
+    /**
+     * Read Input into $this->input according to jquery.dataTables.js version
+     *
+     */
     public function __construct()
     {
         $request = new Request($_GET, $_POST);
-
-        if ($this->new_version = $request->has('draw')) {
-            // version 1.10+
-            $this->input = $request->input();
-        } else {
-            // version < 1.10
-            $this->input['draw'] = $request->input('sEcho', '');
-            $this->input['start'] = $request->input('iDisplayStart');
-            $this->input['length'] = $request->input('iDisplayLength');
-            $this->input['search'] = [
-                'value' => $request->input('sSearch', ''),
-                'regex' => $request->input('bRegex', ''),
-            ];
-            $this->input['_'] = $request->input('_', '');
-
-            $columns = explode(',', $request->input('sColumns', ''));
-            $this->input['columns'] = [];
-            for ($i = 0; $i < $request->input('iColumns', 0); $i++) {
-                $arr = [];
-                $arr['name'] = isset($columns[$i]) ? $columns[$i] : '';
-                $arr['searchable'] = $request->input('bSearchable_' . $i, '');
-                $arr['search'] = [];
-                $arr['search']['value'] = $request->input('sSearch_' . $i, '');
-                $arr['search']['regex'] = $request->input('bRegex_' . $i, '');
-                $arr['orderable'] = $request->input('bSortable_' . $i, '');
-                $this->input['columns'][] = $arr;
-            }
-
-            $this->input['order'] = [];
-            for ($i = 0; $i < $request->input('iSortingCols', 0); $i++) {
-                $arr = [];
-                $arr['column'] = $request->input('iSortCol_' . $i, '');
-                $arr['dir'] = $request->input('sSortDir_' . $i, '');
-                $this->input['order'][] = $arr;
-            }
-        }
+        $this->setData($this->processData($request->input()));
+        return $this;
     }
 
+    /**
+     * Will take an input array and return the formatted dataTables data as an array
+     *
+     * @param array $input
+     *
+     * @return array
+     */
+    public function processData($input = [])
+    {
+        $formatted_input = [];
+        if (isset($input['draw'])) {
+            // DT version 1.10+
+            $input['version'] = '1.10';
+            $formatted_input = $input;
+        } else {
+            // DT version < 1.10
+            $formatted_input['version'] = '1.9';
+            $formatted_input['draw'] = Arr::get($input, 'sEcho', '');
+            $formatted_input['start'] = Arr::get($input, 'iDisplayStart', 0);
+            $formatted_input['length'] = Arr::get($input, 'iDisplayLength', 10);
+            $formatted_input['search'] = array(
+                'value' => Arr::get($input, 'sSearch', ''),
+                'regex' => Arr::get($input, 'bRegex', ''),
+                );
+            $formatted_input['_'] = Arr::get($input, '_', '');
+            $columns = explode(',', Arr::get($input, 'sColumns', ''));
+            $formatted_input['columns'] = array();
+            for ($i = 0; $i < Arr::get($input, 'iColumns', 0); $i++) {
+                $arr = array();
+                $arr['name'] = isset($columns[$i]) ? $columns[$i] : '';
+                $arr['data'] = Arr::get($input, 'mDataProp_' . $i, '');
+                $arr['searchable'] = Arr::get($input, 'bSearchable_' . $i, '');
+                $arr['search'] = array();
+                $arr['search']['value'] = Arr::get($input, 'sSearch_' . $i, '');
+                $arr['search']['regex'] = Arr::get($input, 'bRegex_' . $i, '');
+                $arr['orderable'] = Arr::get($input, 'bSortable_' . $i, '');
+                $formatted_input['columns'][] = $arr;
+            }
+            $formatted_input['order'] = array();
+            for ($i = 0; $i < Arr::get($input, 'iSortingCols', 0); $i++) {
+                $arr = array();
+                $arr['column'] = Arr::get($input, 'iSortCol_' . $i, '');
+                $arr['dir'] = Arr::get($input, 'sSortDir_' . $i, '');
+                $formatted_input['order'][] = $arr;
+            }
+        }
+        return $formatted_input;
+    }
+
+    /**
+     * @return array $this->input
+     */
+    public function getData()
+    {
+        return $this->input;
+    }
+
+    /**
+     * Sets input data.
+     * Can be used when not wanting to use default Input data.
+     *
+     * @param array $data
+     */
+    public function setData($data)
+    {
+        $this->input = $data;
+    }
 
     /**
      *  Gets query and returns instance of class
@@ -280,10 +319,7 @@ class Datatables
     {
         $input = $this->input;
         $connection = $this->connection;
-        $columns = $this->cleanColumns($this->columns, false);
-        if ($this->mDataSupport) {
-            $columns = $input['columns'];
-        }
+        $columns = $input['columns'];
 
         if ($this->input['search']['value'] != '') {
             $this->query->where(function ($query) use ($columns, $input, $connection) {
