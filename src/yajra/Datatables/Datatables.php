@@ -7,6 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
+ * @version    4.0.7
  */
 
 use Closure;
@@ -277,27 +278,21 @@ class Datatables
      */
     private function doFiltering()
     {
-        $columns = $this->cleanColumns($this->columns, false);
-        if ($this->mDataSupport) {
-            $columns = $this->useDataColumns();
-        }
-
         $input = $this->input;
         $connection = $this->connection;
+        $columns = $this->cleanColumns($this->columns, false);
+        if ($this->mDataSupport) {
+            $columns = $input['columns'];
+        }
 
         if ($this->input['search']['value'] != '') {
             $this->query->where(function ($query) use ($columns, $input, $connection) {
-                for ($i = 0, $c = count($input['columns']); $i < $c; $i++) {
-                    if ($input['columns'][$i]['searchable'] == "true" && isset($columns[$i])) {
-                        $column = $columns[$i];
+                for ($i = 0, $c = count($columns); $i < $c; $i++) {
+                    if ($columns[$i]['searchable'] == "true") {
+                        $column = $columns[$i]['name'];
 
                         if (stripos($column, ' AS ') !== false) {
                             $column = substr($column, stripos($column, ' AS ') + 4);
-                        }
-
-                        // if column name was set on DT, use it instead
-                        if ( ! empty($input['columns'][$i]['name'])) {
-                            $column = $input['columns'][$i]['name'];
                         }
 
                         // there's no need to put the prefix unless the column name is prefixed with the table name.
@@ -330,18 +325,18 @@ class Datatables
         }
 
         // column search
-        for ($i = 0, $c = count($this->input['columns']); $i < $c; $i++) {
-            if ($this->input['columns'][$i]['searchable'] == "true" && $this->input['columns'][$i]['search']['value'] != '') {
-                $keyword = '%' . $this->input['columns'][$i]['search']['value'] . '%';
+        for ($i = 0, $c = count($columns); $i < $c; $i++) {
+            if ($columns[$i]['searchable'] == "true" && $columns[$i]['search']['value'] != '') {
+                $keyword = '%' . $columns[$i]['search']['value'] . '%';
 
                 if (Config::get('datatables.search.use_wildcards', false)) {
-                    $keyword = $this->wildcardLikeString($this->input['columns'][$i]['search']['value']);
+                    $keyword = $this->wildcardLikeString($columns[$i]['search']['value']);
                 }
 
                 if (Config::get('datatables.search.case_insensitive', false)) {
                     $this->query->where($this->connection->raw('LOWER(' . $column . ')'), 'LIKE', strtolower($keyword));
                 } else {
-                    $col = strstr($columns[$i], '(') ? $this->connection->raw($columns[$i]) : $columns[$i];
+                    $col = strstr($columns[$i]['name'], '(') ? $this->connection->raw($columns[$i]) : $columns[$i]['name'];
                     $this->query->where($col, 'LIKE', $keyword);
                 }
             }
