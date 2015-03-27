@@ -84,6 +84,7 @@ class Datatables
             // DT version 1.10+
             $input['version'] = '1.10';
             $formatted_input = $input;
+            $this->new_version = true;
         } else {
             // DT version < 1.10
             $formatted_input['version'] = '1.9';
