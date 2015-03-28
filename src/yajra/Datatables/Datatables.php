@@ -327,8 +327,10 @@ class Datatables
         if ( ! $this->new_version) {
             for ($i=0; $i < count($columns); $i++) {
                 $columns[$i]['name'] = $this->columns[$i];
-                if (stripos($columns[$i]['name'], ' AS ') !== false) {
+                if (stripos($columns[$i]['name'], ' AS ') !== false or
+                    $columns[$i]['name'] instanceof Illuminate\Database\Query\Expression) {
                     $columns[$i]['searchable'] = false;
+                    $columns[$i]['orderable'] = false;
                 }
             }
         }
