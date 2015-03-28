@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    4.0.8
+ * @version    4.0.10
  */
 
 use Closure;
@@ -67,6 +67,7 @@ class Datatables
     {
         $request = new Request($_GET, $_POST);
         $this->setData($this->processData($request->input()));
+
         return $this;
     }
 
@@ -322,10 +323,17 @@ class Datatables
         $connection = $this->connection;
         $columns = $input['columns'];
 
+        // if older version, set the column name to query's fields
+        if ( ! $this->new_version) {
+            for ($i=0; $i < count($columns); $i++) {
+                $columns[$i]['name'] = $this->columns[$i];
+            }
+        }
+
         if ($this->input['search']['value'] != '') {
             $this->query->where(function ($query) use ($columns, $input, $connection) {
                 for ($i = 0, $c = count($columns); $i < $c; $i++) {
-                    if ($columns[$i]['searchable'] == "true") {
+                    if ($columns[$i]['searchable'] == "true" and ! empty($columns[$i]['name'])) {
                         $column = $columns[$i]['name'];
 
                         if (stripos($column, ' AS ') !== false) {
@@ -336,7 +344,7 @@ class Datatables
                         $column = $this->prefixColumn($column);
 
                         $keyword = '%' . $input['search']['value'] . '%';
-                        if (Config::get('datatables.search.use_wildcards')) {
+                        if ($this->isWildcard()) {
                             $keyword = $this->wildcardLikeString($input['search']['value']);
                         }
 
@@ -349,7 +357,7 @@ class Datatables
                             $cast_end = " as TEXT)";
                         }
 
-                        if (Config::get('datatables.search.case_insensitive', false)) {
+                        if ($this->isCaseInsensitive()) {
                             $query->orWhere($connection->raw('LOWER(' . $cast_begin . $column . $cast_end . ')'),
                                 'LIKE', strtolower($keyword));
                         } else {
@@ -362,22 +370,54 @@ class Datatables
         }
 
         // column search
+        $this->doColumnSearch($columns);
+    }
+
+    /**
+     * Perform column search
+     * @param  array  $columns
+     * @return void
+     */
+    public function doColumnSearch(array $columns)
+    {
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
-            if ($columns[$i]['searchable'] == "true" && $columns[$i]['search']['value'] != '') {
+            if ($columns[$i]['searchable'] == "true" and ! empty($columns[$i]['search']['value']) and ! empty($columns[$i]['name'])) {
+                $column = $columns[$i]['name'];
                 $keyword = '%' . $columns[$i]['search']['value'] . '%';
 
-                if (Config::get('datatables.search.use_wildcards', false)) {
+                if ($this->isWildcard()) {
                     $keyword = $this->wildcardLikeString($columns[$i]['search']['value']);
                 }
 
-                if (Config::get('datatables.search.case_insensitive', false)) {
+                if ($this->isCaseInsensitive()) {
                     $this->query->where($this->connection->raw('LOWER(' . $column . ')'), 'LIKE', strtolower($keyword));
                 } else {
-                    $col = strstr($columns[$i]['name'], '(') ? $this->connection->raw($columns[$i]) : $columns[$i]['name'];
+                    $col = strstr($column, '(') ? $this->connection->raw($column) : $column;
                     $this->query->where($col, 'LIKE', $keyword);
                 }
             }
         }
+    }
+
+    /**
+     * get config use wild card status
+     *
+     * @return boolean
+     */
+    public function isWildcard()
+    {
+        return Config::get('datatables.search.use_wildcards', false);
+    }
+
+
+    /**
+     * get config is case insensitive status
+     *
+     * @return boolean
+     */
+    public function isCaseInsensitive()
+    {
+        return Config::get('datatables.search.case_insensitive', false);
     }
 
     /**
