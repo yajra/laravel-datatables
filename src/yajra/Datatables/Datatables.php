@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    4.0.10
+ * @version    4.0.11
  */
 
 use Closure;
@@ -327,17 +327,22 @@ class Datatables
         if ( ! $this->new_version) {
             for ($i=0; $i < count($columns); $i++) {
                 $columns[$i]['name'] = $this->columns[$i];
+                if (stripos($columns[$i]['name'], ' AS ') !== false or
+                    $columns[$i]['name'] instanceof Illuminate\Database\Query\Expression) {
+                    $columns[$i]['searchable'] = false;
+                    $columns[$i]['orderable'] = false;
+                }
             }
         }
 
-        if ($this->input['search']['value'] != '') {
+        if ( ! empty($this->input['search']['value'])) {
             $this->query->where(function ($query) use ($columns, $input, $connection) {
                 for ($i = 0, $c = count($columns); $i < $c; $i++) {
                     if ($columns[$i]['searchable'] == "true" and ! empty($columns[$i]['name'])) {
                         $column = $columns[$i]['name'];
 
                         if (stripos($column, ' AS ') !== false) {
-                            $column = substr($column, stripos($column, ' AS ') + 4);
+                            $column = $this->getColumnName($column);
                         }
 
                         // there's no need to put the prefix unless the column name is prefixed with the table name.
