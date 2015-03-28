@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    3.3.11
+ * @version    3.3.13
  */
 
 use Closure;
@@ -323,10 +323,17 @@ class Datatables
         $connection = $this->connection;
         $columns = $input['columns'];
 
+        // if older version, set the column name to query's fields
+        if ( ! $this->new_version) {
+            for ($i=0; $i < count($columns); $i++) {
+                $columns[$i]['name'] = $this->columns[$i];
+            }
+        }
+
         if ($this->input['search']['value'] != '') {
             $this->query->where(function ($query) use ($columns, $input, $connection) {
                 for ($i = 0, $c = count($columns); $i < $c; $i++) {
-                    if ($columns[$i]['searchable'] == "true") {
+                    if ($columns[$i]['searchable'] == "true" and ! empty($columns[$i]['name'])) {
                         $column = $columns[$i]['name'];
 
                         if (stripos($column, ' AS ') !== false) {
