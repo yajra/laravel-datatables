@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    3.3.15
+ * @version    3.4.0
  */
 
 use Closure;
@@ -544,7 +544,7 @@ class Datatables
      */
     private function doPaging()
     {
-        if ( ! is_null($this->input['start']) && ! is_null($this->input['length'])) {
+        if ( ! empty($this->input['start']) && ! empty($this->input['length']) && $this->input['length'] != -1) {
             $this->query->skip($this->input['start'])
                 ->take((int) $this->input['length'] > 0 ? $this->input['length'] : 10);
         }
