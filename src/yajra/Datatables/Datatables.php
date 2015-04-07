@@ -538,13 +538,13 @@ class Datatables
     }
 
     /**
-     *  Datatables paging
+     * Datatables paging
      *
      * @return null
      */
     private function doPaging()
     {
-        if ( ! empty($this->input['start']) && ! empty($this->input['length']) && $this->input['length'] != -1) {
+        if ( ! is_null($this->input['start']) && ! is_null($this->input['length']) && $this->input['length'] != -1) {
             $this->query->skip($this->input['start'])
                 ->take((int) $this->input['length'] > 0 ? $this->input['length'] : 10);
         }
