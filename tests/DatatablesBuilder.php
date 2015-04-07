@@ -109,7 +109,6 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		$builder->shouldReceive('skip')->once()->andReturn($builder);
 		$builder->shouldReceive('take')->once()->andReturn($builder);
 		$builder->shouldReceive('count')->times(2)->andReturn(2);
-		$builder->shouldReceive('first')->once()->andReturn(array('id' => 1,'name' => 'foo'));
 
 		Config::shouldReceive('get');
 
@@ -265,7 +264,6 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		$builder->shouldReceive('skip')->once()->andReturn($builder);
 		$builder->shouldReceive('take')->once()->andReturn($builder);
 		$builder->shouldReceive('count')->times(2)->andReturn(2);
-		$builder->shouldReceive('first')->once()->andReturn(array('id' => 1,'name' => 'foo'));
 
 		Config::shouldReceive('get');
 
