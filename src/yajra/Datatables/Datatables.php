@@ -737,8 +737,6 @@ class Datatables
      */
     private function output()
     {
-        $sColumns = $this->getOutputColumns();
-
         if ($this->new_version) {
             $output = [
                 "draw"            => (int) $this->input['draw'],
@@ -747,6 +745,7 @@ class Datatables
                 "data"            => $this->result_array_r,
             ];
         } else {
+            $sColumns = $this->getOutputColumns();
             $output = [
                 "sEcho"                => (int) $this->input['draw'],
                 "iTotalRecords"        => $this->totalRecords,
