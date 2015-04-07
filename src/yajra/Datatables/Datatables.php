@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    3.3.14
+ * @version    3.3.15
  */
 
 use Closure;
@@ -37,7 +37,7 @@ class Datatables
 
     protected $extra_columns = [];
 
-    protected $excess_columns = [];
+    protected $excess_columns = ['rn', 'row_num'];
 
     protected $edit_columns = [];
 
@@ -177,24 +177,6 @@ class Datatables
         $this->query = $query;
         $this->query_type = $query instanceof Builder ? 'fluent' : 'eloquent';
         $this->columns = $this->query_type == 'eloquent' ? $this->query->getQuery()->columns : $this->query->columns;
-        $this->removeDBDriverColumns();
-    }
-
-    /**
-     * remove DB driver specific columns
-     *
-     * @return array
-     */
-    public function removeDBDriverColumns()
-    {
-        // unset db driver specific columns
-        foreach ($this->columns as $key => $value) {
-            if (in_array($value, ['rn', 'row_num'])) {
-                unset ($this->columns[$key]);
-            }
-        }
-
-        return $this->columns = array_values($this->columns);
     }
 
     /**
@@ -450,6 +432,10 @@ class Datatables
      */
     public function useDataColumns()
     {
+        if ( ! count($this->result_array_r)) {
+            return [];
+        }
+
         $query = clone $this->query;
         if ($this->query_type == 'eloquent') {
             $this->columns = array_keys((array) $query->getQuery()->first());
@@ -457,7 +443,7 @@ class Datatables
             $this->columns = array_keys((array) $query->first());
         }
 
-        return $this->removeDBDriverColumns();
+        return $this->columns;
     }
 
     /**
@@ -719,16 +705,29 @@ class Datatables
     private function regulateArray()
     {
         if ($this->mDataSupport) {
-            $this->result_array_r = $this->result_array;
+            foreach ($this->result_array as $key => $value) {
+                $this->result_array_r[] = $this->removeExcessColumns($value);
+            }
         } else {
             foreach ($this->result_array as $key => $value) {
-                foreach ($this->excess_columns as $evalue) {
-                    unset($value[$evalue]);
-                }
-
-                $this->result_array_r[] = array_values($value);
+                $this->result_array_r[] = Arr::flatten($this->removeExcessColumns($value));
             }
         }
+    }
+
+    /**
+     * remove declared excess columns
+     *
+     * @param  array  $data
+     * @return array
+     */
+    private function removeExcessColumns(array $data)
+    {
+        foreach ($this->excess_columns as $evalue) {
+            unset($data[$evalue]);
+        }
+
+        return $data;
     }
 
     /**
@@ -738,6 +737,8 @@ class Datatables
      */
     private function output()
     {
+        $sColumns = $this->getOutputColumns();
+
         if ($this->new_version) {
             $output = [
                 "draw"            => (int) $this->input['draw'],
@@ -746,7 +747,6 @@ class Datatables
                 "data"            => $this->result_array_r,
             ];
         } else {
-            $sColumns = array_merge_recursive($this->columns, $this->sColumns);
             $output = [
                 "sEcho"                => (int) $this->input['draw'],
                 "iTotalRecords"        => $this->totalRecords,
@@ -761,6 +761,18 @@ class Datatables
         }
 
         return new JsonResponse($output);
+    }
+
+    /**
+     * get sColumns output
+     *
+     * @return array
+     */
+    private function getOutputColumns()
+    {
+        $columns = array_diff($this->useDataColumns(), $this->excess_columns);
+
+        return Arr::flatten($columns);
     }
 
     /**
