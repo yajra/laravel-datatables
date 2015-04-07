@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    4.1.0
+ * @version    4.1.1
  */
 
 use Closure;
@@ -23,45 +23,135 @@ use Illuminate\Support\Str;
 class Datatables
 {
 
+    /**
+     * Database connection used
+     *
+     * @var Illuminate\Database\Connection
+     */
     public $connection;
 
+    /**
+     * Query object
+     *
+     * @var Eloquent|Builder
+     */
     public $query;
 
+    /**
+     * Input variables
+     *
+     * @var array
+     */
     public $input;
 
+    /**
+     * Array of result columns/fields
+     *
+     * @var array
+     */
     public $columns = [];
 
+    /**
+     * Array of last columns
+     *
+     * @var array
+     */
     public $last_columns = [];
 
+    /**
+     * Query type
+     *
+     * @var string
+     */
     protected $query_type;
 
+    /**
+     * Array of columns to be added on result
+     *
+     * @var array
+     */
     protected $extra_columns = [];
 
+    /**
+     * Array of columns to be removed on output
+     *
+     * @var array
+     */
     protected $excess_columns = ['rn', 'row_num'];
 
+    /**
+     * Array of columns to be edited
+     *
+     * @var array
+     */
     protected $edit_columns = [];
 
+    /**
+     * sColumns to ouput
+     *
+     * @var array
+     */
     protected $sColumns = [];
 
+    /**
+     * Total records
+     *
+     * @var integer
+     */
     protected $totalRecords = 0;
 
+    /**
+     * Total filtered records
+     *
+     * @var integer
+     */
     protected $filteredRecords = 0;
 
+    /**
+     * Eloquent/Builder result
+     *
+     * @var array
+     */
     protected $result_object;
 
+    /**
+     * Result array
+     *
+     * @var array
+     */
     protected $result_array = [];
 
+    /**
+     * Regulated result array
+     *
+     * @var array
+     */
     protected $result_array_r = [];
 
-    protected $mDataSupport;
+    /**
+     * Flag for DT support for mdata
+     *
+     * @var boolean
+     */
+    protected $mDataSupport = false;
 
+    /**
+     * Auto-filter flag
+     * @var boolean
+     */
     protected $autoFilter = true;
 
+    /**
+     * Flag for DT version
+     *
+     * @var boolean
+     */
     protected $new_version = false;
 
     /**
      * Read Input into $this->input according to jquery.dataTables.js version
      *
+     * @return this
      */
     public function __construct()
     {
@@ -75,7 +165,6 @@ class Datatables
      * Will take an input array and return the formatted dataTables data as an array
      *
      * @param array $input
-     *
      * @return array
      */
     public function processData($input = [])
@@ -122,6 +211,8 @@ class Datatables
     }
 
     /**
+     * Get input data
+     *
      * @return array $this->input
      */
     public function getData()
@@ -141,7 +232,7 @@ class Datatables
     }
 
     /**
-     *  Gets query and returns instance of class
+     * Gets query and returns instance of class
      *
      * @param $query
      * @return static
@@ -168,7 +259,7 @@ class Datatables
     }
 
     /**
-     *  Saves given query and determines its type
+     * Saves given query and determines its type
      *
      * @param $query
      */
@@ -180,7 +271,7 @@ class Datatables
     }
 
     /**
-     *  Creates an array which contains published last columns in sql with their index
+     * Creates an array which contains published last columns in sql with their index
      *
      * @return null
      */
@@ -218,7 +309,7 @@ class Datatables
     }
 
     /**
-     * get column name from string
+     * Get column name from string
      *
      * @param  string $str
      * @return string
@@ -239,7 +330,7 @@ class Datatables
     }
 
     /**
-     * get total records
+     * Get total records
      *
      * @return int
      */
@@ -249,7 +340,7 @@ class Datatables
     }
 
     /**
-     *  Counts current query
+     * Counts current query
      *
      * @return int
      */
@@ -260,7 +351,7 @@ class Datatables
         // if its a normal query ( no union ) replace the select with static text to improve performance
         $myQuery = clone $query;
         if ( ! preg_match('/UNION/i', strtoupper($myQuery->toSql()))) {
-            $myQuery->select($this->connection->Raw("'1' as row_count"));
+            $myQuery->select($this->connection->raw("'1' as row_count"));
         }
 
         return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
@@ -268,7 +359,7 @@ class Datatables
     }
 
     /**
-     *  Organizes works
+     * Organizes works
      *
      * @param bool $mDataSupport
      * @return null
@@ -295,7 +386,7 @@ class Datatables
     }
 
     /**
-     *  Datatable filtering
+     * Datatable filtering
      *
      * @return null
      */
@@ -387,7 +478,7 @@ class Datatables
     }
 
     /**
-     * get config use wild card status
+     * Get config use wild card status
      *
      * @return boolean
      */
@@ -398,7 +489,7 @@ class Datatables
 
 
     /**
-     * get config is case insensitive status
+     * Get config is case insensitive status
      *
      * @return boolean
      */
@@ -408,7 +499,7 @@ class Datatables
     }
 
     /**
-     * clean columns name
+     * Clean columns name
      *
      * @param array $cols
      * @param bool $use_alias
@@ -528,7 +619,7 @@ class Datatables
     }
 
     /**
-     * get filtered records
+     * Get filtered records
      *
      * @return int
      */
@@ -551,7 +642,7 @@ class Datatables
     }
 
     /**
-     *  Datatable ordering
+     * Datatable ordering
      *
      * @return null
      */
@@ -584,7 +675,7 @@ class Datatables
     }
 
     /**
-     *  Gets results from prepared query
+     * Gets results from prepared query
      *
      * @return null
      */
@@ -603,7 +694,7 @@ class Datatables
     }
 
     /**
-     *  Places extra columns
+     * Places extra columns
      *
      * @return null
      */
@@ -646,7 +737,7 @@ class Datatables
     }
 
     /**
-     *  Parses and compiles strings by using Blade Template System
+     * Parses and compiles strings by using Blade Template System
      *
      * @return string
      */
@@ -672,7 +763,7 @@ class Datatables
     }
 
     /**
-     *  Places item of extra columns into result_array by care of their order
+     * Places item of extra columns into result_array by care of their order
      *
      * @return null
      */
@@ -698,7 +789,7 @@ class Datatables
     }
 
     /**
-     *  Converts result_array number indexed array and consider excess columns
+     * Converts result_array number indexed array and consider excess columns
      *
      * @return null
      */
@@ -716,7 +807,7 @@ class Datatables
     }
 
     /**
-     * remove declared excess columns
+     * Remove declared excess columns
      *
      * @param  array  $data
      * @return array
@@ -763,7 +854,7 @@ class Datatables
     }
 
     /**
-     * get sColumns output
+     * Get sColumns output
      *
      * @return array
      */
@@ -775,7 +866,7 @@ class Datatables
     }
 
     /**
-     * alias for addColumn for backward compatibility
+     * Alias for addColumn for backward compatibility
      *
      * @param string $name
      * @param string $content
@@ -805,7 +896,7 @@ class Datatables
     }
 
     /**
-     * alias for editColumn for backward compatibility
+     * Alias for editColumn for backward compatibility
      *
      * @param  string $name
      * @param  string $content
@@ -817,7 +908,7 @@ class Datatables
     }
 
     /**
-     * edit column's content
+     * Edit column's content
      *
      * @param  string $name
      * @param  string $content
@@ -831,7 +922,7 @@ class Datatables
     }
 
     /**
-     * alias for removeColumn for backward compatibility
+     * Alias for removeColumn for backward compatibility
      *
      * @return Datatables
      */
@@ -844,7 +935,7 @@ class Datatables
     }
 
     /**
-     * remove column from collection
+     * Remove column from collection
      *
      * @return Datatables
      */
@@ -857,7 +948,7 @@ class Datatables
     }
 
     /**
-     * set auto filter off and run your own filter
+     * Set auto filter off and run your own filter
      *
      * @param callable $callback
      * @return Datatables
@@ -875,6 +966,8 @@ class Datatables
 
     /**
      * Returns current database driver
+     *
+     * @return string
      */
     protected function databaseDriver()
     {
