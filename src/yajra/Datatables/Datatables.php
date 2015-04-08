@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    3.4.3.1
+ * @version    3.4.3.2
  */
 
 use Closure;
@@ -435,8 +435,6 @@ class Datatables
                             $cast_end = " as TEXT)";
                         }
 
-                        // DB escase column to prevent error on reserved words
-                        $column = $connection->getPdo()->quote($column);
                         if ($this->isCaseInsensitive()) {
                             $query->orWhere($connection->raw('LOWER(' . $cast_begin . $column . $cast_end . ')'),
                                 'LIKE', strtolower($keyword));
@@ -469,8 +467,6 @@ class Datatables
                     $keyword = $this->wildcardLikeString($columns[$i]['search']['value']);
                 }
 
-                // DB escase column to prevent error on reserved words
-                $column = $this->connection->getPdo()->quote($column);
                 if ($this->isCaseInsensitive()) {
                     $this->query->where($this->connection->raw('LOWER(' . $column . ')'), 'LIKE', strtolower($keyword));
                 } else {
