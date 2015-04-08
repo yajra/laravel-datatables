@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    3.4.3.2
+ * @version    3.4.4
  */
 
 use Closure;
@@ -435,11 +435,12 @@ class Datatables
                             $cast_end = " as TEXT)";
                         }
 
+                        // wrap column possibly allow reserved words to be used as column
+                        $column = $this->wrapColumn($column);
                         if ($this->isCaseInsensitive()) {
-                            $query->orWhere($connection->raw('LOWER(' . $cast_begin . $column . $cast_end . ')'),
-                                'LIKE', strtolower($keyword));
+                            $query->orWhereRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?', [strtolower($keyword)]);
                         } else {
-                            $query->orWhere($connection->raw($cast_begin . $column . $cast_end), 'LIKE', $keyword);
+                            $query->orWhereRaw($cast_begin . $column . $cast_end . ' LIKE ?', [$keyword]);
                         }
                     }
                 }
@@ -467,8 +468,10 @@ class Datatables
                     $keyword = $this->wildcardLikeString($columns[$i]['search']['value']);
                 }
 
+                // wrap column possibly allow reserved words to be used as column
+                $column = $this->wrapColumn($column);
                 if ($this->isCaseInsensitive()) {
-                    $this->query->where($this->connection->raw('LOWER(' . $column . ')'), 'LIKE', strtolower($keyword));
+                    $this->query->whereRaw('LOWER(' . $column . ') LIKE ?', [strtolower($keyword)]);
                 } else {
                     $col = strstr($column, '(') ? $this->connection->raw($column) : $column;
                     $this->query->where($col, 'LIKE', $keyword);
@@ -978,6 +981,26 @@ class Datatables
         }
 
         return $query->getConnection()->getDriverName();
+    }
+
+    /**
+     * Wrap column depending on database type
+     *
+     * @param  string $value
+     * @return string
+     */
+    protected function wrapColumn($value)
+    {
+        switch ($this->databaseDriver()) {
+            case 'mysql':
+                return '`'.str_replace('`', '``', $value).'`';
+
+            case 'sqlsrv':
+                return '['.str_replace(']', ']]', $value).']';
+
+            default:
+                return $value;
+        }
     }
 
 }
