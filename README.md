@@ -1,4 +1,4 @@
-## Datatables Package for Laravel 4|5 (Oracle Support)
+## Datatables Package for Laravel 4|5
 
 [![Latest Stable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/stable.png)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![Total Downloads](https://poser.pugx.org/yajra/laravel-datatables-oracle/downloads.png)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
@@ -14,7 +14,9 @@ This package is created to handle server-side works of [DataTables](http://datat
 - Supporting Eloquent ORM and Fluent Query Builder
 - Adding or editing content of columns and removing columns
 - Templating new or current columns via Blade Template Engine
-
+- Works will **ALL the DATABASE** supported by Laravel
+- Works with **Oracle Database** using [Laravel-OCI8](https://github.com/yajra/laravel-oci8) package
+- Works with [DataTables](http://datatables.net) v1.9 and v1.10
 
 ### Laravel 4 Installation
 
@@ -78,13 +80,17 @@ You are free to use all Eloquent ORM and Fluent Query Builder features.
 
 It is better, you know these:
 - When you use select method on Eloquent or Fluent Query, you choose columns
-- You can easily edit columns by using ```editColumn($column, $content)```
-- You can remove any column by using ```removeColumn($column)``` method
-- You can add columns by using ```addColumn($column_name, $content, $order)```
-- You can override the default filter function by using ```filter(function($query){})```
-- You can use Blade Template Engine in your $content values
+- You can easily edit columns by using `editColumn($column, $content)`
+- You can remove any column by using `removeColumn($column)` method
+- You can add columns by using `addColumn($column_name, $content, $order)`
+- You can override the default filter function by using `filter(function($query){})`
+- You can use Blade Template Engine in your `$content` values
 - The name of columns is set by returned array.
     - That means, for 'posts.id' it is 'id' and also for 'owner.name as ownername' it is 'ownername'
+- You can easily toggle datatables mdata support by passing `true/false` on `make` function. `->make(true)`
+
+### Suggestions/Recommendations:
+- For better flexibility, I suggest using Datatables v1.10++ and declare your scripts stated on [Example #5](#example-5) and [Example View and Controller](#Example-View-and-Controller)
 
 
 ### Examples
