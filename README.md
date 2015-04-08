@@ -14,7 +14,7 @@ This package is created to handle server-side works of [DataTables](http://datat
 - Supporting Eloquent ORM and Fluent Query Builder
 - Adding or editing content of columns and removing columns
 - Templating new or current columns via Blade Template Engine
-- Works will **ALL the DATABASE** supported by Laravel
+- Works with **ALL the DATABASE** supported by Laravel
 - Works with **Oracle Database** using [Laravel-OCI8](https://github.com/yajra/laravel-oci8) package
 - Works with [DataTables](http://datatables.net) v1.9 and v1.10
 
