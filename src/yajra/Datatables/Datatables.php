@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    4.1.2.1
+ * @version    4.1.3
  */
 
 use Closure;
@@ -470,7 +470,7 @@ class Datatables
                 }
 
                 // DB escase column to prevent error on reserved words
-                $column = $connection()->getQueryGrammar()->wrapValue($column);
+                $column = $this->connection()->getQueryGrammar()->wrapValue($column);
                 if ($this->isCaseInsensitive()) {
                     $this->query->where($this->connection->raw('LOWER(' . $column . ')'), 'LIKE', strtolower($keyword));
                 } else {
