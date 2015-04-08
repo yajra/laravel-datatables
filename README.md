@@ -90,7 +90,7 @@ It is better, you know these:
 - You can easily toggle datatables mdata support by passing `true/false` on `make` function. `->make(true)`
 
 ### Suggestions/Recommendations:
-- For better flexibility, I suggest using Datatables v1.10++ and declare your scripts stated on [Example #5](#example-5) and [Example View and Controller](#Example-View-and-Controller)
+- For better flexibility, I suggest using Datatables v1.10++ and declare your scripts as stated on [Example #5](#example-5) and [Example View and Controller](#example-view-and-controller)
 
 
 ### Examples
