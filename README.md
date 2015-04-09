@@ -8,7 +8,7 @@
 
 **About**
 
-This package is created to handle server-side works of [DataTables](http://datatables.net) jQuery Plugin by using Eloquent ORM or Fluent Query Builder.
+This package is created to handle [server-side](http://datatables.net/examples/server_side/simple.html) works of [DataTables](http://datatables.net) jQuery Plugin via [AJAX option](https://datatables.net/reference/option/ajax) by using Eloquent ORM or Fluent Query Builder.
 
 ### Feature Overview
 - Supporting Eloquent ORM and Fluent Query Builder
