@@ -393,7 +393,6 @@ class Datatables
     private function doFiltering()
     {
         $input = $this->input;
-        $connection = $this->connection;
         $columns = $input['columns'];
 
         // if older version, set the column name to query's fields
@@ -410,7 +409,7 @@ class Datatables
         }
 
         if ( ! empty($this->input['search']['value'])) {
-            $this->query->where(function ($query) use ($columns, $input, $connection) {
+            $this->query->where(function ($query) use ($columns, $input) {
                 for ($i = 0, $c = count($columns); $i < $c; $i++) {
                     if ($columns[$i]['searchable'] == "true" and ! empty($columns[$i]['name'])) {
                         $column = $columns[$i]['name'];
@@ -431,7 +430,7 @@ class Datatables
                         // If it is, cast the current column to TEXT datatype
                         $cast_begin = null;
                         $cast_end = null;
-                        if ($connection->getDriverName() === 'pgsql') {
+                        if ($this->databaseDriver() === 'pgsql') {
                             $cast_begin = "CAST(";
                             $cast_end = " as TEXT)";
                         }
@@ -446,7 +445,6 @@ class Datatables
                     }
                 }
             });
-
         }
 
         // column search
