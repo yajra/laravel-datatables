@@ -97,12 +97,12 @@ It is better, you know these:
     - a `closure` function
     - a `blade` template
 - You can add `DT_RowData` via these functions:
-    - `->setRowData(array())` to add batch data using an array (this)
+    - `->setRowData(array())` to add batch data using an array
     - `->addRowData($key, $value)` to append single data on array (Note: `setRowData` should be called first if you plan on using both functions)
     - the value parameter can also be a `string`, `closure` or `blade` template.
 - You can add `DT_RowAttr` via these functions:
     - Note: This option will only work on DataTables 1.10.5 or newer
-    - `->setRowAttr(array())` to add batch data using an array (this)
+    - `->setRowAttr(array())` to add batch data using an array
     - `->addRowAttr($key, $value)` to append single data on array (Note: `setRowAttr` should be called first if you plan on using both functions)
     - the value parameters can also be a `string`, `closure` or `blade` template.
 
