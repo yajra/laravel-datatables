@@ -401,7 +401,8 @@ class Datatables
             for ($i=0; $i < count($columns); $i++) {
                 $columns[$i]['name'] = $this->columns[$i];
                 if (stripos($columns[$i]['name'], ' AS ') !== false or
-                    $columns[$i]['name'] instanceof Illuminate\Database\Query\Expression) {
+                    $columns[$i]['name'] instanceof \Illuminate\Database\Query\Expression) {
+                    $columns[$i]['name'] = '';
                     $columns[$i]['searchable'] = false;
                     $columns[$i]['orderable'] = false;
                 }
