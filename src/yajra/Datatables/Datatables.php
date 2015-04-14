@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    4.1.4
+ * @version    4.1.5
  */
 
 use Closure;
@@ -868,19 +868,6 @@ class Datatables
     }
 
     /**
-     * Alias for addColumn for backward compatibility
-     *
-     * @param string $name
-     * @param string $content
-     * @param bool|int $order
-     * @return Datatables
-     */
-    public function add_column($name, $content, $order = false)
-    {
-        return $this->addColumn($name, $content, $order);
-    }
-
-    /**
      * Add column in collection
      *
      * @param string $name
@@ -898,18 +885,6 @@ class Datatables
     }
 
     /**
-     * Alias for editColumn for backward compatibility
-     *
-     * @param  string $name
-     * @param  string $content
-     * @return Datatables
-     */
-    public function edit_column($name, $content)
-    {
-        return $this->editColumn($name, $content);
-    }
-
-    /**
      * Edit column's content
      *
      * @param  string $name
@@ -919,19 +894,6 @@ class Datatables
     public function editColumn($name, $content)
     {
         $this->edit_columns[] = ['name' => $name, 'content' => $content];
-
-        return $this;
-    }
-
-    /**
-     * Alias for removeColumn for backward compatibility
-     *
-     * @return Datatables
-     */
-    public function remove_column()
-    {
-        $names = func_get_args();
-        $this->excess_columns = array_merge($this->excess_columns, $names);
 
         return $this;
     }
@@ -990,15 +952,37 @@ class Datatables
      */
     protected function wrapColumn($value)
     {
-        switch ($this->databaseDriver()) {
-            case 'mysql':
-                return '`'.str_replace('`', '``', $value).'`';
+        $parts = explode('.', $value);
+        $column = '';
+        foreach ($parts as $key) {
+            switch ($this->databaseDriver()) {
+                case 'mysql':
+                    $column .= '`'.str_replace('`', '``', $key).'`' . '.';
+                    break;
 
-            case 'sqlsrv':
-                return '['.str_replace(']', ']]', $value).']';
+                case 'sqlsrv':
+                    $column .= '['.str_replace(']', ']]', $key).']' . '.';
+                    break;
 
-            default:
-                return $value;
+                default:
+                    $column .= $key;
+            }
+        }
+
+        return substr($column, 0, strlen($column) - 1);
+    }
+
+    /**
+     * Allows previous API calls where the methods were snake_case.
+     * Will convert a camelCase API call to a snake_case call.
+     */
+    public function __call($name, $arguments)
+    {
+        $name = Str::camel(Str::lower($name));
+        if (method_exists($this, $name)) {
+            return call_user_func_array(array($this, $name), $arguments);
+        } else {
+            trigger_error('Call to undefined method ' . __CLASS__ . '::' . $name . '()', E_USER_ERROR);
         }
     }
 
