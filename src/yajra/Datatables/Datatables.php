@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    4.1.5.1
+ * @version    4.1.6
  */
 
 use Closure;
@@ -453,6 +453,7 @@ class Datatables
 
     /**
      * Perform column search
+     *
      * @param  array  $columns
      * @return void
      */
@@ -461,11 +462,7 @@ class Datatables
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($columns[$i]['searchable'] == "true" and ! empty($columns[$i]['search']['value']) and ! empty($columns[$i]['name'])) {
                 $column = $columns[$i]['name'];
-                $keyword = '%' . $columns[$i]['search']['value'] . '%';
-
-                if ($this->isWildcard()) {
-                    $keyword = $this->wildcardLikeString($columns[$i]['search']['value']);
-                }
+                $keyword = $this->setupKeyword ($columns[$i]['search']['value']);
 
                 // wrap column possibly allow reserved words to be used as column
                 $column = $this->wrapColumn($column);
@@ -477,6 +474,24 @@ class Datatables
                 }
             }
         }
+    }
+
+    /**
+     * Setup search keyword
+     *
+     * @param  string $value
+     * @return string
+     */
+    public function setupKeyword($value)
+    {
+        $keyword = '%' . $value . '%';
+        if ($this->isWildcard()) {
+            $keyword = $this->wildcardLikeString($value);
+        }
+        // remove escaping slash added on js script request
+        $keyword = str_replace('\\', '%', $keyword);
+
+        return $keyword;
     }
 
     /**
