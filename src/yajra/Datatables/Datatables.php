@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    3.4.5
+ * @version    3.4.5.1
  */
 
 use Closure;
@@ -965,7 +965,7 @@ class Datatables
                     break;
 
                 default:
-                    $column .= $key;
+                    $column .= $key . '.';
             }
         }
 
