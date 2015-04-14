@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    3.4.6
+ * @version    3.5.0
  */
 
 use Closure;
@@ -147,6 +147,34 @@ class Datatables
      * @var boolean
      */
     protected $new_version = false;
+
+    /**
+     * DT_RowID template
+     *
+     * @var string
+     */
+    protected $row_id_tmpl;
+
+    /**
+     * DT_RowClass template
+     *
+     * @var string
+     */
+    protected $row_class_tmpl;
+
+    /**
+     * DT_RowData template
+     *
+     * @var array
+     */
+    protected $row_data_tmpls = array();
+
+    /**
+     * DT_RowAttr template
+     *
+     * @var array
+     */
+    protected $row_attr_tmpls = array();
 
     /**
      * Read Input into $this->input according to jquery.dataTables.js version
@@ -814,13 +842,56 @@ class Datatables
     {
         if ($this->mDataSupport) {
             foreach ($this->result_array as $key => $value) {
+                $this->setupDTRowVariables($key, $value);
                 $this->result_array_r[] = $this->removeExcessColumns($value);
             }
         } else {
             foreach ($this->result_array as $key => $value) {
+                $this->setupDTRowVariables($key, $value);
                 $this->result_array_r[] = Arr::flatten($this->removeExcessColumns($value));
             }
         }
+    }
+
+    /**
+     * Setup additional DT row variables
+     *
+     * @param  string $key
+     * @param  array  &$data
+     * @return array
+     */
+    protected function setupDTRowVariables($key, array &$data)
+    {
+        if ( ! empty($this->row_id_tmpl)) {
+            if ( ! is_callable($this->row_id_tmpl) and Arr::get($data, $this->row_id_tmpl)) {
+                $data['DT_RowId'] = Arr::get($data, $this->row_id_tmpl);
+            } else {
+                $data['DT_RowId'] = $this->getContent($this->row_id_tmpl, $data, $this->result_object[$key]);
+            }
+        }
+
+        if ( ! empty($this->row_class_tmpl)) {
+            if ( ! is_callable($this->row_class_tmpl) and Arr::get($data, $this->row_class_tmpl)) {
+                $data['DT_RowClass'] = Arr::get($data, $this->row_class_tmpl);
+            } else {
+                $data['DT_RowClass'] = $this->getContent($this->row_class_tmpl, $data, $this->result_object[$key]);
+            }
+        }
+
+        if (count($this->row_data_tmpls)) {
+            $data['DT_RowData'] = array();
+            foreach ($this->row_data_tmpls as $tkey => $tvalue) {
+                $data['DT_RowData'][$tkey] = $this->getContent($tvalue, $data, $this->result_object[$key]);
+            }
+        }
+
+        if (count($this->row_attr_tmpls)) {
+            $data['DT_RowAttr'] = array();
+            foreach ($this->row_attr_tmpls as $tkey => $tvalue) {
+                $data['DT_RowAttr'][$tkey] = $this->getContent($tvalue, $data, $this->result_object[$key]);
+            }
+        }
+
     }
 
     /**
@@ -999,6 +1070,112 @@ class Datatables
         } else {
             trigger_error('Call to undefined method ' . __CLASS__ . '::' . $name . '()', E_USER_ERROR);
         }
+    }
+
+    /**
+     * Determines if content is callable or blade string, processes and returns
+     *
+     * @param string|callable $content Pre-processed content
+     * @param mixed           $data    data to use with blade template
+     * @param mixed           $param   parameter to call with callable
+     *
+     * @return string Processed content
+     */
+    protected function getContent($content, $data = null, $param = null)
+    {
+        if (is_string($content)) {
+            $return = $this->blader($content, $data);
+        } elseif (is_callable($content)) {
+            $return = $content($param);
+        } else {
+            $return = $content;
+        }
+
+        return $return;
+    }
+
+    /**
+     * Sets DT_RowClass template
+     * result: <tr class="output_from_your_template">
+     *
+     * @param string|callable $content
+     *
+     * @return $this
+     */
+    protected function setRowClass($content)
+    {
+        $this->row_class_tmpl = $content;
+
+        return $this;
+    }
+
+    /**
+     * Sets DT_RowId template
+     * result: <tr id="output_from_your_template">
+     *
+     * @param string|callable $content
+     * @return $this
+     */
+    protected function setRowId($content)
+    {
+        $this->row_id_tmpl = $content;
+
+        return $this;
+    }
+
+    /**
+     * Set DT_RowData templates
+     *
+     * @param array $data
+     * @return $this
+     */
+    protected function setRowData(array $data)
+    {
+        $this->row_data_tmpls = $data;
+
+        return $this;
+    }
+
+    /**
+     * Add DT_RowData template
+     *
+     * @param string $key
+     * @param string|callable $value
+     * @return $this
+     */
+    protected function addRowData($key, $value)
+    {
+        $this->row_data_tmpls[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Set DT_RowAttr templates
+     * result: <tr attr1="attr1" attr2="attr2">
+     *
+     * @param array $data
+     * @return $this
+     */
+    protected function setRowAttr(array $data)
+    {
+        $this->row_attr_tmpls = $data;
+
+        return $this;
+    }
+
+    /**
+     * Add DT_RowAttr template
+     *
+     * @param string $key
+     * @param string|callable $value
+     * @return $this
+     */
+    protected function addRowAttr($key, $value)
+    {
+        $this->row_attr_tmpls[$key] = $value;
+
+        return $this;
     }
 
 }
