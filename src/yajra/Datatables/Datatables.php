@@ -7,18 +7,20 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    4.2.1
+ * @version    4.3.0
  */
 
 use Closure;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
-use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
+use Illuminate\View\Compilers\BladeCompiler;
 
 class Datatables
 {
@@ -137,6 +139,7 @@ class Datatables
 
     /**
      * Auto-filter flag
+     *
      * @var boolean
      */
     protected $autoFilter = true;
@@ -167,19 +170,17 @@ class Datatables
      *
      * @var array
      */
-    protected $row_data_tmpls = array();
+    protected $row_data_tmpls = [];
 
     /**
      * DT_RowAttr template
      *
      * @var array
      */
-    protected $row_attr_tmpls = array();
+    protected $row_attr_tmpls = [];
 
     /**
      * Read Input into $this->input according to jquery.dataTables.js version
-     *
-     * @return this
      */
     public function __construct()
     {
@@ -209,32 +210,33 @@ class Datatables
             $formatted_input['draw'] = Arr::get($input, 'sEcho', '');
             $formatted_input['start'] = Arr::get($input, 'iDisplayStart', 0);
             $formatted_input['length'] = Arr::get($input, 'iDisplayLength', 10);
-            $formatted_input['search'] = array(
+            $formatted_input['search'] = [
                 'value' => Arr::get($input, 'sSearch', ''),
                 'regex' => Arr::get($input, 'bRegex', ''),
-                );
+            ];
             $formatted_input['_'] = Arr::get($input, '_', '');
             $columns = explode(',', Arr::get($input, 'sColumns', ''));
-            $formatted_input['columns'] = array();
+            $formatted_input['columns'] = [];
             for ($i = 0; $i < Arr::get($input, 'iColumns', 0); $i++) {
-                $arr = array();
+                $arr = [];
                 $arr['name'] = isset($columns[$i]) ? $columns[$i] : '';
                 $arr['data'] = Arr::get($input, 'mDataProp_' . $i, '');
                 $arr['searchable'] = Arr::get($input, 'bSearchable_' . $i, '');
-                $arr['search'] = array();
+                $arr['search'] = [];
                 $arr['search']['value'] = Arr::get($input, 'sSearch_' . $i, '');
                 $arr['search']['regex'] = Arr::get($input, 'bRegex_' . $i, '');
                 $arr['orderable'] = Arr::get($input, 'bSortable_' . $i, '');
                 $formatted_input['columns'][] = $arr;
             }
-            $formatted_input['order'] = array();
+            $formatted_input['order'] = [];
             for ($i = 0; $i < Arr::get($input, 'iSortingCols', 0); $i++) {
-                $arr = array();
+                $arr = [];
                 $arr['column'] = Arr::get($input, 'iSortCol_' . $i, '');
                 $arr['dir'] = Arr::get($input, 'sSortDir_' . $i, '');
                 $formatted_input['order'][] = $arr;
             }
         }
+
         return $formatted_input;
     }
 
@@ -262,21 +264,23 @@ class Datatables
     /**
      * Gets query and returns instance of class
      *
-     * @param $query
+     * @param $builder
      * @return static
      */
-    public static function of($query)
+    public static function of($builder)
     {
         $ins = new static;
-        $ins->saveQuery($query);
 
-        // set connection and query variable
-        if ($ins->query_type == 'eloquent') {
-            $ins->connection = $ins->query->getModel()->getConnection();
-            $ins->query = $query;
+        if ($builder instanceof QueryBuilder) {
+            $ins->query_type = 'builder';
+            $ins->query = $builder;
+            $ins->columns = $ins->query->columns;
+            $ins->connection = $ins->query->getConnection();
         } else {
-            $ins->connection = $query->getConnection();
-            $ins->query = $query;
+            $ins->query_type = 'eloquent';
+            $ins->query = $builder instanceof EloquentBuilder ? $builder : $builder->getQuery();
+            $ins->columns = $ins->query->getQuery()->columns;
+            $ins->connection = $ins->query->getQuery()->getConnection();
         }
 
         $ins->createLastColumn();
@@ -284,18 +288,6 @@ class Datatables
         $ins->getTotalRecords(); //Total records
 
         return $ins;
-    }
-
-    /**
-     * Saves given query and determines its type
-     *
-     * @param $query
-     */
-    private function saveQuery($query)
-    {
-        $this->query = $query;
-        $this->query_type = $query instanceof Builder ? 'fluent' : 'eloquent';
-        $this->columns = $this->query_type == 'eloquent' ? $this->query->getQuery()->columns : $this->query->columns;
     }
 
     /**
@@ -425,11 +417,12 @@ class Datatables
 
         // if older version, set the column name to query's fields
         // or if new version but does not use mData support
-        if ( ! $this->new_version or ( ! $this->mDataSupport and $this->new_version) ) {
-            for ($i=0; $i < count($columns); $i++) {
+        if ( ! $this->new_version or ( ! $this->mDataSupport and $this->new_version)) {
+            for ($i = 0; $i < count($columns); $i++) {
                 $columns[$i]['name'] = $this->columns[$i];
                 if (stripos($columns[$i]['name'], ' AS ') !== false or
-                    $columns[$i]['name'] instanceof \Illuminate\Database\Query\Expression) {
+                    $columns[$i]['name'] instanceof Expression
+                ) {
                     $columns[$i]['name'] = '';
                     $columns[$i]['searchable'] = false;
                     $columns[$i]['orderable'] = false;
@@ -467,7 +460,8 @@ class Datatables
                         // wrap column possibly allow reserved words to be used as column
                         $column = $this->wrapColumn($column);
                         if ($this->isCaseInsensitive()) {
-                            $query->orWhereRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?', [strtolower($keyword)]);
+                            $query->orWhereRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?',
+                                [strtolower($keyword)]);
                         } else {
                             $query->orWhereRaw($cast_begin . $column . $cast_end . ' LIKE ?', [$keyword]);
                         }
@@ -483,7 +477,7 @@ class Datatables
     /**
      * Perform column search
      *
-     * @param  array  $columns
+     * @param  array $columns
      * @return void
      */
     public function doColumnSearch(array $columns)
@@ -491,7 +485,7 @@ class Datatables
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($columns[$i]['searchable'] == "true" and ! empty($columns[$i]['search']['value']) and ! empty($columns[$i]['name'])) {
                 $column = $columns[$i]['name'];
-                $keyword = $this->setupKeyword ($columns[$i]['search']['value']);
+                $keyword = $this->setupKeyword($columns[$i]['search']['value']);
 
                 // wrap column possibly allow reserved words to be used as column
                 $column = $this->wrapColumn($column);
@@ -574,10 +568,10 @@ class Datatables
         }
 
         $query = clone $this->query;
-        if ($this->query_type == 'eloquent') {
-            $this->columns = array_keys((array) $query->getQuery()->first());
-        } else {
+        if ($this->query_type == 'builder') {
             $this->columns = array_keys((array) $query->first());
+        } else {
+            $this->columns = array_keys((array) $query->getQuery()->first());
         }
 
         return $this->columns;
@@ -633,7 +627,7 @@ class Datatables
     protected function tableNames()
     {
         $names = [];
-        $query = ($this->query_type == 'eloquent') ? $this->query->getQuery() : $this->query;
+        $query = ($this->query_type == 'builder') ? $this->query : $this->query->getQuery();
         $names[] = $query->from;
         $joins = $query->joins ?: [];
         $databasePrefix = $this->databasePrefix();
@@ -655,10 +649,10 @@ class Datatables
      */
     public function databasePrefix()
     {
-        if ($this->query_type == 'eloquent') {
-            $query = $this->query->getQuery();
-        } else {
+        if ($this->query_type == 'builder') {
             $query = $this->query;
+        } else {
+            $query = $this->query->getQuery();
         }
 
         return $query->getGrammar()->getTablePrefix();
@@ -728,14 +722,14 @@ class Datatables
     private function getResult()
     {
         $this->result_object = $this->query->get();
-        if ($this->query_type == 'eloquent') {
-            $this->result_array = array_map(function ($object) {
-                return (array) $object;
-            }, $this->result_object->toArray());
-        } else {
+        if ($this->query_type == 'builder') {
             $this->result_array = array_map(function ($object) {
                 return (array) $object;
             }, $this->result_object);
+        } else {
+            $this->result_array = array_map(function ($object) {
+                return (array) $object;
+            }, $this->result_object->toArray());
         }
     }
 
@@ -858,7 +852,7 @@ class Datatables
      * Setup additional DT row variables
      *
      * @param  string $key
-     * @param  array  &$data
+     * @param  array &$data
      * @return array
      */
     protected function setupDTRowVariables($key, array &$data)
@@ -880,14 +874,14 @@ class Datatables
         }
 
         if (count($this->row_data_tmpls)) {
-            $data['DT_RowData'] = array();
+            $data['DT_RowData'] = [];
             foreach ($this->row_data_tmpls as $tkey => $tvalue) {
                 $data['DT_RowData'][$tkey] = $this->getContent($tvalue, $data, $this->result_object[$key]);
             }
         }
 
         if (count($this->row_attr_tmpls)) {
-            $data['DT_RowAttr'] = array();
+            $data['DT_RowAttr'] = [];
             foreach ($this->row_attr_tmpls as $tkey => $tvalue) {
                 $data['DT_RowAttr'][$tkey] = $this->getContent($tvalue, $data, $this->result_object[$key]);
             }
@@ -898,7 +892,7 @@ class Datatables
     /**
      * Remove declared excess columns
      *
-     * @param  array  $data
+     * @param  array $data
      * @return array
      */
     private function removeExcessColumns(array $data)
@@ -1022,13 +1016,7 @@ class Datatables
      */
     protected function databaseDriver()
     {
-        if ($this->query_type == 'eloquent') {
-            $query = $this->query->getQuery();
-        } else {
-            $query = $this->query;
-        }
-
-        return $query->getConnection()->getDriverName();
+        return $this->connection->getDriverName();
     }
 
     /**
@@ -1044,11 +1032,11 @@ class Datatables
         foreach ($parts as $key) {
             switch ($this->databaseDriver()) {
                 case 'mysql':
-                    $column .= '`'.str_replace('`', '``', $key).'`' . '.';
+                    $column .= '`' . str_replace('`', '``', $key) . '`' . '.';
                     break;
 
                 case 'sqlsrv':
-                    $column .= '['.str_replace(']', ']]', $key).']' . '.';
+                    $column .= '[' . str_replace(']', ']]', $key) . ']' . '.';
                     break;
 
                 default:
@@ -1067,7 +1055,7 @@ class Datatables
     {
         $name = Str::camel(Str::lower($name));
         if (method_exists($this, $name)) {
-            return call_user_func_array(array($this, $name), $arguments);
+            return call_user_func_array([$this, $name], $arguments);
         } else {
             trigger_error('Call to undefined method ' . __CLASS__ . '::' . $name . '()', E_USER_ERROR);
         }
@@ -1077,9 +1065,8 @@ class Datatables
      * Determines if content is callable or blade string, processes and returns
      *
      * @param string|callable $content Pre-processed content
-     * @param mixed           $data    data to use with blade template
-     * @param mixed           $param   parameter to call with callable
-     *
+     * @param mixed $data data to use with blade template
+     * @param mixed $param parameter to call with callable
      * @return string Processed content
      */
     protected function getContent($content, $data = null, $param = null)
@@ -1100,7 +1087,6 @@ class Datatables
      * result: <tr class="output_from_your_template">
      *
      * @param string|callable $content
-     *
      * @return $this
      */
     protected function setRowClass($content)
