@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    3.5.0
+ * @version    3.5.1
  */
 
 use Closure;
@@ -424,7 +424,8 @@ class Datatables
         $columns = $input['columns'];
 
         // if older version, set the column name to query's fields
-        if ( ! $this->new_version) {
+        // or if new version but does not use mData support
+        if ( ! $this->new_version or ( ! $this->mDataSupport and $this->new_version) ) {
             for ($i=0; $i < count($columns); $i++) {
                 $columns[$i]['name'] = $this->columns[$i];
                 if (stripos($columns[$i]['name'], ' AS ') !== false or
