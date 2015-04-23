@@ -109,6 +109,8 @@ It is better, you know these:
 ### Suggestions/Recommendations:
 - For better flexibility, I suggest using Datatables v1.10++ and declare your scripts as stated on [Example #5](#example-5) and [Example View and Controller](#example-view-and-controller)
 
+### Demo Application
+- Check the [Laravel Datatable Demo](https://github.com/yajra/laravel-datatables-demo) application for a real example/working code.
 
 ### Examples
 
