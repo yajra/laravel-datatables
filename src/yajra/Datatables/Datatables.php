@@ -958,6 +958,7 @@ class Datatables
      */
     public function addColumn($name, $content, $order = false)
     {
+        $this->columns[]  = $name;
         $this->sColumns[] = $name;
 
         $this->extra_columns[] = ['name' => $name, 'content' => $content, 'order' => $order];
