@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    3.6.0
+ * @version    3.6.1
  */
 
 use Closure;
@@ -283,49 +283,9 @@ class Datatables
             $ins->connection = $ins->query->getQuery()->getConnection();
         }
 
-        $ins->createLastColumn();
-
         $ins->getTotalRecords(); //Total records
 
         return $ins;
-    }
-
-    /**
-     * Creates an array which contains published last columns in sql with their index
-     *
-     * @return null
-     */
-    private function createLastColumn()
-    {
-        $extra_columns_indexes = [];
-        $last_columns = [];
-        $count = 0;
-
-        foreach ($this->extra_columns as $key => $value) {
-            if ($value['order'] === false) {
-                continue;
-            }
-            $extra_columns_indexes[] = $value['order'];
-        }
-
-        for ($i = 0, $c = count($this->columns); $i < $c; $i++) {
-
-            if (in_array($this->getColumnName($this->columns[$i]), $this->excess_columns)) {
-                continue;
-            }
-
-            if (in_array($count, $extra_columns_indexes)) {
-                $count++;
-                $i--;
-                continue;
-            }
-
-            preg_match('#\s+as\s+(\S*?)$#si', $this->columns[$i], $matches);
-            $last_columns[$count] = empty($matches) ? $this->columns[$i] : $matches[1];
-            $count++;
-        }
-
-        $this->last_columns = $last_columns;
     }
 
     /**
@@ -419,6 +379,10 @@ class Datatables
         // or if new version but does not use mData support
         if ( ! $this->new_version or ( ! $this->mDataSupport and $this->new_version)) {
             for ($i = 0; $i < count($columns); $i++) {
+                if ( ! isset($this->columns[$i])) {
+                    continue;
+                }
+
                 $columns[$i]['name'] = $this->columns[$i];
                 if (stripos($columns[$i]['name'], ' AS ') !== false or
                     $columns[$i]['name'] instanceof Expression
@@ -943,7 +907,8 @@ class Datatables
      */
     private function getOutputColumns()
     {
-        $columns = array_diff($this->useDataColumns(), $this->excess_columns);
+        $columns = array_merge($this->useDataColumns(), $this->sColumns);
+        $columns = array_diff($columns, $this->excess_columns);
 
         return Arr::flatten($columns);
     }
