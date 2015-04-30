@@ -283,49 +283,9 @@ class Datatables
             $ins->connection = $ins->query->getQuery()->getConnection();
         }
 
-        $ins->createLastColumn();
-
         $ins->getTotalRecords(); //Total records
 
         return $ins;
-    }
-
-    /**
-     * Creates an array which contains published last columns in sql with their index
-     *
-     * @return null
-     */
-    private function createLastColumn()
-    {
-        $extra_columns_indexes = [];
-        $last_columns = [];
-        $count = 0;
-
-        foreach ($this->extra_columns as $key => $value) {
-            if ($value['order'] === false) {
-                continue;
-            }
-            $extra_columns_indexes[] = $value['order'];
-        }
-
-        for ($i = 0, $c = count($this->columns); $i < $c; $i++) {
-
-            if (in_array($this->getColumnName($this->columns[$i]), $this->excess_columns)) {
-                continue;
-            }
-
-            if (in_array($count, $extra_columns_indexes)) {
-                $count++;
-                $i--;
-                continue;
-            }
-
-            preg_match('#\s+as\s+(\S*?)$#si', $this->columns[$i], $matches);
-            $last_columns[$count] = empty($matches) ? $this->columns[$i] : $matches[1];
-            $count++;
-        }
-
-        $this->last_columns = $last_columns;
     }
 
     /**
