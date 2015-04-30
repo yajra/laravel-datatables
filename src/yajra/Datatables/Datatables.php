@@ -419,6 +419,10 @@ class Datatables
         // or if new version but does not use mData support
         if ( ! $this->new_version or ( ! $this->mDataSupport and $this->new_version)) {
             for ($i = 0; $i < count($columns); $i++) {
+                if ( ! isset($this->columns[$i])) {
+                    continue;
+                }
+
                 $columns[$i]['name'] = $this->columns[$i];
                 if (stripos($columns[$i]['name'], ' AS ') !== false or
                     $columns[$i]['name'] instanceof Expression
