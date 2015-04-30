@@ -947,7 +947,8 @@ class Datatables
      */
     private function getOutputColumns()
     {
-        $columns = array_diff($this->useDataColumns(), $this->excess_columns);
+        $columns = array_merge($this->useDataColumns(), $this->sColumns);
+        $columns = array_diff($columns, $this->excess_columns);
 
         return Arr::flatten($columns);
     }
