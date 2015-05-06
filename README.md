@@ -8,21 +8,24 @@
 
 **About**
 
-This package is created to handle [server-side](https://www.datatables.net/manual/server-side) works of [DataTables](http://datatables.net) jQuery Plugin via [AJAX option](https://datatables.net/reference/option/ajax) by using Eloquent ORM or Fluent Query Builder.
+This package is created to handle [server-side](https://www.datatables.net/manual/server-side) works of [DataTables](http://datatables.net) jQuery Plugin via [AJAX option](https://datatables.net/reference/option/ajax) by using Eloquent ORM, Fluent Query Builder or Collection.
 
 ### Feature Overview
-- Supporting Eloquent ORM and Fluent Query Builder
-- Supporting Laravel's Collection
+- Supports the following data source
+    - **Eloquent ORM**
+    - **Fluent Query Builder**
+    - **Collection**
 - Adding or editing content of columns and removing columns
-- Templating new or current columns via Blade Template Engine
+- Templating new or current columns via Blade Template Engine or by using Closure
 - Works with **ALL the DATABASE** supported by Laravel
 - Works with **Oracle Database** using [Laravel-OCI8](https://github.com/yajra/laravel-oci8) package
 - Works with [DataTables](http://datatables.net) v1.10
-    - If youre using v1.9, please use v4.x and v3.x for Laravel 5 and Laravel 4 respectively
+
+**If youre using Datatables v1.9, please use package version [v4.x](https://github.com/yajra/laravel-datatables-oracle/tree/v4.3.2) and [v3.x](https://github.com/yajra/laravel-datatables-oracle/tree/L4) for Laravel 5 and Laravel 4 respectively**
 
 ### Installation
 
-Add the `yajra/laravel-datatables-oracle` under the `require` key after that run the `composer update`.
+Add `yajra/laravel-datatables-oracle` under the `require` key on your `composer.json` file then run `composer update`.
 ```php
     {
         "require": {
@@ -35,19 +38,17 @@ Add the `yajra/laravel-datatables-oracle` under the `require` key after that run
 ```
 
 
-Composer will download the package. After package downloaded, open "app/config/app.php" and edit like below:
+Once the package was downloaded, open "config/app.php" and register the `provider` and `alias` of the package:
 ```php
-    'providers' => array(
+    'providers' => [
         ...
         'yajra\Datatables\DatatablesServiceProvider',
-    ),
+    ],
 
-
-
-    'aliases' => array(
+    'aliases' => [
         ...
         'Datatables'      => 'yajra\Datatables\Datatables',
-    ),
+    ],
 ```
 Finally you need to publish a configuration file by running the following Artisan command.
 
@@ -87,9 +88,6 @@ It is better, you know these:
     - `->setRowAttr(array())` to add batch data using an array
     - `->addRowAttr($key, $value)` to append single data on array (Note: `setRowAttr` should be called first if you plan on using both functions)
     - the value parameters can also be a `string`, `closure` or `blade` template.
-
-### Suggestions/Recommendations:
-- For better flexibility, I suggest using Datatables v1.10++ and declare your scripts as stated on [Example #5](#example-5) and [Example View and Controller](#example-view-and-controller)
 
 ### Demo Application
 - Check the [Laravel Datatable Demo](https://github.com/yajra/laravel-datatables-demo) application for a real example/working code.
@@ -248,10 +246,10 @@ public function getData()
 
 **Notice:** If you use double quotes while giving content of addColumn or editColumn, you should escape variables with backslash (\\) else you get error. For example:
 ```php
-    editColumn('id',"- {{ \$id }}") .
+    editColumn('id',"- {!! \$id !!}") .
 ```
 
 **License:** Licensed under the MIT License
 
 ### Credits
-* [bllim/laravel4-datatables-package](https://github.com/bllim/laravel4-datatables-package)
+* This project is used to be a fork from [bllim/laravel4-datatables-package](https://github.com/bllim/laravel4-datatables-package).
