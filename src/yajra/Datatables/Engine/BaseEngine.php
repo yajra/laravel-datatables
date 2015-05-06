@@ -245,6 +245,9 @@ class BaseEngine
         // set mData support flag
         $this->m_data_support = $mDataSupport;
 
+        // perform ordering before filtering
+        $this->doOrdering();
+
         // check if auto filtering was overridden
         if ($this->autoFilter) {
             $this->doFiltering();
@@ -252,7 +255,6 @@ class BaseEngine
 
         $this->getTotalFilteredRecords();
         $this->doPaging();
-        $this->doOrdering();
 
         $this->setResults();
         $this->initColumns();
