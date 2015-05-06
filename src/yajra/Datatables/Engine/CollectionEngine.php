@@ -118,7 +118,6 @@ class CollectionEngine extends BaseEngine implements EngineContract
      */
     public function doColumnSearch(array $columns)
     {
-
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ( ! $columns[$i]['searchable'] == "true" or $columns[$i]['search']['value'] == '') {
                 continue;
