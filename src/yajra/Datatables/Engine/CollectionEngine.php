@@ -103,10 +103,56 @@ class CollectionEngine extends BaseEngine implements EngineContract
                 }
 
                 return false;
-
             });
         }
 
+        // column search
+        $this->doColumnSearch($columns);
+    }
+
+    /**
+     * Perform column search
+     *
+     * @param  array $columns
+     * @return void
+     */
+    public function doColumnSearch(array $columns)
+    {
+
+        for ($i = 0, $c = count($columns); $i < $c; $i++) {
+            if ( ! $columns[$i]['searchable'] == "true" or $columns[$i]['search']['value'] == '') {
+                continue;
+            }
+
+            if ( ! empty($columns[$i]['name'])) {
+                $column = $columns[$i]['name'];
+            } else {
+                $column = $this->columns[$i];
+            }
+
+            $keyword = $columns[$i]['search']['value'];
+
+            $this->collection = $this->collection->filter(function ($row) use ($column, $keyword) {
+                $data = $row->toArray();
+                $found = [];
+
+                if ($this->isCaseInsensitive()) {
+                    if (strpos(Str::lower($data[$column]), Str::lower($keyword)) !== false) {
+                        $found[] = true;
+                    }
+                } else {
+                    if (strpos($data[$column], $keyword) !== false) {
+                        $found[] = true;
+                    }
+                }
+
+                if (count($found)) {
+                    return true;
+                }
+
+                return false;
+            });
+        }
     }
 
     /**
