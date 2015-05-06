@@ -39,6 +39,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
     {
         $this->collection = $collection;
         $this->original_collection = $collection;
+        $this->columns = array_keys($collection->first()->toArray());
 
         parent::__construct();
 
@@ -70,22 +71,29 @@ class CollectionEngine extends BaseEngine implements EngineContract
                 $data = $row->toArray();
                 $found = [];
                 for ($i = 0, $c = count($columns); $i < $c; $i++) {
-                    if ($columns[$i]['searchable'] == "true" and ! empty($columns[$i]['name'])) {
+                    if ( ! $columns[$i]['searchable'] == "true") {
+                        continue;
+                    }
+
+                    if ( ! empty($columns[$i]['name'])) {
                         $column = $columns[$i]['name'];
-                        $keyword = $input['search']['value'];
+                    } else {
+                        $column = $this->columns[$i];
+                    }
 
-                        if ( ! array_key_exists($column, $data)) {
-                            continue;
+                    $keyword = $input['search']['value'];
+
+                    if ( ! array_key_exists($column, $data)) {
+                        continue;
+                    }
+
+                    if ($this->isCaseInsensitive()) {
+                        if (strpos(Str::lower($data[$column]), Str::lower($keyword)) !== false) {
+                            $found[] = true;
                         }
-
-                        if ($this->isCaseInsensitive()) {
-                            if (strpos(Str::lower($data[$column]), Str::lower($keyword)) !== false) {
-                                $found[] = true;
-                            }
-                        } else {
-                            if (strpos($data[$column], $keyword) !== false) {
-                                $found[] = true;
-                            }
+                    } else {
+                        if (strpos($data[$column], $keyword) !== false) {
+                            $found[] = true;
                         }
                     }
                 }
