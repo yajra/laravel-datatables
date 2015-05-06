@@ -39,7 +39,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
     {
         $this->collection = $collection;
         $this->original_collection = $collection;
-        $this->columns = array_keys($collection->first() instanceof Arrayable ? $collection->first()->toArray() : $collection->first());
+        $this->columns = array_keys($this->serialize($collection->first()));
 
         parent::__construct();
 
@@ -68,7 +68,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
 
         if ( ! empty($this->input['search']['value'])) {
             $this->collection = $this->collection->filter(function ($row) use ($columns, $input) {
-                $data = $row->toArray();
+                $data = $this->serialize($row);
                 $found = [];
                 for ($i = 0, $c = count($columns); $i < $c; $i++) {
                     if ( ! $columns[$i]['searchable'] == "true") {
@@ -235,6 +235,15 @@ class CollectionEngine extends BaseEngine implements EngineContract
         call_user_func($callback, $this);
 
         return $this;
+    }
+
+    /**
+     * @param  mixed $collection
+     * @return mixed|null
+     */
+    protected function serialize($collection)
+    {
+        return $collection instanceof Arrayable ? $collection->toArray() : $collection;
     }
 
 }
