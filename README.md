@@ -1,4 +1,4 @@
-## Datatables Package for Laravel 5
+## Datatables Package for Laravel 4|5
 
 [![Latest Stable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/stable.png)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![Total Downloads](https://poser.pugx.org/yajra/laravel-datatables-oracle/downloads.png)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
@@ -36,7 +36,7 @@ Add `yajra/laravel-datatables-oracle` under the `require` key on your `composer.
         ...
     }
 ```
-
+> For Laravel 4 users, checkout [L4](https://github.com/yajra/laravel-datatables-oracle/tree/L4) branch or use `"yajra/laravel-datatables-oracle": "~3.0"`.
 
 Once the package was downloaded, open "config/app.php" and register the `provider` and `alias` of the package:
 ```php
