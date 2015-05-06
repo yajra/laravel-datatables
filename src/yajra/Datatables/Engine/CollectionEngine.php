@@ -233,7 +233,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
     {
         $this->autoFilter = false;
 
-        call_user_func($callback, $this->collection);
+        call_user_func($callback, $this);
 
         return $this;
     }
