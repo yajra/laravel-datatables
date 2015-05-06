@@ -184,7 +184,7 @@ class Datatables
      */
     public function __construct()
     {
-        $request = new Request($_GET, $_POST);
+        $request = Request::capture();
         $this->setData($this->processData($request->input()));
 
         return $this;
