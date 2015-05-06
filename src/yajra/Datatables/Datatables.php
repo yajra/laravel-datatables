@@ -7,6 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
+ * @version    3.6.1
  */
 
 use Closure;
@@ -183,7 +184,7 @@ class Datatables
      */
     public function __construct()
     {
-        $request = Request::capture();
+        $request = new Request($_GET, $_POST);
         $this->setData($this->processData($request->input()));
 
         return $this;
