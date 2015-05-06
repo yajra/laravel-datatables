@@ -19,7 +19,7 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 - Templating new or current columns via Blade Template Engine or by using Closure
 - Works with **ALL the DATABASE** supported by Laravel
 - Works with **Oracle Database** using [Laravel-OCI8](https://github.com/yajra/laravel-oci8) package
-- Works with [DataTables](http://datatables.net) v1.10
+- Works with [DataTables](http://datatables.net) v1.10++
 
 **If youre using Datatables v1.9, please use package version [v4.x](https://github.com/yajra/laravel-datatables-oracle/tree/v4.3.2) and [v3.x](https://github.com/yajra/laravel-datatables-oracle/tree/L4) for Laravel 5 and Laravel 4 respectively**
 
