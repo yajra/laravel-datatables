@@ -1,4 +1,4 @@
-## Datatables Package for Laravel 4|5
+## Datatables Package for Laravel 5
 
 [![Latest Stable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/stable.png)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![Total Downloads](https://poser.pugx.org/yajra/laravel-datatables-oracle/downloads.png)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
@@ -12,35 +12,23 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 
 ### Feature Overview
 - Supporting Eloquent ORM and Fluent Query Builder
+- Supporting Laravel's Collection
 - Adding or editing content of columns and removing columns
 - Templating new or current columns via Blade Template Engine
 - Works with **ALL the DATABASE** supported by Laravel
 - Works with **Oracle Database** using [Laravel-OCI8](https://github.com/yajra/laravel-oci8) package
-- Works with [DataTables](http://datatables.net) v1.9 and v1.10
+- Works with [DataTables](http://datatables.net) v1.10
+    - If youre using v1.9, please use v4.x and v3.x for Laravel 5 and Laravel 4 respectively
 
-### Laravel 4 Installation
+### Installation
 
-Add the `yajra/datatables` under the `require` key after that run the `composer update`.
-```php
-    {
-        "require": {
-            "laravel/framework": "~4.0",
-            ...
-            "yajra/laravel-datatables-oracle": "~3.0"
-        }
-        ...
-    }
-```
-
-### Laravel 5 Installation
-
-Add the `yajra/datatables` under the `require` key after that run the `composer update`.
+Add the `yajra/laravel-datatables-oracle` under the `require` key after that run the `composer update`.
 ```php
     {
         "require": {
             "laravel/framework": "~5.0",
             ...
-            "yajra/laravel-datatables-oracle": "~4.0"
+            "yajra/laravel-datatables-oracle": "~5.0"
         }
         ...
     }
@@ -63,12 +51,6 @@ Composer will download the package. After package downloaded, open "app/config/a
 ```
 Finally you need to publish a configuration file by running the following Artisan command.
 
-** Laravel 4 **
-```php
-$ php artisan config:publish yajra/laravel-datatables-oracle
-```
-
-** Laravel 5 **
 ```php
 $ php artisan vendor:publish --provider="yajra\Datatables\DatatablesServiceProvider" --tag="config"
 ```
@@ -79,7 +61,7 @@ It is very simple to use this package. Just create your own fluent query object 
 You are free to use all Eloquent ORM and Fluent Query Builder features.
 
 It is better, you know these:
-- When you use select method on Eloquent or Fluent Query, you choose columns
+- When you use select method on Eloquent or Fluent Query Builder, you choose columns
 - You can easily edit columns by using `editColumn($column, $content)`
 - You can remove any column by using `removeColumn($column)` method
 - You can add columns by using `addColumn($column_name, $content, $order)`

@@ -26,50 +26,8 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 	public function test_datatables_make_with_data()
 	{
 		$builder = $this->setupBuilder();
-		$builder->shouldReceive('first')->once()->andReturn(array('id' => 1,'name' => 'foo'));
-
-		Config::shouldReceive('get');
-
 		// set Input variables
-		$this->setupOldVersionInputVariables();
-
-		$response = Datatables::of($builder)->make();
-		$actual = $response->getContent();
-		$expected = '{"sEcho":1,"iTotalRecords":2,"iTotalDisplayRecords":2,"aaData":[[1,"foo"],[2,"bar"]],"sColumns":["id","name"]}';
-
-		$this->assertInstanceOf('Illuminate\Http\JsonResponse', $response);
-		$this->assertEquals($expected, $actual);
-	}
-
-	public function test_datatables_make_with_data_showing_all_records()
-	{
-		$builder = $this->setupBuilder(true);
-		$builder->shouldReceive('first')->once()->andReturn(array('id' => 1,'name' => 'foo'));
-
-		Config::shouldReceive('get');
-
-		// set Input variables
-		$_GET = [];
-		$_GET['sEcho'] = 1;
-		$_GET['iDisplayStart'] = 1;
-		$_GET['iDisplayLength'] = -1;
-
-		$response = Datatables::of($builder)->make();
-		$actual = $response->getContent();
-		$expected = '{"sEcho":1,"iTotalRecords":2,"iTotalDisplayRecords":2,"aaData":[[1,"foo"],[2,"bar"]],"sColumns":["id","name"]}';
-
-		$this->assertInstanceOf('Illuminate\Http\JsonResponse', $response);
-		$this->assertEquals($expected, $actual);
-	}
-
-	public function test_datatables_make_with_data_version_1_10()
-	{
-		$builder = $this->setupBuilder();
-
-		Config::shouldReceive('get');
-
-		// set Input variables
-		$this->setupNewVersionInputVariables();
+		$this->setupInputVariables();
 
 		$response = Datatables::of($builder)->make();
 		$actual = $response->getContent();
@@ -79,54 +37,11 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		$this->assertEquals($expected, $actual);
 	}
 
-	public function test_datatables_make_with_data_overriding_filter()
-	{
-		$builder = $this->setupBuilder();
-		$builder->shouldReceive('first')->once()->andReturn(array('id' => 1,'name' => 'foo'));
-
-		Config::shouldReceive('get');
-
-		// set Input variables
-		$this->setupOldVersionInputVariables();
-
-		$builder->shouldReceive('where')->once()->andReturn($builder);
-		$response = Datatables::of($builder)->filter(function($query){
-			$query->where('id','=',1);
-		})->make();
-
-		$actual = $response->getContent();
-		$expected = '{"sEcho":1,"iTotalRecords":2,"iTotalDisplayRecords":2,"aaData":[[1,"foo"],[2,"bar"]],"sColumns":["id","name"]}';
-
-		$this->assertInstanceOf('Illuminate\Http\JsonResponse', $response);
-		$this->assertEquals($expected, $actual);
-	}
-
 	public function test_datatables_make_with_data_and_uses_mdata()
 	{
 		$builder = $this->setupBuilder();
-		$builder->shouldReceive('first')->once()->andReturn(array('id' => 1,'name' => 'foo'));
-
-		Config::shouldReceive('get');
-
 		// set Input variables
-		$this->setupOldVersionInputVariables();
-
-		$response = Datatables::of($builder)->make(true);
-		$actual = $response->getContent();
-		$expected = '{"sEcho":1,"iTotalRecords":2,"iTotalDisplayRecords":2,"aaData":[{"id":1,"name":"foo"},{"id":2,"name":"bar"}],"sColumns":["id","name"]}';
-
-		$this->assertInstanceOf('Illuminate\Http\JsonResponse', $response);
-		$this->assertEquals($expected, $actual);
-	}
-
-	public function test_datatables_make_with_data_and_uses_mdata_1_10()
-	{
-		$builder = $this->setupBuilder();
-
-		Config::shouldReceive('get');
-
-		// set Input variables
-		$this->setupNewVersionInputVariables();
+		$this->setupInputVariables();
 
 		$response = Datatables::of($builder)->make(true);
 		$actual = $response->getContent();
@@ -136,15 +51,7 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		$this->assertEquals($expected, $actual);
 	}
 
-	protected function setupOldVersionInputVariables()
-	{
-		$_GET = [];
-		$_GET['sEcho'] = 1;
-		$_GET['iDisplayStart'] = 1;
-		$_GET['iDisplayLength'] = 10;
-	}
-
-	protected function setupNewVersionInputVariables()
+	protected function setupInputVariables()
 	{
 		$_GET = [];
 		$_GET['draw'] = 1;
@@ -171,6 +78,8 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 
 	protected function setupBuilder($showAllRecords = false)
 	{
+		Config::shouldReceive('get');
+
 		$cache = m::mock('stdClass');
 		$driver = m::mock('stdClass');
 		$data = array(
@@ -189,10 +98,6 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		// Datatables::of() mocks
 		// ******************************
 		$builder->shouldReceive('getConnection')->andReturn(m::mock('Illuminate\Database\Connection'));
-
-		// ******************************
-		// Datatables::make() mocks
-		// ******************************
 		$builder->shouldReceive('toSql')->times(4)->andReturn('select id, name from users');
 		$builder->getConnection()->shouldReceive('raw')->once()->andReturn('select \'1\' as row_count');
 		$builder->shouldReceive('select')->once()->andReturn($builder);
@@ -201,6 +106,10 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		$builder->getConnection()->shouldReceive('table')->times(2)->andReturn($builder);
 		$builder->shouldReceive('getBindings')->times(2)->andReturn(array());
 		$builder->shouldReceive('setBindings')->times(2)->with(array())->andReturn($builder);
+
+		// ******************************
+		// Datatables::make() mocks
+		// ******************************
 		if ( ! $showAllRecords) {
 			$builder->shouldReceive('skip')->once()->andReturn($builder);
 			$builder->shouldReceive('take')->once()->andReturn($builder);
