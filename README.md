@@ -48,7 +48,7 @@ $ php artisan vendor:publish --provider="yajra\Datatables\DatatablesServiceProvi
 ```
 
 ### Demo Application
-- Check the [Laravel Datatables Demo App](https://github.com/yajra/laravel-datatables-demo) for a real example/working code.
+- Check the [Laravel Datatables Demo App](https://github.com/yajra/laravel-datatables-demo) for a real example/working code. **Hosted demo site coming soon.**
 
 ### Usage
 
