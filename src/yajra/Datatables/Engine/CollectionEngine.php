@@ -132,7 +132,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
             $keyword = $columns[$i]['search']['value'];
 
             $this->collection = $this->collection->filter(function ($row) use ($column, $keyword) {
-                $data = $row->toArray();
+                $data = $this->serialize($row);
                 $found = [];
 
                 if ($this->isCaseInsensitive()) {
