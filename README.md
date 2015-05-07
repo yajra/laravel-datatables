@@ -28,6 +28,7 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 
 > For Laravel 4 users, checkout [L4](https://github.com/yajra/laravel-datatables-oracle/tree/L4) branch or use `composer require yajra/laravel-datatables-oracle:~3.0`.
 
+### Register provider and alias and publish configuration
 Once the package was downloaded, open "config/app.php" and register the `provider` and `alias` of the package:
 ```php
     'providers' => [
