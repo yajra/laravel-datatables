@@ -90,7 +90,7 @@ It is better, you know these:
     - the value parameters can also be a `string`, `closure` or `blade` template.
 
 ### Demo Application
-- Check the [Laravel Datatable Demo](https://github.com/yajra/laravel-datatables-demo) application for a real example/working code.
+- Check the [Laravel Datatables Demo App](https://github.com/yajra/laravel-datatables-demo) for a real example/working code.
 
 ### Examples
 
