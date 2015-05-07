@@ -71,7 +71,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
                 $data = $this->serialize($row);
                 $found = [];
                 for ($i = 0, $c = count($columns); $i < $c; $i++) {
-                    if ( ! $columns[$i]['searchable'] == "true") {
+                    if ($columns[$i]['searchable'] != "true") {
                         continue;
                     }
 
@@ -119,7 +119,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
     public function doColumnSearch(array $columns)
     {
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
-            if ( ! $columns[$i]['searchable'] == "true" or $columns[$i]['search']['value'] == '') {
+            if ($columns[$i]['searchable'] != "true" or $columns[$i]['search']['value'] == '') {
                 continue;
             }
 

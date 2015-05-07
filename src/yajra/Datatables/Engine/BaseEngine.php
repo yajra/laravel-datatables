@@ -921,7 +921,7 @@ class BaseEngine
         if ( ! empty($this->input['search']['value'])) {
             $this->query->where(function ($query) use ($columns, $input) {
                 for ($i = 0, $c = count($columns); $i < $c; $i++) {
-                    if ( $columns[$i]['searchable'] != "true") {
+                    if ($columns[$i]['searchable'] != "true") {
                         continue;
                     }
 
