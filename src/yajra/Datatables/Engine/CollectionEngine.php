@@ -39,7 +39,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
     {
         $this->collection = $collection;
         $this->original_collection = $collection;
-        $this->columns = array_keys($this->serialize($collection->first()));
+        $this->columns = array_keys($this->serialize((array) $collection->first()));
 
         parent::__construct();
 
