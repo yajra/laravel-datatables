@@ -14,7 +14,7 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 - Supports the following data source
     - **Eloquent ORM**
     - **Fluent Query Builder**
-    - **Collection** [For v5.x]
+    - **Collection** [available on v5.x and later]
 - Adding or editing content of columns and removing columns
 - Templating new or current columns via Blade Template Engine or by using Closure
 - Works with **ALL the DATABASE** supported by Laravel
