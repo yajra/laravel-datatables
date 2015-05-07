@@ -23,20 +23,10 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 
 **If you are using Datatables v1.9, please use package version [v4.x](https://github.com/yajra/laravel-datatables-oracle/tree/v4.3.2) and [v3.x](https://github.com/yajra/laravel-datatables-oracle/tree/L4) for Laravel 5 and Laravel 4 respectively**
 
-### Installation
+### Install through composer
+`composer require yajra/laravel-datatables-oracle:~5.0`
 
-Add `yajra/laravel-datatables-oracle` under the `require` key on your `composer.json` file then run `composer update`.
-```php
-    {
-        "require": {
-            "laravel/framework": "~5.0",
-            ...
-            "yajra/laravel-datatables-oracle": "~5.0"
-        }
-        ...
-    }
-```
-> For Laravel 4 users, checkout [L4](https://github.com/yajra/laravel-datatables-oracle/tree/L4) branch or use `"yajra/laravel-datatables-oracle": "~3.0"`.
+> For Laravel 4 users, checkout [L4](https://github.com/yajra/laravel-datatables-oracle/tree/L4) branch or use `composer require yajra/laravel-datatables-oracle:~3.0`.
 
 Once the package was downloaded, open "config/app.php" and register the `provider` and `alias` of the package:
 ```php
@@ -55,6 +45,9 @@ Finally you need to publish a configuration file by running the following Artisa
 ```php
 $ php artisan vendor:publish --provider="yajra\Datatables\DatatablesServiceProvider" --tag="config"
 ```
+
+### Demo Application
+- Check the [Laravel Datatables Demo App](https://github.com/yajra/laravel-datatables-demo) for a real example/working code.
 
 ### Usage
 
@@ -88,9 +81,6 @@ It is better, you know these:
     - `->setRowAttr(array())` to add batch data using an array
     - `->addRowAttr($key, $value)` to append single data on array (Note: `setRowAttr` should be called first if you plan on using both functions)
     - the value parameters can also be a `string`, `closure` or `blade` template.
-
-### Demo Application
-- Check the [Laravel Datatables Demo App](https://github.com/yajra/laravel-datatables-demo) for a real example/working code.
 
 ### Examples
 
