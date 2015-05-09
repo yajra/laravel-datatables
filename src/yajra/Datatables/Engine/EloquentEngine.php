@@ -16,9 +16,9 @@ class EloquentEngine extends BaseEngine implements EngineContract
     /**
      * Read Input into $this->input according to jquery.dataTables.js version
      *
-     * @param Builder $model
+     * @param Builder|HasMany|... $model
      */
-    public function __construct(Builder $model)
+    public function __construct($model)
     {
         $this->query_type = 'eloquent';
         $this->query = $model instanceof Builder ? $model : $model->getQuery();
