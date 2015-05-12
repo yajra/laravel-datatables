@@ -155,6 +155,35 @@ class CollectionEngine extends BaseEngine implements EngineContract
     }
 
     /**
+     * Organizes works
+     *
+     * @param bool $mDataSupport
+     * @return null
+     */
+    public function make($mDataSupport = false)
+    {
+        // set mData support flag
+        $this->m_data_support = $mDataSupport;
+
+        // perform ordering before filtering
+        $this->doOrdering();
+
+        // check if auto filtering was overridden
+        if ($this->autoFilter) {
+            $this->doFiltering();
+        }
+
+        $this->getTotalFilteredRecords();
+        $this->doPaging();
+
+        $this->setResults();
+        $this->initColumns();
+        $this->regulateArray();
+
+        return $this->output();
+    }
+
+    /**
      * Get filtered records
      *
      * @return int

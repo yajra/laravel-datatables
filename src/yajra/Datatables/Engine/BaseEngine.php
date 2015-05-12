@@ -245,15 +245,14 @@ class BaseEngine
         // set mData support flag
         $this->m_data_support = $mDataSupport;
 
-        // perform ordering before filtering
-        $this->doOrdering();
-
         // check if auto filtering was overridden
         if ($this->autoFilter) {
             $this->doFiltering();
         }
 
         $this->getTotalFilteredRecords();
+        // perform ordering after filtering
+        $this->doOrdering();
         $this->doPaging();
 
         $this->setResults();
