@@ -98,7 +98,7 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		// Datatables::of() mocks
 		// ******************************
 		$builder->shouldReceive('getConnection')->andReturn(m::mock('Illuminate\Database\Connection'));
-		$builder->shouldReceive('toSql')->times(4)->andReturn('select id, name from users');
+		$builder->shouldReceive('toSql')->times(6)->andReturn('select id, name from users');
 		$builder->getConnection()->shouldReceive('raw')->once()->andReturn('select \'1\' as row_count');
 		$builder->shouldReceive('select')->once()->andReturn($builder);
 		$builder->getConnection()->shouldReceive('raw')->andReturn('(select id, name from users) count_row_table');
