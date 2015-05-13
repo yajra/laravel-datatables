@@ -685,6 +685,7 @@ class BaseEngine
 
         if ($this->isDebugging()) {
             $output["queries"] = $this->connection->getQueryLog();
+            $output["input"] = $this->input;
         }
 
         return new JsonResponse($output);

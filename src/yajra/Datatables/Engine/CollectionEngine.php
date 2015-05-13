@@ -10,6 +10,7 @@
 
 use Closure;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -279,6 +280,10 @@ class CollectionEngine extends BaseEngine implements EngineContract
             "recordsFiltered" => $this->filteredRecords,
             "data"            => $this->result_array_r,
         ];
+
+        if ($this->isDebugging()) {
+            $output["input"] = $this->input;
+        }
 
         return new JsonResponse($output);
     }
