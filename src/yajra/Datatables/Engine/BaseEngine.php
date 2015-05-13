@@ -804,6 +804,10 @@ class BaseEngine
         $name = Str::camel(Str::lower($name));
         if (method_exists($this, $name)) {
             return call_user_func_array([$this, $name], $arguments);
+        } elseif (method_exists($this->query->getQuery(), $name)) {
+            call_user_func_array([$this->query->getQuery(), $name], $arguments);
+
+            return $this;
         } else {
             trigger_error('Call to undefined method ' . __CLASS__ . '::' . $name . '()', E_USER_ERROR);
         }
