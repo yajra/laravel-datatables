@@ -267,6 +267,23 @@ class CollectionEngine extends BaseEngine implements EngineContract
     }
 
     /**
+     * Render json response
+     *
+     * @return JsonResponse
+     */
+    public function output()
+    {
+        $output = [
+            "draw"            => (int) $this->input['draw'],
+            "recordsTotal"    => $this->totalRecords,
+            "recordsFiltered" => $this->filteredRecords,
+            "data"            => $this->result_array_r,
+        ];
+
+        return new JsonResponse($output);
+    }
+
+    /**
      * @param  mixed $collection
      * @return mixed|null
      */

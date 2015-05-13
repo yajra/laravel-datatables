@@ -25,6 +25,10 @@ class EloquentEngine extends BaseEngine implements EngineContract
         $this->columns = $this->query->getQuery()->columns;
         $this->connection = $this->query->getQuery()->getConnection();
 
+        if ($this->isDebugging()) {
+            $this->connection->enableQueryLog();
+        }
+
         parent::__construct();
 
         return $this;

@@ -289,6 +289,16 @@ class BaseEngine
     }
 
     /**
+     * Check if app is in debug mode
+     *
+     * @return boolean
+     */
+    public function isDebugging()
+    {
+        return Config::get('app.debug', false);
+    }
+
+    /**
      * Get config use wild card status
      *
      * @return boolean
@@ -665,6 +675,10 @@ class BaseEngine
             "recordsFiltered" => $this->filteredRecords,
             "data"            => $this->result_array_r,
         ];
+
+        if ($this->isDebugging()) {
+            $output["queries"] = $this->connection->getQueryLog();
+        }
 
         return new JsonResponse($output);
     }

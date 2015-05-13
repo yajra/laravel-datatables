@@ -26,6 +26,10 @@ class QueryBuilderEngine extends BaseEngine implements EngineContract
         $this->columns = $this->query->columns;
         $this->connection = $this->query->getConnection();
 
+        if ($this->isDebugging()) {
+            $this->connection->enableQueryLog();
+        }
+
         parent::__construct();
 
         return $this;
