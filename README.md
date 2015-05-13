@@ -82,6 +82,28 @@ It is better, you know these:
     - `->setRowAttr(array())` to add batch data using an array
     - `->addRowAttr($key, $value)` to append single data on array (Note: `setRowAttr` should be called first if you plan on using both functions)
     - the value parameters can also be a `string`, `closure` or `blade` template.
+- You can override default filter function on each column by using `filterColumn` function.
+    - Usage: `filterColumn($column, $method, $param_1, $param_2, ..., $param_n )`
+        - `$column` - the column name that search filter is be applied to
+        - `$method` - can be any of QueryBuilder methods (where, whereIn, whereBetween, having etc.).
+
+            > Note: For global search, these methods are automaticaly converted to their "or" equivalents (if applicable, if not applicable, the column is not searched).
+            If you do not want some column to be searchable in global search, set the javascript column flag `searchable: false`.
+        - `$param_1 ... $param_n` - these are parameters that will be passed to the selected where function ($method). Possible types:
+            - string
+            - DB::raw() - The DB::raw() can output literaly everything into the query. For example, subqueries or branching if you need some really sophisticated wheres.
+            - function - or any other callable
+            - array of any of the above
+- Datatables now extends [Query Builder](http://laravel.com/docs/5.0/queries#advanced-wheres)'s functionality which means that you can directy filter results using the `Datatables` class.
+
+    ```php
+    // Query Builder's extended function.
+    // See Laravel Query Builder docs for more details.
+    return Datatables::of($user)
+        ->whereIn('id', [1,2,3])
+        ->whereNull('id')
+        ->make(true);
+    ```
 
 ### Examples
 
