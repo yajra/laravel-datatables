@@ -226,7 +226,7 @@ class BaseEngine
 
         // if its a normal query ( no union ) replace the select with static text to improve performance
         $myQuery = clone $query;
-        if ( ! preg_match('/UNION/i', strtoupper($myQuery->toSql()))) {
+        if ( ! Str::contains(Str::upper($myQuery->toSql()), 'UNION')) {
             $myQuery->select($this->connection->raw("'1' as row_count"));
         }
 

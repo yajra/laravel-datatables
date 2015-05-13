@@ -88,11 +88,11 @@ class CollectionEngine extends BaseEngine implements EngineContract
                     }
 
                     if ($this->isCaseInsensitive()) {
-                        if (strpos(Str::lower($data[$column]), Str::lower($keyword)) !== false) {
+                        if (Str::contains(Str::lower($data[$column]), Str::lower($keyword))) {
                             $found[] = true;
                         }
                     } else {
-                        if (strpos($data[$column], $keyword) !== false) {
+                        if (Str::contains($data[$column], $keyword)) {
                             $found[] = true;
                         }
                     }
