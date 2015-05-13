@@ -960,7 +960,7 @@ class BaseEngine
         $columns = $input['columns'];
 
         if ( ! empty($this->input['search']['value'])) {
-            $this->query->orWhere(function ($query) use ($columns, $input) {
+            $this->query->where(function ($query) use ($columns, $input) {
                 for ($i = 0, $c = count($columns); $i < $c; $i++) {
                     if ($columns[$i]['searchable'] != "true") {
                         continue;
