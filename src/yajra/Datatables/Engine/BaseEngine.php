@@ -175,6 +175,13 @@ class BaseEngine
     public $row_attr_tmpls = [];
 
     /**
+     * Override column search query type
+     *
+     * @var array
+     */
+    public $filter_columns = [];
+
+    /**
      * Construct base engine
      */
     public function __construct()
@@ -926,6 +933,22 @@ class BaseEngine
     }
 
     /**
+     * Override default column filter search
+     *
+     * @param int $index
+     * @param string $method
+     * @param mixed ...,... All the individual parameters required for specified $method
+     * @return $this
+     */
+    public function filterColumn($column, $method)
+    {
+        $params = func_get_args();
+        $this->filter_columns[$column] = array('method' => $method, 'parameters' => array_splice($params, 2));
+
+        return $this;
+    }
+
+    /**
      * Datatable filtering
      *
      * @return null
@@ -936,7 +959,7 @@ class BaseEngine
         $columns = $input['columns'];
 
         if ( ! empty($this->input['search']['value'])) {
-            $this->query->where(function ($query) use ($columns, $input) {
+            $this->query->orWhere(function ($query) use ($columns, $input) {
                 for ($i = 0, $c = count($columns); $i < $c; $i++) {
                     if ($columns[$i]['searchable'] != "true") {
                         continue;
@@ -969,13 +992,29 @@ class BaseEngine
                         $cast_end = " as TEXT)";
                     }
 
-                    // wrap column possibly allow reserved words to be used as column
-                    $column = $this->wrapColumn($column);
-                    if ($this->isCaseInsensitive()) {
-                        $query->orWhereRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?',
-                            [Str::lower($keyword)]);
+                    if (isset($this->filter_columns[$column])) {
+                        extract($this->filter_columns[$column]);
+                        if ( ! Str::contains(Str::lower($method), 'or')) {
+                            $method = 'or' . ucfirst($method);
+                        }
+
+                        if (method_exists($query->getQuery(), $method)
+                            && count($parameters) <= with(new \ReflectionMethod($query->getQuery(), $method))->getNumberOfParameters()
+                        ) {
+                            if (Str::contains(Str::lower($method), 'raw') or Str::contains(Str::lower($method), 'exists')) {
+                                call_user_func_array(array($query, $method), $this->parameterize($parameters));
+                            } else {
+                                call_user_func_array(array($query, $method), $this->parameterize($column, $parameters));
+                            }
+                        }
                     } else {
-                        $query->orWhereRaw($cast_begin . $column . $cast_end . ' LIKE ?', [$keyword]);
+                        // wrap column possibly allow reserved words to be used as column
+                        $column = $this->wrapColumn($column);
+                        if ($this->isCaseInsensitive()) {
+                            $query->orWhereRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?', [Str::lower($keyword)]);
+                        } else {
+                            $query->orWhereRaw($cast_begin . $column . $cast_end . ' LIKE ?', [$keyword]);
+                        }
                     }
                 }
             });
@@ -983,6 +1022,31 @@ class BaseEngine
 
         // column search
         $this->doColumnSearch($columns);
+    }
+
+    /**
+     * Build Query Builder Parameters
+     *
+     * @param  mixed $column
+     * @return array
+     */
+    public function parameterize()
+    {
+        $args = func_get_args();
+        $parameters = [];
+
+        if (count($args) > 1) {
+            $parameters[] = $args[0];
+            foreach ($args[1] as $param) {
+                $parameters[] = $param;
+            }
+        } else {
+            foreach ($args[0] as $param) {
+                $parameters[] = $param;
+            }
+        }
+
+        return $parameters;
     }
 
     /**
