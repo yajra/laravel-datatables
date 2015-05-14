@@ -44,7 +44,9 @@ Once the package was downloaded, open "config/app.php" and register the `provide
 Finally you need to publish a configuration file by running the following Artisan command.
 
 ```php
-$ php artisan vendor:publish --provider="yajra\Datatables\DatatablesServiceProvider" --tag="config"
+$ php artisan vendor:publish --provider="yajra\Datatables\DatatablesServiceProvider"
+// or simply run below to publish all vendor's config files
+$ php artisan vendor:publish
 ```
 
 ### Demo Application
