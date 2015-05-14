@@ -1083,7 +1083,7 @@ class BaseEngine
                     $this->query->whereRaw('LOWER(' . $column . ') LIKE ?', [Str::lower($keyword)]);
                 } else {
                     $col = strstr($column, '(') ? $this->connection->raw($column) : $column;
-                    $this->query->where($col, 'LIKE', $keyword);
+                    $this->query->whereRaw($col . ' LIKE ?', [$keyword]);
                 }
             }
         }
