@@ -16,6 +16,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Illuminate\View\Compilers\BladeCompiler;
+use League\Fractal\Resource\Collection;
 
 class BaseEngine
 {
@@ -180,6 +181,13 @@ class BaseEngine
      * @var array
      */
     public $filter_columns = [];
+
+    /**
+     * Output transformer
+     *
+     * @var TransformerAbstract
+     */
+    public $transformer = null;
 
     /**
      * Construct base engine
@@ -679,13 +687,19 @@ class BaseEngine
         $output = [
             "draw"            => (int) $this->input['draw'],
             "recordsTotal"    => $this->totalRecords,
-            "recordsFiltered" => $this->filteredRecords,
-            "data"            => $this->result_array_r,
+            "recordsFiltered" => $this->filteredRecords
         ];
+
+        if (isset($this->transformer)) {
+            $collection = new Collection($this->result_array_r, new $this->transformer);
+            $output['data'] = $collection->getData();
+        } else {
+            $output['data'] = $this->result_array_r;
+        }
 
         if ($this->isDebugging()) {
             $output["queries"] = $this->connection->getQueryLog();
-            $output["input"] = $this->input;
+            $output["input"]   = $this->input;
         }
 
         return new JsonResponse($output);
@@ -1073,6 +1087,19 @@ class BaseEngine
                 }
             }
         }
+    }
+
+    /**
+     * Set outout transformer
+     *
+     * @param TransformerAbstract $transformer
+     * @return $this
+     */
+    public function setTransformer($transformer)
+    {
+        $this->transformer = $transformer;
+
+        return $this;
     }
 
 }

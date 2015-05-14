@@ -95,6 +95,7 @@ It is better, you know these:
             - function - or any other callable
             - array of any of the above
 - Datatables now extends [Query Builder](http://laravel.com/docs/5.0/queries#advanced-wheres)'s functionality which means that you can directy filter results using the `Datatables` class.
+- You can use `league\fractal` to transform API data output by using `setTransformer('App\Transformer\DataTransformer')`. See [Fractal Transformer](http://fractal.thephpleague.com/transformers/) docs for details.
 
     ```php
     // Query Builder's extended function.

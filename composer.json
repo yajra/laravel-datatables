@@ -21,6 +21,9 @@
         "mockery/mockery": "~0.9",
         "phpunit/phpunit": "~4.0"
     },
+    "suggest": {
+        "league/fractal": "Can be use to transform DataTables output in a proper API format"
+    },
     "autoload": {
         "psr-0": {
             "yajra\\Datatables": "src/"

@@ -13,6 +13,8 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use League\Fractal\Manager;
+use League\Fractal\Resource\Collection as FractalCollection;
 
 class CollectionEngine extends BaseEngine implements EngineContract
 {
@@ -277,9 +279,15 @@ class CollectionEngine extends BaseEngine implements EngineContract
         $output = [
             "draw"            => (int) $this->input['draw'],
             "recordsTotal"    => $this->totalRecords,
-            "recordsFiltered" => $this->filteredRecords,
-            "data"            => $this->result_array_r,
+            "recordsFiltered" => $this->filteredRecords
         ];
+
+        if (isset($this->transformer)) {
+            $collection = new FractalCollection($this->result_array_r, new $this->transformer);
+            $output['data'] = $collection->getData();
+        } else {
+            $output['data'] = $this->result_array_r;
+        }
 
         if ($this->isDebugging()) {
             $output["input"] = $this->input;

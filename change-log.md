@@ -16,6 +16,7 @@
     - Force enable query log when app is in debug mode
     - Convert string search from preg_match to Str::contains to improve performance.
     - Added support for having clause queries
+    - Added support for `league/fractal` for transforming data API output
 
 ###v5.0
     - Strictly for Laravel 5++
