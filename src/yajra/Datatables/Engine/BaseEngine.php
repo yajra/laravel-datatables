@@ -423,7 +423,7 @@ class BaseEngine
     public function tableNames()
     {
         $names = [];
-        $query = ($this->isQueryBuilder()) ? $this->query : $this->query->getQuery();
+        $query = $this->getBuilder();
         $names[] = $query->from;
         $joins = $query->joins ?: [];
         $databasePrefix = $this->databasePrefix();
@@ -445,13 +445,7 @@ class BaseEngine
      */
     public function databasePrefix()
     {
-        if ($this->isQueryBuilder()) {
-            $query = $this->query;
-        } else {
-            $query = $this->query->getQuery();
-        }
-
-        return $query->getGrammar()->getTablePrefix();
+        return $this->getBuilder()->getGrammar()->getTablePrefix();
     }
 
     /**
@@ -826,8 +820,8 @@ class BaseEngine
         $name = Str::camel(Str::lower($name));
         if (method_exists($this, $name)) {
             return call_user_func_array([$this, $name], $arguments);
-        } elseif (method_exists($this->query->getQuery(), $name)) {
-            call_user_func_array([$this->query->getQuery(), $name], $arguments);
+        } elseif (method_exists($this->getBuilder(), $name)) {
+            call_user_func_array([$this->getBuilder(), $name], $arguments);
 
             return $this;
         } else {
@@ -1013,8 +1007,8 @@ class BaseEngine
                             $method = 'or' . ucfirst($method);
                         }
 
-                        if (method_exists($query->getQuery(), $method)
-                            && count($parameters) <= with(new \ReflectionMethod($query->getQuery(), $method))->getNumberOfParameters()
+                        if (method_exists($this->getBuilder(), $method)
+                            && count($parameters) <= with(new \ReflectionMethod($this->getBuilder(), $method))->getNumberOfParameters()
                         ) {
                             if (Str::contains(Str::lower($method), 'raw') or Str::contains(Str::lower($method), 'exists')) {
                                 call_user_func_array(array($query, $method), $this->parameterize($parameters));
@@ -1100,6 +1094,20 @@ class BaseEngine
         $this->transformer = $transformer;
 
         return $this;
+    }
+
+    /**
+     * Get Query Builder object
+     *
+     * @return Illuminate\Database\Query\Builder
+     */
+    public function getBuilder()
+    {
+        if ($this->isQueryBuilder()) {
+            return $this->query;
+        }
+
+        return $this->query->getQuery();
     }
 
 }
