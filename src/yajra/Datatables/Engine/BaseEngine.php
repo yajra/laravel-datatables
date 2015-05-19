@@ -1071,13 +1071,30 @@ class BaseEngine
                 $column = $columns[$i]['name'];
                 $keyword = $this->setupKeyword($columns[$i]['search']['value']);
 
-                // wrap column possibly allow reserved words to be used as column
-                $column = $this->wrapColumn($column);
-                if ($this->isCaseInsensitive()) {
-                    $this->query->whereRaw('LOWER(' . $column . ') LIKE ?', [Str::lower($keyword)]);
+                if (isset($this->filter_columns[$column])) {
+                    extract($this->filter_columns[$column]);
+                    if ( ! Str::contains(Str::lower($method), 'or')) {
+                        $method = 'or' . ucfirst($method);
+                    }
+
+                    if (method_exists($this->getBuilder(), $method)
+                        && count($parameters) <= with(new \ReflectionMethod($this->getBuilder(), $method))->getNumberOfParameters()
+                    ) {
+                        if (Str::contains(Str::lower($method), 'raw') or Str::contains(Str::lower($method), 'exists')) {
+                            call_user_func_array(array($this->getBuilder(), $method), $this->parameterize($parameters));
+                        } else {
+                            call_user_func_array(array($this->getBuilder(), $method), $this->parameterize($column, $parameters));
+                        }
+                    }
                 } else {
-                    $col = strstr($column, '(') ? $this->connection->raw($column) : $column;
-                    $this->query->whereRaw($col . ' LIKE ?', [$keyword]);
+                    // wrap column possibly allow reserved words to be used as column
+                    $column = $this->wrapColumn($column);
+                    if ($this->isCaseInsensitive()) {
+                        $this->query->whereRaw('LOWER(' . $column . ') LIKE ?', [Str::lower($keyword)]);
+                    } else {
+                        $col = strstr($column, '(') ? $this->connection->raw($column) : $column;
+                        $this->query->whereRaw($col . ' LIKE ?', [$keyword]);
+                    }
                 }
             }
         }
