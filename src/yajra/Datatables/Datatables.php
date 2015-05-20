@@ -61,7 +61,7 @@ class Datatables
         if ($builder instanceof QueryBuilder) {
             $ins = $datatables->usingQueryBuilder($builder);
         } else {
-            $ins = $builder instanceof Collection ? $datatables->usingCollection() : $datatables->usingEloquent();
+            $ins = $builder instanceof Collection ? $datatables->usingCollection($builder) : $datatables->usingEloquent($builder);
         }
 
         return $ins;
@@ -70,31 +70,34 @@ class Datatables
     /**
      * Datatables using Query Builder
      *
+     * @param QueryBuilder $builder
      * @return QueryBuilderEngine
      */
-    public function usingQueryBuilder()
+    public function usingQueryBuilder(QueryBuilder $builder)
     {
-        return new QueryBuilderEngine($this->builder, $this->request->all());
+        return new QueryBuilderEngine($builder, $this->request->all());
     }
 
     /**
      * Datatables using Collection
      *
+     * @param Collection $builder
      * @return CollectionEngine
      */
-    public function usingCollection()
+    public function usingCollection(Collection $builder)
     {
-        return new CollectionEngine($this->builder, $this->request->all());
+        return new CollectionEngine($builder, $this->request->all());
     }
 
     /**
      * Datatables using Eloquent
      *
+     * @param mixed $builder
      * @return EloquentEngine
      */
-    public function usingEloquent()
+    public function usingEloquent($builder)
     {
-        return new EloquentEngine($this->builder, $this->request->all());
+        return new EloquentEngine($builder, $this->request->all());
     }
 
 }
