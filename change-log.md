@@ -10,7 +10,7 @@
 
 ###v5.2
     - Datatables can now be used via Laravel IOC container `app('datatables')`
-    - Datables Engine can now be used directly along with Laravel IOC
+    - Datatables Engine can now be used directly along with Laravel IOC
         - Available Engines:
             - Query Builder Engine. `app('datatables')->usingQueryBuilder($builder)->make()`
             - Eloquent Engine. `app('datatables')->usingEloquent($model)->make()`
