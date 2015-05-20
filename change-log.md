@@ -34,9 +34,9 @@
     - Strict implmentation of DT1.10 script pattern
     - Added support for Collection as data source
 
-###v4.3.2
+###v4.3.x
     - Latest stable version for Laravel 5 with support for DT1.9
     - Collection Engine not available
 
-###v3.6.3
+###v3.6.x
     - Latest stable version for Laravel 4
