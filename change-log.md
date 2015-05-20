@@ -15,7 +15,8 @@
             - Query Builder Engine. `app('datatables')->usingQueryBuilder($builder)->make()`
             - Eloquent Engine. `app('datatables')->usingEloquent($model)->make()`
             - Collection Engine. `app('datatables')->usingCollection($collection)->make()`
-    - Datatables is now more testable and works with [laracasts\integrated](https://github.com/laracasts/integrated). Bugfix #56
+    - Datatables is now more testable and works with https://github.com/laracasts/integrated
+    - Bugfix #56
 
 ###v5.1
     - Added filterColumn function to override default global search in each column
