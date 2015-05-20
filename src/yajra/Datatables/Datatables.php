@@ -38,6 +38,16 @@ class Datatables
     public $builder;
 
     /**
+     * Class Constructor
+     *
+     * @param Request $request
+     */
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
+
+    /**
      * Gets query and returns instance of class
      *
      * @param $builder
@@ -45,8 +55,7 @@ class Datatables
      */
     public static function of($builder)
     {
-        $datatables = new Datatables;
-        $datatables->request = Request::capture();
+        $datatables = app('datatables');
         $datatables->builder = $builder;
 
         if ($builder instanceof QueryBuilder) {
@@ -65,7 +74,7 @@ class Datatables
      */
     public function usingQueryBuilder()
     {
-        return new QueryBuilderEngine($this->builder, $this->request);
+        return new QueryBuilderEngine($this->builder, $this->request->all());
     }
 
     /**
@@ -75,7 +84,7 @@ class Datatables
      */
     public function usingCollection()
     {
-        return new CollectionEngine($this->builder, $this->request);
+        return new CollectionEngine($this->builder, $this->request->all());
     }
 
     /**
@@ -85,7 +94,7 @@ class Datatables
      */
     public function usingEloquent()
     {
-        return new EloquentEngine($this->builder, $this->request);
+        return new EloquentEngine($this->builder, $this->request->all());
     }
 
 }

@@ -11,7 +11,6 @@
 use Closure;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
@@ -192,9 +191,9 @@ class BaseEngine
     /**
      * Construct base engine
      */
-    public function __construct(Request $request)
+    public function __construct($request)
     {
-        $this->input = $request->all();
+        $this->input = $request;
         $this->getTotalRecords(); // Total records
     }
 
