@@ -107,6 +107,12 @@ It is better, you know these:
         ->make(true);
     ```
 - You can use `league\fractal` to transform API data output by using `setTransformer('App\Transformer\DataTransformer')`. See [Fractal Transformer](http://fractal.thephpleague.com/transformers/) docs for details.
+- [v5.2++] Datatables can now be use using IOC container like `app('datatables')`
+- [v5.2++] Datatables Engines can now be called along with IOC container. `app('datatables')->usingQueryBuilder($builder)->make(true)`
+    - Available Engines:
+        - Query Builder Engine. `->usingQueryBuilder($builder)->make()`
+        - Eloquent Engine. `->usingEloquent($model)->make()`
+        - Collection Engine. `->usingCollection($collection)->make()`
 
 ### Examples
 

@@ -8,6 +8,15 @@
 
 ##Change Log
 
+###v5.2
+    - Datatables can now be used via Laravel IOC container `app('datatables')`
+    - Datables Engine can now be used directly along with Laravel IOC
+        - Available Engines:
+            - Query Builder Engine. `app('datatables')->usingQueryBuilder($builder)->make()`
+            - Eloquent Engine. `app('datatables')->usingEloquent($model)->make()`
+            - Collection Engine. `app('datatables')->usingCollection($collection)->make()`
+    - Datatables is now more testable and works with [laracasts\integrated](https://github.com/laracasts/integrated). Bugfix #56
+
 ###v5.1
     - Added filterColumn function to override default global search in each column
     - Datatables class extending Query Builder's functionality along with global search.
