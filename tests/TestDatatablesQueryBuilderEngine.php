@@ -4,9 +4,10 @@ use Mockery as m;
 use yajra\Datatables\Datatables;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 
-class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
+class TestDatatablesQueryBuilderEngine extends PHPUnit_Framework_TestCase  {
 
 	public function setUp()
 	{
@@ -29,7 +30,10 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		// set Input variables
 		$this->setupInputVariables();
 
-		$response = Datatables::of($builder)->make();
+		$datatables = new Datatables(Request::capture());
+
+		$response = $datatables->usingQueryBuilder($builder)->make();
+
 		$actual = $response->getContent();
 		$expected = '{"draw":1,"recordsTotal":2,"recordsFiltered":2,"data":[[1,"foo"],[2,"bar"]]}';
 
@@ -43,7 +47,9 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		// set Input variables
 		$this->setupInputVariables();
 
-		$response = Datatables::of($builder)->make(true);
+		$datatables = new Datatables(Request::capture());
+
+		$response = $datatables->usingQueryBuilder($builder)->make(true);
 		$actual = $response->getContent();
 		$expected = '{"draw":1,"recordsTotal":2,"recordsFiltered":2,"data":[{"id":1,"name":"foo"},{"id":2,"name":"bar"}]}';
 
@@ -55,7 +61,7 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 	{
 		$_GET = [];
 		$_GET['draw'] = 1;
-		$_GET['start'] = 1;
+		$_GET['start'] = 0;
 		$_GET['length'] = 10;
 		$_GET['search']['value'] = '';
 		$_GET['columns'][0]['name'] = 'foo';
