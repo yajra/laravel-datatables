@@ -194,8 +194,7 @@ class BaseEngine
      */
     public function __construct()
     {
-        $request = Request::capture();
-        $this->input = $request->all();
+        $this->input = Input::all();
         $this->getTotalRecords(); // Total records
     }
 
