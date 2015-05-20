@@ -38,13 +38,13 @@ class CollectionEngine extends BaseEngine implements EngineContract
      *
      * @param Collection $collection
      */
-    public function __construct(Collection $collection)
+    public function __construct(Collection $collection, $request)
     {
         $this->collection = $collection;
         $this->original_collection = $collection;
         $this->columns = array_keys($this->serialize((array) $collection->first()));
 
-        parent::__construct();
+        parent::__construct($request);
 
         return $this;
     }

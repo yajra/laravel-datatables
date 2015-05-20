@@ -11,6 +11,7 @@
 
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
+use Illuminate\Http\Request;
 use yajra\Datatables\Engine\CollectionEngine;
 use yajra\Datatables\Engine\EloquentEngine;
 use yajra\Datatables\Engine\QueryBuilderEngine;
@@ -22,6 +23,19 @@ use yajra\Datatables\Engine\QueryBuilderEngine;
  */
 class Datatables
 {
+    /**
+     * Input Request
+     *
+     * @var Request
+     */
+    public $request;
+
+    /**
+     * Datatables builder
+     *
+     * @var mixed
+     */
+    public $builder;
 
     /**
      * Gets query and returns instance of class
@@ -31,14 +45,47 @@ class Datatables
      */
     public static function of($builder)
     {
+        $datatables = new Datatables;
+        $datatables->request = Request::capture();
+        $datatables->builder = $builder;
 
         if ($builder instanceof QueryBuilder) {
-            $ins = new QueryBuilderEngine($builder);
+            $ins = $datatables->usingQueryBuilder($builder);
         } else {
-            $ins = $builder instanceof Collection ? new CollectionEngine($builder) : new EloquentEngine($builder);
+            $ins = $builder instanceof Collection ? $datatables->usingCollection() : $datatables->usingEloquent();
         }
 
         return $ins;
+    }
+
+    /**
+     * Datatables using Query Builder
+     *
+     * @return QueryBuilderEngine
+     */
+    public function usingQueryBuilder()
+    {
+        return new QueryBuilderEngine($this->builder, $this->request);
+    }
+
+    /**
+     * Datatables using Collection
+     *
+     * @return CollectionEngine
+     */
+    public function usingCollection()
+    {
+        return new CollectionEngine($this->builder, $this->request);
+    }
+
+    /**
+     * Datatables using Eloquent
+     *
+     * @return EloquentEngine
+     */
+    public function usingEloquent()
+    {
+        return new EloquentEngine($this->builder, $this->request);
     }
 
 }

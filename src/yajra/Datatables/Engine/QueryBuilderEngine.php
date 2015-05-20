@@ -19,7 +19,7 @@ class QueryBuilderEngine extends BaseEngine implements EngineContract
      *
      * @param Builder $builder
      */
-    public function __construct(Builder $builder)
+    public function __construct(Builder $builder, $request)
     {
         $this->query_type = 'builder';
         $this->query = $builder;
@@ -30,7 +30,7 @@ class QueryBuilderEngine extends BaseEngine implements EngineContract
             $this->connection->enableQueryLog();
         }
 
-        parent::__construct();
+        parent::__construct($request);
 
         return $this;
     }

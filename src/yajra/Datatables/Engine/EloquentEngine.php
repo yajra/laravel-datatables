@@ -18,7 +18,7 @@ class EloquentEngine extends BaseEngine implements EngineContract
      *
      * @param Builder|HasMany|... $model
      */
-    public function __construct($model)
+    public function __construct($model, $request)
     {
         $this->query_type = 'eloquent';
         $this->query = $model instanceof Builder ? $model : $model->getQuery();
@@ -29,7 +29,7 @@ class EloquentEngine extends BaseEngine implements EngineContract
             $this->connection->enableQueryLog();
         }
 
-        parent::__construct();
+        parent::__construct($request);
 
         return $this;
     }
