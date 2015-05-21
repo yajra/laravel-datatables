@@ -1071,10 +1071,6 @@ class BaseEngine
 
                 if (isset($this->filter_columns[$column])) {
                     extract($this->filter_columns[$column]);
-                    if ( ! Str::contains(Str::lower($method), 'or')) {
-                        $method = 'or' . ucfirst($method);
-                    }
-
                     if (method_exists($this->getBuilder(), $method)
                         && count($parameters) <= with(new \ReflectionMethod($this->getBuilder(), $method))->getNumberOfParameters()
                     ) {
