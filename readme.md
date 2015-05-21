@@ -24,7 +24,8 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 - Works with Laravel Dependency Injection and IOC Container
 
 ## Documentations
-You will find user friendly and updated documentation in the wiki here: [Laravel Datatables Wiki](https://github.com/yajra/laravel-datatables/wiki)
+- You will find user friendly and updated documentation in the wiki here: [Laravel Datatables Wiki](https://github.com/yajra/laravel-datatables/wiki)
+- You will find the API Documentation here: [Laravel Datatables API](http://yajra.github.io/laravel-datatables/api/)
 
 ### Quick Installation
 **Laravel 5:** `composer require yajra/laravel-datatables-oracle:~5.0`
