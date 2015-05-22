@@ -1,4 +1,4 @@
-## Datatables Package for Laravel 4|5
+# Datatables Package for Laravel 4|5
 
 [![Build Status](https://travis-ci.org/yajra/laravel-datatables.png?branch=master)](https://travis-ci.org/yajra/laravel-datatables)
 [![Latest Stable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/stable.png)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
@@ -8,7 +8,7 @@
 
 This package is created to handle [server-side](https://www.datatables.net/manual/server-side) works of [DataTables](http://datatables.net) jQuery Plugin via [AJAX option](https://datatables.net/reference/option/ajax) by using Eloquent ORM, Fluent Query Builder or Collection.
 
-### Feature Overview
+## Feature Overview
 - Supports the following data source
     - **Eloquent ORM**
     - **Fluent Query Builder**
@@ -27,20 +27,25 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 - You will find user friendly and updated documentation in the wiki here: [Laravel Datatables Wiki](https://github.com/yajra/laravel-datatables/wiki)
 - You will find the API Documentation here: [Laravel Datatables API](http://yajra.github.io/laravel-datatables/api/)
 
-### Quick Installation
+## Quick Installation
 **Laravel 5:** `composer require yajra/laravel-datatables-oracle:~5.0`
 
 **Laravel 4:** `composer require yajra/laravel-datatables-oracle:~3.0`
 
-### Service Provider
+#### Service Provider
 `yajra\Datatables\DatatablesServiceProvider`
 
-### Facade
+#### Facade
 `'Datatables'      => 'yajra\Datatables\Datatables',`
 
-### Configuration
+#### Configuration
 **Laravel 5:** `$ php artisan vendor:publish`
 
 **Laravel 4:** `$ php artisan config:publish yajra/laravel-datatables-oracle`
 
+
 And that's it! Start building out some awesome DataTables!
+
+## License
+
+Licensed under the [MIT License](http://cheeaun.mit-license.org/).
