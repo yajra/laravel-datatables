@@ -48,4 +48,4 @@ And that's it! Start building out some awesome DataTables!
 
 ## License
 
-Licensed under the [MIT License](http://cheeaun.mit-license.org/).
+Licensed under the [MIT License](https://github.com/yajra/laravel-datatables/blob/master/LICENSE).
