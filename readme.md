@@ -21,7 +21,7 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 	- **Note:** DT Legacy code is not supported on v5.x
 - Works with [DataTables](http://datatables.net) v1.9 and v1.10 legacy code.
 	- **Note:** Use [v4.x](https://github.com/yajra/laravel-datatables-oracle/tree/v4.3.2) for Laravel 5 and [v3.x](https://github.com/yajra/laravel-datatables-oracle/tree/L4) for Laravel 4
-- Works with Laravel Dependency Injection and IOC Container
+- Works with Laravel Dependency Injection and IoC Container
 
 ## Documentations
 - You will find user friendly and updated documentation in the wiki here: [Laravel Datatables Wiki](https://github.com/yajra/laravel-datatables/wiki)
