@@ -19,19 +19,20 @@
     </section>
 
     <section class="main-content">
-      <h2>
-<a id="datatables-package-for-laravel-45" class="anchor" href="#datatables-package-for-laravel-45" aria-hidden="true"><span class="octicon octicon-link"></span></a>Datatables Package for Laravel 4|5</h2>
+      <h1>
+<a id="datatables-package-for-laravel-45" class="anchor" href="#datatables-package-for-laravel-45" aria-hidden="true"><span class="octicon octicon-link"></span></a>Datatables Package for Laravel 4|5</h1>
 
-<p><a href="https://travis-ci.org/yajra/laravel-datatables"><img src="https://travis-ci.org/yajra/laravel-datatables.png?branch=master" alt="Build Status"></a>
-<a href="https://packagist.org/packages/yajra/laravel-datatables-oracle"><img src="https://poser.pugx.org/yajra/laravel-datatables-oracle/v/stable.png" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/yajra/laravel-datatables-oracle"><img src="https://poser.pugx.org/yajra/laravel-datatables-oracle/downloads.png" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/yajra/laravel-datatables-oracle"><img src="https://poser.pugx.org/yajra/laravel-datatables-oracle/v/unstable.svg" alt="Latest Unstable Version"></a>
-<a href="https://packagist.org/packages/yajra/laravel-datatables-oracle"><img src="https://poser.pugx.org/yajra/laravel-datatables-oracle/license.svg" alt="License"></a></p>
+<p><a href="https://travis-ci.org/yajra/laravel-datatables"><img src="https://img.shields.io/travis/yajra/laravel-datatables.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/yajra/laravel-datatables-oracle"><img src="https://img.shields.io/packagist/v/yajra/laravel-datatables-oracle.svg" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/yajra/laravel-datatables-oracle"><img src="https://img.shields.io/packagist/dt/yajra/laravel-datatables-oracle.svg" alt="Total Downloads"></a>
+<a href="https://github.com/yajra/laravel-datatables/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+<a href="https://gratipay.com/yajra/"><img src="https://img.shields.io/gratipay/yajra.svg" alt="Support via Gratipay"></a>
+<a href="https://flattr.com/submit/auto?user_id=yajra&amp;url=https://github.com/yajra/laravel-datatables&amp;title=laravel-datatables&amp;language=PHP&amp;tags=github&amp;category=software"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this git repo"></a></p>
 
 <p>This package is created to handle <a href="https://www.datatables.net/manual/server-side">server-side</a> works of <a href="http://datatables.net">DataTables</a> jQuery Plugin via <a href="https://datatables.net/reference/option/ajax">AJAX option</a> by using Eloquent ORM, Fluent Query Builder or Collection.</p>
 
-<h3>
-<a id="feature-overview" class="anchor" href="#feature-overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Feature Overview</h3>
+<h2>
+<a id="feature-overview" class="anchor" href="#feature-overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Feature Overview</h2>
 
 <ul>
 <li>Supports the following data source
@@ -61,7 +62,7 @@
 <strong>Note:</strong> Use <a href="https://github.com/yajra/laravel-datatables-oracle/tree/v4.3.2">v4.x</a> for Laravel 5 and <a href="https://github.com/yajra/laravel-datatables-oracle/tree/L4">v3.x</a> for Laravel 4</li>
 </ul>
 </li>
-<li>Works with Laravel Dependency Injection and IOC Container</li>
+<li>Works with Laravel Dependency Injection and IoC Container</li>
 </ul>
 
 <h2>
@@ -74,31 +75,36 @@
 </li>
 </ul>
 
-<h3>
-<a id="quick-installation" class="anchor" href="#quick-installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Quick Installation</h3>
+<h2>
+<a id="quick-installation" class="anchor" href="#quick-installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Quick Installation</h2>
 
 <p><strong>Laravel 5:</strong> <code>composer require yajra/laravel-datatables-oracle:~5.0</code></p>
 
 <p><strong>Laravel 4:</strong> <code>composer require yajra/laravel-datatables-oracle:~3.0</code></p>
 
-<h3>
-<a id="service-provider" class="anchor" href="#service-provider" aria-hidden="true"><span class="octicon octicon-link"></span></a>Service Provider</h3>
+<h4>
+<a id="service-provider" class="anchor" href="#service-provider" aria-hidden="true"><span class="octicon octicon-link"></span></a>Service Provider</h4>
 
 <p><code>yajra\Datatables\DatatablesServiceProvider</code></p>
 
-<h3>
-<a id="facade" class="anchor" href="#facade" aria-hidden="true"><span class="octicon octicon-link"></span></a>Facade</h3>
+<h4>
+<a id="facade" class="anchor" href="#facade" aria-hidden="true"><span class="octicon octicon-link"></span></a>Facade</h4>
 
 <p><code>'Datatables'      =&gt; 'yajra\Datatables\Datatables',</code></p>
 
-<h3>
-<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration</h3>
+<h4>
+<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration</h4>
 
 <p><strong>Laravel 5:</strong> <code>$ php artisan vendor:publish</code></p>
 
 <p><strong>Laravel 4:</strong> <code>$ php artisan config:publish yajra/laravel-datatables-oracle</code></p>
 
 <p>And that's it! Start building out some awesome DataTables!</p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>Licensed under the <a href="https://github.com/yajra/laravel-datatables/blob/master/LICENSE">MIT License</a>.</p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/yajra/laravel-datatables">Laravel Datatables</a> is maintained by <a href="https://github.com/yajra">yajra</a>.</span>
