@@ -239,7 +239,9 @@ class BaseEngine
 
         // if its a normal query ( no union and having word ) replace the select with static text to improve performance
         $myQuery = clone $query;
-        if ( ! Str::contains(Str::lower($myQuery->toSql()), 'union') and ! Str::contains(Str::lower($myQuery->toSql()), 'having')) {
+        if ( ! Str::contains(Str::lower($myQuery->toSql()), 'union') and ! Str::contains(Str::lower($myQuery->toSql()),
+                'having')
+        ) {
             $myQuery->select($this->connection->raw("'1' as row_count"));
         }
 
@@ -691,7 +693,7 @@ class BaseEngine
 
         if ($this->isDebugging()) {
             $output["queries"] = $this->connection->getQueryLog();
-            $output["input"]   = $this->input;
+            $output["input"] = $this->input;
         }
 
         return new JsonResponse($output);
@@ -950,7 +952,7 @@ class BaseEngine
     public function filterColumn($column, $method)
     {
         $params = func_get_args();
-        $this->filter_columns[$column] = array('method' => $method, 'parameters' => array_splice($params, 2));
+        $this->filter_columns[$column] = ['method' => $method, 'parameters' => array_splice($params, 2)];
 
         return $this;
     }
@@ -1006,19 +1008,23 @@ class BaseEngine
                         }
 
                         if (method_exists($this->getBuilder(), $method)
-                            && count($parameters) <= with(new \ReflectionMethod($this->getBuilder(), $method))->getNumberOfParameters()
+                            && count($parameters) <= with(new \ReflectionMethod($this->getBuilder(),
+                                $method))->getNumberOfParameters()
                         ) {
-                            if (Str::contains(Str::lower($method), 'raw') or Str::contains(Str::lower($method), 'exists')) {
-                                call_user_func_array(array($query, $method), $this->parameterize($parameters));
+                            if (Str::contains(Str::lower($method), 'raw') or Str::contains(Str::lower($method),
+                                    'exists')
+                            ) {
+                                call_user_func_array([$query, $method], $this->parameterize($parameters));
                             } else {
-                                call_user_func_array(array($query, $method), $this->parameterize($column, $parameters));
+                                call_user_func_array([$query, $method], $this->parameterize($column, $parameters));
                             }
                         }
                     } else {
                         // wrap column possibly allow reserved words to be used as column
                         $column = $this->wrapColumn($column);
                         if ($this->isCaseInsensitive()) {
-                            $query->orWhereRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?', [Str::lower($keyword)]);
+                            $query->orWhereRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?',
+                                [Str::lower($keyword)]);
                         } else {
                             $query->orWhereRaw($cast_begin . $column . $cast_end . ' LIKE ?', [$keyword]);
                         }
@@ -1072,12 +1078,14 @@ class BaseEngine
                 if (isset($this->filter_columns[$column])) {
                     extract($this->filter_columns[$column]);
                     if (method_exists($this->getBuilder(), $method)
-                        && count($parameters) <= with(new \ReflectionMethod($this->getBuilder(), $method))->getNumberOfParameters()
+                        && count($parameters) <= with(new \ReflectionMethod($this->getBuilder(),
+                            $method))->getNumberOfParameters()
                     ) {
                         if (Str::contains(Str::lower($method), 'raw') or Str::contains(Str::lower($method), 'exists')) {
-                            call_user_func_array(array($this->getBuilder(), $method), $this->parameterize($parameters));
+                            call_user_func_array([$this->getBuilder(), $method], $this->parameterize($parameters));
                         } else {
-                            call_user_func_array(array($this->getBuilder(), $method), $this->parameterize($column, $parameters));
+                            call_user_func_array([$this->getBuilder(), $method],
+                                $this->parameterize($column, $parameters));
                         }
                     }
                 } else {

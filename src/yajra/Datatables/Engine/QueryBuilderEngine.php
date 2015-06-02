@@ -9,7 +9,6 @@
  */
 
 use Illuminate\Database\Query\Builder;
-use Illuminate\Http\Request;
 
 class QueryBuilderEngine extends BaseEngine implements EngineContract
 {

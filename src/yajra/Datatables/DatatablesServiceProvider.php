@@ -2,7 +2,8 @@
 
 use Illuminate\Support\ServiceProvider;
 
-class DatatablesServiceProvider extends ServiceProvider {
+class DatatablesServiceProvider extends ServiceProvider
+{
 
     /**
      * Indicates if loading of the provider is deferred.
@@ -20,7 +21,7 @@ class DatatablesServiceProvider extends ServiceProvider {
     {
         // Publish config files
         $this->publishes([
-            __DIR__.'/config/config.php' => config_path('datatables.php'),
+            __DIR__ . '/config/config.php' => config_path('datatables.php'),
         ], 'config');
     }
 
@@ -31,8 +32,7 @@ class DatatablesServiceProvider extends ServiceProvider {
      */
     public function register()
     {
-        $this->app['datatables'] = $this->app->share(function($app)
-        {
+        $this->app['datatables'] = $this->app->share(function ($app) {
             return new Datatables($app['request']);
         });
     }
@@ -44,7 +44,7 @@ class DatatablesServiceProvider extends ServiceProvider {
      */
     public function provides()
     {
-        return array('datatables');
+        return ['datatables'];
     }
 
 }

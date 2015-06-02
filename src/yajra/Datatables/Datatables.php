@@ -10,8 +10,8 @@
  */
 
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use yajra\Datatables\Engine\CollectionEngine;
 use yajra\Datatables\Engine\EloquentEngine;
 use yajra\Datatables\Engine\QueryBuilderEngine;
@@ -23,6 +23,7 @@ use yajra\Datatables\Engine\QueryBuilderEngine;
  */
 class Datatables
 {
+
     /**
      * Input Request
      *
