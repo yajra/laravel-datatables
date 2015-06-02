@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    4.3.1
+ * @version    4.3.3
  */
 
 use Closure;
@@ -653,11 +653,10 @@ class Datatables
     private function doOrdering()
     {
         if (array_key_exists('order', $this->input) && count($this->input['order']) > 0) {
-            $columns = $this->cleanColumns($this->last_columns);
-
             for ($i = 0, $c = count($this->input['order']); $i < $c; $i++) {
                 $order_col = (int) $this->input['order'][$i]['column'];
                 $order_dir = $this->input['order'][$i]['dir'];
+
                 if ($this->new_version) {
                     $column = $this->input['columns'][$order_col];
                     if ($column['orderable'] == "true") {
@@ -668,9 +667,9 @@ class Datatables
                         }
                     }
                 } else {
-                    if (isset($columns[$order_col])) {
+                    if (isset($this->columns[$order_col])) {
                         if ($this->input['columns'][$order_col]['orderable'] == "true") {
-                            $this->query->orderBy($columns[$order_col], $order_dir);
+                            $this->query->orderBy($this->columns[$order_col], $order_dir);
                         }
                     }
                 }
