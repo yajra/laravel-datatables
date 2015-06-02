@@ -1065,7 +1065,7 @@ class BaseEngine
     public function doColumnSearch(array $columns)
     {
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
-            if ($columns[$i]['searchable'] == "true" and ($columns[$i]['search']['value'] !='') and ! empty($columns[$i]['name'])) {
+            if ($columns[$i]['searchable'] == "true" and $columns[$i]['search']['value'] != '' and ! empty($columns[$i]['name'])) {
                 $column = $columns[$i]['name'];
                 $keyword = $this->setupKeyword($columns[$i]['search']['value']);
 
