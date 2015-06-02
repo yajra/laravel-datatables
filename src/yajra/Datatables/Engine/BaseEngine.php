@@ -239,7 +239,7 @@ class BaseEngine
 
         // if its a normal query ( no union and having word ) replace the select with static text to improve performance
         $myQuery = clone $query;
-        if ( ! Str::contains(Str::lower($myQuery->toSql()), 'union') and ! Str::contains(Str::lower($myQuery->toSql()),
+        if ( ! Str::contains(Str::lower($myQuery->toSql()), 'union') && ! Str::contains(Str::lower($myQuery->toSql()),
                 'having')
         ) {
             $myQuery->select($this->connection->raw("'1' as row_count"));
@@ -488,7 +488,7 @@ class BaseEngine
                     continue;
                 }
 
-                if (isset($column['name']) and $column['name'] <> '') {
+                if (isset($column['name']) && $column['name'] <> '') {
                     $this->query->orderBy($column['name'], $order_dir);
                 } else {
                     $this->query->orderBy($this->columns[$order_col], $order_dir);
@@ -625,7 +625,7 @@ class BaseEngine
     public function setupDTRowVariables($key, array &$data)
     {
         if ( ! empty($this->row_id_tmpl)) {
-            if ( ! is_callable($this->row_id_tmpl) and Arr::get($data, $this->row_id_tmpl)) {
+            if ( ! is_callable($this->row_id_tmpl) && Arr::get($data, $this->row_id_tmpl)) {
                 $data['DT_RowId'] = Arr::get($data, $this->row_id_tmpl);
             } else {
                 $data['DT_RowId'] = $this->getContent($this->row_id_tmpl, $data, $this->result_object[$key]);
@@ -633,7 +633,7 @@ class BaseEngine
         }
 
         if ( ! empty($this->row_class_tmpl)) {
-            if ( ! is_callable($this->row_class_tmpl) and Arr::get($data, $this->row_class_tmpl)) {
+            if ( ! is_callable($this->row_class_tmpl) && Arr::get($data, $this->row_class_tmpl)) {
                 $data['DT_RowClass'] = Arr::get($data, $this->row_class_tmpl);
             } else {
                 $data['DT_RowClass'] = $this->getContent($this->row_class_tmpl, $data, $this->result_object[$key]);
@@ -1011,7 +1011,7 @@ class BaseEngine
                             && count($parameters) <= with(new \ReflectionMethod($this->getBuilder(),
                                 $method))->getNumberOfParameters()
                         ) {
-                            if (Str::contains(Str::lower($method), 'raw') or Str::contains(Str::lower($method),
+                            if (Str::contains(Str::lower($method), 'raw') || Str::contains(Str::lower($method),
                                     'exists')
                             ) {
                                 call_user_func_array([$query, $method], $this->parameterize($parameters));
@@ -1071,7 +1071,7 @@ class BaseEngine
     public function doColumnSearch(array $columns)
     {
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
-            if ($columns[$i]['searchable'] == "true" and $columns[$i]['search']['value'] != '' and ! empty($columns[$i]['name'])) {
+            if ($columns[$i]['searchable'] == "true" && $columns[$i]['search']['value'] != '' && ! empty($columns[$i]['name'])) {
                 $column = $columns[$i]['name'];
                 $keyword = $this->setupKeyword($columns[$i]['search']['value']);
 
@@ -1081,7 +1081,7 @@ class BaseEngine
                         && count($parameters) <= with(new \ReflectionMethod($this->getBuilder(),
                             $method))->getNumberOfParameters()
                     ) {
-                        if (Str::contains(Str::lower($method), 'raw') or Str::contains(Str::lower($method), 'exists')) {
+                        if (Str::contains(Str::lower($method), 'raw') || Str::contains(Str::lower($method), 'exists')) {
                             call_user_func_array([$this->getBuilder(), $method], $this->parameterize($parameters));
                         } else {
                             call_user_func_array([$this->getBuilder(), $method],
