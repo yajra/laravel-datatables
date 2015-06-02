@@ -149,14 +149,14 @@ class BaseEngine
     /**
      * DT_RowID template
      *
-     * @var string
+     * @var string|callable
      */
     public $row_id_tmpl;
 
     /**
      * DT_RowClass template
      *
-     * @var string
+     * @var string|callable
      */
     public $row_class_tmpl;
 
@@ -190,6 +190,8 @@ class BaseEngine
 
     /**
      * Construct base engine
+     *
+     * @param $request
      */
     public function __construct($request)
     {
@@ -552,7 +554,7 @@ class BaseEngine
         $blade = new BladeCompiler($empty_filesystem_instance, 'datatables');
         $parsed_string = $blade->compileString($str);
 
-        ob_start() and extract($data, EXTR_SKIP);
+        ob_start() && extract($data, EXTR_SKIP);
 
         try {
             eval('?>' . $parsed_string);
@@ -597,8 +599,6 @@ class BaseEngine
 
     /**
      * Converts result_array number indexed array and consider excess columns
-     *
-     * @return null
      */
     public function regulateArray()
     {
@@ -718,7 +718,7 @@ class BaseEngine
      * @param string $name
      * @param string $content
      * @param bool|int $order
-     * @return Datatables
+     * @return $this
      */
     public function addColumn($name, $content, $order = false)
     {
@@ -734,7 +734,7 @@ class BaseEngine
      *
      * @param  string $name
      * @param  string $content
-     * @return Datatables
+     * @return $this
      */
     public function editColumn($name, $content)
     {
@@ -746,7 +746,7 @@ class BaseEngine
     /**
      * Remove column from collection
      *
-     * @return Datatables
+     * @return $this
      */
     public function removeColumn()
     {
@@ -760,7 +760,7 @@ class BaseEngine
      * Set auto filter off and run your own filter
      *
      * @param callable $callback
-     * @return Datatables
+     * @return $this
      * @internal param $Closure
      */
     public function filter(Closure $callback)
@@ -814,6 +814,10 @@ class BaseEngine
     /**
      * Allows previous API calls where the methods were snake_case.
      * Will convert a camelCase API call to a snake_case call.
+     *
+     * @param $name
+     * @param $arguments
+     * @return $this|mixed
      */
     public function __call($name, $arguments)
     {
@@ -934,6 +938,8 @@ class BaseEngine
     }
 
     /**
+     * Check query type is a builder
+     *
      * @return bool
      */
     public function isQueryBuilder()
@@ -944,10 +950,10 @@ class BaseEngine
     /**
      * Override default column filter search
      *
-     * @param int $index
+     * @param $column
      * @param string $method
-     * @param mixed ...,... All the individual parameters required for specified $method
      * @return $this
+     * @internal param $mixed ...,... All the individual parameters required for specified $method
      */
     public function filterColumn($column, $method)
     {
@@ -959,8 +965,6 @@ class BaseEngine
 
     /**
      * Datatable filtering
-     *
-     * @return null
      */
     public function doFiltering()
     {
@@ -1040,7 +1044,6 @@ class BaseEngine
     /**
      * Build Query Builder Parameters
      *
-     * @param  mixed $column
      * @return array
      */
     public function parameterize()
@@ -1103,7 +1106,7 @@ class BaseEngine
     }
 
     /**
-     * Set outout transformer
+     * Set data output transformer
      *
      * @param TransformerAbstract $transformer
      * @return $this
@@ -1118,7 +1121,7 @@ class BaseEngine
     /**
      * Get Query Builder object
      *
-     * @return Illuminate\Database\Query\Builder
+     * @return EloquentBuilder|QueryBuilder
      */
     public function getBuilder()
     {
