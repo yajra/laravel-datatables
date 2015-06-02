@@ -10,7 +10,11 @@ before_script:
   - composer self-update
   - composer install --prefer-source --no-interaction --dev
 
-script: phpunit -d memory_limit=1024M
+script: phpunit -d memory_limit=1024M --coverage-clover=coverage.clover
+
+after_script:
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 
 matrix:
   allow_failures:

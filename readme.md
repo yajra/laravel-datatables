@@ -1,6 +1,8 @@
 # Datatables Package for Laravel 4|5
 
-[![Build Status](https://img.shields.io/travis/yajra/laravel-datatables.svg)](https://travis-ci.org/yajra/laravel-datatables)
+[![Laravel 4.2|5.0](https://img.shields.io/badge/Laravel-4.2|5.0-orange.svg)](http://laravel.com)
+[![Build Status](https://travis-ci.org/yajra/laravel-datatables.svg?branch=master)](https://travis-ci.org/yajra/laravel-datatables)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/yajra/laravel-datatables/badges/quality-score.png?b=scrutinizer)](https://scrutinizer-ci.com/g/yajra/laravel-datatables/?branch=scrutinizer)
 [![Latest Stable Version](https://img.shields.io/packagist/v/yajra/laravel-datatables-oracle.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![Total Downloads](https://img.shields.io/packagist/dt/yajra/laravel-datatables-oracle.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/yajra/laravel-datatables/blob/master/LICENSE)
