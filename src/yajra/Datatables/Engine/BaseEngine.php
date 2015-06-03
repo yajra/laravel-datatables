@@ -113,9 +113,9 @@ class BaseEngine
     public $filteredRecords = 0;
 
     /**
-     * Eloquent/Builder result
+     * Eloquent/Builder result object
      *
-     * @var array|Arrayable
+     * @var mixed
      */
     public $result_object;
 
