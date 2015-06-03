@@ -243,29 +243,9 @@ class BaseEngine
         // set mData support flag
         $this->m_data_support = $mDataSupport;
 
-        if ($orderFirst) {
-            $this->doOrdering();
-        }
+        $this->compileQueryBuilder($orderFirst);
 
-        // check if auto filtering was overridden
-        if ($this->autoFilter && $this->isSearchable()) {
-            $this->doFiltering();
-        }
-
-        $this->doColumnSearch();
-        $this->getTotalFilteredRecords();
-
-        if ( ! $orderFirst) {
-            $this->doOrdering();
-        }
-
-        $this->doPaging();
-
-        $this->setResults();
-        $this->initColumns();
-        $this->regulateArray();
-
-        return $this->output();
+        return $this->compileOutput();
     }
 
     /**
@@ -1314,6 +1294,46 @@ class BaseEngine
     protected function isSearchable()
     {
         return ! empty($this->input['search']['value']);
+    }
+
+    /**
+     * Compile Datatables final output
+     *
+     * @return JsonResponse
+     */
+    protected function compileOutput()
+    {
+        $this->setResults();
+        $this->initColumns();
+        $this->regulateArray();
+
+        return $this->output();
+    }
+
+    /**
+     * Compile Datatables queries
+     *
+     * @param $orderFirst
+     */
+    protected function compileQueryBuilder($orderFirst)
+    {
+        if ($orderFirst) {
+            $this->doOrdering();
+        }
+
+        // check if auto filtering was overridden
+        if ($this->autoFilter && $this->isSearchable()) {
+            $this->doFiltering();
+        }
+
+        $this->doColumnSearch();
+        $this->getTotalFilteredRecords();
+
+        if ( ! $orderFirst) {
+            $this->doOrdering();
+        }
+
+        $this->doPaging();
     }
 
 }
