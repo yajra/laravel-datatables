@@ -1349,13 +1349,13 @@ class BaseEngine
     /**
      * Get equivalent or method of query builder
      *
-     * @param $method
+     * @param string $method
      * @return string
      */
-    private function getOrMethod($method)
+    protected function getOrMethod($method)
     {
         if ( ! Str::contains(Str::lower($method), 'or')) {
-            return $method = 'or' . ucfirst($method);
+            return 'or' . ucfirst($method);
         }
 
         return $method;
