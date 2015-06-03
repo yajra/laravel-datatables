@@ -783,29 +783,11 @@ class BaseEngine
     {
         foreach ($this->result_array as $rkey => &$rvalue) {
 
-            // Convert data array to object value
-            $data = [];
-            foreach ($rvalue as $key => $value) {
-                if (is_object($this->result_object[$rkey])) {
-                    $data[$key] = $this->result_object[$rkey]->$key;
-                } else {
-                    $data[$key] = $value;
-                }
-            }
+            $data = $this->convertToArray($rvalue, $rkey);
 
-            // Process add columns
-            foreach ($this->extra_columns as $key => $value) {
-                $value = $this->processContent($value, $data, $rkey);
+            $rvalue = $this->processAddColumns($data, $rkey, $rvalue);
 
-                $rvalue = $this->includeInArray($value, $rvalue);
-            }
-
-            // Process edit columns
-            foreach ($this->edit_columns as $key => $value) {
-                $value = $this->processContent($value, $data, $rkey);
-
-                $rvalue[$value['name']] = $value['content'];
-            }
+            $rvalue = $this->processEditColumns($data, $rkey, $rvalue);
         }
     }
 
@@ -1271,6 +1253,65 @@ class BaseEngine
         $this->transformer = $transformer;
 
         return $this;
+    }
+
+    /**
+     * Process add columns
+     *
+     * @param array $data
+     * @param string|integer $rkey
+     * @param string $rvalue
+     * @return array
+     */
+    protected function processAddColumns(array $data, $rkey, $rvalue)
+    {
+        foreach ($this->extra_columns as $key => $value) {
+            $value = $this->processContent($value, $data, $rkey);
+
+            $rvalue = $this->includeInArray($value, $rvalue);
+        }
+
+        return $rvalue;
+    }
+
+    /**
+     * Process edit columns
+     *
+     * @param array $data
+     * @param string|integer $rkey
+     * @param string $rvalue
+     * @return array
+     */
+    protected function processEditColumns(array $data, $rkey, $rvalue)
+    {
+        foreach ($this->edit_columns as $key => $value) {
+            $value = $this->processContent($value, $data, $rkey);
+
+            $rvalue[$value['name']] = $value['content'];
+        }
+
+        return $rvalue;
+    }
+
+    /**
+     * Converts array object values to associative array
+     *
+     * @param array $rvalue
+     * @param string|integer $rkey
+     * @return array
+     */
+    protected function convertToArray(array $rvalue, $rkey)
+    {
+        $data = [];
+        foreach ($rvalue as $key => $value) {
+            if (is_object($this->result_object[$rkey])) {
+                $data[$key] = $this->result_object[$rkey]->$key;
+            } else {
+                $data[$key] = $value;
+            }
+        }
+
+        return $data;
     }
 
 }
