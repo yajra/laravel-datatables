@@ -268,6 +268,32 @@ class BaseEngine
     }
 
     /**
+     * Datatable ordering
+     *
+     * @return null
+     */
+    public function doOrdering()
+    {
+        if (array_key_exists('order', $this->input) && count($this->input['order']) > 0) {
+            for ($i = 0, $c = count($this->input['order']); $i < $c; $i++) {
+                $order_col = (int) $this->input['order'][$i]['column'];
+                $order_dir = $this->input['order'][$i]['dir'];
+                $column = $this->input['columns'][$order_col];
+
+                if ($column['orderable'] <> "true") {
+                    continue;
+                }
+
+                if (isset($column['name']) && $column['name'] <> '') {
+                    $this->query->orderBy($column['name'], $order_dir);
+                } else {
+                    $this->query->orderBy($this->columns[$order_col], $order_dir);
+                }
+            }
+        }
+    }
+
+    /**
      * Datatable filtering
      */
     public function doFiltering()
@@ -282,28 +308,8 @@ class BaseEngine
                         continue;
                     }
 
-                    $column = $this->getColumnIdentity($columns, $i);
-
-                    if (Str::contains(Str::upper($column), ' AS ')) {
-                        $column = $this->getColumnName($column);
-                    }
-
-                    // there's no need to put the prefix unless the column name is prefixed with the table name.
-                    $column = $this->prefixColumn($column);
-
-                    $keyword = '%' . $input['search']['value'] . '%';
-                    if ($this->isWildcard()) {
-                        $keyword = $this->wildcardLikeString($input['search']['value']);
-                    }
-
-                    // Check if the database driver is PostgreSQL
-                    // If it is, cast the current column to TEXT datatype
-                    $cast_begin = null;
-                    $cast_end = null;
-                    if ($this->databaseDriver() === 'pgsql') {
-                        $cast_begin = "CAST(";
-                        $cast_end = " as TEXT)";
-                    }
+                    $column = $this->setupColumn($columns, $i);
+                    $keyword = $this->generateKeyword();
 
                     if (isset($this->filter_columns[$column])) {
                         extract($this->filter_columns[$column]);
@@ -312,10 +318,20 @@ class BaseEngine
                         }
                         $this->processFilterColumn($method, $parameters, $column);
                     } else {
+                        // Check if the database driver is PostgreSQL
+                        // If it is, cast the current column to TEXT datatype
+                        $cast_begin = null;
+                        $cast_end = null;
+                        if ($this->databaseDriver() === 'pgsql') {
+                            $cast_begin = "CAST(";
+                            $cast_end = " as TEXT)";
+                        }
+
                         // wrap column possibly allow reserved words to be used as column
                         $column = $this->wrapColumn($column);
                         if ($this->isCaseInsensitive()) {
-                            $query->orWhereRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?', [Str::lower($keyword)]);
+                            $query->orWhereRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?',
+                                [Str::lower($keyword)]);
                         } else {
                             $query->orWhereRaw($cast_begin . $column . $cast_end . ' LIKE ?', [$keyword]);
                         }
@@ -329,10 +345,32 @@ class BaseEngine
     }
 
     /**
+     * Setup column name to be use for filtering
+     *
+     * @param array $columns
+     * @param integer $i
+     * @return string
+     */
+    private function setupColumn(array $columns, $i)
+    {
+        $column = $this->getColumnIdentity($columns, $i);
+
+        if (Str::contains(Str::upper($column), ' AS ')) {
+            $column = $this->getColumnName($column);
+        }
+
+        // there's no need to put the prefix unless the column name is prefixed with the table name.
+        $column = $this->prefixColumn($column);
+
+        return $column;
+
+    }
+
+    /**
      * Get column identity from input or database
      *
      * @param array $columns
-     * @param $i
+     * @param integer $i
      * @return string
      */
     public function getColumnIdentity(array $columns, $i)
@@ -444,6 +482,21 @@ class BaseEngine
     }
 
     /**
+     * Generate global search keyword
+     *
+     * @return string
+     */
+    public function generateKeyword()
+    {
+        $keyword = '%' . $this->input['search']['value'] . '%';
+        if ($this->isWildcard()) {
+            $keyword = $this->wildcardLikeString($this->input['search']['value']);
+        }
+
+        return $keyword;
+    }
+
+    /**
      * Get config use wild card status
      *
      * @return boolean
@@ -477,13 +530,28 @@ class BaseEngine
     }
 
     /**
-     * Returns current database driver
+     * Perform filter column on selected field
      *
-     * @return string
+     * @param $method
+     * @param $parameters
+     * @param $column
      */
-    public function databaseDriver()
+    protected function processFilterColumn($method, $parameters, $column)
     {
-        return $this->connection->getDriverName();
+        if (method_exists($this->getBuilder(), $method)
+            && count($parameters) <= with(new \ReflectionMethod($this->getBuilder(),
+                $method))->getNumberOfParameters()
+        ) {
+            if (Str::contains(Str::lower($method), 'raw')
+                || Str::contains(Str::lower($method), 'exists')
+            ) {
+                call_user_func_array([$this->getBuilder(), $method],
+                    $this->parameterize($parameters));
+            } else {
+                call_user_func_array([$this->getBuilder(), $method],
+                    $this->parameterize($column, $parameters));
+            }
+        }
     }
 
     /**
@@ -508,6 +576,16 @@ class BaseEngine
         }
 
         return $parameters;
+    }
+
+    /**
+     * Returns current database driver
+     *
+     * @return string
+     */
+    public function databaseDriver()
+    {
+        return $this->connection->getDriverName();
     }
 
     /**
@@ -579,6 +657,18 @@ class BaseEngine
     }
 
     /**
+     * Check if a column is searchable
+     *
+     * @param array $columns
+     * @param integer $i
+     * @return bool
+     */
+    protected function isColumnSearchable(array $columns, $i)
+    {
+        return $columns[$i]['searchable'] == "true" && $columns[$i]['search']['value'] != '' && ! empty($columns[$i]['name']);
+    }
+
+    /**
      * Setup search keyword
      *
      * @param  string $value
@@ -607,32 +697,6 @@ class BaseEngine
     }
 
     /**
-     * Datatable ordering
-     *
-     * @return null
-     */
-    public function doOrdering()
-    {
-        if (array_key_exists('order', $this->input) && count($this->input['order']) > 0) {
-            for ($i = 0, $c = count($this->input['order']); $i < $c; $i++) {
-                $order_col = (int) $this->input['order'][$i]['column'];
-                $order_dir = $this->input['order'][$i]['dir'];
-                $column = $this->input['columns'][$order_col];
-
-                if ($column['orderable'] <> "true") {
-                    continue;
-                }
-
-                if (isset($column['name']) && $column['name'] <> '') {
-                    $this->query->orderBy($column['name'], $order_dir);
-                } else {
-                    $this->query->orderBy($this->columns[$order_col], $order_dir);
-                }
-            }
-        }
-    }
-
-    /**
      * Datatables paging
      */
     public function doPaging()
@@ -650,6 +714,17 @@ class BaseEngine
     protected function isPaginationable()
     {
         return ! is_null($this->input['start']) && ! is_null($this->input['length']) && $this->input['length'] != -1;
+    }
+
+    /**
+     * Paginate query
+     *
+     * @return mixed
+     */
+    protected function paginate()
+    {
+        return $this->query->skip($this->input['start'])
+            ->take((int) $this->input['length'] > 0 ? $this->input['length'] : 10);
     }
 
     /**
@@ -930,6 +1005,20 @@ class BaseEngine
     }
 
     /**
+     * Show debug parameters
+     *
+     * @param $output
+     * @return mixed
+     */
+    protected function showDebugger($output)
+    {
+        $output["queries"] = $this->connection->getQueryLog();
+        $output["input"] = $this->input;
+
+        return $output;
+    }
+
+    /**
      * Use data columns
      *
      * @return array
@@ -1155,68 +1244,6 @@ class BaseEngine
         $this->transformer = $transformer;
 
         return $this;
-    }
-
-    /**
-     * Show debug parameters
-     *
-     * @param $output
-     * @return mixed
-     */
-    protected function showDebugger($output)
-    {
-        $output["queries"] = $this->connection->getQueryLog();
-        $output["input"] = $this->input;
-
-        return $output;
-    }
-
-    /**
-     * Paginate query
-     *
-     * @return mixed
-     */
-    protected function paginate()
-    {
-        return $this->query->skip($this->input['start'])
-            ->take((int) $this->input['length'] > 0 ? $this->input['length'] : 10);
-    }
-
-    /**
-     * Perform filter column on selected field
-     *
-     * @param $method
-     * @param $parameters
-     * @param $column
-     */
-    protected function processFilterColumn($method, $parameters, $column)
-    {
-        if (method_exists($this->getBuilder(), $method)
-            && count($parameters) <= with(new \ReflectionMethod($this->getBuilder(),
-                $method))->getNumberOfParameters()
-        ) {
-            if (Str::contains(Str::lower($method), 'raw')
-                || Str::contains(Str::lower($method), 'exists')
-            ) {
-                call_user_func_array([$this->getBuilder(), $method],
-                    $this->parameterize($parameters));
-            } else {
-                call_user_func_array([$this->getBuilder(), $method],
-                    $this->parameterize($column, $parameters));
-            }
-        }
-    }
-
-    /**
-     * Check if a column is searchable
-     *
-     * @param array $columns
-     * @param $i
-     * @return bool
-     */
-    protected function isColumnSearchable(array $columns, $i)
-    {
-        return $columns[$i]['searchable'] == "true" && $columns[$i]['search']['value'] != '' && ! empty($columns[$i]['name']);
     }
 
 }
