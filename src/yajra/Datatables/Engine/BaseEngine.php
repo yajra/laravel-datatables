@@ -1235,7 +1235,7 @@ class BaseEngine
      *
      * @param array $data
      * @param string|integer $rkey
-     * @param array $rvalue
+     * @param array|null $rvalue
      * @return array
      */
     protected function processAddColumns(array $data, $rkey, $rvalue)
@@ -1254,7 +1254,7 @@ class BaseEngine
      *
      * @param array $data
      * @param string|integer $rkey
-     * @param array $rvalue
+     * @param array|null $rvalue
      * @return array
      */
     protected function processEditColumns(array $data, $rkey, $rvalue)
