@@ -29,8 +29,6 @@ class EloquentEngine extends BaseEngine implements EngineContract
         }
 
         parent::__construct($request);
-
-        return $this;
     }
 
 

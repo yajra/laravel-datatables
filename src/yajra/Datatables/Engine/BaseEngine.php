@@ -18,7 +18,7 @@ use Illuminate\Support\Str;
 use Illuminate\View\Compilers\BladeCompiler;
 use League\Fractal\Resource\Collection;
 
-class BaseEngine implements EngineContract
+class BaseEngine
 {
 
     /**
@@ -235,12 +235,17 @@ class BaseEngine implements EngineContract
      * Organizes works
      *
      * @param bool $mDataSupport
+     * @param bool $orderFirst For CollectionEngine, ordering should be done first
      * @return JsonResponse
      */
-    public function make($mDataSupport = false)
+    public function make($mDataSupport = false, $orderFirst = false)
     {
         // set mData support flag
         $this->m_data_support = $mDataSupport;
+
+        if ($orderFirst) {
+            $this->doOrdering();
+        }
 
         // check if auto filtering was overridden
         if ($this->autoFilter) {
@@ -248,8 +253,11 @@ class BaseEngine implements EngineContract
         }
 
         $this->getTotalFilteredRecords();
-        // perform ordering after filtering
-        $this->doOrdering();
+
+        if ( ! $orderFirst) {
+            $this->doOrdering();
+        }
+
         $this->doPaging();
 
         $this->setResults();
@@ -659,7 +667,17 @@ class BaseEngine implements EngineContract
     }
 
     /**
-     * @inheritdoc
+     * Check if Datatables allow pagination
+     *
+     * @return bool
+     */
+    protected function isPaginationable()
+    {
+        return ! is_null($this->input['start']) && ! is_null($this->input['length']) && $this->input['length'] != -1;
+    }
+
+    /**
+     * Set datatables results object and arrays
      */
     public function setResults()
     {
@@ -670,7 +688,9 @@ class BaseEngine implements EngineContract
     }
 
     /**
-     * @inheritdoc
+     * Get results of query and convert to array
+     *
+     * @return array
      */
     public function getResults()
     {
@@ -908,12 +928,7 @@ class BaseEngine implements EngineContract
             "recordsFiltered" => $this->filteredRecords
         ];
 
-        if (isset($this->transformer)) {
-            $collection = new Collection($this->result_array_r, new $this->transformer);
-            $output['data'] = $collection->getData();
-        } else {
-            $output['data'] = $this->result_array_r;
-        }
+        $output = $this->transform($output);
 
         if ($this->isDebugging()) {
             $output["queries"] = $this->connection->getQueryLog();
@@ -1162,13 +1177,21 @@ class BaseEngine implements EngineContract
     }
 
     /**
-     * Check if Datatables allow pagination
+     * Transform data output
      *
-     * @return bool
+     * @param $output
+     * @return mixed
      */
-    protected function isPaginationable()
+    protected function transform($output)
     {
-        return ! is_null($this->input['start']) && ! is_null($this->input['length']) && $this->input['length'] != -1;
+        if (isset($this->transformer)) {
+            $collection = new Collection($this->result_array_r, new $this->transformer);
+            $output['data'] = $collection->getData();
+        } else {
+            $output['data'] = $this->result_array_r;
+        }
+
+        return $output;
     }
 
 }

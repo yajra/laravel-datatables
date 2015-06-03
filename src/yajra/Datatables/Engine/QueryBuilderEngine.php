@@ -29,8 +29,6 @@ class QueryBuilderEngine extends BaseEngine implements EngineContract
         }
 
         parent::__construct($request);
-
-        return $this;
     }
 
     /**

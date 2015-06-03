@@ -10,7 +10,6 @@
 
 use Closure;
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use League\Fractal\Resource\Collection as FractalCollection;
@@ -43,8 +42,6 @@ class CollectionEngine extends BaseEngine implements EngineContract
         $this->columns = array_keys($this->serialize((array) $collection->first()));
 
         parent::__construct($request);
-
-        return $this;
     }
 
     /**
@@ -69,27 +66,9 @@ class CollectionEngine extends BaseEngine implements EngineContract
     /**
      * @inheritdoc
      */
-    public function make($mDataSupport = false)
+    public function make($mDataSupport = false, $orderFirst = true)
     {
-        // set mData support flag
-        $this->m_data_support = $mDataSupport;
-
-        // perform ordering before filtering
-        $this->doOrdering();
-
-        // check if auto filtering was overridden
-        if ($this->autoFilter) {
-            $this->doFiltering();
-        }
-
-        $this->getTotalFilteredRecords();
-        $this->doPaging();
-
-        $this->setResults();
-        $this->initColumns();
-        $this->regulateArray();
-
-        return $this->output();
+        return parent::make($mDataSupport, $orderFirst);
     }
 
     /**
@@ -260,31 +239,6 @@ class CollectionEngine extends BaseEngine implements EngineContract
     /**
      * @inheritdoc
      */
-    public function output()
-    {
-        $output = [
-            "draw"            => (int) $this->input['draw'],
-            "recordsTotal"    => $this->totalRecords,
-            "recordsFiltered" => $this->filteredRecords
-        ];
-
-        if (isset($this->transformer)) {
-            $collection = new FractalCollection($this->result_array_r, new $this->transformer);
-            $output['data'] = $collection->getData();
-        } else {
-            $output['data'] = $this->result_array_r;
-        }
-
-        if ($this->isDebugging()) {
-            $output["input"] = $this->input;
-        }
-
-        return new JsonResponse($output);
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function filter(Closure $callback)
     {
         $this->autoFilter = false;
@@ -292,6 +246,21 @@ class CollectionEngine extends BaseEngine implements EngineContract
         call_user_func($callback, $this);
 
         return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function transform($output)
+    {
+        if (isset($this->transformer)) {
+            $collection = new FractalCollection($this->result_array_r, new $this->transformer);
+            $output['data'] = $collection->getData();
+        } else {
+            $output['data'] = $this->result_array_r;
+        }
+
+        return $output;
     }
 
 }
