@@ -103,47 +103,29 @@ class CollectionEngine extends BaseEngine implements EngineContract
         $columns = $input['columns'];
 
         if ( ! empty($this->input['search']['value'])) {
-            $this->collection = $this->collection->filter(/**
-             * @param $row
-             * @return bool
-             */
-            /**
-             * @param $row
-             * @return bool
-             */
-                function ($row) use ($columns, $input) {
-                    $data = $this->serialize($row);
-                    $found = [];
-                    for ($i = 0, $c = count($columns); $i < $c; $i++) {
-                        if ($columns[$i]['searchable'] != "true") {
-                            continue;
-                        }
+            $this->collection = $this->collection->filter(function ($row) use ($columns, $input) {
+                $data = $this->serialize($row);
+                $found = [];
+                for ($i = 0, $c = count($columns); $i < $c; $i++) {
+                    if ($columns[$i]['searchable'] != "true") {
+                        continue;
+                    }
+                    $column = $this->getColumnIdentity($columns, $i);
+                    $keyword = $input['search']['value'];
 
-                        $column = $this->getColumnIdentity($columns, $i);
-
-                        $keyword = $input['search']['value'];
-
-                        if ( ! array_key_exists($column, $data)) {
-                            continue;
-                        }
-
-                        if ($this->isCaseInsensitive()) {
-                            if (Str::contains(Str::lower($data[$column]), Str::lower($keyword))) {
-                                $found[] = true;
-                            }
-                        } else {
-                            if (Str::contains($data[$column], $keyword)) {
-                                $found[] = true;
-                            }
-                        }
+                    if ( ! $this->columnExists($column, $data)) {
+                        continue;
                     }
 
-                    if (count($found)) {
-                        return true;
+                    if ($this->isCaseInsensitive()) {
+                        $found[] = Str::contains(Str::lower($data[$column]), Str::lower($keyword));
+                    } else {
+                        $found[] = Str::contains($data[$column], $keyword);
                     }
+                }
 
-                    return false;
-                });
+                return in_array(true, $found);
+            });
         }
 
         // column search
@@ -223,6 +205,18 @@ class CollectionEngine extends BaseEngine implements EngineContract
     {
         $this->collection = $this->collection->slice($this->input['start'],
             (int) $this->input['length'] > 0 ? $this->input['length'] : 10);
+    }
+
+    /**
+     * Check if column name exists in collection keys
+     *
+     * @param string $column
+     * @param array $data
+     * @return bool
+     */
+    private function columnExists($column, array $data)
+    {
+        return array_key_exists($column, $data);
     }
 
 }
