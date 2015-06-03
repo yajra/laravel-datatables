@@ -13,7 +13,6 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use League\Fractal\Manager;
 use League\Fractal\Resource\Collection as FractalCollection;
 
 class CollectionEngine extends BaseEngine implements EngineContract
@@ -34,9 +33,8 @@ class CollectionEngine extends BaseEngine implements EngineContract
     public $original_collection;
 
     /**
-     * Read Input into $this->input according to jquery.dataTables.js version
-     *
      * @param Collection $collection
+     * @param $request
      */
     public function __construct(Collection $collection, $request)
     {
@@ -50,9 +48,18 @@ class CollectionEngine extends BaseEngine implements EngineContract
     }
 
     /**
-     * Get total records
+     * Serialize collection
      *
-     * @return int
+     * @param  mixed $collection
+     * @return mixed|null
+     */
+    protected function serialize($collection)
+    {
+        return $collection instanceof Arrayable ? $collection->toArray() : $collection;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function getTotalRecords()
     {
@@ -60,108 +67,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
     }
 
     /**
-     * Datatable filtering
-     *
-     * @return null
-     */
-    public function doFiltering()
-    {
-        $input = $this->input;
-        $columns = $input['columns'];
-
-        if ( ! empty($this->input['search']['value'])) {
-            $this->collection = $this->collection->filter(function ($row) use ($columns, $input) {
-                $data = $this->serialize($row);
-                $found = [];
-                for ($i = 0, $c = count($columns); $i < $c; $i++) {
-                    if ($columns[$i]['searchable'] != "true") {
-                        continue;
-                    }
-
-                    if ( ! empty($columns[$i]['name'])) {
-                        $column = $columns[$i]['name'];
-                    } else {
-                        $column = $this->columns[$i];
-                    }
-
-                    $keyword = $input['search']['value'];
-
-                    if ( ! array_key_exists($column, $data)) {
-                        continue;
-                    }
-
-                    if ($this->isCaseInsensitive()) {
-                        if (Str::contains(Str::lower($data[$column]), Str::lower($keyword))) {
-                            $found[] = true;
-                        }
-                    } else {
-                        if (Str::contains($data[$column], $keyword)) {
-                            $found[] = true;
-                        }
-                    }
-                }
-
-                if (count($found)) {
-                    return true;
-                }
-
-                return false;
-            });
-        }
-
-        // column search
-        $this->doColumnSearch($columns);
-    }
-
-    /**
-     * Perform column search
-     *
-     * @param  array $columns
-     * @return void
-     */
-    public function doColumnSearch(array $columns)
-    {
-        for ($i = 0, $c = count($columns); $i < $c; $i++) {
-            if ($columns[$i]['searchable'] != "true" or $columns[$i]['search']['value'] == '') {
-                continue;
-            }
-
-            if ( ! empty($columns[$i]['name'])) {
-                $column = $columns[$i]['name'];
-            } else {
-                $column = $this->columns[$i];
-            }
-
-            $keyword = $columns[$i]['search']['value'];
-
-            $this->collection = $this->collection->filter(function ($row) use ($column, $keyword) {
-                $data = $this->serialize($row);
-                $found = [];
-
-                if ($this->isCaseInsensitive()) {
-                    if (strpos(Str::lower($data[$column]), Str::lower($keyword)) !== false) {
-                        $found[] = true;
-                    }
-                } else {
-                    if (strpos($data[$column], $keyword) !== false) {
-                        $found[] = true;
-                    }
-                }
-
-                if (count($found)) {
-                    return true;
-                }
-
-                return false;
-            });
-        }
-    }
-
-    /**
-     * Organizes works
-     *
-     * @param bool $mDataSupport
-     * @return null
+     * @inheritdoc
      */
     public function make($mDataSupport = false)
     {
@@ -187,32 +93,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
     }
 
     /**
-     * Get filtered records
-     *
-     * @return int
-     */
-    public function getTotalFilteredRecords()
-    {
-        return $this->filteredRecords = $this->collection->count();
-    }
-
-    /**
-     * Datatables paging
-     *
-     * @return null
-     */
-    public function doPaging()
-    {
-        if ( ! is_null($this->input['start']) && ! is_null($this->input['length']) && $this->input['length'] != -1) {
-            $this->collection = $this->collection->slice($this->input['start'],
-                (int) $this->input['length'] > 0 ? $this->input['length'] : 10);
-        }
-    }
-
-    /**
-     * Datatable ordering
-     *
-     * @return null
+     * @inheritdoc
      */
     public function doOrdering()
     {
@@ -248,6 +129,118 @@ class CollectionEngine extends BaseEngine implements EngineContract
     /**
      * @inheritdoc
      */
+    public function doFiltering()
+    {
+        $input = $this->input;
+        $columns = $input['columns'];
+
+        if ( ! empty($this->input['search']['value'])) {
+            $this->collection = $this->collection->filter(/**
+             * @param $row
+             * @return bool
+             */
+            /**
+             * @param $row
+             * @return bool
+             */
+                function ($row) use ($columns, $input) {
+                    $data = $this->serialize($row);
+                    $found = [];
+                    for ($i = 0, $c = count($columns); $i < $c; $i++) {
+                        if ($columns[$i]['searchable'] != "true") {
+                            continue;
+                        }
+
+                        $column = $this->getColumnIdentity($columns, $i);
+
+                        $keyword = $input['search']['value'];
+
+                        if ( ! array_key_exists($column, $data)) {
+                            continue;
+                        }
+
+                        if ($this->isCaseInsensitive()) {
+                            if (Str::contains(Str::lower($data[$column]), Str::lower($keyword))) {
+                                $found[] = true;
+                            }
+                        } else {
+                            if (Str::contains($data[$column], $keyword)) {
+                                $found[] = true;
+                            }
+                        }
+                    }
+
+                    if (count($found)) {
+                        return true;
+                    }
+
+                    return false;
+                });
+        }
+
+        // column search
+        $this->doColumnSearch($columns);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function doColumnSearch(array $columns)
+    {
+        for ($i = 0, $c = count($columns); $i < $c; $i++) {
+            if ($columns[$i]['searchable'] != "true" || $columns[$i]['search']['value'] == '') {
+                continue;
+            }
+
+            $column = $this->getColumnIdentity($columns, $i);
+
+            $keyword = $columns[$i]['search']['value'];
+
+            $this->collection = $this->collection->filter(function ($row) use ($column, $keyword) {
+                $data = $this->serialize($row);
+                $found = [];
+
+                if ($this->isCaseInsensitive()) {
+                    if (strpos(Str::lower($data[$column]), Str::lower($keyword)) !== false) {
+                        $found[] = true;
+                    }
+                } else {
+                    if (strpos($data[$column], $keyword) !== false) {
+                        $found[] = true;
+                    }
+                }
+
+                if (count($found)) {
+                    return true;
+                }
+
+                return false;
+            });
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getTotalFilteredRecords()
+    {
+        return $this->filteredRecords = $this->collection->count();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function doPaging()
+    {
+        if ( ! is_null($this->input['start']) && ! is_null($this->input['length']) && $this->input['length'] != -1) {
+            $this->collection = $this->collection->slice($this->input['start'],
+                (int) $this->input['length'] > 0 ? $this->input['length'] : 10);
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function setResults()
     {
         $this->result_object = $this->collection->all();
@@ -262,18 +255,6 @@ class CollectionEngine extends BaseEngine implements EngineContract
     public function getResults()
     {
         return $this->result_object;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function filter(Closure $callback)
-    {
-        $this->autoFilter = false;
-
-        call_user_func($callback, $this);
-
-        return $this;
     }
 
     /**
@@ -302,12 +283,15 @@ class CollectionEngine extends BaseEngine implements EngineContract
     }
 
     /**
-     * @param  mixed $collection
-     * @return mixed|null
+     * @inheritdoc
      */
-    protected function serialize($collection)
+    public function filter(Closure $callback)
     {
-        return $collection instanceof Arrayable ? $collection->toArray() : $collection;
+        $this->autoFilter = false;
+
+        call_user_func($callback, $this);
+
+        return $this;
     }
 
 }

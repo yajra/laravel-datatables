@@ -273,11 +273,7 @@ class BaseEngine
                         continue;
                     }
 
-                    if ( ! empty($columns[$i]['name'])) {
-                        $column = $columns[$i]['name'];
-                    } else {
-                        $column = $this->columns[$i];
-                    }
+                    $column = $this->getColumnIdentity($columns, $i);
 
                     if (Str::contains(Str::upper($column), ' AS ')) {
                         $column = $this->getColumnName($column);
@@ -634,8 +630,6 @@ class BaseEngine
 
     /**
      * Datatables paging
-     *
-     * @return null
      */
     public function doPaging()
     {
@@ -812,12 +806,12 @@ class BaseEngine
     /**
      * Process DT RowId and Class value
      *
-     * @param $key
-     * @param $template
-     * @param $index
-     * @param $data
+     * @param string $key
+     * @param string|callable $template
+     * @param string $index
+     * @param array $data
      */
-    protected function processDTRowValue($key, $template, $index, &$data)
+    protected function processDTRowValue($key, $template, $index, array &$data)
     {
         if ( ! empty($template)) {
             if ( ! is_callable($template) && Arr::get($data, $template)) {
@@ -852,12 +846,12 @@ class BaseEngine
     /**
      * Process DT Row Data and Attr
      *
-     * @param $key
+     * @param string $key
      * @param array $template
-     * @param $index
-     * @param $data
+     * @param string $index
+     * @param array $data
      */
-    protected function processDTRowDataAttr($key, array $template, $index, &$data)
+    protected function processDTRowDataAttr($key, array $template, $index, array &$data)
     {
         if (count($template)) {
             $data[$key] = [];
@@ -918,24 +912,6 @@ class BaseEngine
     public function isDebugging()
     {
         return Config::get('app.debug', false);
-    }
-
-    /**
-     * Clean columns name
-     *
-     * @param array $cols
-     * @param bool $use_alias
-     * @return array
-     */
-    public function cleanColumns($cols, $use_alias = true)
-    {
-        $return = [];
-        foreach ($cols as $i => $col) {
-            preg_match('#^(.*?)\s+as\s+(\S*?)$#si', $col, $matches);
-            $return[$i] = empty($matches) ? $col : $matches[$use_alias ? 2 : 1];
-        }
-
-        return $return;
     }
 
     /**
@@ -1019,7 +995,7 @@ class BaseEngine
     /**
      * Set auto filter off and run your own filter
      *
-     * @param callable $callback
+     * @param Closure $callback
      * @return $this
      */
     public function filter(Closure $callback)
@@ -1164,6 +1140,24 @@ class BaseEngine
         $this->transformer = $transformer;
 
         return $this;
+    }
+
+    /**
+     * Get column identity from input or database
+     *
+     * @param array $columns
+     * @param $i
+     * @return array
+     */
+    public function getColumnIdentity(array $columns, $i)
+    {
+        if ( ! empty($columns[$i]['name'])) {
+            $column = $columns[$i]['name'];
+        } else {
+            $column = $this->columns[$i];
+        }
+
+        return $column;
     }
 
 }
