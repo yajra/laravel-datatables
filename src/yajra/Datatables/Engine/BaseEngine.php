@@ -573,9 +573,9 @@ class BaseEngine
     /**
      * Add a query on global search
      *
-     * @param $query
-     * @param $column
-     * @param $keyword
+     * @param mixed $query
+     * @param string $column
+     * @param string $keyword
      */
     private function globalSearch($query, $column, $keyword)
     {
