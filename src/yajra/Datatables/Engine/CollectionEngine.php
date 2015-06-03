@@ -76,26 +76,16 @@ class CollectionEngine extends BaseEngine implements EngineContract
     public function doOrdering()
     {
         if (array_key_exists('order', $this->input) && count($this->input['order']) > 0) {
-            $columns = $this->columns;
-
             for ($i = 0, $c = count($this->input['order']); $i < $c; $i++) {
                 $order_col = (int) $this->input['order'][$i]['column'];
                 $order_dir = $this->input['order'][$i]['dir'];
-                $column = $this->input['columns'][$order_col];
-
-                if ($column['orderable'] <> "true") {
+                if ( ! $this->isColumnOrderable($this->input['columns'][$order_col])) {
                     continue;
                 }
-
-                if ( ! empty($column['name'])) {
-                    $this->collection->sortBy(function ($row) use ($column) {
-                        return $row[$column['name']];
-                    });
-                } elseif (isset($columns[$order_col])) {
-                    $this->collection->sortBy(function ($row) use ($columns, $order_col) {
-                        return $row[$columns[$order_col]];
-                    });
-                }
+                $column = $this->getOrderColumnName($order_col);
+                $this->collection->sortBy(function ($row) use ($column) {
+                    return $row[$column];
+                });
 
                 if ($order_dir == 'desc') {
                     $this->collection = $this->collection->reverse();

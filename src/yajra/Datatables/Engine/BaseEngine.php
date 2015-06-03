@@ -325,7 +325,7 @@ class BaseEngine
     }
 
     /**
-     * Datatable filtering
+     * Datatables filtering
      */
     public function doFiltering()
     {
