@@ -313,7 +313,7 @@ class BaseEngine
         $this->query->where(function ($query) {
             $columns = $this->input['columns'];
             for ($i = 0, $c = count($columns); $i < $c; $i++) {
-                if ($columns[$i]['searchable'] != "true") {
+                if ($this->isColumnSearchable($columns, $i, false)) {
                     continue;
                 }
 
@@ -321,10 +321,8 @@ class BaseEngine
                 $keyword = $this->setupKeyword($this->input['search']['value']);
 
                 if (isset($this->filter_columns[$column])) {
-                    extract($this->filter_columns[$column]);
-                    if ( ! Str::contains(Str::lower($method), 'or')) {
-                        $method = 'or' . ucfirst($method);
-                    }
+                    $method = $this->getOrMethod($this->filter_columns[$column]['method']);
+                    $parameters = $this->filter_columns[$column]['parameters'];
                     $this->compileFilterColumn($method, $parameters, $column);
                 } else {
                     $this->compileGlobalSearch($query, $column, $keyword);
@@ -657,10 +655,10 @@ class BaseEngine
                 $keyword = $this->setupKeyword($columns[$i]['search']['value']);
 
                 if (isset($this->filter_columns[$column])) {
-                    extract($this->filter_columns[$column]);
+                    $method = $this->filter_columns[$column]['method'];
+                    $parameters = $this->filter_columns[$column]['parameters'];
                     $this->compileFilterColumn($method, $parameters, $column);
                 } else {
-                    // wrap column possibly allow reserved words to be used as column
                     $column = $this->wrapColumn($column);
                     if ($this->isCaseInsensitive()) {
                         $this->query->whereRaw('LOWER(' . $column . ') LIKE ?', [Str::lower($keyword)]);
@@ -678,11 +676,16 @@ class BaseEngine
      *
      * @param array $columns
      * @param integer $i
+     * @param bool $column_search
      * @return bool
      */
-    protected function isColumnSearchable(array $columns, $i)
+    protected function isColumnSearchable(array $columns, $i, $column_search = true)
     {
-        return $columns[$i]['searchable'] == "true" && $columns[$i]['search']['value'] != '' && ! empty($columns[$i]['name']);
+        if ($column_search) {
+            return $columns[$i]['searchable'] == "true" && $columns[$i]['search']['value'] != '' && ! empty($columns[$i]['name']);
+        }
+
+        return $columns[$i]['searchable'] == "true";
     }
 
     /**
@@ -1341,6 +1344,21 @@ class BaseEngine
 
         $this->doColumnSearch();
         $this->getTotalFilteredRecords();
+    }
+
+    /**
+     * Get equivalent or method of query builder
+     *
+     * @param $method
+     * @return string
+     */
+    private function getOrMethod($method)
+    {
+        if ( ! Str::contains(Str::lower($method), 'or')) {
+            return $method = 'or' . ucfirst($method);
+        }
+
+        return $method;
     }
 
 }
