@@ -33,12 +33,5 @@ class EloquentEngine extends BaseEngine implements EngineContract
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getResults()
-    {
-        return $this->result_object->toArray();
-    }
 
 }

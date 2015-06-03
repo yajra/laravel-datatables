@@ -200,27 +200,6 @@ class BaseEngine
     }
 
     /**
-     * Get column name from string
-     *
-     * @param  string $str
-     * @return string
-     */
-    public function getColumnName($str)
-    {
-        preg_match('#^(\S*?)\s+as\s+(\S*?)$#si', $str, $matches);
-
-        if ( ! empty($matches)) {
-            return $matches[2];
-        } elseif (strpos($str, '.')) {
-            $array = explode('.', $str);
-
-            return array_pop($array);
-        }
-
-        return $str;
-    }
-
-    /**
      * Get total records
      *
      * @return int
@@ -280,125 +259,102 @@ class BaseEngine
     }
 
     /**
-     * Set datatables results object and arrays
+     * Datatable filtering
      */
-    public function setResults()
+    public function doFiltering()
     {
-        $this->result_object = $this->query->get();
-        $this->result_array = array_map(function ($object) {
-            return (array) $object;
-        }, $this->getResults());
+        $input = $this->input;
+        $columns = $input['columns'];
+
+        if ( ! empty($this->input['search']['value'])) {
+            $this->query->where(function ($query) use ($columns, $input) {
+                for ($i = 0, $c = count($columns); $i < $c; $i++) {
+                    if ($columns[$i]['searchable'] != "true") {
+                        continue;
+                    }
+
+                    if ( ! empty($columns[$i]['name'])) {
+                        $column = $columns[$i]['name'];
+                    } else {
+                        $column = $this->columns[$i];
+                    }
+
+                    if (Str::contains(Str::upper($column), ' AS ')) {
+                        $column = $this->getColumnName($column);
+                    }
+
+                    // there's no need to put the prefix unless the column name is prefixed with the table name.
+                    $column = $this->prefixColumn($column);
+
+                    $keyword = '%' . $input['search']['value'] . '%';
+                    if ($this->isWildcard()) {
+                        $keyword = $this->wildcardLikeString($input['search']['value']);
+                    }
+
+                    // Check if the database driver is PostgreSQL
+                    // If it is, cast the current column to TEXT datatype
+                    $cast_begin = null;
+                    $cast_end = null;
+                    if ($this->databaseDriver() === 'pgsql') {
+                        $cast_begin = "CAST(";
+                        $cast_end = " as TEXT)";
+                    }
+
+                    if (isset($this->filter_columns[$column])) {
+                        extract($this->filter_columns[$column]);
+                        if ( ! Str::contains(Str::lower($method), 'or')) {
+                            $method = 'or' . ucfirst($method);
+                        }
+
+                        if (method_exists($this->getBuilder(), $method)
+                            && count($parameters) <= with(new \ReflectionMethod($this->getBuilder(),
+                                $method))->getNumberOfParameters()
+                        ) {
+                            if (Str::contains(Str::lower($method), 'raw') || Str::contains(Str::lower($method),
+                                    'exists')
+                            ) {
+                                call_user_func_array([$query, $method], $this->parameterize($parameters));
+                            } else {
+                                call_user_func_array([$query, $method], $this->parameterize($column, $parameters));
+                            }
+                        }
+                    } else {
+                        // wrap column possibly allow reserved words to be used as column
+                        $column = $this->wrapColumn($column);
+                        if ($this->isCaseInsensitive()) {
+                            $query->orWhereRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?',
+                                [Str::lower($keyword)]);
+                        } else {
+                            $query->orWhereRaw($cast_begin . $column . $cast_end . ' LIKE ?', [$keyword]);
+                        }
+                    }
+                }
+            });
+        }
+
+        // column search
+        $this->doColumnSearch($columns);
     }
 
     /**
-     * Setup search keyword
+     * Get column name from string
      *
-     * @param  string $value
+     * @param  string $str
      * @return string
      */
-    public function setupKeyword($value)
+    public function getColumnName($str)
     {
-        $keyword = '%' . $value . '%';
-        if ($this->isWildcard()) {
-            $keyword = $this->wildcardLikeString($value);
-        }
-        // remove escaping slash added on js script request
-        $keyword = str_replace('\\', '%', $keyword);
+        preg_match('#^(\S*?)\s+as\s+(\S*?)$#si', $str, $matches);
 
-        return $keyword;
-    }
+        if ( ! empty($matches)) {
+            return $matches[2];
+        } elseif (strpos($str, '.')) {
+            $array = explode('.', $str);
 
-    /**
-     * Check if app is in debug mode
-     *
-     * @return boolean
-     */
-    public function isDebugging()
-    {
-        return Config::get('app.debug', false);
-    }
-
-    /**
-     * Get config use wild card status
-     *
-     * @return boolean
-     */
-    public function isWildcard()
-    {
-        return Config::get('datatables.search.use_wildcards', false);
-    }
-
-
-    /**
-     * Get config is case insensitive status
-     *
-     * @return boolean
-     */
-    public function isCaseInsensitive()
-    {
-        return Config::get('datatables.search.case_insensitive', false);
-    }
-
-    /**
-     * Clean columns name
-     *
-     * @param array $cols
-     * @param bool $use_alias
-     * @return array
-     */
-    public function cleanColumns($cols, $use_alias = true)
-    {
-        $return = [];
-        foreach ($cols as $i => $col) {
-            preg_match('#^(.*?)\s+as\s+(\S*?)$#si', $col, $matches);
-            $return[$i] = empty($matches) ? $col : $matches[$use_alias ? 2 : 1];
+            return array_pop($array);
         }
 
-        return $return;
-    }
-
-    /**
-     * Use data columns
-     *
-     * @return array
-     */
-    public function useDataColumns()
-    {
-        if ( ! count($this->result_array_r)) {
-            return [];
-        }
-
-        $query = clone $this->query;
-        if ($this->isQueryBuilder()) {
-            $this->columns = array_keys((array) $query->first());
-        } else {
-            $this->columns = array_keys((array) $query->getQuery()->first());
-        }
-
-        return $this->columns;
-    }
-
-    /**
-     * Adds % wildcards to the given string
-     *
-     * @param string $str
-     * @param bool $lowercase
-     * @return string
-     */
-    public function wildcardLikeString($str, $lowercase = true)
-    {
-        $wild = '%';
-        $length = strlen($str);
-        if ($length) {
-            for ($i = 0; $i < $length; $i++) {
-                $wild .= $str[$i] . '%';
-            }
-        }
-        if ($lowercase) {
-            $wild = Str::lower($wild);
-        }
-
-        return $wild;
+        return $str;
     }
 
     /**
@@ -444,6 +400,30 @@ class BaseEngine
     }
 
     /**
+     * Get Query Builder object
+     *
+     * @return EloquentBuilder|QueryBuilder
+     */
+    public function getBuilder()
+    {
+        if ($this->isQueryBuilder()) {
+            return $this->query;
+        }
+
+        return $this->query->getQuery();
+    }
+
+    /**
+     * Check query type is a builder
+     *
+     * @return bool
+     */
+    public function isQueryBuilder()
+    {
+        return $this->query_type == 'builder';
+    }
+
+    /**
      * Returns current database prefix
      *
      * @return string
@@ -454,6 +434,169 @@ class BaseEngine
     }
 
     /**
+     * Get config use wild card status
+     *
+     * @return boolean
+     */
+    public function isWildcard()
+    {
+        return Config::get('datatables.search.use_wildcards', false);
+    }
+
+    /**
+     * Adds % wildcards to the given string
+     *
+     * @param string $str
+     * @param bool $lowercase
+     * @return string
+     */
+    public function wildcardLikeString($str, $lowercase = true)
+    {
+        $wild = '%';
+        $length = strlen($str);
+        if ($length) {
+            for ($i = 0; $i < $length; $i++) {
+                $wild .= $str[$i] . '%';
+            }
+        }
+        if ($lowercase) {
+            $wild = Str::lower($wild);
+        }
+
+        return $wild;
+    }
+
+    /**
+     * Returns current database driver
+     *
+     * @return string
+     */
+    public function databaseDriver()
+    {
+        return $this->connection->getDriverName();
+    }
+
+    /**
+     * Build Query Builder Parameters
+     *
+     * @return array
+     */
+    public function parameterize()
+    {
+        $args = func_get_args();
+        $parameters = [];
+
+        if (count($args) > 1) {
+            $parameters[] = $args[0];
+            foreach ($args[1] as $param) {
+                $parameters[] = $param;
+            }
+        } else {
+            foreach ($args[0] as $param) {
+                $parameters[] = $param;
+            }
+        }
+
+        return $parameters;
+    }
+
+    /**
+     * Wrap column depending on database type
+     *
+     * @param  string $value
+     * @return string
+     */
+    public function wrapColumn($value)
+    {
+        $parts = explode('.', $value);
+        $column = '';
+        foreach ($parts as $key) {
+            switch ($this->databaseDriver()) {
+                case 'mysql':
+                    $column .= '`' . str_replace('`', '``', $key) . '`' . '.';
+                    break;
+
+                case 'sqlsrv':
+                    $column .= '[' . str_replace(']', ']]', $key) . ']' . '.';
+                    break;
+
+                default:
+                    $column .= $key . '.';
+            }
+        }
+
+        return substr($column, 0, strlen($column) - 1);
+    }
+
+    /**
+     * Get config is case insensitive status
+     *
+     * @return boolean
+     */
+    public function isCaseInsensitive()
+    {
+        return Config::get('datatables.search.case_insensitive', false);
+    }
+
+    /**
+     * Perform column search
+     *
+     * @param  array $columns
+     * @return void
+     */
+    public function doColumnSearch(array $columns)
+    {
+        for ($i = 0, $c = count($columns); $i < $c; $i++) {
+            if ($columns[$i]['searchable'] == "true" && $columns[$i]['search']['value'] != '' && ! empty($columns[$i]['name'])) {
+                $column = $columns[$i]['name'];
+                $keyword = $this->setupKeyword($columns[$i]['search']['value']);
+
+                if (isset($this->filter_columns[$column])) {
+                    extract($this->filter_columns[$column]);
+                    if (method_exists($this->getBuilder(), $method)
+                        && count($parameters) <= with(new \ReflectionMethod($this->getBuilder(),
+                            $method))->getNumberOfParameters()
+                    ) {
+                        if (Str::contains(Str::lower($method), 'raw') || Str::contains(Str::lower($method), 'exists')) {
+                            call_user_func_array([$this->getBuilder(), $method], $this->parameterize($parameters));
+                        } else {
+                            call_user_func_array([$this->getBuilder(), $method],
+                                $this->parameterize($column, $parameters));
+                        }
+                    }
+                } else {
+                    // wrap column possibly allow reserved words to be used as column
+                    $column = $this->wrapColumn($column);
+                    if ($this->isCaseInsensitive()) {
+                        $this->query->whereRaw('LOWER(' . $column . ') LIKE ?', [Str::lower($keyword)]);
+                    } else {
+                        $col = strstr($column, '(') ? $this->connection->raw($column) : $column;
+                        $this->query->whereRaw($col . ' LIKE ?', [$keyword]);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Setup search keyword
+     *
+     * @param  string $value
+     * @return string
+     */
+    public function setupKeyword($value)
+    {
+        $keyword = '%' . $value . '%';
+        if ($this->isWildcard()) {
+            $keyword = $this->wildcardLikeString($value);
+        }
+        // remove escaping slash added on js script request
+        $keyword = str_replace('\\', '%', $keyword);
+
+        return $keyword;
+    }
+
+    /**
      * Get filtered records
      *
      * @return int
@@ -461,19 +604,6 @@ class BaseEngine
     public function getTotalFilteredRecords()
     {
         return $this->filteredRecords = $this->count();
-    }
-
-    /**
-     * Datatables paging
-     *
-     * @return null
-     */
-    public function doPaging()
-    {
-        if ( ! is_null($this->input['start']) && ! is_null($this->input['length']) && $this->input['length'] != -1) {
-            $this->query->skip($this->input['start'])
-                ->take((int) $this->input['length'] > 0 ? $this->input['length'] : 10);
-        }
     }
 
     /**
@@ -500,6 +630,38 @@ class BaseEngine
                 }
             }
         }
+    }
+
+    /**
+     * Datatables paging
+     *
+     * @return null
+     */
+    public function doPaging()
+    {
+        if ( ! is_null($this->input['start']) && ! is_null($this->input['length']) && $this->input['length'] != -1) {
+            $this->query->skip($this->input['start'])
+                ->take((int) $this->input['length'] > 0 ? $this->input['length'] : 10);
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setResults()
+    {
+        $this->result_object = $this->query->get();
+        $this->result_array = array_map(function ($object) {
+            return (array) $object;
+        }, $this->getResults());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getResults()
+    {
+        return $this->result_object->toArray();
     }
 
     /**
@@ -533,6 +695,28 @@ class BaseEngine
                 $rvalue[$value['name']] = $value['content'];
             }
         }
+    }
+
+    /**
+     * @param $value
+     * @param $data
+     * @param $rkey
+     * @return mixed
+     * @throws \Exception
+     */
+    protected function processContent($value, $data, $rkey)
+    {
+        if (is_string($value['content'])):
+            $value['content'] = $this->compileBlade($value['content'], $data);
+
+            return $value;
+        elseif (is_callable($value['content'])):
+            $value['content'] = $value['content']($this->result_object[$rkey]);
+
+            return $value;
+        endif;
+
+        return $value;
     }
 
     /**
@@ -626,24 +810,6 @@ class BaseEngine
     }
 
     /**
-     * Process DT Row Data and Attr
-     *
-     * @param $key
-     * @param array $template
-     * @param $index
-     * @param $data
-     */
-    protected function processDTRowDataAttr($key, array $template, $index, &$data)
-    {
-        if (count($template)) {
-            $data[$key] = [];
-            foreach ($template as $tkey => $tvalue) {
-                $data[$key][$tkey] = $this->getContent($tvalue, $data, $this->result_object[$index]);
-            }
-        }
-    }
-
-    /**
      * Process DT RowId and Class value
      *
      * @param $key
@@ -658,6 +824,45 @@ class BaseEngine
                 $data[$key] = Arr::get($data, $template);
             } else {
                 $data[$key] = $this->getContent($template, $data, $this->result_object[$index]);
+            }
+        }
+    }
+
+    /**
+     * Determines if content is callable or blade string, processes and returns
+     *
+     * @param string|callable $content Pre-processed content
+     * @param mixed $data data to use with blade template
+     * @param mixed $param parameter to call with callable
+     * @return string Processed content
+     */
+    public function getContent($content, $data = null, $param = null)
+    {
+        if (is_string($content)) {
+            $return = $this->compileBlade($content, $data);
+        } elseif (is_callable($content)) {
+            $return = $content($param);
+        } else {
+            $return = $content;
+        }
+
+        return $return;
+    }
+
+    /**
+     * Process DT Row Data and Attr
+     *
+     * @param $key
+     * @param array $template
+     * @param $index
+     * @param $data
+     */
+    protected function processDTRowDataAttr($key, array $template, $index, &$data)
+    {
+        if (count($template)) {
+            $data[$key] = [];
+            foreach ($template as $tkey => $tvalue) {
+                $data[$key][$tkey] = $this->getContent($tvalue, $data, $this->result_object[$index]);
             }
         }
     }
@@ -703,6 +908,55 @@ class BaseEngine
         }
 
         return new JsonResponse($output);
+    }
+
+    /**
+     * Check if app is in debug mode
+     *
+     * @return boolean
+     */
+    public function isDebugging()
+    {
+        return Config::get('app.debug', false);
+    }
+
+    /**
+     * Clean columns name
+     *
+     * @param array $cols
+     * @param bool $use_alias
+     * @return array
+     */
+    public function cleanColumns($cols, $use_alias = true)
+    {
+        $return = [];
+        foreach ($cols as $i => $col) {
+            preg_match('#^(.*?)\s+as\s+(\S*?)$#si', $col, $matches);
+            $return[$i] = empty($matches) ? $col : $matches[$use_alias ? 2 : 1];
+        }
+
+        return $return;
+    }
+
+    /**
+     * Use data columns
+     *
+     * @return array
+     */
+    public function useDataColumns()
+    {
+        if ( ! count($this->result_array_r)) {
+            return [];
+        }
+
+        $query = clone $this->query;
+        if ($this->isQueryBuilder()) {
+            $this->columns = array_keys((array) $query->first());
+        } else {
+            $this->columns = array_keys((array) $query->getQuery()->first());
+        }
+
+        return $this->columns;
     }
 
     /**
@@ -779,44 +1033,6 @@ class BaseEngine
     }
 
     /**
-     * Returns current database driver
-     *
-     * @return string
-     */
-    public function databaseDriver()
-    {
-        return $this->connection->getDriverName();
-    }
-
-    /**
-     * Wrap column depending on database type
-     *
-     * @param  string $value
-     * @return string
-     */
-    public function wrapColumn($value)
-    {
-        $parts = explode('.', $value);
-        $column = '';
-        foreach ($parts as $key) {
-            switch ($this->databaseDriver()) {
-                case 'mysql':
-                    $column .= '`' . str_replace('`', '``', $key) . '`' . '.';
-                    break;
-
-                case 'sqlsrv':
-                    $column .= '[' . str_replace(']', ']]', $key) . ']' . '.';
-                    break;
-
-                default:
-                    $column .= $key . '.';
-            }
-        }
-
-        return substr($column, 0, strlen($column) - 1);
-    }
-
-    /**
      * Allows previous API calls where the methods were snake_case.
      * Will convert a camelCase API call to a snake_case call.
      *
@@ -836,27 +1052,6 @@ class BaseEngine
         } else {
             trigger_error('Call to undefined method ' . __CLASS__ . '::' . $name . '()', E_USER_ERROR);
         }
-    }
-
-    /**
-     * Determines if content is callable or blade string, processes and returns
-     *
-     * @param string|callable $content Pre-processed content
-     * @param mixed $data data to use with blade template
-     * @param mixed $param parameter to call with callable
-     * @return string Processed content
-     */
-    public function getContent($content, $data = null, $param = null)
-    {
-        if (is_string($content)) {
-            $return = $this->compileBlade($content, $data);
-        } elseif (is_callable($content)) {
-            $return = $content($param);
-        } else {
-            $return = $content;
-        }
-
-        return $return;
     }
 
     /**
@@ -943,16 +1138,6 @@ class BaseEngine
     }
 
     /**
-     * Check query type is a builder
-     *
-     * @return bool
-     */
-    public function isQueryBuilder()
-    {
-        return $this->query_type == 'builder';
-    }
-
-    /**
      * Override default column filter search
      *
      * @param $column
@@ -969,148 +1154,6 @@ class BaseEngine
     }
 
     /**
-     * Datatable filtering
-     */
-    public function doFiltering()
-    {
-        $input = $this->input;
-        $columns = $input['columns'];
-
-        if ( ! empty($this->input['search']['value'])) {
-            $this->query->where(function ($query) use ($columns, $input) {
-                for ($i = 0, $c = count($columns); $i < $c; $i++) {
-                    if ($columns[$i]['searchable'] != "true") {
-                        continue;
-                    }
-
-                    if ( ! empty($columns[$i]['name'])) {
-                        $column = $columns[$i]['name'];
-                    } else {
-                        $column = $this->columns[$i];
-                    }
-
-                    if (Str::contains(Str::upper($column), ' AS ')) {
-                        $column = $this->getColumnName($column);
-                    }
-
-                    // there's no need to put the prefix unless the column name is prefixed with the table name.
-                    $column = $this->prefixColumn($column);
-
-                    $keyword = '%' . $input['search']['value'] . '%';
-                    if ($this->isWildcard()) {
-                        $keyword = $this->wildcardLikeString($input['search']['value']);
-                    }
-
-                    // Check if the database driver is PostgreSQL
-                    // If it is, cast the current column to TEXT datatype
-                    $cast_begin = null;
-                    $cast_end = null;
-                    if ($this->databaseDriver() === 'pgsql') {
-                        $cast_begin = "CAST(";
-                        $cast_end = " as TEXT)";
-                    }
-
-                    if (isset($this->filter_columns[$column])) {
-                        extract($this->filter_columns[$column]);
-                        if ( ! Str::contains(Str::lower($method), 'or')) {
-                            $method = 'or' . ucfirst($method);
-                        }
-
-                        if (method_exists($this->getBuilder(), $method)
-                            && count($parameters) <= with(new \ReflectionMethod($this->getBuilder(),
-                                $method))->getNumberOfParameters()
-                        ) {
-                            if (Str::contains(Str::lower($method), 'raw') || Str::contains(Str::lower($method),
-                                    'exists')
-                            ) {
-                                call_user_func_array([$query, $method], $this->parameterize($parameters));
-                            } else {
-                                call_user_func_array([$query, $method], $this->parameterize($column, $parameters));
-                            }
-                        }
-                    } else {
-                        // wrap column possibly allow reserved words to be used as column
-                        $column = $this->wrapColumn($column);
-                        if ($this->isCaseInsensitive()) {
-                            $query->orWhereRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?',
-                                [Str::lower($keyword)]);
-                        } else {
-                            $query->orWhereRaw($cast_begin . $column . $cast_end . ' LIKE ?', [$keyword]);
-                        }
-                    }
-                }
-            });
-        }
-
-        // column search
-        $this->doColumnSearch($columns);
-    }
-
-    /**
-     * Build Query Builder Parameters
-     *
-     * @return array
-     */
-    public function parameterize()
-    {
-        $args = func_get_args();
-        $parameters = [];
-
-        if (count($args) > 1) {
-            $parameters[] = $args[0];
-            foreach ($args[1] as $param) {
-                $parameters[] = $param;
-            }
-        } else {
-            foreach ($args[0] as $param) {
-                $parameters[] = $param;
-            }
-        }
-
-        return $parameters;
-    }
-
-    /**
-     * Perform column search
-     *
-     * @param  array $columns
-     * @return void
-     */
-    public function doColumnSearch(array $columns)
-    {
-        for ($i = 0, $c = count($columns); $i < $c; $i++) {
-            if ($columns[$i]['searchable'] == "true" && $columns[$i]['search']['value'] != '' && ! empty($columns[$i]['name'])) {
-                $column = $columns[$i]['name'];
-                $keyword = $this->setupKeyword($columns[$i]['search']['value']);
-
-                if (isset($this->filter_columns[$column])) {
-                    extract($this->filter_columns[$column]);
-                    if (method_exists($this->getBuilder(), $method)
-                        && count($parameters) <= with(new \ReflectionMethod($this->getBuilder(),
-                            $method))->getNumberOfParameters()
-                    ) {
-                        if (Str::contains(Str::lower($method), 'raw') || Str::contains(Str::lower($method), 'exists')) {
-                            call_user_func_array([$this->getBuilder(), $method], $this->parameterize($parameters));
-                        } else {
-                            call_user_func_array([$this->getBuilder(), $method],
-                                $this->parameterize($column, $parameters));
-                        }
-                    }
-                } else {
-                    // wrap column possibly allow reserved words to be used as column
-                    $column = $this->wrapColumn($column);
-                    if ($this->isCaseInsensitive()) {
-                        $this->query->whereRaw('LOWER(' . $column . ') LIKE ?', [Str::lower($keyword)]);
-                    } else {
-                        $col = strstr($column, '(') ? $this->connection->raw($column) : $column;
-                        $this->query->whereRaw($col . ' LIKE ?', [$keyword]);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
      * Set data output transformer
      *
      * @param TransformerAbstract $transformer
@@ -1121,42 +1164,6 @@ class BaseEngine
         $this->transformer = $transformer;
 
         return $this;
-    }
-
-    /**
-     * Get Query Builder object
-     *
-     * @return EloquentBuilder|QueryBuilder
-     */
-    public function getBuilder()
-    {
-        if ($this->isQueryBuilder()) {
-            return $this->query;
-        }
-
-        return $this->query->getQuery();
-    }
-
-    /**
-     * @param $value
-     * @param $data
-     * @param $rkey
-     * @return mixed
-     * @throws \Exception
-     */
-    protected function processContent($value, $data, $rkey)
-    {
-        if (is_string($value['content'])):
-            $value['content'] = $this->compileBlade($value['content'], $data);
-
-            return $value;
-        elseif (is_callable($value['content'])):
-            $value['content'] = $value['content']($this->result_object[$rkey]);
-
-            return $value;
-        endif;
-
-        return $value;
     }
 
 }
