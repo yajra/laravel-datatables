@@ -209,17 +209,6 @@ class CollectionEngine extends BaseEngine implements EngineContract
     /**
      * @inheritdoc
      */
-    public function doPaging()
-    {
-        if ($this->isPaginationable()) {
-            $this->collection = $this->collection->slice($this->input['start'],
-                (int) $this->input['length'] > 0 ? $this->input['length'] : 10);
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function setResults()
     {
         $this->result_object = $this->collection->all();
@@ -251,16 +240,20 @@ class CollectionEngine extends BaseEngine implements EngineContract
     /**
      * @inheritdoc
      */
-    protected function transform($output)
+    protected function showDebugger($output)
     {
-        if (isset($this->transformer)) {
-            $collection = new FractalCollection($this->result_array_r, new $this->transformer);
-            $output['data'] = $collection->getData();
-        } else {
-            $output['data'] = $this->result_array_r;
-        }
+        $output["input"] = $this->input;
 
         return $output;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function paginate()
+    {
+        $this->collection = $this->collection->slice($this->input['start'],
+            (int) $this->input['length'] > 0 ? $this->input['length'] : 10);
     }
 
 }

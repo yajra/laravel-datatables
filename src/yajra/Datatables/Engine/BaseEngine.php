@@ -661,8 +661,7 @@ class BaseEngine
     public function doPaging()
     {
         if ($this->isPaginationable()) {
-            $this->query->skip($this->input['start'])
-                ->take((int) $this->input['length'] > 0 ? $this->input['length'] : 10);
+            $this->paginate();
         }
     }
 
@@ -928,11 +927,15 @@ class BaseEngine
             "recordsFiltered" => $this->filteredRecords
         ];
 
-        $output = $this->transform($output);
+        if (isset($this->transformer)) {
+            $collection = new Collection($this->result_array_r, new $this->transformer);
+            $output['data'] = $collection->getData();
+        } else {
+            $output['data'] = $this->result_array_r;
+        }
 
         if ($this->isDebugging()) {
-            $output["queries"] = $this->connection->getQueryLog();
-            $output["input"] = $this->input;
+            $output = $this->showDebugger($output);
         }
 
         return new JsonResponse($output);
@@ -1177,21 +1180,28 @@ class BaseEngine
     }
 
     /**
-     * Transform data output
+     * Show debug parameters
      *
      * @param $output
      * @return mixed
      */
-    protected function transform($output)
+    protected function showDebugger($output)
     {
-        if (isset($this->transformer)) {
-            $collection = new Collection($this->result_array_r, new $this->transformer);
-            $output['data'] = $collection->getData();
-        } else {
-            $output['data'] = $this->result_array_r;
-        }
+        $output["queries"] = $this->connection->getQueryLog();
+        $output["input"] = $this->input;
 
         return $output;
+    }
+
+    /**
+     * Paginate query
+     *
+     * @return mixed
+     */
+    protected function paginate()
+    {
+        return $this->query->skip($this->input['start'])
+            ->take((int) $this->input['length'] > 0 ? $this->input['length'] : 10);
     }
 
 }
