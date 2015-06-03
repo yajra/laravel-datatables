@@ -318,23 +318,7 @@ class BaseEngine
                         }
                         $this->processFilterColumn($method, $parameters, $column);
                     } else {
-                        // Check if the database driver is PostgreSQL
-                        // If it is, cast the current column to TEXT datatype
-                        $cast_begin = null;
-                        $cast_end = null;
-                        if ($this->databaseDriver() === 'pgsql') {
-                            $cast_begin = "CAST(";
-                            $cast_end = " as TEXT)";
-                        }
-
-                        // wrap column possibly allow reserved words to be used as column
-                        $column = $this->wrapColumn($column);
-                        if ($this->isCaseInsensitive()) {
-                            $query->orWhereRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?',
-                                [Str::lower($keyword)]);
-                        } else {
-                            $query->orWhereRaw($cast_begin . $column . $cast_end . ' LIKE ?', [$keyword]);
-                        }
+                        $this->globalSearch($query, $column, $keyword);
                     }
                 }
             });
@@ -1244,6 +1228,33 @@ class BaseEngine
         $this->transformer = $transformer;
 
         return $this;
+    }
+
+    /**
+     * Add a query on global search
+     *
+     * @param $query
+     * @param $column
+     * @param $keyword
+     */
+    private function globalSearch($query, $column, $keyword)
+    {
+        // Check if the database driver is PostgreSQL
+        // If it is, cast the current column to TEXT datatype
+        $cast_begin = null;
+        $cast_end = null;
+        if ($this->databaseDriver() === 'pgsql') {
+            $cast_begin = "CAST(";
+            $cast_end = " as TEXT)";
+        }
+
+        // wrap column possibly allow reserved words to be used as column
+        $column = $this->wrapColumn($column);
+        if ($this->isCaseInsensitive()) {
+            $query->orWhereRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?', [Str::lower($keyword)]);
+        } else {
+            $query->orWhereRaw($cast_begin . $column . $cast_end . ' LIKE ?', [$keyword]);
+        }
     }
 
 }
