@@ -325,9 +325,9 @@ class BaseEngine
                     if ( ! Str::contains(Str::lower($method), 'or')) {
                         $method = 'or' . ucfirst($method);
                     }
-                    $this->processFilterColumn($method, $parameters, $column);
+                    $this->compileFilterColumn($method, $parameters, $column);
                 } else {
-                    $this->globalSearch($query, $column, $keyword);
+                    $this->compileGlobalSearch($query, $column, $keyword);
                 }
             }
         });
@@ -528,7 +528,7 @@ class BaseEngine
      * @param $parameters
      * @param $column
      */
-    protected function processFilterColumn($method, $parameters, $column)
+    protected function compileFilterColumn($method, $parameters, $column)
     {
         if (method_exists($this->getBuilder(), $method)
             && count($parameters) <= with(new \ReflectionMethod($this->getBuilder(),
@@ -577,7 +577,7 @@ class BaseEngine
      * @param string $column
      * @param string $keyword
      */
-    private function globalSearch($query, $column, $keyword)
+    private function compileGlobalSearch($query, $column, $keyword)
     {
         // Check if the database driver is PostgreSQL
         // If it is, cast the current column to TEXT datatype
@@ -658,7 +658,7 @@ class BaseEngine
 
                 if (isset($this->filter_columns[$column])) {
                     extract($this->filter_columns[$column]);
-                    $this->processFilterColumn($method, $parameters, $column);
+                    $this->compileFilterColumn($method, $parameters, $column);
                 } else {
                     // wrap column possibly allow reserved words to be used as column
                     $column = $this->wrapColumn($column);
@@ -1313,7 +1313,7 @@ class BaseEngine
     /**
      * Compile Datatables queries
      *
-     * @param $orderFirst
+     * @param boolean $orderFirst
      */
     protected function compileQueryBuilder($orderFirst)
     {
