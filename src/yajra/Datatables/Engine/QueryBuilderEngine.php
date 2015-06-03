@@ -36,6 +36,8 @@ class QueryBuilderEngine extends BaseEngine implements EngineContract
      */
     public function getResults()
     {
+        $this->result_object = $this->query->get();
+
         return $this->result_object;
     }
 

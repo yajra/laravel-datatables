@@ -12,7 +12,6 @@ use Closure;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use League\Fractal\Resource\Collection as FractalCollection;
 
 class CollectionEngine extends BaseEngine implements EngineContract
 {
@@ -177,23 +176,12 @@ class CollectionEngine extends BaseEngine implements EngineContract
 
             $this->collection = $this->collection->filter(function ($row) use ($column, $keyword) {
                 $data = $this->serialize($row);
-                $found = [];
 
                 if ($this->isCaseInsensitive()) {
-                    if (strpos(Str::lower($data[$column]), Str::lower($keyword)) !== false) {
-                        $found[] = true;
-                    }
+                    return strpos(Str::lower($data[$column]), Str::lower($keyword)) !== false;
                 } else {
-                    if (strpos($data[$column], $keyword) !== false) {
-                        $found[] = true;
-                    }
+                    return strpos($data[$column], $keyword) !== false;
                 }
-
-                if (count($found)) {
-                    return true;
-                }
-
-                return false;
             });
         }
     }
@@ -209,19 +197,10 @@ class CollectionEngine extends BaseEngine implements EngineContract
     /**
      * @inheritdoc
      */
-    public function setResults()
-    {
-        $this->result_object = $this->collection->all();
-        $this->result_array = array_map(function ($object) {
-            return $object instanceof Arrayable ? $object->toArray() : (array) $object;
-        }, $this->getResults());
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function getResults()
     {
+        $this->result_object = $this->collection->all();
+
         return $this->result_object;
     }
 

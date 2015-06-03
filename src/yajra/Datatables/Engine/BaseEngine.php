@@ -680,9 +680,8 @@ class BaseEngine
      */
     public function setResults()
     {
-        $this->result_object = $this->query->get();
         $this->result_array = array_map(function ($object) {
-            return (array) $object;
+            return $object instanceof Arrayable ? $object->toArray() : (array) $object;
         }, $this->getResults());
     }
 
@@ -693,6 +692,8 @@ class BaseEngine
      */
     public function getResults()
     {
+        $this->result_object = $this->query->get();
+
         return $this->result_object->toArray();
     }
 
