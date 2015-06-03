@@ -309,7 +309,7 @@ class BaseEngine
                     }
 
                     $column = $this->setupColumn($columns, $i);
-                    $keyword = $this->generateKeyword();
+                    $keyword = $this->setupKeyword($input['search']['value']);
 
                     if (isset($this->filter_columns[$column])) {
                         extract($this->filter_columns[$column]);
@@ -466,16 +466,18 @@ class BaseEngine
     }
 
     /**
-     * Generate global search keyword
+     * Setup search keyword
      *
      * @return string
      */
-    public function generateKeyword()
+    public function setupKeyword($value)
     {
-        $keyword = '%' . $this->input['search']['value'] . '%';
+        $keyword = '%' . $value . '%';
         if ($this->isWildcard()) {
-            $keyword = $this->wildcardLikeString($this->input['search']['value']);
+            $keyword = $this->wildcardLikeString($value);
         }
+        // remove escaping slash added on js script request
+        $keyword = str_replace('\\', '%', $keyword);
 
         return $keyword;
     }
@@ -650,24 +652,6 @@ class BaseEngine
     protected function isColumnSearchable(array $columns, $i)
     {
         return $columns[$i]['searchable'] == "true" && $columns[$i]['search']['value'] != '' && ! empty($columns[$i]['name']);
-    }
-
-    /**
-     * Setup search keyword
-     *
-     * @param  string $value
-     * @return string
-     */
-    public function setupKeyword($value)
-    {
-        $keyword = '%' . $value . '%';
-        if ($this->isWildcard()) {
-            $keyword = $this->wildcardLikeString($value);
-        }
-        // remove escaping slash added on js script request
-        $keyword = str_replace('\\', '%', $keyword);
-
-        return $keyword;
     }
 
     /**
