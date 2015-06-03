@@ -99,19 +99,19 @@ class CollectionEngine extends BaseEngine implements EngineContract
      */
     public function doFiltering()
     {
-        $input = $this->input;
-        $columns = $input['columns'];
-
+        $columns = $this->input['columns'];
         if ( ! empty($this->input['search']['value'])) {
-            $this->collection = $this->collection->filter(function ($row) use ($columns, $input) {
+            $this->collection = $this->collection->filter(function ($row) use ($columns) {
                 $data = $this->serialize($row);
                 $found = [];
+
                 for ($i = 0, $c = count($columns); $i < $c; $i++) {
                     if ($columns[$i]['searchable'] != "true") {
                         continue;
                     }
+
                     $column = $this->getColumnIdentity($columns, $i);
-                    $keyword = $input['search']['value'];
+                    $keyword = $this->input['search']['value'];
 
                     if ( ! $this->columnExists($column, $data)) {
                         continue;

@@ -314,7 +314,7 @@ class BaseEngine
      * @param integer $order_col
      * @return mixed
      */
-    private function getOrderColumnName($order_col)
+    protected function getOrderColumnName($order_col)
     {
         $column = $this->input['columns'][$order_col];
         if (isset($column['name']) && $column['name'] <> '') {
