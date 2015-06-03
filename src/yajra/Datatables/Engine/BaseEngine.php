@@ -310,25 +310,12 @@ class BaseEngine
                         if ( ! Str::contains(Str::lower($method), 'or')) {
                             $method = 'or' . ucfirst($method);
                         }
-
-                        if (method_exists($this->getBuilder(), $method)
-                            && count($parameters) <= with(new \ReflectionMethod($this->getBuilder(),
-                                $method))->getNumberOfParameters()
-                        ) {
-                            if (Str::contains(Str::lower($method), 'raw') || Str::contains(Str::lower($method),
-                                    'exists')
-                            ) {
-                                call_user_func_array([$query, $method], $this->parameterize($parameters));
-                            } else {
-                                call_user_func_array([$query, $method], $this->parameterize($column, $parameters));
-                            }
-                        }
+                        $this->processFilterColumn($method, $parameters, $column);
                     } else {
                         // wrap column possibly allow reserved words to be used as column
                         $column = $this->wrapColumn($column);
                         if ($this->isCaseInsensitive()) {
-                            $query->orWhereRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?',
-                                [Str::lower($keyword)]);
+                            $query->orWhereRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?', [Str::lower($keyword)]);
                         } else {
                             $query->orWhereRaw($cast_begin . $column . $cast_end . ' LIKE ?', [$keyword]);
                         }
@@ -570,23 +557,13 @@ class BaseEngine
     public function doColumnSearch(array $columns)
     {
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
-            if ($columns[$i]['searchable'] == "true" && $columns[$i]['search']['value'] != '' && ! empty($columns[$i]['name'])) {
+            if ($this->isColumnSearchable($columns, $i)) {
                 $column = $columns[$i]['name'];
                 $keyword = $this->setupKeyword($columns[$i]['search']['value']);
 
                 if (isset($this->filter_columns[$column])) {
                     extract($this->filter_columns[$column]);
-                    if (method_exists($this->getBuilder(), $method)
-                        && count($parameters) <= with(new \ReflectionMethod($this->getBuilder(),
-                            $method))->getNumberOfParameters()
-                    ) {
-                        if (Str::contains(Str::lower($method), 'raw') || Str::contains(Str::lower($method), 'exists')) {
-                            call_user_func_array([$this->getBuilder(), $method], $this->parameterize($parameters));
-                        } else {
-                            call_user_func_array([$this->getBuilder(), $method],
-                                $this->parameterize($column, $parameters));
-                        }
-                    }
+                    $this->processFilterColumn($method, $parameters, $column);
                 } else {
                     // wrap column possibly allow reserved words to be used as column
                     $column = $this->wrapColumn($column);
@@ -1203,6 +1180,43 @@ class BaseEngine
     {
         return $this->query->skip($this->input['start'])
             ->take((int) $this->input['length'] > 0 ? $this->input['length'] : 10);
+    }
+
+    /**
+     * Perform filter column on selected field
+     *
+     * @param $method
+     * @param $parameters
+     * @param $column
+     */
+    protected function processFilterColumn($method, $parameters, $column)
+    {
+        if (method_exists($this->getBuilder(), $method)
+            && count($parameters) <= with(new \ReflectionMethod($this->getBuilder(),
+                $method))->getNumberOfParameters()
+        ) {
+            if (Str::contains(Str::lower($method), 'raw')
+                || Str::contains(Str::lower($method), 'exists')
+            ) {
+                call_user_func_array([$this->getBuilder(), $method],
+                    $this->parameterize($parameters));
+            } else {
+                call_user_func_array([$this->getBuilder(), $method],
+                    $this->parameterize($column, $parameters));
+            }
+        }
+    }
+
+    /**
+     * Check if a column is searchable
+     *
+     * @param array $columns
+     * @param $i
+     * @return bool
+     */
+    protected function isColumnSearchable(array $columns, $i)
+    {
+        return $columns[$i]['searchable'] == "true" && $columns[$i]['search']['value'] != '' && ! empty($columns[$i]['name']);
     }
 
 }
