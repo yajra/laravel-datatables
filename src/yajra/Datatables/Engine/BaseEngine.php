@@ -274,23 +274,54 @@ class BaseEngine
      */
     public function doOrdering()
     {
-        if (array_key_exists('order', $this->input) && count($this->input['order']) > 0) {
+        if ($this->isOrderable()) {
             for ($i = 0, $c = count($this->input['order']); $i < $c; $i++) {
                 $order_col = (int) $this->input['order'][$i]['column'];
                 $order_dir = $this->input['order'][$i]['dir'];
-                $column = $this->input['columns'][$order_col];
-
-                if ($column['orderable'] <> "true") {
+                if ( ! $this->isColumnOrderable($this->input['columns'][$order_col])) {
                     continue;
                 }
-
-                if (isset($column['name']) && $column['name'] <> '') {
-                    $this->query->orderBy($column['name'], $order_dir);
-                } else {
-                    $this->query->orderBy($this->columns[$order_col], $order_dir);
-                }
+                $column = $this->getOrderColumnName($order_col);
+                $this->query->orderBy($column, $order_dir);
             }
         }
+    }
+
+    /**
+     * Check if Datatables ordering is enabled
+     *
+     * @return bool
+     */
+    protected function isOrderable()
+    {
+        return array_key_exists('order', $this->input) && count($this->input['order']) > 0;
+    }
+
+    /**
+     * Check if a column is orderable
+     *
+     * @param $column
+     * @return bool
+     */
+    protected function isColumnOrderable($column)
+    {
+        return $column['orderable'] == "true";
+    }
+
+    /**
+     * Get column name by order column index
+     *
+     * @param integer $order_col
+     * @return mixed
+     */
+    private function getOrderColumnName($order_col)
+    {
+        $column = $this->input['columns'][$order_col];
+        if (isset($column['name']) && $column['name'] <> '') {
+            return $column['name'];
+        }
+
+        return $this->columns[$order_col];
     }
 
     /**
@@ -563,6 +594,33 @@ class BaseEngine
         }
 
         return $parameters;
+    }
+
+    /**
+     * Add a query on global search
+     *
+     * @param $query
+     * @param $column
+     * @param $keyword
+     */
+    private function globalSearch($query, $column, $keyword)
+    {
+        // Check if the database driver is PostgreSQL
+        // If it is, cast the current column to TEXT datatype
+        $cast_begin = null;
+        $cast_end = null;
+        if ($this->databaseDriver() === 'pgsql') {
+            $cast_begin = "CAST(";
+            $cast_end = " as TEXT)";
+        }
+
+        // wrap column possibly allow reserved words to be used as column
+        $column = $this->wrapColumn($column);
+        if ($this->isCaseInsensitive()) {
+            $query->orWhereRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?', [Str::lower($keyword)]);
+        } else {
+            $query->orWhereRaw($cast_begin . $column . $cast_end . ' LIKE ?', [$keyword]);
+        }
     }
 
     /**
@@ -1213,33 +1271,6 @@ class BaseEngine
         $this->transformer = $transformer;
 
         return $this;
-    }
-
-    /**
-     * Add a query on global search
-     *
-     * @param $query
-     * @param $column
-     * @param $keyword
-     */
-    private function globalSearch($query, $column, $keyword)
-    {
-        // Check if the database driver is PostgreSQL
-        // If it is, cast the current column to TEXT datatype
-        $cast_begin = null;
-        $cast_end = null;
-        if ($this->databaseDriver() === 'pgsql') {
-            $cast_begin = "CAST(";
-            $cast_end = " as TEXT)";
-        }
-
-        // wrap column possibly allow reserved words to be used as column
-        $column = $this->wrapColumn($column);
-        if ($this->isCaseInsensitive()) {
-            $query->orWhereRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?', [Str::lower($keyword)]);
-        } else {
-            $query->orWhereRaw($cast_begin . $column . $cast_end . ' LIKE ?', [$keyword]);
-        }
     }
 
 }
