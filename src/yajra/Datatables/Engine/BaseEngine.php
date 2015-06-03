@@ -468,6 +468,7 @@ class BaseEngine
     /**
      * Setup search keyword
      *
+     * @param $value
      * @return string
      */
     public function setupKeyword($value)
