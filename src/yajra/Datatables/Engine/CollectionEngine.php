@@ -232,7 +232,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
      */
     public function doPaging()
     {
-        if ( ! is_null($this->input['start']) && ! is_null($this->input['length']) && $this->input['length'] != -1) {
+        if ($this->isPaginationable()) {
             $this->collection = $this->collection->slice($this->input['start'],
                 (int) $this->input['length'] > 0 ? $this->input['length'] : 10);
         }

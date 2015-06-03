@@ -14,7 +14,7 @@ class EloquentEngine extends BaseEngine implements EngineContract
 {
 
     /**
-     * @param Builder|HasMany|... $model
+     * @param mixed $model
      * @param $request
      */
     public function __construct($model, $request)

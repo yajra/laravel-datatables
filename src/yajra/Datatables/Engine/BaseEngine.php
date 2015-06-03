@@ -9,6 +9,7 @@
  */
 
 use Closure;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
@@ -17,7 +18,7 @@ use Illuminate\Support\Str;
 use Illuminate\View\Compilers\BladeCompiler;
 use League\Fractal\Resource\Collection;
 
-class BaseEngine
+class BaseEngine implements EngineContract
 {
 
     /**
@@ -114,7 +115,7 @@ class BaseEngine
     /**
      * Eloquent/Builder result
      *
-     * @var array
+     * @var array|Arrayable
      */
     public $result_object;
 
@@ -133,7 +134,7 @@ class BaseEngine
     public $result_array_r = [];
 
     /**
-     * Flag for DT support for mdata
+     * Flag for DT support for mData
      *
      * @var boolean
      */
@@ -333,6 +334,24 @@ class BaseEngine
     }
 
     /**
+     * Get column identity from input or database
+     *
+     * @param array $columns
+     * @param $i
+     * @return string
+     */
+    public function getColumnIdentity(array $columns, $i)
+    {
+        if ( ! empty($columns[$i]['name'])) {
+            $column = $columns[$i]['name'];
+        } else {
+            $column = $this->columns[$i];
+        }
+
+        return $column;
+    }
+
+    /**
      * Get column name from string
      *
      * @param  string $str
@@ -365,7 +384,7 @@ class BaseEngine
         if (count(array_filter($table_names, function ($value) use (&$column) {
             return strpos($column, $value . ".") === 0;
         }))) {
-            //the column starts with one of the table names
+            // the column starts with one of the table names
             $column = $this->databasePrefix() . $column;
         }
 
@@ -633,7 +652,7 @@ class BaseEngine
      */
     public function doPaging()
     {
-        if ( ! is_null($this->input['start']) && ! is_null($this->input['length']) && $this->input['length'] != -1) {
+        if ($this->isPaginationable()) {
             $this->query->skip($this->input['start'])
                 ->take((int) $this->input['length'] > 0 ? $this->input['length'] : 10);
         }
@@ -1143,21 +1162,13 @@ class BaseEngine
     }
 
     /**
-     * Get column identity from input or database
+     * Check if Datatables allow pagination
      *
-     * @param array $columns
-     * @param $i
-     * @return array
+     * @return bool
      */
-    public function getColumnIdentity(array $columns, $i)
+    protected function isPaginationable()
     {
-        if ( ! empty($columns[$i]['name'])) {
-            $column = $columns[$i]['name'];
-        } else {
-            $column = $this->columns[$i];
-        }
-
-        return $column;
+        return ! is_null($this->input['start']) && ! is_null($this->input['length']) && $this->input['length'] != -1;
     }
 
 }
