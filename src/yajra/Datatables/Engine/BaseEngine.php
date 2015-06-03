@@ -1321,19 +1321,26 @@ class BaseEngine
             $this->doOrdering();
         }
 
-        // check if auto filtering was overridden
-        if ($this->autoFilter && $this->isSearchable()) {
-            $this->doFiltering();
-        }
-
-        $this->doColumnSearch();
-        $this->getTotalFilteredRecords();
+        $this->compileFiltering();
 
         if ( ! $orderFirst) {
             $this->doOrdering();
         }
 
         $this->doPaging();
+    }
+
+    /**
+     * Perform all filtering queries
+     */
+    protected function compileFiltering()
+    {
+        if ($this->autoFilter && $this->isSearchable()) {
+            $this->doFiltering();
+        }
+
+        $this->doColumnSearch();
+        $this->getTotalFilteredRecords();
     }
 
 }
