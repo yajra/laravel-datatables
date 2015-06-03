@@ -246,19 +246,26 @@ class CollectionEngine extends BaseEngine implements EngineContract
     }
 
     /**
-     * Gets results from prepared query
+     * @inheritdoc
      */
     public function setResults()
     {
         $this->result_object = $this->collection->all();
         $this->result_array = array_map(function ($object) {
             return $object instanceof Arrayable ? $object->toArray() : (array) $object;
-        }, $this->result_object);
+        }, $this->getResults());
     }
 
     /**
-     * @param callable $callback
-     * @return $this
+     * @inheritdoc
+     */
+    public function getResults()
+    {
+        return $this->result_object;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function filter(Closure $callback)
     {
@@ -270,9 +277,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
     }
 
     /**
-     * Render json response
-     *
-     * @return JsonResponse
+     * @inheritdoc
      */
     public function output()
     {

@@ -14,9 +14,8 @@ class EloquentEngine extends BaseEngine implements EngineContract
 {
 
     /**
-     * Read Input into $this->input according to jquery.dataTables.js version
-     *
      * @param Builder|HasMany|... $model
+     * @param $request
      */
     public function __construct($model, $request)
     {
@@ -35,14 +34,11 @@ class EloquentEngine extends BaseEngine implements EngineContract
     }
 
     /**
-     * Set results from prepared query
+     * @inheritdoc
      */
-    public function setResults()
+    public function getResults()
     {
-        $this->result_object = $this->query->get();
-        $this->result_array = array_map(function ($object) {
-            return (array) $object;
-        }, $this->result_object->toArray());
+        return $this->result_object->toArray();
     }
 
 }

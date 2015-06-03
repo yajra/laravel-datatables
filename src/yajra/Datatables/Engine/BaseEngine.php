@@ -255,7 +255,7 @@ class BaseEngine
      * Organizes works
      *
      * @param bool $mDataSupport
-     * @return null
+     * @return JsonResponse
      */
     public function make($mDataSupport = false)
     {
@@ -284,7 +284,10 @@ class BaseEngine
      */
     public function setResults()
     {
-        // @todo: implement set results on child class
+        $this->result_object = $this->query->get();
+        $this->result_array = array_map(function ($object) {
+            return (array) $object;
+        }, $this->getResults());
     }
 
     /**
@@ -518,22 +521,14 @@ class BaseEngine
 
             // Process add columns
             foreach ($this->extra_columns as $key => $value) {
-                if (is_string($value['content'])):
-                    $value['content'] = $this->compileBlade($value['content'], $data);
-                elseif (is_callable($value['content'])):
-                    $value['content'] = $value['content']($this->result_object[$rkey]);
-                endif;
+                $value = $this->processContent($value, $data, $rkey);
 
                 $rvalue = $this->includeInArray($value, $rvalue);
             }
 
             // Process edit columns
             foreach ($this->edit_columns as $key => $value) {
-                if (is_string($value['content'])):
-                    $value['content'] = $this->compileBlade($value['content'], $data);
-                elseif (is_callable($value['content'])):
-                    $value['content'] = $value['content']($this->result_object[$rkey]);
-                endif;
+                $value = $this->processContent($value, $data, $rkey);
 
                 $rvalue[$value['name']] = $value['content'];
             }
@@ -622,38 +617,49 @@ class BaseEngine
      * @param  array &$data
      * @return array
      */
-    public function setupDTRowVariables($key, array &$data)
+    protected function setupDTRowVariables($key, array &$data)
     {
-        if ( ! empty($this->row_id_tmpl)) {
-            if ( ! is_callable($this->row_id_tmpl) && Arr::get($data, $this->row_id_tmpl)) {
-                $data['DT_RowId'] = Arr::get($data, $this->row_id_tmpl);
+        $this->processDTRowValue('DT_RowId', $this->row_id_tmpl, $key, $data);
+        $this->processDTRowValue('DT_RowClass', $this->row_class_tmpl, $key, $data);
+        $this->processDTRowDataAttr('DT_RowData', $this->row_data_tmpls, $key, $data);
+        $this->processDTRowDataAttr('DT_RowAttr', $this->row_attr_tmpls, $key, $data);
+    }
+
+    /**
+     * Process DT Row Data and Attr
+     *
+     * @param $key
+     * @param array $template
+     * @param $index
+     * @param $data
+     */
+    protected function processDTRowDataAttr($key, array $template, $index, &$data)
+    {
+        if (count($template)) {
+            $data[$key] = [];
+            foreach ($template as $tkey => $tvalue) {
+                $data[$key][$tkey] = $this->getContent($tvalue, $data, $this->result_object[$index]);
+            }
+        }
+    }
+
+    /**
+     * Process DT RowId and Class value
+     *
+     * @param $key
+     * @param $template
+     * @param $index
+     * @param $data
+     */
+    protected function processDTRowValue($key, $template, $index, &$data)
+    {
+        if ( ! empty($template)) {
+            if ( ! is_callable($template) && Arr::get($data, $template)) {
+                $data[$key] = Arr::get($data, $template);
             } else {
-                $data['DT_RowId'] = $this->getContent($this->row_id_tmpl, $data, $this->result_object[$key]);
+                $data[$key] = $this->getContent($template, $data, $this->result_object[$index]);
             }
         }
-
-        if ( ! empty($this->row_class_tmpl)) {
-            if ( ! is_callable($this->row_class_tmpl) && Arr::get($data, $this->row_class_tmpl)) {
-                $data['DT_RowClass'] = Arr::get($data, $this->row_class_tmpl);
-            } else {
-                $data['DT_RowClass'] = $this->getContent($this->row_class_tmpl, $data, $this->result_object[$key]);
-            }
-        }
-
-        if (count($this->row_data_tmpls)) {
-            $data['DT_RowData'] = [];
-            foreach ($this->row_data_tmpls as $tkey => $tvalue) {
-                $data['DT_RowData'][$tkey] = $this->getContent($tvalue, $data, $this->result_object[$key]);
-            }
-        }
-
-        if (count($this->row_attr_tmpls)) {
-            $data['DT_RowAttr'] = [];
-            foreach ($this->row_attr_tmpls as $tkey => $tvalue) {
-                $data['DT_RowAttr'][$tkey] = $this->getContent($tvalue, $data, $this->result_object[$key]);
-            }
-        }
-
     }
 
     /**
@@ -761,7 +767,6 @@ class BaseEngine
      *
      * @param callable $callback
      * @return $this
-     * @internal param $Closure
      */
     public function filter(Closure $callback)
     {
@@ -1130,6 +1135,28 @@ class BaseEngine
         }
 
         return $this->query->getQuery();
+    }
+
+    /**
+     * @param $value
+     * @param $data
+     * @param $rkey
+     * @return mixed
+     * @throws \Exception
+     */
+    protected function processContent($value, $data, $rkey)
+    {
+        if (is_string($value['content'])):
+            $value['content'] = $this->compileBlade($value['content'], $data);
+
+            return $value;
+        elseif (is_callable($value['content'])):
+            $value['content'] = $value['content']($this->result_object[$rkey]);
+
+            return $value;
+        endif;
+
+        return $value;
     }
 
 }
