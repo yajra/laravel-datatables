@@ -248,10 +248,11 @@ class BaseEngine
         }
 
         // check if auto filtering was overridden
-        if ($this->autoFilter) {
+        if ($this->autoFilter && $this->isSearchable()) {
             $this->doFiltering();
         }
 
+        $this->doColumnSearch();
         $this->getTotalFilteredRecords();
 
         if ( ! $orderFirst) {
@@ -329,34 +330,27 @@ class BaseEngine
      */
     public function doFiltering()
     {
-        $input = $this->input;
-        $columns = $input['columns'];
-
-        if ( ! empty($this->input['search']['value'])) {
-            $this->query->where(function ($query) use ($columns, $input) {
-                for ($i = 0, $c = count($columns); $i < $c; $i++) {
-                    if ($columns[$i]['searchable'] != "true") {
-                        continue;
-                    }
-
-                    $column = $this->setupColumn($columns, $i);
-                    $keyword = $this->setupKeyword($input['search']['value']);
-
-                    if (isset($this->filter_columns[$column])) {
-                        extract($this->filter_columns[$column]);
-                        if ( ! Str::contains(Str::lower($method), 'or')) {
-                            $method = 'or' . ucfirst($method);
-                        }
-                        $this->processFilterColumn($method, $parameters, $column);
-                    } else {
-                        $this->globalSearch($query, $column, $keyword);
-                    }
+        $this->query->where(function ($query) {
+            $columns = $this->input['columns'];
+            for ($i = 0, $c = count($columns); $i < $c; $i++) {
+                if ($columns[$i]['searchable'] != "true") {
+                    continue;
                 }
-            });
-        }
 
-        // column search
-        $this->doColumnSearch($columns);
+                $column = $this->setupColumn($columns, $i);
+                $keyword = $this->setupKeyword($this->input['search']['value']);
+
+                if (isset($this->filter_columns[$column])) {
+                    extract($this->filter_columns[$column]);
+                    if ( ! Str::contains(Str::lower($method), 'or')) {
+                        $method = 'or' . ucfirst($method);
+                    }
+                    $this->processFilterColumn($method, $parameters, $column);
+                } else {
+                    $this->globalSearch($query, $column, $keyword);
+                }
+            }
+        });
     }
 
     /**
@@ -673,12 +667,10 @@ class BaseEngine
 
     /**
      * Perform column search
-     *
-     * @param  array $columns
-     * @return void
      */
-    public function doColumnSearch(array $columns)
+    public function doColumnSearch()
     {
+        $columns = $this->input['columns'];
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($this->isColumnSearchable($columns, $i)) {
                 $column = $columns[$i]['name'];
@@ -1312,6 +1304,16 @@ class BaseEngine
         }
 
         return $data;
+    }
+
+    /**
+     * Check if Datatables is searchable
+     *
+     * @return bool
+     */
+    protected function isSearchable()
+    {
+        return ! empty($this->input['search']['value']);
     }
 
 }

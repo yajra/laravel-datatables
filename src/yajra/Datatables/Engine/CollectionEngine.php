@@ -100,43 +100,39 @@ class CollectionEngine extends BaseEngine implements EngineContract
     public function doFiltering()
     {
         $columns = $this->input['columns'];
-        if ( ! empty($this->input['search']['value'])) {
-            $this->collection = $this->collection->filter(function ($row) use ($columns) {
-                $data = $this->serialize($row);
-                $found = [];
+        $this->collection = $this->collection->filter(function ($row) use ($columns) {
+            $data = $this->serialize($row);
+            $found = [];
 
-                for ($i = 0, $c = count($columns); $i < $c; $i++) {
-                    if ($columns[$i]['searchable'] != "true") {
-                        continue;
-                    }
-
-                    $column = $this->getColumnIdentity($columns, $i);
-                    $keyword = $this->input['search']['value'];
-
-                    if ( ! $this->columnExists($column, $data)) {
-                        continue;
-                    }
-
-                    if ($this->isCaseInsensitive()) {
-                        $found[] = Str::contains(Str::lower($data[$column]), Str::lower($keyword));
-                    } else {
-                        $found[] = Str::contains($data[$column], $keyword);
-                    }
+            for ($i = 0, $c = count($columns); $i < $c; $i++) {
+                if ($columns[$i]['searchable'] != "true") {
+                    continue;
                 }
 
-                return in_array(true, $found);
-            });
-        }
+                $column = $this->getColumnIdentity($columns, $i);
+                $keyword = $this->input['search']['value'];
 
-        // column search
-        $this->doColumnSearch($columns);
+                if ( ! $this->columnExists($column, $data)) {
+                    continue;
+                }
+
+                if ($this->isCaseInsensitive()) {
+                    $found[] = Str::contains(Str::lower($data[$column]), Str::lower($keyword));
+                } else {
+                    $found[] = Str::contains($data[$column], $keyword);
+                }
+            }
+
+            return in_array(true, $found);
+        });
     }
 
     /**
      * @inheritdoc
      */
-    public function doColumnSearch(array $columns)
+    public function doColumnSearch()
     {
+        $columns = $this->input['columns'];
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($columns[$i]['searchable'] != "true" || $columns[$i]['search']['value'] == '') {
                 continue;
