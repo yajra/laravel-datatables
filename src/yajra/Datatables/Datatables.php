@@ -653,24 +653,23 @@ class Datatables
     private function doOrdering()
     {
         if (array_key_exists('order', $this->input) && count($this->input['order']) > 0) {
-            $columns = $this->cleanColumns($this->last_columns);
-
             for ($i = 0, $c = count($this->input['order']); $i < $c; $i++) {
                 $order_col = (int) $this->input['order'][$i]['column'];
                 $order_dir = $this->input['order'][$i]['dir'];
+
                 if ($this->new_version) {
                     $column = $this->input['columns'][$order_col];
                     if ($column['orderable'] == "true") {
-                        if ( ! empty($column['name'])) {
+                        if (! empty($column['name'])) {
                             $this->query->orderBy($column['name'], $order_dir);
                         } elseif (isset($columns[$order_col])) {
                             $this->query->orderBy($columns[$order_col], $order_dir);
                         }
                     }
                 } else {
-                    if (isset($columns[$order_col])) {
+                    if (isset($this->columns[$order_col])) {
                         if ($this->input['columns'][$order_col]['orderable'] == "true") {
-                            $this->query->orderBy($columns[$order_col], $order_dir);
+                            $this->query->orderBy($this->columns[$order_col], $order_dir);
                         }
                     }
                 }
