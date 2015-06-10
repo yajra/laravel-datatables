@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    3.6.4
+ * @version    3.6.5
  */
 
 use Closure;
@@ -24,7 +24,6 @@ use Illuminate\View\Compilers\BladeCompiler;
 
 class Datatables
 {
-
     /**
      * Database connection used
      *
@@ -201,38 +200,38 @@ class Datatables
         $formatted_input = [];
         if (isset($input['draw'])) {
             // DT version 1.10+
-            $input['version'] = '1.10';
-            $formatted_input = $input;
+            $input['version']  = '1.10';
+            $formatted_input   = $input;
             $this->new_version = true;
         } else {
             // DT version < 1.10
             $formatted_input['version'] = '1.9';
-            $formatted_input['draw'] = Arr::get($input, 'sEcho', '');
-            $formatted_input['start'] = Arr::get($input, 'iDisplayStart', 0);
-            $formatted_input['length'] = Arr::get($input, 'iDisplayLength', 10);
-            $formatted_input['search'] = [
+            $formatted_input['draw']    = Arr::get($input, 'sEcho', '');
+            $formatted_input['start']   = Arr::get($input, 'iDisplayStart', 0);
+            $formatted_input['length']  = Arr::get($input, 'iDisplayLength', 10);
+            $formatted_input['search']  = [
                 'value' => Arr::get($input, 'sSearch', ''),
                 'regex' => Arr::get($input, 'bRegex', ''),
             ];
-            $formatted_input['_'] = Arr::get($input, '_', '');
-            $columns = explode(',', Arr::get($input, 'sColumns', ''));
+            $formatted_input['_']       = Arr::get($input, '_', '');
+            $columns                    = explode(',', Arr::get($input, 'sColumns', ''));
             $formatted_input['columns'] = [];
             for ($i = 0; $i < Arr::get($input, 'iColumns', 0); $i++) {
-                $arr = [];
-                $arr['name'] = isset($columns[$i]) ? $columns[$i] : '';
-                $arr['data'] = Arr::get($input, 'mDataProp_' . $i, '');
-                $arr['searchable'] = Arr::get($input, 'bSearchable_' . $i, '');
-                $arr['search'] = [];
-                $arr['search']['value'] = Arr::get($input, 'sSearch_' . $i, '');
-                $arr['search']['regex'] = Arr::get($input, 'bRegex_' . $i, '');
-                $arr['orderable'] = Arr::get($input, 'bSortable_' . $i, '');
+                $arr                          = [];
+                $arr['name']                  = isset($columns[$i]) ? $columns[$i] : '';
+                $arr['data']                  = Arr::get($input, 'mDataProp_' . $i, '');
+                $arr['searchable']            = Arr::get($input, 'bSearchable_' . $i, '');
+                $arr['search']                = [];
+                $arr['search']['value']       = Arr::get($input, 'sSearch_' . $i, '');
+                $arr['search']['regex']       = Arr::get($input, 'bRegex_' . $i, '');
+                $arr['orderable']             = Arr::get($input, 'bSortable_' . $i, '');
                 $formatted_input['columns'][] = $arr;
             }
             $formatted_input['order'] = [];
             for ($i = 0; $i < Arr::get($input, 'iSortingCols', 0); $i++) {
-                $arr = [];
-                $arr['column'] = Arr::get($input, 'iSortCol_' . $i, '');
-                $arr['dir'] = Arr::get($input, 'sSortDir_' . $i, '');
+                $arr                        = [];
+                $arr['column']              = Arr::get($input, 'iSortCol_' . $i, '');
+                $arr['dir']                 = Arr::get($input, 'sSortDir_' . $i, '');
                 $formatted_input['order'][] = $arr;
             }
         }
@@ -273,13 +272,13 @@ class Datatables
 
         if ($builder instanceof QueryBuilder) {
             $ins->query_type = 'builder';
-            $ins->query = $builder;
-            $ins->columns = $ins->query->columns;
+            $ins->query      = $builder;
+            $ins->columns    = $ins->query->columns;
             $ins->connection = $ins->query->getConnection();
         } else {
             $ins->query_type = 'eloquent';
-            $ins->query = $builder instanceof EloquentBuilder ? $builder : $builder->getQuery();
-            $ins->columns = $ins->query->getQuery()->columns;
+            $ins->query      = $builder instanceof EloquentBuilder ? $builder : $builder->getQuery();
+            $ins->columns    = $ins->query->getQuery()->columns;
             $ins->connection = $ins->query->getQuery()->getConnection();
         }
 
@@ -298,7 +297,7 @@ class Datatables
     {
         preg_match('#^(\S*?)\s+as\s+(\S*?)$#si', $str, $matches);
 
-        if ( ! empty($matches)) {
+        if (! empty($matches)) {
             return $matches[2];
         } elseif (strpos($str, '.')) {
             $array = explode('.', $str);
@@ -330,7 +329,7 @@ class Datatables
 
         // if its a normal query ( no union ) replace the select with static text to improve performance
         $myQuery = clone $query;
-        if ( ! preg_match('/UNION/i', strtoupper($myQuery->toSql()))) {
+        if (! preg_match('/UNION/i', strtoupper($myQuery->toSql()))) {
             $myQuery->select($this->connection->raw("'1' as row_count"));
         }
 
@@ -372,14 +371,14 @@ class Datatables
      */
     private function doFiltering()
     {
-        $input = $this->input;
+        $input   = $this->input;
         $columns = $input['columns'];
 
         // if older version, set the column name to query's fields
         // or if new version but does not use mData support
-        if ( ! $this->new_version or ( ! $this->mDataSupport and $this->new_version)) {
+        if (! $this->new_version or (! $this->mDataSupport and $this->new_version)) {
             for ($i = 0; $i < count($columns); $i++) {
-                if ( ! isset($this->columns[$i])) {
+                if (! isset($this->columns[$i])) {
                     continue;
                 }
 
@@ -387,14 +386,14 @@ class Datatables
                 if (stripos($columns[$i]['name'], ' AS ') !== false or
                     $columns[$i]['name'] instanceof Expression
                 ) {
-                    $columns[$i]['name'] = '';
+                    $columns[$i]['name']       = '';
                     $columns[$i]['searchable'] = false;
-                    $columns[$i]['orderable'] = false;
+                    $columns[$i]['orderable']  = false;
                 }
             }
         }
 
-        if ( ! empty($this->input['search']['value'])) {
+        if (! empty($this->input['search']['value'])) {
             $this->query->where(function ($query) use ($columns, $input) {
                 for ($i = 0, $c = count($columns); $i < $c; $i++) {
                     if ($columns[$i]['searchable'] == "true" and ! empty($columns[$i]['name'])) {
@@ -448,7 +447,7 @@ class Datatables
     {
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($columns[$i]['searchable'] == "true" and ! empty($columns[$i]['search']['value']) and ! empty($columns[$i]['name'])) {
-                $column = $columns[$i]['name'];
+                $column  = $columns[$i]['name'];
                 $keyword = $this->setupKeyword($columns[$i]['search']['value']);
 
                 // wrap column possibly allow reserved words to be used as column
@@ -527,7 +526,7 @@ class Datatables
      */
     public function useDataColumns()
     {
-        if ( ! count($this->result_array_r)) {
+        if (! count($this->result_array_r)) {
             return [];
         }
 
@@ -550,7 +549,7 @@ class Datatables
      */
     public function wildcardLikeString($str, $lowercase = true)
     {
-        $wild = '%';
+        $wild   = '%';
         $length = strlen($str);
         if ($length) {
             for ($i = 0; $i < $length; $i++) {
@@ -590,13 +589,13 @@ class Datatables
      */
     protected function tableNames()
     {
-        $names = [];
-        $query = ($this->query_type == 'builder') ? $this->query : $this->query->getQuery();
-        $names[] = $query->from;
-        $joins = $query->joins ?: [];
+        $names          = [];
+        $query          = ($this->query_type == 'builder') ? $this->query : $this->query->getQuery();
+        $names[]        = $query->from;
+        $joins          = $query->joins ?: [];
         $databasePrefix = $this->databasePrefix();
         foreach ($joins as $join) {
-            $table = preg_split("/ as /i", $join->table);
+            $table   = preg_split("/ as /i", $join->table);
             $names[] = $table[0];
             if (isset($table[1]) && ! empty($databasePrefix) && strpos($table[1], $databasePrefix) == 0) {
                 $names[] = preg_replace('/^' . $databasePrefix . '/', '', $table[1]);
@@ -639,7 +638,7 @@ class Datatables
      */
     private function doPaging()
     {
-        if ( ! is_null($this->input['start']) && ! is_null($this->input['length']) && $this->input['length'] != -1) {
+        if (! is_null($this->input['start']) && ! is_null($this->input['length']) && $this->input['length'] != -1) {
             $this->query->skip($this->input['start'])
                 ->take((int) $this->input['length'] > 0 ? $this->input['length'] : 10);
         }
@@ -717,22 +716,22 @@ class Datatables
 
             // Process add columns
             foreach ($this->extra_columns as $key => $value) {
-                if (is_string($value['content'])):
+                if (is_string($value['content'])) {
                     $value['content'] = $this->blader($value['content'], $data);
-                elseif (is_callable($value['content'])):
+                } elseif (is_callable($value['content'])) {
                     $value['content'] = $value['content']($this->result_object[$rkey]);
-                endif;
+                }
 
                 $rvalue = $this->includeInArray($value, $rvalue);
             }
 
             // Process edit columns
             foreach ($this->edit_columns as $key => $value) {
-                if (is_string($value['content'])):
+                if (is_string($value['content'])) {
                     $value['content'] = $this->blader($value['content'], $data);
-                elseif (is_callable($value['content'])):
+                } elseif (is_callable($value['content'])) {
                     $value['content'] = $value['content']($this->result_object[$rkey]);
-                endif;
+                }
 
                 $rvalue[$value['name']] = $value['content'];
             }
@@ -747,8 +746,8 @@ class Datatables
     private function blader($str, $data = [])
     {
         $empty_filesystem_instance = new Filesystem;
-        $blade = new BladeCompiler($empty_filesystem_instance, 'datatables');
-        $parsed_string = $blade->compileString($str);
+        $blade                     = new BladeCompiler($empty_filesystem_instance, 'datatables');
+        $parsed_string             = $blade->compileString($str);
 
         ob_start() and extract($data, EXTR_SKIP);
 
@@ -776,7 +775,7 @@ class Datatables
             return array_merge($array, [$item['name'] => $item['content']]);
         } else {
             $count = 0;
-            $last = $array;
+            $last  = $array;
             $first = [];
             foreach ($array as $key => $value) {
                 if ($count == $item['order']) {
@@ -820,16 +819,16 @@ class Datatables
      */
     protected function setupDTRowVariables($key, array &$data)
     {
-        if ( ! empty($this->row_id_tmpl)) {
-            if ( ! is_callable($this->row_id_tmpl) and Arr::get($data, $this->row_id_tmpl)) {
+        if (! empty($this->row_id_tmpl)) {
+            if (! is_callable($this->row_id_tmpl) and Arr::get($data, $this->row_id_tmpl)) {
                 $data['DT_RowId'] = Arr::get($data, $this->row_id_tmpl);
             } else {
                 $data['DT_RowId'] = $this->getContent($this->row_id_tmpl, $data, $this->result_object[$key]);
             }
         }
 
-        if ( ! empty($this->row_class_tmpl)) {
-            if ( ! is_callable($this->row_class_tmpl) and Arr::get($data, $this->row_class_tmpl)) {
+        if (! empty($this->row_class_tmpl)) {
+            if (! is_callable($this->row_class_tmpl) and Arr::get($data, $this->row_class_tmpl)) {
                 $data['DT_RowClass'] = Arr::get($data, $this->row_class_tmpl);
             } else {
                 $data['DT_RowClass'] = $this->getContent($this->row_class_tmpl, $data, $this->result_object[$key]);
@@ -849,7 +848,6 @@ class Datatables
                 $data['DT_RowAttr'][$tkey] = $this->getContent($tvalue, $data, $this->result_object[$key]);
             }
         }
-
     }
 
     /**
@@ -883,7 +881,7 @@ class Datatables
             ];
         } else {
             $sColumns = $this->getOutputColumns();
-            $output = [
+            $output   = [
                 "sEcho"                => (int) $this->input['draw'],
                 "iTotalRecords"        => $this->totalRecords,
                 "iTotalDisplayRecords" => $this->filteredRecords,
@@ -950,7 +948,7 @@ class Datatables
      */
     public function removeColumn()
     {
-        $names = func_get_args();
+        $names                = func_get_args();
         $this->excess_columns = array_merge($this->excess_columns, $names);
 
         return $this;
@@ -991,7 +989,7 @@ class Datatables
      */
     protected function wrapColumn($value)
     {
-        $parts = explode('.', $value);
+        $parts  = explode('.', $value);
         $column = '';
         foreach ($parts as $key) {
             switch ($this->databaseDriver()) {
@@ -1128,5 +1126,4 @@ class Datatables
 
         return $this;
     }
-
 }
