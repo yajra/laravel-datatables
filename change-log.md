@@ -8,6 +8,11 @@
 
 ##Change Log
 
+###v5.3
+    - Added scrutinizer
+    - Code refactor/cleanup based on scrutinizers suggestions
+    - Bugfix #75
+
 ###v5.2
     - Datatables can now be used via Laravel IOC container `app('datatables')`
     - Datatables Engine can now be used directly along with Laravel IOC
