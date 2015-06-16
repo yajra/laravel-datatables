@@ -1,13 +1,11 @@
 # Datatables Package for Laravel 4|5
 
 [![Laravel 4.2|5.0|5.1](https://img.shields.io/badge/Laravel-4.2|5.0|5.1-orange.svg)](http://laravel.com)
+[![Latest Stable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/stable)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![Build Status](https://travis-ci.org/yajra/laravel-datatables.svg?branch=master)](https://travis-ci.org/yajra/laravel-datatables)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/yajra/laravel-datatables/badges/quality-score.png?b=scrutinizer)](https://scrutinizer-ci.com/g/yajra/laravel-datatables/?branch=scrutinizer)
-[![Latest Stable Version](https://img.shields.io/packagist/v/yajra/laravel-datatables-oracle.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
-[![Total Downloads](https://img.shields.io/packagist/dt/yajra/laravel-datatables-oracle.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/yajra/laravel-datatables/blob/master/LICENSE)
-[![Support via Gratipay](https://img.shields.io/gratipay/yajra.svg)](https://gratipay.com/yajra/)
-[![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=yajra&url=https://github.com/yajra/laravel-datatables&title=laravel-datatables&language=PHP&tags=github&category=software)
+[![Total Downloads](https://poser.pugx.org/yajra/laravel-datatables-oracle/downloads)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
+[![License](https://poser.pugx.org/yajra/laravel-datatables-oracle/license)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 
 This package is created to handle [server-side](https://www.datatables.net/manual/server-side) works of [DataTables](http://datatables.net) jQuery Plugin via [AJAX option](https://datatables.net/reference/option/ajax) by using Eloquent ORM, Fluent Query Builder or Collection.
 
@@ -27,6 +25,9 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 - Extended Query Builder functionality allowing you to filter using Datatables class directly.
 - Decorate your data output using [`league\fractal`](https://github.com/thephpleague/fractal) Transformer.
 - Works with Laravel Dependency Injection and IoC Container
+
+## Buy me a beer
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FG5S6KYHH8KP8)
 
 ## Documentations
 - You will find user friendly and updated documentation in the wiki here: [Laravel Datatables Wiki](https://github.com/yajra/laravel-datatables/wiki)
