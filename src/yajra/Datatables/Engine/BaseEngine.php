@@ -313,7 +313,7 @@ class BaseEngine
         $this->query->where(function ($query) {
             $columns = $this->input['columns'];
             for ($i = 0, $c = count($columns); $i < $c; $i++) {
-                if ($this->isColumnSearchable($columns, $i, false)) {
+                if (! $this->isColumnSearchable($columns, $i, false)) {
                     continue;
                 }
 
