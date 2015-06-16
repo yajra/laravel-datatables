@@ -1,4 +1,6 @@
-<?php namespace yajra\Datatables\Engine;
+<?php
+
+namespace yajra\Datatables\Engine;
 
 /**
  * Laravel Datatables Collection Engine
@@ -15,7 +17,6 @@ use Illuminate\Support\Str;
 
 class CollectionEngine extends BaseEngine implements EngineContract
 {
-
     /**
      * Collection object
      *
@@ -36,9 +37,9 @@ class CollectionEngine extends BaseEngine implements EngineContract
      */
     public function __construct(Collection $collection, $request)
     {
-        $this->collection = $collection;
+        $this->collection          = $collection;
         $this->original_collection = $collection;
-        $this->columns = array_keys($this->serialize((array) $collection->first()));
+        $this->columns             = array_keys($this->serialize((array) $collection->first()));
 
         parent::__construct($request);
     }
@@ -99,7 +100,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
      */
     public function doFiltering()
     {
-        $columns = $this->input['columns'];
+        $columns          = $this->input['columns'];
         $this->collection = $this->collection->filter(function ($row) use ($columns) {
             $data = $this->serialize($row);
             $found = [];
@@ -112,7 +113,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
                 $column = $this->getColumnIdentity($columns, $i);
                 $keyword = $this->input['search']['value'];
 
-                if ( ! $this->columnExists($column, $data)) {
+                if (! $this->columnExists($column, $data)) {
                     continue;
                 }
 
@@ -214,5 +215,4 @@ class CollectionEngine extends BaseEngine implements EngineContract
     {
         return array_key_exists($column, $data);
     }
-
 }

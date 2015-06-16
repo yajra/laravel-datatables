@@ -1,9 +1,9 @@
-<?php namespace yajra\Datatables\Engine;
+<?php
 
+namespace yajra\Datatables\Engine;
 
 interface EngineContract
 {
-
     /**
      * Set datatables results object and arrays
      */
@@ -15,5 +15,4 @@ interface EngineContract
      * @return array
      */
     public function getResults();
-
 }

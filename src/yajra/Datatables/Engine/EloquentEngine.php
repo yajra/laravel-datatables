@@ -1,4 +1,6 @@
-<?php namespace yajra\Datatables\Engine;
+<?php
+
+namespace yajra\Datatables\Engine;
 
 /**
  * Laravel Datatables Eloquent Engine
@@ -12,7 +14,6 @@ use Illuminate\Database\Eloquent\Builder;
 
 class EloquentEngine extends BaseEngine implements EngineContract
 {
-
     /**
      * @param mixed $model
      * @param $request
@@ -20,8 +21,8 @@ class EloquentEngine extends BaseEngine implements EngineContract
     public function __construct($model, $request)
     {
         $this->query_type = 'eloquent';
-        $this->query = $model instanceof Builder ? $model : $model->getQuery();
-        $this->columns = $this->query->getQuery()->columns;
+        $this->query      = $model instanceof Builder ? $model : $model->getQuery();
+        $this->columns    = $this->query->getQuery()->columns;
         $this->connection = $this->query->getQuery()->getConnection();
 
         if ($this->isDebugging()) {
@@ -30,6 +31,4 @@ class EloquentEngine extends BaseEngine implements EngineContract
 
         parent::__construct($request);
     }
-
-
 }

@@ -1,4 +1,6 @@
-<?php namespace yajra\Datatables\Engine;
+<?php
+
+namespace yajra\Datatables\Engine;
 
 /**
  * Laravel Datatables Query Builder Engine
@@ -12,7 +14,6 @@ use Illuminate\Database\Query\Builder;
 
 class QueryBuilderEngine extends BaseEngine implements EngineContract
 {
-
     /**
      * @param Builder $builder
      * @param $request
@@ -20,8 +21,8 @@ class QueryBuilderEngine extends BaseEngine implements EngineContract
     public function __construct(Builder $builder, $request)
     {
         $this->query_type = 'builder';
-        $this->query = $builder;
-        $this->columns = $this->query->columns;
+        $this->query      = $builder;
+        $this->columns    = $this->query->columns;
         $this->connection = $this->query->getConnection();
 
         if ($this->isDebugging()) {
@@ -40,5 +41,4 @@ class QueryBuilderEngine extends BaseEngine implements EngineContract
 
         return $this->result_object;
     }
-
 }

@@ -1,10 +1,11 @@
-<?php namespace yajra\Datatables;
+<?php
+
+namespace yajra\Datatables;
 
 use Illuminate\Support\ServiceProvider;
 
 class DatatablesServiceProvider extends ServiceProvider
 {
-
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -46,5 +47,4 @@ class DatatablesServiceProvider extends ServiceProvider
     {
         return ['datatables'];
     }
-
 }

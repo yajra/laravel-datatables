@@ -1,4 +1,6 @@
-<?php namespace yajra\Datatables;
+<?php
+
+namespace yajra\Datatables;
 
 /**
  * Laravel Datatables Package
@@ -23,7 +25,6 @@ use yajra\Datatables\Engine\QueryBuilderEngine;
  */
 class Datatables
 {
-
     /**
      * Input Request
      *
@@ -56,7 +57,7 @@ class Datatables
      */
     public static function of($builder)
     {
-        $datatables = app('datatables');
+        $datatables          = app('datatables');
         $datatables->builder = $builder;
 
         if ($builder instanceof QueryBuilder) {
@@ -100,5 +101,4 @@ class Datatables
     {
         return new EloquentEngine($builder, $this->request->all());
     }
-
 }

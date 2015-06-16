@@ -1,10 +1,11 @@
-<?php namespace yajra\Datatables\Facades;
+<?php
+
+namespace yajra\Datatables\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class Profiler extends Facade
+class Datatables extends Facade
 {
-
     /**
      * Get the registered name of the component.
      *
@@ -14,5 +15,4 @@ class Profiler extends Facade
     {
         return 'Datatables';
     }
-
 }

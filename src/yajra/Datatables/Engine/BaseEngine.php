@@ -1,4 +1,6 @@
-<?php namespace yajra\Datatables\Engine;
+<?php
+
+namespace yajra\Datatables\Engine;
 
 /**
  * Laravel Datatables Base Engine
@@ -20,7 +22,6 @@ use League\Fractal\Resource\Collection;
 
 class BaseEngine
 {
-
     /**
      * Database connection used
      *
@@ -221,7 +222,7 @@ class BaseEngine
 
         // if its a normal query ( no union and having word ) replace the select with static text to improve performance
         $myQuery = clone $query;
-        if ( ! Str::contains(Str::lower($myQuery->toSql()), 'union') && ! Str::contains(Str::lower($myQuery->toSql()),
+        if (! Str::contains(Str::lower($myQuery->toSql()), 'union') && ! Str::contains(Str::lower($myQuery->toSql()),
                 'having')
         ) {
             $myQuery->select($this->connection->raw("'1' as row_count"));
@@ -259,7 +260,7 @@ class BaseEngine
             for ($i = 0, $c = count($this->input['order']); $i < $c; $i++) {
                 $order_col = (int) $this->input['order'][$i]['column'];
                 $order_dir = $this->input['order'][$i]['dir'];
-                if ( ! $this->isColumnOrderable($this->input['columns'][$order_col])) {
+                if (! $this->isColumnOrderable($this->input['columns'][$order_col])) {
                     continue;
                 }
                 $column = $this->getOrderColumnName($order_col);
@@ -350,7 +351,6 @@ class BaseEngine
         $column = $this->prefixColumn($column);
 
         return $column;
-
     }
 
     /**
@@ -362,7 +362,7 @@ class BaseEngine
      */
     public function getColumnIdentity(array $columns, $i)
     {
-        if ( ! empty($columns[$i]['name'])) {
+        if (! empty($columns[$i]['name'])) {
             $column = $columns[$i]['name'];
         } else {
             $column = $this->columns[$i];
@@ -381,7 +381,7 @@ class BaseEngine
     {
         preg_match('#^(\S*?)\s+as\s+(\S*?)$#si', $str, $matches);
 
-        if ( ! empty($matches)) {
+        if (! empty($matches)) {
             return $matches[2];
         } elseif (strpos($str, '.')) {
             $array = explode('.', $str);
@@ -418,13 +418,13 @@ class BaseEngine
      */
     public function tableNames()
     {
-        $names = [];
-        $query = $this->getBuilder();
-        $names[] = $query->from;
-        $joins = $query->joins ?: [];
+        $names          = [];
+        $query          = $this->getBuilder();
+        $names[]        = $query->from;
+        $joins          = $query->joins ?: [];
         $databasePrefix = $this->databasePrefix();
         foreach ($joins as $join) {
-            $table = preg_split("/ as /i", $join->table);
+            $table   = preg_split("/ as /i", $join->table);
             $names[] = $table[0];
             if (isset($table[1]) && ! empty($databasePrefix) && strpos($table[1], $databasePrefix) == 0) {
                 $names[] = preg_replace('/^' . $databasePrefix . '/', '', $table[1]);
@@ -505,7 +505,7 @@ class BaseEngine
      */
     public function wildcardLikeString($str, $lowercase = true)
     {
-        $wild = '%';
+        $wild   = '%';
         $length = strlen($str);
         if ($length) {
             for ($i = 0; $i < $length; $i++) {
@@ -551,7 +551,7 @@ class BaseEngine
      */
     public function parameterize()
     {
-        $args = func_get_args();
+        $args       = func_get_args();
         $parameters = [];
 
         if (count($args) > 1) {
@@ -580,10 +580,10 @@ class BaseEngine
         // Check if the database driver is PostgreSQL
         // If it is, cast the current column to TEXT datatype
         $cast_begin = null;
-        $cast_end = null;
+        $cast_end   = null;
         if ($this->databaseDriver() === 'pgsql') {
             $cast_begin = "CAST(";
-            $cast_end = " as TEXT)";
+            $cast_end   = " as TEXT)";
         }
 
         // wrap column possibly allow reserved words to be used as column
@@ -613,7 +613,7 @@ class BaseEngine
      */
     public function wrapColumn($value)
     {
-        $parts = explode('.', $value);
+        $parts  = explode('.', $value);
         $column = '';
         foreach ($parts as $key) {
             switch ($this->databaseDriver()) {
@@ -651,11 +651,11 @@ class BaseEngine
         $columns = $this->input['columns'];
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($this->isColumnSearchable($columns, $i)) {
-                $column = $columns[$i]['name'];
+                $column  = $columns[$i]['name'];
                 $keyword = $this->setupKeyword($columns[$i]['search']['value']);
 
                 if (isset($this->filter_columns[$column])) {
-                    $method = $this->filter_columns[$column]['method'];
+                    $method     = $this->filter_columns[$column]['method'];
                     $parameters = $this->filter_columns[$column]['parameters'];
                     $this->compileFilterColumn($method, $parameters, $column);
                 } else {
@@ -757,7 +757,6 @@ class BaseEngine
     public function initColumns()
     {
         foreach ($this->result_array as $rkey => &$rvalue) {
-
             $data = $this->convertToArray($rvalue, $rkey);
 
             $rvalue = $this->processAddColumns($data, $rkey, $rvalue);
@@ -778,11 +777,10 @@ class BaseEngine
         if (is_string($value['content'])):
             $value['content'] = $this->compileBlade($value['content'], $data);
 
-            return $value;
-        elseif (is_callable($value['content'])):
+        return $value; elseif (is_callable($value['content'])):
             $value['content'] = $value['content']($this->result_object[$rkey]);
 
-            return $value;
+        return $value;
         endif;
 
         return $value;
@@ -799,8 +797,8 @@ class BaseEngine
     public function compileBlade($str, $data = [])
     {
         $empty_filesystem_instance = new Filesystem;
-        $blade = new BladeCompiler($empty_filesystem_instance, 'datatables');
-        $parsed_string = $blade->compileString($str);
+        $blade                     = new BladeCompiler($empty_filesystem_instance, 'datatables');
+        $parsed_string             = $blade->compileString($str);
 
         ob_start() && extract($data, EXTR_SKIP);
 
@@ -830,7 +828,7 @@ class BaseEngine
             return array_merge($array, [$item['name'] => $item['content']]);
         } else {
             $count = 0;
-            $last = $array;
+            $last  = $array;
             $first = [];
             foreach ($array as $key => $value) {
                 if ($count == $item['order']) {
@@ -888,8 +886,8 @@ class BaseEngine
      */
     protected function processDTRowValue($key, $template, $index, array &$data)
     {
-        if ( ! empty($template)) {
-            if ( ! is_callable($template) && Arr::get($data, $template)) {
+        if (! empty($template)) {
+            if (! is_callable($template) && Arr::get($data, $template)) {
                 $data[$key] = Arr::get($data, $template);
             } else {
                 $data[$key] = $this->getContent($template, $data, $this->result_object[$index]);
@@ -965,7 +963,7 @@ class BaseEngine
         ];
 
         if (isset($this->transformer)) {
-            $collection = new Collection($this->result_array_r, new $this->transformer);
+            $collection     = new Collection($this->result_array_r, new $this->transformer);
             $output['data'] = $collection->getData();
         } else {
             $output['data'] = $this->result_array_r;
@@ -997,7 +995,7 @@ class BaseEngine
     protected function showDebugger($output)
     {
         $output["queries"] = $this->connection->getQueryLog();
-        $output["input"] = $this->input;
+        $output["input"]   = $this->input;
 
         return $output;
     }
@@ -1009,7 +1007,7 @@ class BaseEngine
      */
     public function useDataColumns()
     {
-        if ( ! count($this->result_array_r)) {
+        if (! count($this->result_array_r)) {
             return [];
         }
 
@@ -1074,7 +1072,7 @@ class BaseEngine
      */
     public function removeColumn()
     {
-        $names = func_get_args();
+        $names                = func_get_args();
         $this->excess_columns = array_merge($this->excess_columns, $names);
 
         return $this;
@@ -1211,7 +1209,7 @@ class BaseEngine
      */
     public function filterColumn($column, $method)
     {
-        $params = func_get_args();
+        $params                        = func_get_args();
         $this->filter_columns[$column] = ['method' => $method, 'parameters' => array_splice($params, 2)];
 
         return $this;
@@ -1326,7 +1324,7 @@ class BaseEngine
 
         $this->compileFiltering();
 
-        if ( ! $orderFirst) {
+        if (! $orderFirst) {
             $this->doOrdering();
         }
 
@@ -1354,11 +1352,10 @@ class BaseEngine
      */
     protected function getOrMethod($method)
     {
-        if ( ! Str::contains(Str::lower($method), 'or')) {
+        if (! Str::contains(Str::lower($method), 'or')) {
             return 'or' . ucfirst($method);
         }
 
         return $method;
     }
-
 }
