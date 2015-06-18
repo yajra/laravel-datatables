@@ -18,6 +18,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Illuminate\View\Compilers\BladeCompiler;
+use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 
 class BaseEngine
@@ -963,8 +964,10 @@ class BaseEngine
         ];
 
         if (isset($this->transformer)) {
-            $collection     = new Collection($this->result_array_r, new $this->transformer);
-            $output['data'] = $collection->getData();
+            $fractal        = new Manager();
+            $resource       = new Collection($this->result_array_r, new $this->transformer);
+            $collection     = $fractal->createData($resource)->toArray();
+            $output['data'] = $collection['data'];
         } else {
             $output['data'] = $this->result_array_r;
         }
