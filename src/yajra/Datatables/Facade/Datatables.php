@@ -13,6 +13,6 @@ class Datatables extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'Datatables';
+        return 'datatables';
     }
 }

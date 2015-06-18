@@ -43,7 +43,14 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 `yajra\Datatables\DatatablesServiceProvider`
 
 #### Facade
+**Laravel 4**
 `'Datatables'      => 'yajra\Datatables\Datatables',`
+
+**Laravel 5**
+`'Datatables'      => 'yajra\Datatables\Facades\Datatables',`
+
+**Laravel 5.1**
+`'Datatables'      => yajra\Datatables\Facades\Datatables::class,`
 
 #### Configuration
 **Laravel 5:** `$ php artisan vendor:publish`
