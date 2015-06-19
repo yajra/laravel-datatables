@@ -16,9 +16,9 @@ use Illuminate\Support\Collection;
 class Builder
 {
     /**
-     * @var string
+     * @var string|array
      */
-    protected $ajax;
+    protected $ajax = '';
 
     /**
      * @var array
@@ -78,17 +78,23 @@ class Builder
      */
     public function scripts($script = null, array $attributes = ['type' => 'text/javascript'])
     {
+        $script = $script ?: $this->generateScripts();
+
+        return '<script' . $this->html->attributes($attributes) . '>' . $script . '</script>' . PHP_EOL;
+    }
+
+    /**
+     * Get generated raw scripts
+     */
+    public function generateScripts()
+    {
         $args = array_merge($this->attributes, [
             'ajax'    => $this->ajax,
             'columns' => $this->collection->toArray()
         ]);
         $parameters = $this->parameterize($args);
 
-        if (! $script) {
-            $script = sprintf('$(function(){ $("#%s").DataTable(%s)});', $this->tableAttributes['id'], $parameters);
-        }
-
-        return '<script' . $this->html->attributes($attributes) . '>' . $script . '</script>' . PHP_EOL;
+        return sprintf('$(function(){ $("#%s").DataTable(%s);});', $this->tableAttributes['id'], $parameters);
     }
 
     /**
