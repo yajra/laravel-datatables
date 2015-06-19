@@ -130,7 +130,7 @@ class Builder
      */
     public function addCheckbox(array $attributes = [])
     {
-        $attributes = [
+        $attributes = array_merge([
             'defaultContent' => '<input type="checkbox" ' . $this->html->attributes($attributes) . '/>',
             'title'          => $this->form->checkbox('', '', false, ['id' => 'dataTablesCheckbox']),
             'data'           => 'checkbox',
@@ -138,7 +138,28 @@ class Builder
             'orderable'      => false,
             'searchable'     => false,
             'width'          => '10px',
-        ];
+        ], $attributes);
+        $this->collection->push(new Column($attributes));
+
+        return $this;
+    }
+
+    /**
+     * Add a action column
+     *
+     * @param array $attributes
+     * @return $this
+     */
+    public function addAction(array $attributes = [])
+    {
+        $attributes = array_merge([
+            'defaultContent' => '',
+            'data'           => 'action',
+            'name'           => 'action',
+            'title'          => 'Action',
+            'orderable'      => false,
+            'searchable'     => false
+        ], $attributes);
         $this->collection->push(new Column($attributes));
 
         return $this;
