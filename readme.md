@@ -28,7 +28,7 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 - Provides a [DataTable Html Builder](http://datatables.yajrabox.com/html) to help you use the package with less code.
 
 ## Buy me a beer
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FG5S6KYHH8KP8)
+<a href='https://pledgie.com/campaigns/29515'><img alt='Click here to lend your support to: Laravel Datatables and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/29515.png?skin_name=chrome' border='0' ></a>
 
 ## Documentations
 - You will find user friendly and updated documentation in the wiki here: [Laravel Datatables Wiki](https://github.com/yajra/laravel-datatables/wiki)
