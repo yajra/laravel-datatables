@@ -15,7 +15,7 @@ use Illuminate\Support\Collection;
 class Builder
 {
     /**
-     * @var string
+     * @var string|array
      */
     protected $ajax;
 
@@ -89,7 +89,7 @@ class Builder
      */
     public function scripts($script = null, array $attributes = ['type' => 'text/javascript'])
     {
-        $args       = array_merge($this->attributes, [
+        $args = array_merge($this->attributes, [
             'ajax'    => $this->ajax,
             'columns' => $this->collection->toArray()
         ]);
