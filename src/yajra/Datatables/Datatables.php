@@ -22,9 +22,9 @@ use yajra\Datatables\Engine\QueryBuilderEngine;
  * Class Datatables
  *
  * @package yajra\Datatables
- * @method eloquent
- * @method collection
- * @method queryBuilder
+ * @method EloquentEngine eloquent($builder)
+ * @method CollectionEngine collection(Collection $builder)
+ * @method QueryBuilderEngine queryBuilder(QueryBuilder $builder)
  */
 class Datatables
 {
@@ -95,17 +95,6 @@ class Datatables
     }
 
     /**
-     * Datatables using Eloquent
-     *
-     * @param mixed $builder
-     * @return EloquentEngine
-     */
-    public function usingEloquent($builder)
-    {
-        return new EloquentEngine($builder, $this->request->all());
-    }
-
-    /**
      * Allows api call without the using word
      *
      * @param $name
@@ -121,5 +110,16 @@ class Datatables
         }
 
         return trigger_error('Call to undefined method ' . __CLASS__ . '::' . $name . '()', E_USER_ERROR);
+    }
+
+    /**
+     * Datatables using Eloquent
+     *
+     * @param mixed $builder
+     * @return EloquentEngine
+     */
+    public function usingEloquent($builder)
+    {
+        return new EloquentEngine($builder, $this->request->all());
     }
 }
