@@ -22,7 +22,8 @@
         "phpunit/phpunit": "~4.0"
     },
     "suggest": {
-        "league/fractal": "Can be use to transform DataTables output in a proper API format"
+        "league/fractal": "Can be use to transform DataTables output in a proper API format",
+        "laravelcollective/html": "use 5.1.* for Laravel 5.1 and 5.0.* for Laravel 5.0"
     },
     "autoload": {
         "psr-0": {
