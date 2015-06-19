@@ -8,6 +8,11 @@
 
 ##Change Log
 
+###v5.4
+    - Added Html Builder
+    - Added magic methods to call enginges without the "using" word
+    - Minor Bugfixes
+
 ###v5.3
     - Added scrutinizer
     - Code refactor/cleanup based on scrutinizers suggestions
