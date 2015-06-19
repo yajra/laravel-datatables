@@ -136,7 +136,8 @@ class Builder
             'data'           => 'checkbox',
             'name'           => 'checkbox',
             'orderable'      => false,
-            'searchable'     => false
+            'searchable'     => false,
+            'width'          => '10px',
         ];
         $this->collection->push(new Column($attributes));
 
