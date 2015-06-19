@@ -1,7 +1,6 @@
-<?php
+<?php namespace yajra\Datatables\Html;
 
-namespace yajra\Datatables\Html;
-
+use Collective\Html\FormBuilder;
 use Collective\Html\HtmlBuilder;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\View\Factory;
@@ -16,9 +15,9 @@ use Illuminate\Support\Collection;
 class Builder
 {
     /**
-     * @var string|array
+     * @var string
      */
-    protected $ajax = '';
+    protected $ajax;
 
     /**
      * @var array
@@ -26,34 +25,39 @@ class Builder
     protected $tableAttributes = ['class' => 'table', 'id' => 'dataTableBuilder'];
 
     /**
-     * @var Collection
-     */
-    protected $collection;
-
-    /**
      * @var array
      */
     protected $attributes = [];
 
     /**
+     * @var Collection
+     */
+    public $collection;
+
+    /**
      * @var Repository
      */
-    private $config;
+    public $config;
 
     /**
      * @var Factory
      */
-    private $view;
+    public $view;
 
     /**
      * @var HtmlBuilder
      */
-    private $html;
+    public $html;
 
     /**
      * @var UrlGenerator
      */
-    private $url;
+    public $url;
+
+    /**
+     * @var FormBuilder
+     */
+    public $form;
 
 
     /**
@@ -61,14 +65,21 @@ class Builder
      * @param Factory $view
      * @param HtmlBuilder $html
      * @param UrlGenerator $url
+     * @param FormBuilder $form
      */
-    public function __construct(Repository $config, Factory $view, HtmlBuilder $html, UrlGenerator $url)
-    {
+    public function __construct(
+        Repository $config,
+        Factory $view,
+        HtmlBuilder $html,
+        UrlGenerator $url,
+        FormBuilder $form
+    ) {
         $this->config     = $config;
         $this->view       = $view;
         $this->html       = $html;
         $this->url        = $url;
         $this->collection = new Collection;
+        $this->form       = $form;
     }
 
     /**
@@ -78,23 +89,17 @@ class Builder
      */
     public function scripts($script = null, array $attributes = ['type' => 'text/javascript'])
     {
-        $script = $script ?: $this->generateScripts();
-
-        return '<script' . $this->html->attributes($attributes) . '>' . $script . '</script>' . PHP_EOL;
-    }
-
-    /**
-     * Get generated raw scripts
-     */
-    public function generateScripts()
-    {
-        $args = array_merge($this->attributes, [
+        $args       = array_merge($this->attributes, [
             'ajax'    => $this->ajax,
             'columns' => $this->collection->toArray()
         ]);
         $parameters = $this->parameterize($args);
 
-        return sprintf('$(function(){ $("#%s").DataTable(%s);});', $this->tableAttributes['id'], $parameters);
+        if (! $script) {
+            $script = sprintf('$(function(){ $("#%s").DataTable(%s)});', $this->tableAttributes['id'], $parameters);
+        }
+
+        return '<script' . $this->html->attributes($attributes) . '>' . $script . '</script>' . PHP_EOL;
     }
 
     /**
@@ -112,6 +117,25 @@ class Builder
      */
     public function addColumn(array $attributes)
     {
+        $this->collection->push(new Column($attributes));
+
+        return $this;
+    }
+
+    /**
+     * Add a checkbox column
+     *
+     * @param array $attributes
+     * @return $this
+     */
+    public function addCheckbox(array $attributes = [])
+    {
+        $attributes = [
+            'defaultContent' => '<input type="checkbox" ' . $this->html->attributes($attributes) . '/>',
+            'title'          => $this->form->checkbox('', '', false, ['id' => 'dataTablesCheckbox']),
+            'orderable'      => false,
+            'searchable'     => false
+        ];
         $this->collection->push(new Column($attributes));
 
         return $this;
