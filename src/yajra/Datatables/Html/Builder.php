@@ -83,6 +83,8 @@ class Builder
     }
 
     /**
+     * Generate DataTable javascript
+     *
      * @param null $script
      * @param array $attributes
      * @return string
@@ -103,6 +105,8 @@ class Builder
     }
 
     /**
+     * Generate datatable js parameters
+     *
      * @param array $attributes
      * @return string
      */
@@ -112,6 +116,8 @@ class Builder
     }
 
     /**
+     * Add a column in collection
+     *
      * @param array $attributes
      * @return $this
      */
@@ -166,6 +172,8 @@ class Builder
     }
 
     /**
+     * Setup ajax parameter
+     *
      * @param string|array $attributes
      * @return $this
      */
@@ -177,6 +185,8 @@ class Builder
     }
 
     /**
+     * Generate DataTable's table html
+     *
      * @param array $attributes
      * @return string
      */
@@ -188,6 +198,8 @@ class Builder
     }
 
     /**
+     * Configure DataTable's parameters
+     *
      * @param array $attributes
      * @return $this
      */
