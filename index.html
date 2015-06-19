@@ -25,7 +25,7 @@
 <p><a href="http://laravel.com"><img src="https://img.shields.io/badge/Laravel-4.2%7C5.0%7C5.1-orange.svg" alt="Laravel 4.2|5.0|5.1"></a>
 <a href="https://packagist.org/packages/yajra/laravel-datatables-oracle"><img src="https://poser.pugx.org/yajra/laravel-datatables-oracle/v/stable" alt="Latest Stable Version"></a>
 <a href="https://travis-ci.org/yajra/laravel-datatables"><img src="https://travis-ci.org/yajra/laravel-datatables.svg?branch=master" alt="Build Status"></a>
-<a href="https://scrutinizer-ci.com/g/yajra/laravel-datatables/?branch=scrutinizer"><img src="https://scrutinizer-ci.com/g/yajra/laravel-datatables/badges/quality-score.png?b=scrutinizer" alt="Scrutinizer Code Quality"></a>
+<a href="https://scrutinizer-ci.com/g/yajra/laravel-datatables/?branch=master"><img src="https://scrutinizer-ci.com/g/yajra/laravel-datatables/badges/quality-score.png?b=master" alt="Scrutinizer Code Quality"></a>
 <a href="https://packagist.org/packages/yajra/laravel-datatables-oracle"><img src="https://poser.pugx.org/yajra/laravel-datatables-oracle/downloads" alt="Total Downloads"></a>
 <a href="https://packagist.org/packages/yajra/laravel-datatables-oracle"><img src="https://poser.pugx.org/yajra/laravel-datatables-oracle/license" alt="License"></a></p>
 
@@ -64,7 +64,8 @@
 </li>
 <li>Extended Query Builder functionality allowing you to filter using Datatables class directly.</li>
 <li>Decorate your data output using <a href="https://github.com/thephpleague/fractal"><code>league\fractal</code></a> Transformer.</li>
-<li>Works with Laravel Dependency Injection and IoC Container</li>
+<li>Works with Laravel Dependency Injection and IoC Container.</li>
+<li>Provides a <a href="http://datatables.yajrabox.com/html">DataTable Html Builder</a> to help you use the package with less code.</li>
 </ul>
 
 <h2>
@@ -81,7 +82,7 @@
 <li>You will find the API Documentation here: <a href="http://yajra.github.io/laravel-datatables/api/">Laravel Datatables API</a>
 </li>
 <li>
-<a href="http://datatables.yajrabox.com">Demo Application</a> is available for artisan's referrence.</li>
+<a href="http://datatables.yajrabox.com">Demo Application</a> is available for artisan's reference.</li>
 </ul>
 
 <h2>
@@ -99,7 +100,14 @@
 <h4>
 <a id="facade" class="anchor" href="#facade" aria-hidden="true"><span class="octicon octicon-link"></span></a>Facade</h4>
 
-<p><code>'Datatables'      =&gt; 'yajra\Datatables\Datatables',</code></p>
+<p><strong>Laravel 4</strong>
+<code>'Datatables'      =&gt; 'yajra\Datatables\Datatables',</code></p>
+
+<p><strong>Laravel 5</strong>
+<code>'Datatables'      =&gt; 'yajra\Datatables\Facades\Datatables',</code></p>
+
+<p><strong>Laravel 5.1</strong>
+<code>'Datatables'      =&gt; yajra\Datatables\Facades\Datatables::class,</code></p>
 
 <h4>
 <a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration</h4>
