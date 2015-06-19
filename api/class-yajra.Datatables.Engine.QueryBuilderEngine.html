@@ -40,6 +40,11 @@
 						Facades					</a>
 
 						</li>
+				<li>
+					<a href="namespace-yajra.Datatables.Html.html">
+						Html					</a>
+
+						</li>
 							</ul></li></ul></li>
 			</ul>
 		</div>
@@ -130,7 +135,7 @@
 		<b>Namespace:</b> <a href="namespace-yajra.html">yajra</a>\<a href="namespace-yajra.Datatables.html">Datatables</a>\<a href="namespace-yajra.Datatables.Engine.html">Engine</a><br>
 		
 
-			<b>Located at</b> <a href="source-class-yajra.Datatables.Engine.QueryBuilderEngine.html#14-49" title="Go to source code">yajra/Datatables/Engine/QueryBuilderEngine.php</a>
+			<b>Located at</b> <a href="source-class-yajra.Datatables.Engine.QueryBuilderEngine.html#15-44" title="Go to source code">yajra/Datatables/Engine/QueryBuilderEngine.php</a>
 		<br>
 	</div>
 
@@ -150,14 +155,14 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.QueryBuilderEngine.html#17-36" title="Go to source code">__construct</a>( <span>Illuminate\Database\Query\Builder <var>$builder</var></span>, <span> <var>$request</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.QueryBuilderEngine.html#17-33" title="Go to source code">__construct</a>( <span>Illuminate\Database\Query\Builder <var>$builder</var></span>, <span> <var>$request</var></span> )</code>
 
 		<div class="description short">
-			<p>Read Input into $this->input according to jquery.dataTables.js version</p>
+			
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Read Input into $this->input according to jquery.dataTables.js version</p>
+			
 
 
 				<h4>Parameters</h4>
@@ -177,37 +182,44 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="setResults" id="_setResults">
+	<tr data-order="getResults" id="_getResults">
 
 		<td class="attributes"><code>
 			 public 
 
-			
+			array
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_setResults">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.QueryBuilderEngine.html#38-47" title="Go to source code">setResults</a>( )</code>
+		<a class="anchor" href="#_getResults">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.QueryBuilderEngine.html#35-43" title="Go to source code">getResults</a>( )</code>
 
 		<div class="description short">
-			<p>Set results from prepared query</p>
+			
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Set results from prepared query</p>
+			
 
 
 
+				<h4>Returns</h4>
+				<div class="list">
+					array
+				</div>
 
 
+				<h4>Inheritdoc</h4>
+				<div class="list">
+				</div>
 
 				<h4>Overrides</h4>
-				<div class="list"><code><a href="class-yajra.Datatables.Engine.BaseEngine.html#_setResults">yajra\Datatables\Engine\BaseEngine::setResults()</a></code></div>
+				<div class="list"><code><a href="class-yajra.Datatables.Engine.BaseEngine.html#_getResults">yajra\Datatables\Engine\BaseEngine::getResults()</a></code></div>
 
 				<h4>Implementation of</h4>
-				<div class="list"><code><a href="class-yajra.Datatables.Engine.EngineContract.html#_setResults">yajra\Datatables\Engine\EngineContract::setResults()</a></code></div>
+				<div class="list"><code><a href="class-yajra.Datatables.Engine.EngineContract.html#_getResults">yajra\Datatables\Engine\EngineContract::getResults()</a></code></div>
 		</div>
 		</div></td>
 	</tr>
@@ -221,8 +233,12 @@
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_addColumn">addColumn()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_addRowAttr">addRowAttr()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_addRowData">addRowData()</a>, 
-			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_cleanColumns">cleanColumns()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_compileBlade">compileBlade()</a>, 
+			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_compileFilterColumn">compileFilterColumn()</a>, 
+			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_compileFiltering">compileFiltering()</a>, 
+			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_compileOutput">compileOutput()</a>, 
+			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_compileQueryBuilder">compileQueryBuilder()</a>, 
+			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_convertToArray">convertToArray()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_count">count()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_databaseDriver">databaseDriver()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_databasePrefix">databasePrefix()</a>, 
@@ -234,24 +250,39 @@
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_filter">filter()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_filterColumn">filterColumn()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_getBuilder">getBuilder()</a>, 
+			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_getColumnIdentity">getColumnIdentity()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_getColumnName">getColumnName()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_getContent">getContent()</a>, 
+			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_getOrMethod">getOrMethod()</a>, 
+			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_getOrderColumnName">getOrderColumnName()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_getOutputColumns">getOutputColumns()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_getTotalFilteredRecords">getTotalFilteredRecords()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_getTotalRecords">getTotalRecords()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_includeInArray">includeInArray()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_initColumns">initColumns()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_isCaseInsensitive">isCaseInsensitive()</a>, 
+			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_isColumnOrderable">isColumnOrderable()</a>, 
+			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_isColumnSearchable">isColumnSearchable()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_isDebugging">isDebugging()</a>, 
+			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_isOrderable">isOrderable()</a>, 
+			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_isPaginationable">isPaginationable()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_isQueryBuilder">isQueryBuilder()</a>, 
+			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_isSearchable">isSearchable()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_isWildcard">isWildcard()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_make">make()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_output">output()</a>, 
+			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_paginate">paginate()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_parameterize">parameterize()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_prefixColumn">prefixColumn()</a>, 
+			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_processAddColumns">processAddColumns()</a>, 
+			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_processContent">processContent()</a>, 
+			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_processDTRowDataAttr">processDTRowDataAttr()</a>, 
+			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_processDTRowValue">processDTRowValue()</a>, 
+			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_processEditColumns">processEditColumns()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_regulateArray">regulateArray()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_removeColumn">removeColumn()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_removeExcessColumns">removeExcessColumns()</a>, 
+			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_setResults">setResults()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_setRowAttr">setRowAttr()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_setRowClass">setRowClass()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_setRowData">setRowData()</a>, 
@@ -259,6 +290,7 @@
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_setTransformer">setTransformer()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_setupDTRowVariables">setupDTRowVariables()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_setupKeyword">setupKeyword()</a>, 
+			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_showDebugger">showDebugger()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_tableNames">tableNames()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_useDataColumns">useDataColumns()</a>, 
 			<a href="class-yajra.Datatables.Engine.BaseEngine.html#_wildcardLikeString">wildcardLikeString()</a>, 

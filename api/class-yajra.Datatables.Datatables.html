@@ -40,6 +40,11 @@
 						Facades					</a>
 
 						</li>
+				<li>
+					<a href="namespace-yajra.Datatables.Html.html">
+						Html					</a>
+
+						</li>
 							</ul></li></ul></li>
 			</ul>
 		</div>
@@ -111,7 +116,7 @@
 		<b>Namespace:</b> <a href="namespace-yajra.html">yajra</a>\<a href="namespace-yajra.Datatables.html">Datatables</a><br>
 		<b>Package:</b> yajra\Datatables<br>
 
-			<b>Located at</b> <a href="source-class-yajra.Datatables.Datatables.html#19-103" title="Go to source code">yajra/Datatables/Datatables.php</a>
+			<b>Located at</b> <a href="source-class-yajra.Datatables.Datatables.html#21-125" title="Go to source code">yajra/Datatables/Datatables.php</a>
 		<br>
 	</div>
 
@@ -131,7 +136,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-yajra.Datatables.Datatables.html#40-48" title="Go to source code">__construct</a>( <span>Illuminate\Http\Request <var>$request</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Datatables.html#45-53" title="Go to source code">__construct</a>( <span>Illuminate\Http\Request <var>$request</var></span> )</code>
 
 		<div class="description short">
 			<p>Class Constructor</p>
@@ -166,7 +171,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_of">#</a>
-		<code><a href="source-class-yajra.Datatables.Datatables.html#50-68" title="Go to source code">of</a>( <span> <var>$builder</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Datatables.html#55-73" title="Go to source code">of</a>( <span> <var>$builder</var></span> )</code>
 
 		<div class="description short">
 			<p>Gets query and returns instance of class</p>
@@ -205,7 +210,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_usingQueryBuilder">#</a>
-		<code><a href="source-class-yajra.Datatables.Datatables.html#70-79" title="Go to source code">usingQueryBuilder</a>( <span>Illuminate\Database\Query\Builder <var>$builder</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Datatables.html#75-84" title="Go to source code">usingQueryBuilder</a>( <span>Illuminate\Database\Query\Builder <var>$builder</var></span> )</code>
 
 		<div class="description short">
 			<p>Datatables using Query Builder</p>
@@ -244,7 +249,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_usingCollection">#</a>
-		<code><a href="source-class-yajra.Datatables.Datatables.html#81-90" title="Go to source code">usingCollection</a>( <span>Illuminate\Support\Collection <var>$builder</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Datatables.html#86-95" title="Go to source code">usingCollection</a>( <span>Illuminate\Support\Collection <var>$builder</var></span> )</code>
 
 		<div class="description short">
 			<p>Datatables using Collection</p>
@@ -271,6 +276,47 @@
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="__call" id="___call">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___call">#</a>
+		<code><a href="source-class-yajra.Datatables.Datatables.html#97-113" title="Go to source code">__call</a>( <span> <var>$name</var></span>, <span> <var>$arguments</var></span> )</code>
+
+		<div class="description short">
+			<p>Allows api call without the using word</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Allows api call without the using word</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd></dd>
+					<dt><var>$arguments</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<br>$this|mixed
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="usingEloquent" id="_usingEloquent">
 
 		<td class="attributes"><code>
@@ -283,7 +329,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_usingEloquent">#</a>
-		<code><a href="source-class-yajra.Datatables.Datatables.html#92-101" title="Go to source code">usingEloquent</a>( <span>mixed <var>$builder</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Datatables.html#115-124" title="Go to source code">usingEloquent</a>( <span>mixed <var>$builder</var></span> )</code>
 
 		<div class="description short">
 			<p>Datatables using Eloquent</p>
@@ -314,6 +360,126 @@
 
 
 
+	<table class="summary methods" id="magicMethods">
+	<caption>Magic methods summary</caption>
+	<tr data-order="eloquent" id="m_eloquent">
+
+		<td class="attributes"><code>
+			 public 
+
+			<code><a href="class-yajra.Datatables.Engine.EloquentEngine.html">yajra\Datatables\Engine\EloquentEngine</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#m_eloquent">#</a>
+		<code><a href="source-class-yajra.Datatables.Datatables.html#25" title="Go to source code">eloquent</a>( <span> <var>$builder</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$builder</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-yajra.Datatables.Engine.EloquentEngine.html">yajra\Datatables\Engine\EloquentEngine</a></code>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="collection" id="m_collection">
+
+		<td class="attributes"><code>
+			 public 
+
+			<code><a href="class-yajra.Datatables.Engine.CollectionEngine.html">yajra\Datatables\Engine\CollectionEngine</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#m_collection">#</a>
+		<code><a href="source-class-yajra.Datatables.Datatables.html#26" title="Go to source code">collection</a>( <span>Illuminate\Support\Collection <var>$builder</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$builder</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-yajra.Datatables.Engine.CollectionEngine.html">yajra\Datatables\Engine\CollectionEngine</a></code>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="queryBuilder" id="m_queryBuilder">
+
+		<td class="attributes"><code>
+			 public 
+
+			<code><a href="class-yajra.Datatables.Engine.QueryBuilderEngine.html">yajra\Datatables\Engine\QueryBuilderEngine</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#m_queryBuilder">#</a>
+		<code><a href="source-class-yajra.Datatables.Datatables.html#27" title="Go to source code">queryBuilder</a>( <span>Illuminate\Database\Query\Builder <var>$builder</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$builder</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-yajra.Datatables.Engine.QueryBuilderEngine.html">yajra\Datatables\Engine\QueryBuilderEngine</a></code>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
 
 
 
@@ -332,7 +498,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Datatables.html#26-31" title="Go to source code"><var>$request</var></a>
+				<a href="source-class-yajra.Datatables.Datatables.html#31-36" title="Go to source code"><var>$request</var></a>
 
 			<div class="description short">
 				<p>Input Request</p>
@@ -357,7 +523,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Datatables.html#33-38" title="Go to source code"><var>$builder</var></a>
+				<a href="source-class-yajra.Datatables.Datatables.html#38-43" title="Go to source code"><var>$builder</var></a>
 
 			<div class="description short">
 				<p>Datatables builder</p>

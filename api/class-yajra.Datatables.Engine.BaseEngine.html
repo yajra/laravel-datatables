@@ -40,6 +40,11 @@
 						Facades					</a>
 
 						</li>
+				<li>
+					<a href="namespace-yajra.Datatables.Html.html">
+						Html					</a>
+
+						</li>
 							</ul></li></ul></li>
 			</ul>
 		</div>
@@ -120,7 +125,7 @@
 		<b>Namespace:</b> <a href="namespace-yajra.html">yajra</a>\<a href="namespace-yajra.Datatables.html">Datatables</a>\<a href="namespace-yajra.Datatables.Engine.html">Engine</a><br>
 		
 
-			<b>Located at</b> <a href="source-class-yajra.Datatables.Engine.BaseEngine.html#20-1124" title="Go to source code">yajra/Datatables/Engine/BaseEngine.php</a>
+			<b>Located at</b> <a href="source-class-yajra.Datatables.Engine.BaseEngine.html#24-1364" title="Go to source code">yajra/Datatables/Engine/BaseEngine.php</a>
 		<br>
 	</div>
 
@@ -140,7 +145,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#191-198" title="Go to source code">__construct</a>( <span> <var>$request</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#194-203" title="Go to source code">__construct</a>( <span> <var>$request</var></span> )</code>
 
 		<div class="description short">
 			<p>Construct base engine</p>
@@ -148,48 +153,14 @@
 
 		<div class="description detailed hidden">
 			<p>Construct base engine</p>
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="getColumnName" id="_getColumnName">
-
-		<td class="attributes"><code>
-			 public 
-
-			string
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_getColumnName">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#200-219" title="Go to source code">getColumnName</a>( <span>string <var>$str</var></span> )</code>
-
-		<div class="description short">
-			<p>Get column name from string</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Get column name from string</p>
 
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$str</var></dt>
+					<dt><var>$request</var></dt>
 					<dd></dd>
 				</dl></div>
 
-				<h4>Returns</h4>
-				<div class="list">
-					string
-				</div>
 
 
 
@@ -209,7 +180,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getTotalRecords">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#221-229" title="Go to source code">getTotalRecords</a>( )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#205-213" title="Go to source code">getTotalRecords</a>( )</code>
 
 		<div class="description short">
 			<p>Get total records</p>
@@ -243,7 +214,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_count">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#231-248" title="Go to source code">count</a>( )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#215-234" title="Go to source code">count</a>( )</code>
 
 		<div class="description short">
 			<p>Counts current query</p>
@@ -270,14 +241,14 @@
 		<td class="attributes"><code>
 			 public 
 
-			null
+			Illuminate\Http\JsonResponse
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_make">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#250-276" title="Go to source code">make</a>( <span>boolean <var>$mDataSupport</var> = <span class="php-keyword1">false</span></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#236-251" title="Go to source code">make</a>( <span>boolean <var>$mDataSupport</var> = <span class="php-keyword1">false</span></span>, <span>boolean <var>$orderFirst</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			<p>Organizes works</p>
@@ -291,7 +262,43 @@
 				<div class="list"><dl>
 					<dt><var>$mDataSupport</var></dt>
 					<dd></dd>
+					<dt><var>$orderFirst</var></dt>
+					<dd>For CollectionEngine, ordering should be done first</dd>
 				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					Illuminate\Http\JsonResponse
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="doOrdering" id="_doOrdering">
+
+		<td class="attributes"><code>
+			 public 
+
+			null
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_doOrdering">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#253-271" title="Go to source code">doOrdering</a>( )</code>
+
+		<div class="description short">
+			<p>Datatable ordering</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Datatable ordering</p>
+
+
 
 				<h4>Returns</h4>
 				<div class="list">
@@ -304,7 +311,119 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="setResults" id="_setResults">
+	<tr data-order="isOrderable" id="_isOrderable">
+
+		<td class="attributes"><code>
+			 protected 
+
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isOrderable">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#273-281" title="Go to source code">isOrderable</a>( )</code>
+
+		<div class="description short">
+			<p>Check if Datatables ordering is enabled</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Check if Datatables ordering is enabled</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					boolean
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isColumnOrderable" id="_isColumnOrderable">
+
+		<td class="attributes"><code>
+			 protected 
+
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isColumnOrderable">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#283-292" title="Go to source code">isColumnOrderable</a>( <span> <var>$column</var></span> )</code>
+
+		<div class="description short">
+			<p>Check if a column is orderable</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Check if a column is orderable</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$column</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					boolean
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getOrderColumnName" id="_getOrderColumnName">
+
+		<td class="attributes"><code>
+			 protected 
+
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getOrderColumnName">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#294-308" title="Go to source code">getOrderColumnName</a>( <span>integer <var>$order_col</var></span> )</code>
+
+		<div class="description short">
+			<p>Get column name by order column index</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get column name by order column index</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$order_col</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					mixed
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="doFiltering" id="_doFiltering">
 
 		<td class="attributes"><code>
 			 public 
@@ -315,15 +434,15 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_setResults">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#278-284" title="Go to source code">setResults</a>( )</code>
+		<a class="anchor" href="#_doFiltering">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#310-334" title="Go to source code">doFiltering</a>( )</code>
 
 		<div class="description short">
-			<p>Set datatables results object and arrays</p>
+			<p>Datatables filtering</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Set datatables results object and arrays</p>
+			<p>Datatables filtering</p>
 
 
 
@@ -334,7 +453,7 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="setupKeyword" id="_setupKeyword">
+	<tr data-order="getColumnIdentity" id="_getColumnIdentity">
 
 		<td class="attributes"><code>
 			 public 
@@ -345,20 +464,22 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_setupKeyword">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#286-302" title="Go to source code">setupKeyword</a>( <span>string <var>$value</var></span> )</code>
+		<a class="anchor" href="#_getColumnIdentity">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#357-373" title="Go to source code">getColumnIdentity</a>( <span>array <var>$columns</var></span>, <span>integer <var>$i</var></span> )</code>
 
 		<div class="description short">
-			<p>Setup search keyword</p>
+			<p>Get column identity from input or database</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Setup search keyword</p>
+			<p>Get column identity from input or database</p>
 
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$value</var></dt>
+					<dt><var>$columns</var></dt>
+					<dd></dd>
+					<dt><var>$i</var></dt>
 					<dd></dd>
 				</dl></div>
 
@@ -373,184 +494,7 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="isDebugging" id="_isDebugging">
-
-		<td class="attributes"><code>
-			 public 
-
-			boolean
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_isDebugging">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#304-312" title="Go to source code">isDebugging</a>( )</code>
-
-		<div class="description short">
-			<p>Check if app is in debug mode</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Check if app is in debug mode</p>
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					boolean
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="isWildcard" id="_isWildcard">
-
-		<td class="attributes"><code>
-			 public 
-
-			boolean
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_isWildcard">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#314-322" title="Go to source code">isWildcard</a>( )</code>
-
-		<div class="description short">
-			<p>Get config use wild card status</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Get config use wild card status</p>
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					boolean
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="isCaseInsensitive" id="_isCaseInsensitive">
-
-		<td class="attributes"><code>
-			 public 
-
-			boolean
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_isCaseInsensitive">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#325-333" title="Go to source code">isCaseInsensitive</a>( )</code>
-
-		<div class="description short">
-			<p>Get config is case insensitive status</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Get config is case insensitive status</p>
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					boolean
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="cleanColumns" id="_cleanColumns">
-
-		<td class="attributes"><code>
-			 public 
-
-			array
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_cleanColumns">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#335-351" title="Go to source code">cleanColumns</a>( <span>array <var>$cols</var></span>, <span>boolean <var>$use_alias</var> = <span class="php-keyword1">true</span></span> )</code>
-
-		<div class="description short">
-			<p>Clean columns name</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Clean columns name</p>
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$cols</var></dt>
-					<dd></dd>
-					<dt><var>$use_alias</var></dt>
-					<dd></dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					array
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="useDataColumns" id="_useDataColumns">
-
-		<td class="attributes"><code>
-			 public 
-
-			array
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_useDataColumns">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#353-372" title="Go to source code">useDataColumns</a>( )</code>
-
-		<div class="description short">
-			<p>Use data columns</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Use data columns</p>
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					array
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="wildcardLikeString" id="_wildcardLikeString">
+	<tr data-order="getColumnName" id="_getColumnName">
 
 		<td class="attributes"><code>
 			 public 
@@ -561,22 +505,20 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_wildcardLikeString">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#374-395" title="Go to source code">wildcardLikeString</a>( <span>string <var>$str</var></span>, <span>boolean <var>$lowercase</var> = <span class="php-keyword1">true</span></span> )</code>
+		<a class="anchor" href="#_getColumnName">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#375-394" title="Go to source code">getColumnName</a>( <span>string <var>$str</var></span> )</code>
 
 		<div class="description short">
-			<p>Adds % wildcards to the given string</p>
+			<p>Get column name from string</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Adds % wildcards to the given string</p>
+			<p>Get column name from string</p>
 
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$str</var></dt>
-					<dd></dd>
-					<dt><var>$lowercase</var></dt>
 					<dd></dd>
 				</dl></div>
 
@@ -603,7 +545,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_prefixColumn">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#397-414" title="Go to source code">prefixColumn</a>( <span>string <var>$column</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#396-413" title="Go to source code">prefixColumn</a>( <span>string <var>$column</var></span> )</code>
 
 		<div class="description short">
 			<p>Will prefix column if needed</p>
@@ -642,7 +584,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_tableNames">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#416-437" title="Go to source code">tableNames</a>( )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#415-436" title="Go to source code">tableNames</a>( )</code>
 
 		<div class="description short">
 			<p>Will look through the query and all it's joins to determine the table names</p>
@@ -664,6 +606,74 @@
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="getBuilder" id="_getBuilder">
+
+		<td class="attributes"><code>
+			 public 
+
+			EloquentBuilder|QueryBuilder
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getBuilder">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#438-450" title="Go to source code">getBuilder</a>( )</code>
+
+		<div class="description short">
+			<p>Get Query Builder object</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get Query Builder object</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					EloquentBuilder|QueryBuilder
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isQueryBuilder" id="_isQueryBuilder">
+
+		<td class="attributes"><code>
+			 public 
+
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isQueryBuilder">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#452-460" title="Go to source code">isQueryBuilder</a>( )</code>
+
+		<div class="description short">
+			<p>Check query type is a builder</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Check query type is a builder</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					boolean
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="databasePrefix" id="_databasePrefix">
 
 		<td class="attributes"><code>
@@ -676,7 +686,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_databasePrefix">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#439-447" title="Go to source code">databasePrefix</a>( )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#462-470" title="Go to source code">databasePrefix</a>( )</code>
 
 		<div class="description short">
 			<p>Returns current database prefix</p>
@@ -698,6 +708,373 @@
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="setupKeyword" id="_setupKeyword">
+
+		<td class="attributes"><code>
+			 public 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setupKeyword">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#472-488" title="Go to source code">setupKeyword</a>( <span> <var>$value</var></span> )</code>
+
+		<div class="description short">
+			<p>Setup search keyword</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Setup search keyword</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$value</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isWildcard" id="_isWildcard">
+
+		<td class="attributes"><code>
+			 public 
+
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isWildcard">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#490-498" title="Go to source code">isWildcard</a>( )</code>
+
+		<div class="description short">
+			<p>Get config use wild card status</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get config use wild card status</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					boolean
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="wildcardLikeString" id="_wildcardLikeString">
+
+		<td class="attributes"><code>
+			 public 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_wildcardLikeString">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#500-521" title="Go to source code">wildcardLikeString</a>( <span>string <var>$str</var></span>, <span>boolean <var>$lowercase</var> = <span class="php-keyword1">true</span></span> )</code>
+
+		<div class="description short">
+			<p>Adds % wildcards to the given string</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Adds % wildcards to the given string</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$str</var></dt>
+					<dd></dd>
+					<dt><var>$lowercase</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="compileFilterColumn" id="_compileFilterColumn">
+
+		<td class="attributes"><code>
+			 protected 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_compileFilterColumn">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#523-546" title="Go to source code">compileFilterColumn</a>( <span> <var>$method</var></span>, <span> <var>$parameters</var></span>, <span> <var>$column</var></span> )</code>
+
+		<div class="description short">
+			<p>Perform filter column on selected field</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Perform filter column on selected field</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$method</var></dt>
+					<dd></dd>
+					<dt><var>$parameters</var></dt>
+					<dd></dd>
+					<dt><var>$column</var></dt>
+					<dd></dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="parameterize" id="_parameterize">
+
+		<td class="attributes"><code>
+			 public 
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_parameterize">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#548-570" title="Go to source code">parameterize</a>( )</code>
+
+		<div class="description short">
+			<p>Build Query Builder Parameters</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Build Query Builder Parameters</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					array
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="databaseDriver" id="_databaseDriver">
+
+		<td class="attributes"><code>
+			 public 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_databaseDriver">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#599-607" title="Go to source code">databaseDriver</a>( )</code>
+
+		<div class="description short">
+			<p>Returns current database driver</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Returns current database driver</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="wrapColumn" id="_wrapColumn">
+
+		<td class="attributes"><code>
+			 public 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_wrapColumn">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#609-635" title="Go to source code">wrapColumn</a>( <span>string <var>$value</var></span> )</code>
+
+		<div class="description short">
+			<p>Wrap column depending on database type</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Wrap column depending on database type</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$value</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isCaseInsensitive" id="_isCaseInsensitive">
+
+		<td class="attributes"><code>
+			 public 
+
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isCaseInsensitive">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#637-645" title="Go to source code">isCaseInsensitive</a>( )</code>
+
+		<div class="description short">
+			<p>Get config is case insensitive status</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get config is case insensitive status</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					boolean
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="doColumnSearch" id="_doColumnSearch">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_doColumnSearch">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#647-673" title="Go to source code">doColumnSearch</a>( )</code>
+
+		<div class="description short">
+			<p>Perform column search</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Perform column search</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isColumnSearchable" id="_isColumnSearchable">
+
+		<td class="attributes"><code>
+			 protected 
+
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isColumnSearchable">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#675-690" title="Go to source code">isColumnSearchable</a>( <span>array <var>$columns</var></span>, <span>integer <var>$i</var></span>, <span>boolean <var>$column_search</var> = <span class="php-keyword1">true</span></span> )</code>
+
+		<div class="description short">
+			<p>Check if a column is searchable</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Check if a column is searchable</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$columns</var></dt>
+					<dd></dd>
+					<dt><var>$i</var></dt>
+					<dd></dd>
+					<dt><var>$column_search</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					boolean
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="getTotalFilteredRecords" id="_getTotalFilteredRecords">
 
 		<td class="attributes"><code>
@@ -710,7 +1087,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getTotalFilteredRecords">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#449-457" title="Go to source code">getTotalFilteredRecords</a>( )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#692-700" title="Go to source code">getTotalFilteredRecords</a>( )</code>
 
 		<div class="description short">
 			<p>Get filtered records</p>
@@ -737,14 +1114,14 @@
 		<td class="attributes"><code>
 			 public 
 
-			null
+			
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_doPaging">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#459-470" title="Go to source code">doPaging</a>( )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#702-710" title="Go to source code">doPaging</a>( )</code>
 
 		<div class="description short">
 			<p>Datatables paging</p>
@@ -755,9 +1132,39 @@
 
 
 
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isPaginationable" id="_isPaginationable">
+
+		<td class="attributes"><code>
+			 protected 
+
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isPaginationable">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#712-720" title="Go to source code">isPaginationable</a>( )</code>
+
+		<div class="description short">
+			<p>Check if Datatables allow pagination</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Check if Datatables allow pagination</p>
+
+
+
 				<h4>Returns</h4>
 				<div class="list">
-					null
+					boolean
 				</div>
 
 
@@ -766,32 +1173,96 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="doOrdering" id="_doOrdering">
+	<tr data-order="paginate" id="_paginate">
 
 		<td class="attributes"><code>
-			 public 
+			 protected 
 
-			null
+			mixed
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_doOrdering">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#472-496" title="Go to source code">doOrdering</a>( )</code>
+		<a class="anchor" href="#_paginate">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#722-731" title="Go to source code">paginate</a>( )</code>
 
 		<div class="description short">
-			<p>Datatable ordering</p>
+			<p>Paginate query</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Datatable ordering</p>
+			<p>Paginate query</p>
 
 
 
 				<h4>Returns</h4>
 				<div class="list">
-					null
+					mixed
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setResults" id="_setResults">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setResults">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#733-741" title="Go to source code">setResults</a>( )</code>
+
+		<div class="description short">
+			<p>Set datatables results object and arrays</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Set datatables results object and arrays</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getResults" id="_getResults">
+
+		<td class="attributes"><code>
+			 public 
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getResults">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#743-753" title="Go to source code">getResults</a>( )</code>
+
+		<div class="description short">
+			<p>Get results of query and convert to array</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get results of query and convert to array</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					array
 				</div>
 
 
@@ -812,7 +1283,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_initColumns">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#498-537" title="Go to source code">initColumns</a>( )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#755-767" title="Go to source code">initColumns</a>( )</code>
 
 		<div class="description short">
 			<p>Places extra columns</p>
@@ -824,6 +1295,53 @@
 
 
 
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="processContent" id="_processContent">
+
+		<td class="attributes"><code>
+			 protected 
+
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_processContent">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#769-788" title="Go to source code">processContent</a>( <span> <var>$value</var></span>, <span> <var>$data</var></span>, <span> <var>$rkey</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$value</var></dt>
+					<dd></dd>
+					<dt><var>$data</var></dt>
+					<dd></dd>
+					<dt><var>$rkey</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					mixed
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					Exception
+				</div>
 
 
 
@@ -842,7 +1360,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_compileBlade">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#539-566" title="Go to source code">compileBlade</a>( <span> <var>$str</var></span>, <span>array <var>$data</var> = []</span> )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#790-817" title="Go to source code">compileBlade</a>( <span> <var>$str</var></span>, <span>array <var>$data</var> = []</span> )</code>
 
 		<div class="description short">
 			<p>Parses and compiles strings by using Blade Template System</p>
@@ -887,7 +1405,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_includeInArray">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#568-594" title="Go to source code">includeInArray</a>( <span> <var>$item</var></span>, <span> <var>$array</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#819-845" title="Go to source code">includeInArray</a>( <span> <var>$item</var></span>, <span> <var>$array</var></span> )</code>
 
 		<div class="description short">
 			<p>Places item of extra columns into result_array by care of their order</p>
@@ -921,14 +1439,14 @@
 		<td class="attributes"><code>
 			 public 
 
-			null
+			
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_regulateArray">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#596-614" title="Go to source code">regulateArray</a>( )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#847-863" title="Go to source code">regulateArray</a>( )</code>
 
 		<div class="description short">
 			<p>Converts result_array number indexed array and consider excess columns</p>
@@ -939,10 +1457,6 @@
 
 
 
-				<h4>Returns</h4>
-				<div class="list">
-					null
-				</div>
 
 
 
@@ -953,7 +1467,7 @@
 	<tr data-order="setupDTRowVariables" id="_setupDTRowVariables">
 
 		<td class="attributes"><code>
-			 public 
+			 protected 
 
 			array
 			
@@ -962,7 +1476,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setupDTRowVariables">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#616-655" title="Go to source code">setupDTRowVariables</a>( <span>string <var>$key</var></span>, <span>array <var>&amp; $data</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#865-878" title="Go to source code">setupDTRowVariables</a>( <span>string <var>$key</var></span>, <span>array <var>&amp; $data</var></span> )</code>
 
 		<div class="description short">
 			<p>Setup additional DT row variables</p>
@@ -991,6 +1505,131 @@
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="processDTRowValue" id="_processDTRowValue">
+
+		<td class="attributes"><code>
+			 protected 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_processDTRowValue">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#880-897" title="Go to source code">processDTRowValue</a>( <span>string <var>$key</var></span>, <span>string|callable <var>$template</var></span>, <span>string <var>$index</var></span>, <span>array <var>&amp; $data</var></span> )</code>
+
+		<div class="description short">
+			<p>Process DT RowId and Class value</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Process DT RowId and Class value</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$key</var></dt>
+					<dd></dd>
+					<dt><var>$template</var></dt>
+					<dd></dd>
+					<dt><var>$index</var></dt>
+					<dd></dd>
+					<dt><var>$data</var></dt>
+					<dd></dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getContent" id="_getContent">
+
+		<td class="attributes"><code>
+			 public 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getContent">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#899-918" title="Go to source code">getContent</a>( <span>string|callable <var>$content</var></span>, <span>mixed <var>$data</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$param</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			<p>Determines if content is callable or blade string, processes and returns</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Determines if content is callable or blade string, processes and returns</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$content</var></dt>
+					<dd>Pre-processed content</dd>
+					<dt><var>$data</var></dt>
+					<dd>data to use with blade template</dd>
+					<dt><var>$param</var></dt>
+					<dd>parameter to call with callable</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string<br>Processed content
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="processDTRowDataAttr" id="_processDTRowDataAttr">
+
+		<td class="attributes"><code>
+			 protected 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_processDTRowDataAttr">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#920-936" title="Go to source code">processDTRowDataAttr</a>( <span>string <var>$key</var></span>, <span>array <var>$template</var></span>, <span>string <var>$index</var></span>, <span>array <var>&amp; $data</var></span> )</code>
+
+		<div class="description short">
+			<p>Process DT Row Data and Attr</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Process DT Row Data and Attr</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$key</var></dt>
+					<dd></dd>
+					<dt><var>$template</var></dt>
+					<dd></dd>
+					<dt><var>$index</var></dt>
+					<dd></dd>
+					<dt><var>$data</var></dt>
+					<dd></dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="removeExcessColumns" id="_removeExcessColumns">
 
 		<td class="attributes"><code>
@@ -1003,7 +1642,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_removeExcessColumns">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#657-670" title="Go to source code">removeExcessColumns</a>( <span>array <var>$data</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#938-951" title="Go to source code">removeExcessColumns</a>( <span>array <var>$data</var></span> )</code>
 
 		<div class="description short">
 			<p>Remove declared excess columns</p>
@@ -1042,7 +1681,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_output">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#672-698" title="Go to source code">output</a>( )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#953-980" title="Go to source code">output</a>( )</code>
 
 		<div class="description short">
 			<p>Render json response</p>
@@ -1064,6 +1703,113 @@
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="isDebugging" id="_isDebugging">
+
+		<td class="attributes"><code>
+			 public 
+
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isDebugging">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#982-990" title="Go to source code">isDebugging</a>( )</code>
+
+		<div class="description short">
+			<p>Check if app is in debug mode</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Check if app is in debug mode</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					boolean
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="showDebugger" id="_showDebugger">
+
+		<td class="attributes"><code>
+			 protected 
+
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_showDebugger">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#992-1004" title="Go to source code">showDebugger</a>( <span> <var>$output</var></span> )</code>
+
+		<div class="description short">
+			<p>Show debug parameters</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Show debug parameters</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$output</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					mixed
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="useDataColumns" id="_useDataColumns">
+
+		<td class="attributes"><code>
+			 public 
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_useDataColumns">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1006-1025" title="Go to source code">useDataColumns</a>( )</code>
+
+		<div class="description short">
+			<p>Use data columns</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Use data columns</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					array
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="getOutputColumns" id="_getOutputColumns">
 
 		<td class="attributes"><code>
@@ -1076,7 +1822,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getOutputColumns">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#700-711" title="Go to source code">getOutputColumns</a>( )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1027-1038" title="Go to source code">getOutputColumns</a>( )</code>
 
 		<div class="description short">
 			<p>Get sColumns output</p>
@@ -1103,14 +1849,14 @@
 		<td class="attributes"><code>
 			 public 
 
-			Datatables
+			
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_addColumn">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#713-728" title="Go to source code">addColumn</a>( <span>string <var>$name</var></span>, <span>string <var>$content</var></span>, <span>boolean|integer <var>$order</var> = <span class="php-keyword1">false</span></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1040-1055" title="Go to source code">addColumn</a>( <span>string <var>$name</var></span>, <span>string <var>$content</var></span>, <span>boolean|integer <var>$order</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			<p>Add column in collection</p>
@@ -1132,7 +1878,7 @@
 
 				<h4>Returns</h4>
 				<div class="list">
-					Datatables
+					<br>$this
 				</div>
 
 
@@ -1146,14 +1892,14 @@
 		<td class="attributes"><code>
 			 public 
 
-			Datatables
+			
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_editColumn">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#730-742" title="Go to source code">editColumn</a>( <span>string <var>$name</var></span>, <span>string <var>$content</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1057-1069" title="Go to source code">editColumn</a>( <span>string <var>$name</var></span>, <span>string <var>$content</var></span> )</code>
 
 		<div class="description short">
 			<p>Edit column's content</p>
@@ -1173,7 +1919,7 @@
 
 				<h4>Returns</h4>
 				<div class="list">
-					Datatables
+					<br>$this
 				</div>
 
 
@@ -1187,14 +1933,14 @@
 		<td class="attributes"><code>
 			 public 
 
-			Datatables
+			
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_removeColumn">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#744-755" title="Go to source code">removeColumn</a>( )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1071-1082" title="Go to source code">removeColumn</a>( )</code>
 
 		<div class="description short">
 			<p>Remove column from collection</p>
@@ -1207,7 +1953,7 @@
 
 				<h4>Returns</h4>
 				<div class="list">
-					Datatables
+					<br>$this
 				</div>
 
 
@@ -1221,14 +1967,14 @@
 		<td class="attributes"><code>
 			 public 
 
-			Datatables
+			
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_filter">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#757-772" title="Go to source code">filter</a>( <span>Closure <var>$callback</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1084-1098" title="Go to source code">filter</a>( <span>Closure <var>$callback</var></span> )</code>
 
 		<div class="description short">
 			<p>Set auto filter off and run your own filter</p>
@@ -1246,80 +1992,7 @@
 
 				<h4>Returns</h4>
 				<div class="list">
-					Datatables
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="databaseDriver" id="_databaseDriver">
-
-		<td class="attributes"><code>
-			 public 
-
-			string
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_databaseDriver">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#774-782" title="Go to source code">databaseDriver</a>( )</code>
-
-		<div class="description short">
-			<p>Returns current database driver</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Returns current database driver</p>
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					string
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="wrapColumn" id="_wrapColumn">
-
-		<td class="attributes"><code>
-			 public 
-
-			string
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_wrapColumn">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#784-810" title="Go to source code">wrapColumn</a>( <span>string <var>$value</var></span> )</code>
-
-		<div class="description short">
-			<p>Wrap column depending on database type</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Wrap column depending on database type</p>
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$value</var></dt>
-					<dd></dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					string
+					<br>$this
 				</div>
 
 
@@ -1340,7 +2013,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#___call">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#812-828" title="Go to source code">__call</a>( <span> <var>$name</var></span>, <span> <var>$arguments</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1100-1120" title="Go to source code">__call</a>( <span> <var>$name</var></span>, <span> <var>$arguments</var></span> )</code>
 
 		<div class="description short">
 			<p>Allows previous API calls where the methods were snake_case.
@@ -1350,51 +2023,19 @@ Will convert a camelCase API call to a snake_case call.</p>
 		<div class="description detailed hidden">
 			<p>Allows previous API calls where the methods were snake_case.
 Will convert a camelCase API call to a snake_case call.</p>
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="getContent" id="_getContent">
-
-		<td class="attributes"><code>
-			 public 
-
-			string
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_getContent">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#830-849" title="Go to source code">getContent</a>( <span>string|callable <var>$content</var></span>, <span>mixed <var>$data</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$param</var> = <span class="php-keyword1">null</span></span> )</code>
-
-		<div class="description short">
-			<p>Determines if content is callable or blade string, processes and returns</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Determines if content is callable or blade string, processes and returns</p>
 
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$content</var></dt>
-					<dd>Pre-processed content</dd>
-					<dt><var>$data</var></dt>
-					<dd>data to use with blade template</dd>
-					<dt><var>$param</var></dt>
-					<dd>parameter to call with callable</dd>
+					<dt><var>$name</var></dt>
+					<dd></dd>
+					<dt><var>$arguments</var></dt>
+					<dd></dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					string<br>Processed content
+					<br>$this|mixed
 				</div>
 
 
@@ -1415,7 +2056,7 @@ Will convert a camelCase API call to a snake_case call.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setRowClass">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#851-863" title="Go to source code">setRowClass</a>( <span>string|callable <var>$content</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1122-1134" title="Go to source code">setRowClass</a>( <span>string|callable <var>$content</var></span> )</code>
 
 		<div class="description short">
 			<p>Sets DT_RowClass template
@@ -1456,7 +2097,7 @@ result: <tr class="output_from_your_template"></p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setRowId">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#865-877" title="Go to source code">setRowId</a>( <span>string|callable <var>$content</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1136-1148" title="Go to source code">setRowId</a>( <span>string|callable <var>$content</var></span> )</code>
 
 		<div class="description short">
 			<p>Sets DT_RowId template
@@ -1497,7 +2138,7 @@ result: <tr id="output_from_your_template"></p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setRowData">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#879-890" title="Go to source code">setRowData</a>( <span>array <var>$data</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1150-1161" title="Go to source code">setRowData</a>( <span>array <var>$data</var></span> )</code>
 
 		<div class="description short">
 			<p>Set DT_RowData templates</p>
@@ -1536,7 +2177,7 @@ result: <tr id="output_from_your_template"></p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_addRowData">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#892-904" title="Go to source code">addRowData</a>( <span>string <var>$key</var></span>, <span>string|callable <var>$value</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1163-1175" title="Go to source code">addRowData</a>( <span>string <var>$key</var></span>, <span>string|callable <var>$value</var></span> )</code>
 
 		<div class="description short">
 			<p>Add DT_RowData template</p>
@@ -1577,7 +2218,7 @@ result: <tr id="output_from_your_template"></p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setRowAttr">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#906-918" title="Go to source code">setRowAttr</a>( <span>array <var>$data</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1177-1189" title="Go to source code">setRowAttr</a>( <span>array <var>$data</var></span> )</code>
 
 		<div class="description short">
 			<p>Set DT_RowAttr templates
@@ -1618,7 +2259,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_addRowAttr">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#920-932" title="Go to source code">addRowAttr</a>( <span>string <var>$key</var></span>, <span>string|callable <var>$value</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1191-1203" title="Go to source code">addRowAttr</a>( <span>string <var>$key</var></span>, <span>string|callable <var>$value</var></span> )</code>
 
 		<div class="description short">
 			<p>Add DT_RowAttr template</p>
@@ -1647,40 +2288,6 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="isQueryBuilder" id="_isQueryBuilder">
-
-		<td class="attributes"><code>
-			 public 
-
-			boolean
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_isQueryBuilder">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#934-940" title="Go to source code">isQueryBuilder</a>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					boolean
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
 	<tr data-order="filterColumn" id="_filterColumn">
 
 		<td class="attributes"><code>
@@ -1693,7 +2300,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_filterColumn">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#942-956" title="Go to source code">filterColumn</a>( <span>integer <var>$column</var></span>, <span>string <var>$method</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1205-1219" title="Go to source code">filterColumn</a>( <span> <var>$column</var></span>, <span>string <var>$method</var></span> )</code>
 
 		<div class="description short">
 			<p>Override default column filter search</p>
@@ -1706,7 +2313,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$column</var></dt>
-					<dd>$index</dd>
+					<dd></dd>
 					<dt><var>$method</var></dt>
 					<dd></dd>
 				</dl></div>
@@ -1715,114 +2322,6 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 				<div class="list">
 					<br>$this
 				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="doFiltering" id="_doFiltering">
-
-		<td class="attributes"><code>
-			 public 
-
-			null
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_doFiltering">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#958-1032" title="Go to source code">doFiltering</a>( )</code>
-
-		<div class="description short">
-			<p>Datatable filtering</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Datatable filtering</p>
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					null
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="parameterize" id="_parameterize">
-
-		<td class="attributes"><code>
-			 public 
-
-			array
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_parameterize">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1034-1057" title="Go to source code">parameterize</a>( <span>mixed <var>$column</var>,…</span> )</code>
-
-		<div class="description short">
-			<p>Build Query Builder Parameters</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Build Query Builder Parameters</p>
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$column</var>,…</dt>
-					<dd></dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					array
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="doColumnSearch" id="_doColumnSearch">
-
-		<td class="attributes"><code>
-			 public 
-
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_doColumnSearch">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1059-1095" title="Go to source code">doColumnSearch</a>( <span>array <var>$columns</var></span> )</code>
-
-		<div class="description short">
-			<p>Perform column search</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Perform column search</p>
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$columns</var></dt>
-					<dd></dd>
-				</dl></div>
-
 
 
 
@@ -1842,14 +2341,14 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setTransformer">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1097-1108" title="Go to source code">setTransformer</a>( <span>TransformerAbstract <var>$transformer</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1221-1232" title="Go to source code">setTransformer</a>( <span>TransformerAbstract <var>$transformer</var></span> )</code>
 
 		<div class="description short">
-			<p>Set outout transformer</p>
+			<p>Set data output transformer</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Set outout transformer</p>
+			<p>Set data output transformer</p>
 
 
 				<h4>Parameters</h4>
@@ -1869,32 +2368,297 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="getBuilder" id="_getBuilder">
+	<tr data-order="processAddColumns" id="_processAddColumns">
 
 		<td class="attributes"><code>
-			 public 
+			 protected 
 
-			Illuminate\Database\Query\Builder
+			array
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_getBuilder">#</a>
-		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1110-1122" title="Go to source code">getBuilder</a>( )</code>
+		<a class="anchor" href="#_processAddColumns">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1234-1251" title="Go to source code">processAddColumns</a>( <span>array <var>$data</var></span>, <span>string|integer <var>$rkey</var></span>, <span>array|null <var>$rvalue</var></span> )</code>
 
 		<div class="description short">
-			<p>Get Query Builder object</p>
+			<p>Process add columns</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Get Query Builder object</p>
+			<p>Process add columns</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$data</var></dt>
+					<dd></dd>
+					<dt><var>$rkey</var></dt>
+					<dd></dd>
+					<dt><var>$rvalue</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					array
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="processEditColumns" id="_processEditColumns">
+
+		<td class="attributes"><code>
+			 protected 
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_processEditColumns">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1253-1270" title="Go to source code">processEditColumns</a>( <span>array <var>$data</var></span>, <span>string|integer <var>$rkey</var></span>, <span>array|null <var>$rvalue</var></span> )</code>
+
+		<div class="description short">
+			<p>Process edit columns</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Process edit columns</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$data</var></dt>
+					<dd></dd>
+					<dt><var>$rkey</var></dt>
+					<dd></dd>
+					<dt><var>$rvalue</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					array
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="convertToArray" id="_convertToArray">
+
+		<td class="attributes"><code>
+			 protected 
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_convertToArray">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1272-1291" title="Go to source code">convertToArray</a>( <span>array <var>$rvalue</var></span>, <span>string|integer <var>$rkey</var></span> )</code>
+
+		<div class="description short">
+			<p>Converts array object values to associative array</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Converts array object values to associative array</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$rvalue</var></dt>
+					<dd></dd>
+					<dt><var>$rkey</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					array
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isSearchable" id="_isSearchable">
+
+		<td class="attributes"><code>
+			 protected 
+
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isSearchable">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1293-1301" title="Go to source code">isSearchable</a>( )</code>
+
+		<div class="description short">
+			<p>Check if Datatables is searchable</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Check if Datatables is searchable</p>
 
 
 
 				<h4>Returns</h4>
 				<div class="list">
-					Illuminate\Database\Query\Builder
+					boolean
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="compileOutput" id="_compileOutput">
+
+		<td class="attributes"><code>
+			 protected 
+
+			Illuminate\Http\JsonResponse
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_compileOutput">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1303-1315" title="Go to source code">compileOutput</a>( )</code>
+
+		<div class="description short">
+			<p>Compile Datatables final output</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Compile Datatables final output</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					Illuminate\Http\JsonResponse
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="compileQueryBuilder" id="_compileQueryBuilder">
+
+		<td class="attributes"><code>
+			 protected 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_compileQueryBuilder">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1317-1335" title="Go to source code">compileQueryBuilder</a>( <span>boolean <var>$orderFirst</var></span> )</code>
+
+		<div class="description short">
+			<p>Compile Datatables queries</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Compile Datatables queries</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$orderFirst</var></dt>
+					<dd></dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="compileFiltering" id="_compileFiltering">
+
+		<td class="attributes"><code>
+			 protected 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_compileFiltering">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1337-1348" title="Go to source code">compileFiltering</a>( )</code>
+
+		<div class="description short">
+			<p>Perform all filtering queries</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Perform all filtering queries</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getOrMethod" id="_getOrMethod">
+
+		<td class="attributes"><code>
+			 protected 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getOrMethod">#</a>
+		<code><a href="source-class-yajra.Datatables.Engine.BaseEngine.html#1350-1363" title="Go to source code">getOrMethod</a>( <span>string <var>$method</var></span> )</code>
+
+		<div class="description short">
+			<p>Get equivalent or method of query builder</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get equivalent or method of query builder</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$method</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
 				</div>
 
 
@@ -1925,7 +2689,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#23-28" title="Go to source code"><var>$connection</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#26-31" title="Go to source code"><var>$connection</var></a>
 
 			<div class="description short">
 				<p>Database connection used</p>
@@ -1950,7 +2714,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#30-35" title="Go to source code"><var>$query</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#33-38" title="Go to source code"><var>$query</var></a>
 
 			<div class="description short">
 				<p>Query object</p>
@@ -1975,7 +2739,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#37-42" title="Go to source code"><var>$builder</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#40-45" title="Go to source code"><var>$builder</var></a>
 
 			<div class="description short">
 				<p>QueryBuilder object</p>
@@ -2000,7 +2764,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#44-49" title="Go to source code"><var>$input</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#47-52" title="Go to source code"><var>$input</var></a>
 
 			<div class="description short">
 				<p>Input variables</p>
@@ -2025,7 +2789,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#51-56" title="Go to source code"><var>$columns</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#54-59" title="Go to source code"><var>$columns</var></a>
 
 			<div class="description short">
 				<p>Array of result columns/fields</p>
@@ -2050,7 +2814,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#58-63" title="Go to source code"><var>$last_columns</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#61-66" title="Go to source code"><var>$last_columns</var></a>
 
 			<div class="description short">
 				<p>Array of last columns</p>
@@ -2075,7 +2839,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#65-70" title="Go to source code"><var>$query_type</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#68-73" title="Go to source code"><var>$query_type</var></a>
 
 			<div class="description short">
 				<p>Query type</p>
@@ -2100,7 +2864,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#72-77" title="Go to source code"><var>$extra_columns</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#75-80" title="Go to source code"><var>$extra_columns</var></a>
 
 			<div class="description short">
 				<p>Array of columns to be added on result</p>
@@ -2125,7 +2889,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#79-84" title="Go to source code"><var>$excess_columns</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#82-87" title="Go to source code"><var>$excess_columns</var></a>
 
 			<div class="description short">
 				<p>Array of columns to be removed on output</p>
@@ -2150,7 +2914,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#86-91" title="Go to source code"><var>$edit_columns</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#89-94" title="Go to source code"><var>$edit_columns</var></a>
 
 			<div class="description short">
 				<p>Array of columns to be edited</p>
@@ -2175,7 +2939,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#93-98" title="Go to source code"><var>$sColumns</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#96-101" title="Go to source code"><var>$sColumns</var></a>
 
 			<div class="description short">
 				<p>sColumns to output</p>
@@ -2200,7 +2964,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#100-105" title="Go to source code"><var>$totalRecords</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#103-108" title="Go to source code"><var>$totalRecords</var></a>
 
 			<div class="description short">
 				<p>Total records</p>
@@ -2225,7 +2989,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#107-112" title="Go to source code"><var>$filteredRecords</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#110-115" title="Go to source code"><var>$filteredRecords</var></a>
 
 			<div class="description short">
 				<p>Total filtered records</p>
@@ -2246,18 +3010,18 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 	<tr data-order="result_object" id="$result_object">
 		<td class="attributes"><code>
 			public  
-			array
+			mixed
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#114-119" title="Go to source code"><var>$result_object</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#117-122" title="Go to source code"><var>$result_object</var></a>
 
 			<div class="description short">
-				<p>Eloquent/Builder result</p>
+				<p>Eloquent/Builder result object</p>
 			</div>
 
 			<div class="description detailed hidden">
-				<p>Eloquent/Builder result</p>
+				<p>Eloquent/Builder result object</p>
 
 			</div>
 		</td>
@@ -2275,7 +3039,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#121-126" title="Go to source code"><var>$result_array</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#124-129" title="Go to source code"><var>$result_array</var></a>
 
 			<div class="description short">
 				<p>Result array</p>
@@ -2300,7 +3064,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#128-133" title="Go to source code"><var>$result_array_r</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#131-136" title="Go to source code"><var>$result_array_r</var></a>
 
 			<div class="description short">
 				<p>Regulated result array</p>
@@ -2325,14 +3089,14 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#135-140" title="Go to source code"><var>$m_data_support</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#138-143" title="Go to source code"><var>$m_data_support</var></a>
 
 			<div class="description short">
-				<p>Flag for DT support for mdata</p>
+				<p>Flag for DT support for mData</p>
 			</div>
 
 			<div class="description detailed hidden">
-				<p>Flag for DT support for mdata</p>
+				<p>Flag for DT support for mData</p>
 
 			</div>
 		</td>
@@ -2350,7 +3114,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#142-147" title="Go to source code"><var>$autoFilter</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#145-150" title="Go to source code"><var>$autoFilter</var></a>
 
 			<div class="description short">
 				<p>Auto-filter flag</p>
@@ -2371,11 +3135,11 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 	<tr data-order="row_id_tmpl" id="$row_id_tmpl">
 		<td class="attributes"><code>
 			public  
-			string
+			string|callable
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#149-154" title="Go to source code"><var>$row_id_tmpl</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#152-157" title="Go to source code"><var>$row_id_tmpl</var></a>
 
 			<div class="description short">
 				<p>DT_RowID template</p>
@@ -2396,11 +3160,11 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 	<tr data-order="row_class_tmpl" id="$row_class_tmpl">
 		<td class="attributes"><code>
 			public  
-			string
+			string|callable
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#156-161" title="Go to source code"><var>$row_class_tmpl</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#159-164" title="Go to source code"><var>$row_class_tmpl</var></a>
 
 			<div class="description short">
 				<p>DT_RowClass template</p>
@@ -2425,7 +3189,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#163-168" title="Go to source code"><var>$row_data_tmpls</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#166-171" title="Go to source code"><var>$row_data_tmpls</var></a>
 
 			<div class="description short">
 				<p>DT_RowData template</p>
@@ -2450,7 +3214,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#170-175" title="Go to source code"><var>$row_attr_tmpls</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#173-178" title="Go to source code"><var>$row_attr_tmpls</var></a>
 
 			<div class="description short">
 				<p>DT_RowAttr template</p>
@@ -2475,7 +3239,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#177-182" title="Go to source code"><var>$filter_columns</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#180-185" title="Go to source code"><var>$filter_columns</var></a>
 
 			<div class="description short">
 				<p>Override column search query type</p>
@@ -2500,7 +3264,7 @@ result: <tr attr1="attr1" attr2="attr2"></p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#184-189" title="Go to source code"><var>$transformer</var></a>
+				<a href="source-class-yajra.Datatables.Engine.BaseEngine.html#187-192" title="Go to source code"><var>$transformer</var></a>
 
 			<div class="description short">
 				<p>Output transformer</p>
