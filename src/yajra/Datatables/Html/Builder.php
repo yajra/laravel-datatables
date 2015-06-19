@@ -89,20 +89,26 @@ class Builder
      * @param array $attributes
      * @return string
      */
-    public function scripts($script = null, array $attributes = ['type' => 'text/javascript'])
-    {
-        $args = array_merge($this->attributes, [
-            'ajax'    => $this->ajax,
-            'columns' => $this->collection->toArray()
-        ]);
-        $parameters = $this->parameterize($args);
-
-        if (! $script) {
-            $script = sprintf('$(function(){ $("#%s").DataTable(%s)});', $this->tableAttributes['id'], $parameters);
-        }
+     public function scripts($script = null, array $attributes = ['type' => 'text/javascript'])
+     {
+        $script = $script ?: $this->generateScripts();
 
         return '<script' . $this->html->attributes($attributes) . '>' . $script . '</script>' . PHP_EOL;
     }
+
+    /**
+     * Get generated raw scripts
+     */
+    public function generateScripts()
+    {
+         $args = array_merge($this->attributes, [
+             'ajax'    => $this->ajax,
+             'columns' => $this->collection->toArray()
+         ]);
+         $parameters = $this->parameterize($args);
+
+        return sprintf('$(function(){ $("#%s").DataTable(%s);});', $this->tableAttributes['id'], $parameters);
+     }
 
     /**
      * Generate datatable js parameters
