@@ -50,7 +50,7 @@ class BaseEngine
     /**
      * Input variables.
      *
-     * @var array
+     * @var \yajra\Datatables\Request
      */
     public $request;
 
