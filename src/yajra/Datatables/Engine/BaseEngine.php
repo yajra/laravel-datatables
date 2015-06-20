@@ -603,6 +603,12 @@ class BaseEngine
         $query->orWhereRaw($sql, [$keyword]);
     }
 
+    /**
+     * Wrap a column and cast in pgsql
+     *
+     * @param  string $column
+     * @return string
+     */
     public function castColumn($column)
     {
         $column = $this->wrapValue($column);
