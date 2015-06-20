@@ -8,6 +8,13 @@
 
 ##Change Log
 
+###v5.4.2
+    - Throws Exception when using DataTable's legacy code
+    - Fixed CS - PSR2
+
+###v5.4.1
+    - Fixed Builder generateScript method.
+
 ###v5.4
     - Added Html Builder
     - Added magic methods to call enginges without the "using" word
