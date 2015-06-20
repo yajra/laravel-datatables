@@ -675,7 +675,7 @@ class BaseEngine
         }
 
         // wrap column possibly allow reserved words to be used as column
-        $column = $this->wrapColumn($column);
+        $column = $this->wrapValue($column);
         if ($this->isCaseInsensitive()) {
             $query->orWhereRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?', [Str::lower($keyword)]);
         } else {
@@ -694,32 +694,47 @@ class BaseEngine
     }
 
     /**
-     * Wrap column depending on database type.
+     * Wrap value depending on database type.
      *
      * @param string $value
      * @return string
      */
-    public function wrapColumn($value)
+    public function wrapValue($value)
     {
         $parts  = explode('.', $value);
         $column = '';
         foreach ($parts as $key) {
-            switch ($this->databaseDriver()) {
-                case 'mysql':
-                    $column .= '`' . str_replace('`', '``', $key) . '`' . '.';
-                    break;
+            $column = $this->wrapColumn($key, $column);
+        }
 
-                case 'sqlsrv':
-                    $column .= '[' . str_replace(']', ']]', $key) . ']' . '.';
-                    break;
+        return $column;
+    }
 
-                case 'pgsql':
-                    $column .= '"' . str_replace('"', '""', $key) . '"' . '.';
-                    break;
+    /**
+     * Database column wrapper
+     *
+     * @param $key
+     * @param $column
+     * @return string
+     */
+    protected function wrapColumn($key, $column)
+    {
+        switch ($this->databaseDriver()) {
+            case 'mysql':
+                $column .= '`' . str_replace('`', '``', $key) . '`' . '.';
+                break;
 
-                default:
-                    $column .= $key . '.';
-            }
+            case 'sqlsrv':
+                $column .= '[' . str_replace(']', ']]', $key) . ']' . '.';
+                break;
+
+            case 'pgsql':
+            case 'sqlite':
+                $column .= '"' . str_replace('"', '""', $key) . '"' . '.';
+                break;
+
+            default:
+                $column .= $key . '.';
         }
 
         return substr($column, 0, strlen($column) - 1);
@@ -751,7 +766,7 @@ class BaseEngine
                     $parameters = $this->filter_columns[$column]['parameters'];
                     $this->compileFilterColumn($method, $parameters, $column);
                 } else {
-                    $column = $this->wrapColumn($column);
+                    $column = $this->wrapValue($column);
                     if ($this->isCaseInsensitive()) {
                         $this->query->whereRaw('LOWER(' . $column . ') LIKE ?', [Str::lower($keyword)]);
                     } else {
