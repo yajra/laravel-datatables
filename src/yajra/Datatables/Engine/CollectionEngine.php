@@ -17,6 +17,7 @@ use Illuminate\Support\Str;
 
 class CollectionEngine extends BaseEngine implements EngineContract
 {
+
     /**
      * Collection object
      *
@@ -33,7 +34,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
 
     /**
      * @param Collection $collection
-     * @param $request
+     * @param            $request
      */
     public function __construct(Collection $collection, $request)
     {
@@ -105,7 +106,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
         $columns          = $this->input['columns'];
         $this->collection = $this->collection->filter(
             function ($row) use ($columns) {
-                $data = $this->serialize($row);
+                $data  = $this->serialize($row);
                 $found = [];
 
                 for ($i = 0, $c = count($columns); $i < $c; $i++) {
@@ -113,7 +114,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
                         continue;
                     }
 
-                    $column = $this->getColumnIdentity($columns, $i);
+                    $column  = $this->getColumnIdentity($columns, $i);
                     $keyword = $this->input['search']['value'];
 
                     if (! $this->columnExists($column, $data)) {
@@ -216,7 +217,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
      * Check if column name exists in collection keys
      *
      * @param  string $column
-     * @param  array  $data
+     * @param  array $data
      * @return bool
      */
     private function columnExists($column, array $data)

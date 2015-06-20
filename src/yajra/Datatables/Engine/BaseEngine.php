@@ -2,7 +2,7 @@
 
 namespace yajra\Datatables\Engine;
 
-/**
+/*
  * Laravel Datatables Base Engine
  *
  * @package  Laravel
@@ -23,176 +23,177 @@ use League\Fractal\Resource\Collection;
 
 class BaseEngine
 {
+
     /**
-     * Database connection used
+     * Database connection used.
      *
      * @var \Illuminate\Database\Connection
      */
     public $connection;
 
     /**
-     * Query object
+     * Query object.
      *
      * @var EloquentBuilder|QueryBuilder
      */
     public $query;
 
     /**
-     * QueryBuilder object
+     * QueryBuilder object.
      *
      * @var QueryBuilder
      */
     public $builder;
 
     /**
-     * Input variables
+     * Input variables.
      *
      * @var array
      */
     public $input;
 
     /**
-     * Array of result columns/fields
+     * Array of result columns/fields.
      *
      * @var array
      */
     public $columns = [];
 
     /**
-     * Array of last columns
+     * Array of last columns.
      *
      * @var array
      */
     public $last_columns = [];
 
     /**
-     * Query type
+     * Query type.
      *
      * @var string
      */
     public $query_type;
 
     /**
-     * Array of columns to be added on result
+     * Array of columns to be added on result.
      *
      * @var array
      */
     public $extra_columns = [];
 
     /**
-     * Array of columns to be removed on output
+     * Array of columns to be removed on output.
      *
      * @var array
      */
     public $excess_columns = ['rn', 'row_num'];
 
     /**
-     * Array of columns to be edited
+     * Array of columns to be edited.
      *
      * @var array
      */
     public $edit_columns = [];
 
     /**
-     * sColumns to output
+     * sColumns to output.
      *
      * @var array
      */
     public $sColumns = [];
 
     /**
-     * Total records
+     * Total records.
      *
-     * @var integer
+     * @var int
      */
     public $totalRecords = 0;
 
     /**
-     * Total filtered records
+     * Total filtered records.
      *
-     * @var integer
+     * @var int
      */
     public $filteredRecords = 0;
 
     /**
-     * Eloquent/Builder result object
+     * Eloquent/Builder result object.
      *
      * @var mixed
      */
     public $result_object;
 
     /**
-     * Result array
+     * Result array.
      *
      * @var array
      */
     public $result_array = [];
 
     /**
-     * Regulated result array
+     * Regulated result array.
      *
      * @var array
      */
     public $result_array_r = [];
 
     /**
-     * Flag for DT support for mData
+     * Flag for DT support for mData.
      *
-     * @var boolean
+     * @var bool
      */
     public $m_data_support = false;
 
     /**
-     * Auto-filter flag
+     * Auto-filter flag.
      *
-     * @var boolean
+     * @var bool
      */
     public $autoFilter = true;
 
     /**
-     * DT_RowID template
+     * DT_RowID template.
      *
      * @var string|callable
      */
     public $row_id_tmpl;
 
     /**
-     * DT_RowClass template
+     * DT_RowClass template.
      *
      * @var string|callable
      */
     public $row_class_tmpl;
 
     /**
-     * DT_RowData template
+     * DT_RowData template.
      *
      * @var array
      */
     public $row_data_tmpls = [];
 
     /**
-     * DT_RowAttr template
+     * DT_RowAttr template.
      *
      * @var array
      */
     public $row_attr_tmpls = [];
 
     /**
-     * Override column search query type
+     * Override column search query type.
      *
      * @var array
      */
     public $filter_columns = [];
 
     /**
-     * Output transformer
+     * Output transformer.
      *
      * @var TransformerAbstract
      */
     public $transformer = null;
 
     /**
-     * Construct base engine
+     * Construct base engine.
      *
      * @param $request
      */
@@ -203,7 +204,7 @@ class BaseEngine
     }
 
     /**
-     * Get total records
+     * Get total records.
      *
      * @return int
      */
@@ -213,7 +214,7 @@ class BaseEngine
     }
 
     /**
-     * Counts current query
+     * Counts current query.
      *
      * @return int
      */
@@ -224,9 +225,9 @@ class BaseEngine
         // if its a normal query ( no union and having word ) replace the select with static text to improve performance
         $myQuery = clone $query;
         if (! Str::contains(Str::lower($myQuery->toSql()), 'union') && ! Str::contains(
-            Str::lower($myQuery->toSql()),
-            'having'
-        )
+                Str::lower($myQuery->toSql()),
+                'having'
+            )
         ) {
             $myQuery->select($this->connection->raw("'1' as row_count"));
         }
@@ -236,10 +237,10 @@ class BaseEngine
     }
 
     /**
-     * Organizes works
+     * Organizes works.
      *
-     * @param  bool $mDataSupport
-     * @param  bool $orderFirst   For CollectionEngine, ordering should be done first
+     * @param bool $mDataSupport
+     * @param bool $orderFirst For CollectionEngine, ordering should be done first
      * @return JsonResponse
      */
     public function make($mDataSupport = false, $orderFirst = false)
@@ -253,9 +254,7 @@ class BaseEngine
     }
 
     /**
-     * Datatable ordering
-     *
-     * @return null
+     * Datatable ordering.
      */
     public function doOrdering()
     {
@@ -273,7 +272,7 @@ class BaseEngine
     }
 
     /**
-     * Check if Datatables ordering is enabled
+     * Check if Datatables ordering is enabled.
      *
      * @return bool
      */
@@ -283,20 +282,20 @@ class BaseEngine
     }
 
     /**
-     * Check if a column is orderable
+     * Check if a column is orderable.
      *
      * @param  $column
      * @return bool
      */
     protected function isColumnOrderable($column)
     {
-        return $column['orderable'] == "true";
+        return $column['orderable'] == 'true';
     }
 
     /**
-     * Get column name by order column index
+     * Get column name by order column index.
      *
-     * @param  integer $order_col
+     * @param int $order_col
      * @return mixed
      */
     protected function getOrderColumnName($order_col)
@@ -310,7 +309,7 @@ class BaseEngine
     }
 
     /**
-     * Datatables filtering
+     * Datatables filtering.
      */
     public function doFiltering()
     {
@@ -322,11 +321,11 @@ class BaseEngine
                         continue;
                     }
 
-                    $column = $this->setupColumn($columns, $i);
+                    $column  = $this->setupColumn($columns, $i);
                     $keyword = $this->setupKeyword($this->input['search']['value']);
 
                     if (isset($this->filter_columns[$column])) {
-                        $method = $this->getOrMethod($this->filter_columns[$column]['method']);
+                        $method     = $this->getOrMethod($this->filter_columns[$column]['method']);
                         $parameters = $this->filter_columns[$column]['parameters'];
                         $this->compileFilterColumn($method, $parameters, $column);
                     } else {
@@ -338,10 +337,10 @@ class BaseEngine
     }
 
     /**
-     * Setup column name to be use for filtering
+     * Setup column name to be use for filtering.
      *
-     * @param  array   $columns
-     * @param  integer $i
+     * @param array $columns
+     * @param int $i
      * @return string
      */
     private function setupColumn(array $columns, $i)
@@ -359,10 +358,10 @@ class BaseEngine
     }
 
     /**
-     * Get column identity from input or database
+     * Get column identity from input or database.
      *
-     * @param  array   $columns
-     * @param  integer $i
+     * @param array $columns
+     * @param int $i
      * @return string
      */
     public function getColumnIdentity(array $columns, $i)
@@ -377,9 +376,9 @@ class BaseEngine
     }
 
     /**
-     * Get column name from string
+     * Get column name from string.
      *
-     * @param  string $str
+     * @param string $str
      * @return string
      */
     public function getColumnName($str)
@@ -398,9 +397,9 @@ class BaseEngine
     }
 
     /**
-     * Will prefix column if needed
+     * Will prefix column if needed.
      *
-     * @param  string $column
+     * @param string $column
      * @return string
      */
     public function prefixColumn($column)
@@ -409,8 +408,8 @@ class BaseEngine
         if (count(
             array_filter(
                 $table_names, function ($value) use (&$column) {
-                    return strpos($column, $value . ".") === 0;
-                }
+                return strpos($column, $value . '.') === 0;
+            }
             )
         )) {
             // the column starts with one of the table names
@@ -421,7 +420,7 @@ class BaseEngine
     }
 
     /**
-     * Will look through the query and all it's joins to determine the table names
+     * Will look through the query and all it's joins to determine the table names.
      *
      * @return array
      */
@@ -433,7 +432,7 @@ class BaseEngine
         $joins          = $query->joins ?: [];
         $databasePrefix = $this->databasePrefix();
         foreach ($joins as $join) {
-            $table   = preg_split("/ as /i", $join->table);
+            $table   = preg_split('/ as /i', $join->table);
             $names[] = $table[0];
             if (isset($table[1]) && ! empty($databasePrefix) && strpos($table[1], $databasePrefix) == 0) {
                 $names[] = preg_replace('/^' . $databasePrefix . '/', '', $table[1]);
@@ -444,7 +443,7 @@ class BaseEngine
     }
 
     /**
-     * Get Query Builder object
+     * Get Query Builder object.
      *
      * @return EloquentBuilder|QueryBuilder
      */
@@ -458,7 +457,7 @@ class BaseEngine
     }
 
     /**
-     * Check query type is a builder
+     * Check query type is a builder.
      *
      * @return bool
      */
@@ -468,7 +467,7 @@ class BaseEngine
     }
 
     /**
-     * Returns current database prefix
+     * Returns current database prefix.
      *
      * @return string
      */
@@ -478,7 +477,7 @@ class BaseEngine
     }
 
     /**
-     * Setup search keyword
+     * Setup search keyword.
      *
      * @param  $value
      * @return string
@@ -496,9 +495,9 @@ class BaseEngine
     }
 
     /**
-     * Get config use wild card status
+     * Get config use wild card status.
      *
-     * @return boolean
+     * @return bool
      */
     public function isWildcard()
     {
@@ -506,10 +505,10 @@ class BaseEngine
     }
 
     /**
-     * Adds % wildcards to the given string
+     * Adds % wildcards to the given string.
      *
-     * @param  string $str
-     * @param  bool   $lowercase
+     * @param string $str
+     * @param bool $lowercase
      * @return string
      */
     public function wildcardLikeString($str, $lowercase = true)
@@ -529,7 +528,7 @@ class BaseEngine
     }
 
     /**
-     * Perform filter column on selected field
+     * Perform filter column on selected field.
      *
      * @param $method
      * @param $parameters
@@ -562,7 +561,7 @@ class BaseEngine
     }
 
     /**
-     * Build Query Builder Parameters
+     * Build Query Builder Parameters.
      *
      * @return array
      */
@@ -586,9 +585,9 @@ class BaseEngine
     }
 
     /**
-     * Add a query on global search
+     * Add a query on global search.
      *
-     * @param mixed  $query
+     * @param mixed $query
      * @param string $column
      * @param string $keyword
      */
@@ -599,8 +598,8 @@ class BaseEngine
         $cast_begin = null;
         $cast_end   = null;
         if ($this->databaseDriver() === 'pgsql') {
-            $cast_begin = "CAST(";
-            $cast_end   = " as TEXT)";
+            $cast_begin = 'CAST(';
+            $cast_end   = ' as TEXT)';
         }
 
         // wrap column possibly allow reserved words to be used as column
@@ -613,7 +612,7 @@ class BaseEngine
     }
 
     /**
-     * Returns current database driver
+     * Returns current database driver.
      *
      * @return string
      */
@@ -623,9 +622,9 @@ class BaseEngine
     }
 
     /**
-     * Wrap column depending on database type
+     * Wrap column depending on database type.
      *
-     * @param  string $value
+     * @param string $value
      * @return string
      */
     public function wrapColumn($value)
@@ -634,16 +633,16 @@ class BaseEngine
         $column = '';
         foreach ($parts as $key) {
             switch ($this->databaseDriver()) {
-            case 'mysql':
-                $column .= '`' . str_replace('`', '``', $key) . '`' . '.';
-                break;
+                case 'mysql':
+                    $column .= '`' . str_replace('`', '``', $key) . '`' . '.';
+                    break;
 
-            case 'sqlsrv':
-                $column .= '[' . str_replace(']', ']]', $key) . ']' . '.';
-                break;
+                case 'sqlsrv':
+                    $column .= '[' . str_replace(']', ']]', $key) . ']' . '.';
+                    break;
 
-            default:
-                $column .= $key . '.';
+                default:
+                    $column .= $key . '.';
             }
         }
 
@@ -651,9 +650,9 @@ class BaseEngine
     }
 
     /**
-     * Get config is case insensitive status
+     * Get config is case insensitive status.
      *
-     * @return boolean
+     * @return bool
      */
     public function isCaseInsensitive()
     {
@@ -661,7 +660,7 @@ class BaseEngine
     }
 
     /**
-     * Perform column search
+     * Perform column search.
      */
     public function doColumnSearch()
     {
@@ -689,24 +688,24 @@ class BaseEngine
     }
 
     /**
-     * Check if a column is searchable
+     * Check if a column is searchable.
      *
-     * @param  array   $columns
-     * @param  integer $i
-     * @param  bool    $column_search
+     * @param array $columns
+     * @param int $i
+     * @param bool $column_search
      * @return bool
      */
     protected function isColumnSearchable(array $columns, $i, $column_search = true)
     {
         if ($column_search) {
-            return $columns[$i]['searchable'] == "true" && $columns[$i]['search']['value'] != '' && ! empty($columns[$i]['name']);
+            return $columns[$i]['searchable'] == 'true' && $columns[$i]['search']['value'] != '' && ! empty($columns[$i]['name']);
         }
 
-        return $columns[$i]['searchable'] == "true";
+        return $columns[$i]['searchable'] == 'true';
     }
 
     /**
-     * Get filtered records
+     * Get filtered records.
      *
      * @return int
      */
@@ -716,7 +715,7 @@ class BaseEngine
     }
 
     /**
-     * Datatables paging
+     * Datatables paging.
      */
     public function doPaging()
     {
@@ -726,7 +725,7 @@ class BaseEngine
     }
 
     /**
-     * Check if Datatables allow pagination
+     * Check if Datatables allow pagination.
      *
      * @return bool
      */
@@ -736,7 +735,7 @@ class BaseEngine
     }
 
     /**
-     * Paginate query
+     * Paginate query.
      *
      * @return mixed
      */
@@ -747,7 +746,7 @@ class BaseEngine
     }
 
     /**
-     * Set datatables results object and arrays
+     * Set datatables results object and arrays.
      */
     public function setResults()
     {
@@ -759,7 +758,7 @@ class BaseEngine
     }
 
     /**
-     * Get results of query and convert to array
+     * Get results of query and convert to array.
      *
      * @return array
      */
@@ -771,7 +770,7 @@ class BaseEngine
     }
 
     /**
-     * Places extra columns
+     * Places extra columns.
      */
     public function initColumns()
     {
@@ -796,26 +795,27 @@ class BaseEngine
         if (is_string($value['content'])) :
             $value['content'] = $this->compileBlade($value['content'], $data);
 
-        return $value; elseif (is_callable($value['content'])) :
-                $value['content'] = $value['content']($this->result_object[$rkey]);
+            return $value;
+        elseif (is_callable($value['content'])) :
+            $value['content'] = $value['content']($this->result_object[$rkey]);
 
-        return $value;
+            return $value;
         endif;
 
         return $value;
     }
 
     /**
-     * Parses and compiles strings by using Blade Template System
+     * Parses and compiles strings by using Blade Template System.
      *
-     * @param  $str
-     * @param  array $data
+     * @param       $str
+     * @param array $data
      * @return string
      * @throws \Exception
      */
     public function compileBlade($str, $data = [])
     {
-        $empty_filesystem_instance = new Filesystem;
+        $empty_filesystem_instance = new Filesystem();
         $blade                     = new BladeCompiler($empty_filesystem_instance, 'datatables');
         $parsed_string             = $blade->compileString($str);
 
@@ -835,7 +835,7 @@ class BaseEngine
     }
 
     /**
-     * Places item of extra columns into result_array by care of their order
+     * Places item of extra columns into result_array by care of their order.
      *
      * @param  $item
      * @param  $array
@@ -860,10 +860,12 @@ class BaseEngine
                 $count++;
             }
         }
+
+        return [];
     }
 
     /**
-     * Converts result_array number indexed array and consider excess columns
+     * Converts result_array number indexed array and consider excess columns.
      */
     public function regulateArray()
     {
@@ -881,10 +883,10 @@ class BaseEngine
     }
 
     /**
-     * Setup additional DT row variables
+     * Setup additional DT row variables.
      *
-     * @param  string $key
-     * @param  array  &$data
+     * @param string $key
+     * @param array &$data
      * @return array
      */
     protected function setupDTRowVariables($key, array &$data)
@@ -896,12 +898,12 @@ class BaseEngine
     }
 
     /**
-     * Process DT RowId and Class value
+     * Process DT RowId and Class value.
      *
-     * @param string          $key
+     * @param string $key
      * @param string|callable $template
-     * @param string          $index
-     * @param array           $data
+     * @param string $index
+     * @param array $data
      */
     protected function processDTRowValue($key, $template, $index, array &$data)
     {
@@ -915,11 +917,11 @@ class BaseEngine
     }
 
     /**
-     * Determines if content is callable or blade string, processes and returns
+     * Determines if content is callable or blade string, processes and returns.
      *
-     * @param  string|callable $content Pre-processed content
-     * @param  mixed           $data    data to use with blade template
-     * @param  mixed           $param   parameter to call with callable
+     * @param string|callable $content Pre-processed content
+     * @param mixed $data data to use with blade template
+     * @param mixed $param parameter to call with callable
      * @return string Processed content
      */
     public function getContent($content, $data = null, $param = null)
@@ -936,12 +938,12 @@ class BaseEngine
     }
 
     /**
-     * Process DT Row Data and Attr
+     * Process DT Row Data and Attr.
      *
      * @param string $key
-     * @param array  $template
+     * @param array $template
      * @param string $index
-     * @param array  $data
+     * @param array $data
      */
     protected function processDTRowDataAttr($key, array $template, $index, array &$data)
     {
@@ -954,9 +956,9 @@ class BaseEngine
     }
 
     /**
-     * Remove declared excess columns
+     * Remove declared excess columns.
      *
-     * @param  array $data
+     * @param array $data
      * @return array
      */
     public function removeExcessColumns(array $data)
@@ -969,21 +971,21 @@ class BaseEngine
     }
 
     /**
-     * Render json response
+     * Render json response.
      *
      * @return JsonResponse
      */
     public function output()
     {
         $output = [
-            "draw"            => (int) $this->input['draw'],
-            "recordsTotal"    => $this->totalRecords,
-            "recordsFiltered" => $this->filteredRecords
+            'draw'            => (int) $this->input['draw'],
+            'recordsTotal'    => $this->totalRecords,
+            'recordsFiltered' => $this->filteredRecords,
         ];
 
         if (isset($this->transformer)) {
             $fractal        = new Manager();
-            $resource       = new Collection($this->result_array_r, new $this->transformer);
+            $resource       = new Collection($this->result_array_r, new $this->transformer());
             $collection     = $fractal->createData($resource)->toArray();
             $output['data'] = $collection['data'];
         } else {
@@ -998,9 +1000,9 @@ class BaseEngine
     }
 
     /**
-     * Check if app is in debug mode
+     * Check if app is in debug mode.
      *
-     * @return boolean
+     * @return bool
      */
     public function isDebugging()
     {
@@ -1008,21 +1010,21 @@ class BaseEngine
     }
 
     /**
-     * Show debug parameters
+     * Show debug parameters.
      *
      * @param  $output
      * @return mixed
      */
     protected function showDebugger($output)
     {
-        $output["queries"] = $this->connection->getQueryLog();
-        $output["input"]   = $this->input;
+        $output['queries'] = $this->connection->getQueryLog();
+        $output['input']   = $this->input;
 
         return $output;
     }
 
     /**
-     * Use data columns
+     * Use data columns.
      *
      * @return array
      */
@@ -1043,7 +1045,7 @@ class BaseEngine
     }
 
     /**
-     * Get sColumns output
+     * Get sColumns output.
      *
      * @return array
      */
@@ -1056,11 +1058,11 @@ class BaseEngine
     }
 
     /**
-     * Add column in collection
+     * Add column in collection.
      *
-     * @param  string   $name
-     * @param  string   $content
-     * @param  bool|int $order
+     * @param string $name
+     * @param string $content
+     * @param bool|int $order
      * @return $this
      */
     public function addColumn($name, $content, $order = false)
@@ -1073,10 +1075,10 @@ class BaseEngine
     }
 
     /**
-     * Edit column's content
+     * Edit column's content.
      *
-     * @param  string $name
-     * @param  string $content
+     * @param string $name
+     * @param string $content
      * @return $this
      */
     public function editColumn($name, $content)
@@ -1087,7 +1089,7 @@ class BaseEngine
     }
 
     /**
-     * Remove column from collection
+     * Remove column from collection.
      *
      * @return $this
      */
@@ -1100,9 +1102,9 @@ class BaseEngine
     }
 
     /**
-     * Set auto filter off and run your own filter
+     * Set auto filter off and run your own filter.
      *
-     * @param  Closure $callback
+     * @param Closure $callback
      * @return $this
      */
     public function filter(Closure $callback)
@@ -1130,18 +1132,18 @@ class BaseEngine
             return call_user_func_array([$this, $name], $arguments);
         } elseif (method_exists($this->getBuilder(), $name)) {
             call_user_func_array([$this->getBuilder(), $name], $arguments);
-
-            return $this;
         } else {
             trigger_error('Call to undefined method ' . __CLASS__ . '::' . $name . '()', E_USER_ERROR);
         }
+
+        return $this;
     }
 
     /**
      * Sets DT_RowClass template
-     * result: <tr class="output_from_your_template">
+     * result: <tr class="output_from_your_template">.
      *
-     * @param  string|callable $content
+     * @param string|callable $content
      * @return $this
      */
     public function setRowClass($content)
@@ -1153,9 +1155,9 @@ class BaseEngine
 
     /**
      * Sets DT_RowId template
-     * result: <tr id="output_from_your_template">
+     * result: <tr id="output_from_your_template">.
      *
-     * @param  string|callable $content
+     * @param string|callable $content
      * @return $this
      */
     public function setRowId($content)
@@ -1166,9 +1168,9 @@ class BaseEngine
     }
 
     /**
-     * Set DT_RowData templates
+     * Set DT_RowData templates.
      *
-     * @param  array $data
+     * @param array $data
      * @return $this
      */
     public function setRowData(array $data)
@@ -1179,10 +1181,10 @@ class BaseEngine
     }
 
     /**
-     * Add DT_RowData template
+     * Add DT_RowData template.
      *
-     * @param  string          $key
-     * @param  string|callable $value
+     * @param string $key
+     * @param string|callable $value
      * @return $this
      */
     public function addRowData($key, $value)
@@ -1194,9 +1196,9 @@ class BaseEngine
 
     /**
      * Set DT_RowAttr templates
-     * result: <tr attr1="attr1" attr2="attr2">
+     * result: <tr attr1="attr1" attr2="attr2">.
      *
-     * @param  array $data
+     * @param array $data
      * @return $this
      */
     public function setRowAttr(array $data)
@@ -1207,10 +1209,10 @@ class BaseEngine
     }
 
     /**
-     * Add DT_RowAttr template
+     * Add DT_RowAttr template.
      *
-     * @param  string          $key
-     * @param  string|callable $value
+     * @param string $key
+     * @param string|callable $value
      * @return $this
      */
     public function addRowAttr($key, $value)
@@ -1221,11 +1223,11 @@ class BaseEngine
     }
 
     /**
-     * Override default column filter search
+     * Override default column filter search.
      *
-     * @param    $column
-     * @param    string $method
-     * @return   $this
+     * @param        $column
+     * @param string $method
+     * @return $this
      * @internal param $mixed ...,... All the individual parameters required for specified $method
      */
     public function filterColumn($column, $method)
@@ -1237,9 +1239,9 @@ class BaseEngine
     }
 
     /**
-     * Set data output transformer
+     * Set data output transformer.
      *
-     * @param  TransformerAbstract $transformer
+     * @param TransformerAbstract $transformer
      * @return $this
      */
     public function setTransformer($transformer)
@@ -1250,11 +1252,11 @@ class BaseEngine
     }
 
     /**
-     * Process add columns
+     * Process add columns.
      *
-     * @param  array          $data
-     * @param  string|integer $rkey
-     * @param  array|null     $rvalue
+     * @param array $data
+     * @param string|int $rkey
+     * @param array|null $rvalue
      * @return array
      */
     protected function processAddColumns(array $data, $rkey, $rvalue)
@@ -1269,11 +1271,11 @@ class BaseEngine
     }
 
     /**
-     * Process edit columns
+     * Process edit columns.
      *
-     * @param  array          $data
-     * @param  string|integer $rkey
-     * @param  array|null     $rvalue
+     * @param array $data
+     * @param string|int $rkey
+     * @param array|null $rvalue
      * @return array
      */
     protected function processEditColumns(array $data, $rkey, $rvalue)
@@ -1288,10 +1290,10 @@ class BaseEngine
     }
 
     /**
-     * Converts array object values to associative array
+     * Converts array object values to associative array.
      *
-     * @param  array          $rvalue
-     * @param  string|integer $rkey
+     * @param array $rvalue
+     * @param string|int $rkey
      * @return array
      */
     protected function convertToArray(array $rvalue, $rkey)
@@ -1309,7 +1311,7 @@ class BaseEngine
     }
 
     /**
-     * Check if Datatables is searchable
+     * Check if Datatables is searchable.
      *
      * @return bool
      */
@@ -1319,7 +1321,7 @@ class BaseEngine
     }
 
     /**
-     * Compile Datatables final output
+     * Compile Datatables final output.
      *
      * @return JsonResponse
      */
@@ -1333,9 +1335,9 @@ class BaseEngine
     }
 
     /**
-     * Compile Datatables queries
+     * Compile Datatables queries.
      *
-     * @param boolean $orderFirst
+     * @param bool $orderFirst
      */
     protected function compileQueryBuilder($orderFirst)
     {
@@ -1353,7 +1355,7 @@ class BaseEngine
     }
 
     /**
-     * Perform all filtering queries
+     * Perform all filtering queries.
      */
     protected function compileFiltering()
     {
@@ -1366,9 +1368,9 @@ class BaseEngine
     }
 
     /**
-     * Get equivalent or method of query builder
+     * Get equivalent or method of query builder.
      *
-     * @param  string $method
+     * @param string $method
      * @return string
      */
     protected function getOrMethod($method)

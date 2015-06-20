@@ -15,8 +15,8 @@ use Illuminate\Database\Eloquent\Builder;
 class EloquentEngine extends BaseEngine implements EngineContract
 {
     /**
-     * @param mixed   $model
-     * @param $request
+     * @param mixed $model
+     * @param       $request
      */
     public function __construct($model, $request)
     {

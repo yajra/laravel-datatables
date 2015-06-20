@@ -16,7 +16,7 @@ class QueryBuilderEngine extends BaseEngine implements EngineContract
 {
     /**
      * @param Builder $builder
-     * @param $request
+     * @param         $request
      */
     public function __construct(Builder $builder, $request)
     {

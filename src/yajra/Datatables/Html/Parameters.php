@@ -12,6 +12,7 @@ use Illuminate\Support\Fluent;
  */
 class Parameters extends Fluent
 {
+
     /**
      * @var array
      */
@@ -21,4 +22,5 @@ class Parameters extends Fluent
         'ajax'       => '',
         'columns'    => []
     ];
+
 }
