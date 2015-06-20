@@ -45,17 +45,24 @@ class Datatables
     /**
      * Class Constructor
      *
-     * @param Request $request
+     * @param  Request $request
+     * @throws Exception
      */
     public function __construct(Request $request)
     {
         $this->request = $request;
+
+        if (! $request->get('draw') && $request->get('sEcho')) {
+            throw new \Exception('DataTables legacy code is not supported! Please use DataTables 1.10++ coding convention.');
+        } elseif (! $request->get('draw') && ! $request->get('columns')) {
+            throw new \Exception('Insufficient paramaters');
+        }
     }
 
     /**
      * Gets query and returns instance of class
      *
-     * @param $builder
+     * @param  $builder
      * @return mixed
      */
     public static function of($builder)
