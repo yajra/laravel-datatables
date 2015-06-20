@@ -279,19 +279,20 @@ class BaseEngine
     public function doOrdering()
     {
         foreach ($this->request->orderableColumns() as $orderable) {
-            $this->query->orderBy($orderable['column'], $orderable['direction']);
+            $column = $this->getOrderColumnName($orderable['column']);
+            $this->query->orderBy($column, $orderable['direction']);
         }
     }
 
     /**
      * Get column name by order column index.
      *
-     * @param int $order_col
+     * @param int $column
      * @return mixed
      */
-    protected function getOrderColumnName($order_col)
+    protected function getOrderColumnName($column)
     {
-        return $this->request->getOrderColumnName($order_col) ?: $this->columns[$order_col];
+        return $this->request->orderColumnName($column) ?: $this->columns[$column];
     }
 
     /**
@@ -314,10 +315,9 @@ class BaseEngine
     {
         $this->query->where(
             function ($query) {
-                $columns = $this->request->get('columns');
                 $keyword = $this->setupKeyword($this->request->keyword());
                 foreach ($this->request->searchableColumnIndex() as $index) {
-                    $column  = $this->setupColumnName($index);
+                    $column = $this->setupColumnName($index);
 
                     if (isset($this->filter_columns[$column])) {
                         $method     = $this->getOrMethod($this->filter_columns[$column]['method']);
@@ -329,6 +329,57 @@ class BaseEngine
                 }
             }
         );
+    }
+
+    /**
+     * Setup search keyword.
+     *
+     * @param  $value
+     * @return string
+     */
+    public function setupKeyword($value)
+    {
+        $keyword = '%' . $value . '%';
+        if ($this->isWildcard()) {
+            $keyword = $this->wildcardLikeString($value);
+        }
+        // remove escaping slash added on js script request
+        $keyword = str_replace('\\', '%', $keyword);
+
+        return $keyword;
+    }
+
+    /**
+     * Get config use wild card status.
+     *
+     * @return bool
+     */
+    public function isWildcard()
+    {
+        return Config::get('datatables.search.use_wildcards', false);
+    }
+
+    /**
+     * Adds % wildcards to the given string.
+     *
+     * @param string $str
+     * @param bool $lowercase
+     * @return string
+     */
+    public function wildcardLikeString($str, $lowercase = true)
+    {
+        $wild   = '%';
+        $length = strlen($str);
+        if ($length) {
+            for ($i = 0; $i < $length; $i++) {
+                $wild .= $str[$i] . '%';
+            }
+        }
+        if ($lowercase) {
+            $wild = Str::lower($wild);
+        }
+
+        return $wild;
     }
 
     /**
@@ -459,57 +510,6 @@ class BaseEngine
     public function databasePrefix()
     {
         return $this->getBuilder()->getGrammar()->getTablePrefix();
-    }
-
-    /**
-     * Setup search keyword.
-     *
-     * @param  $value
-     * @return string
-     */
-    public function setupKeyword($value)
-    {
-        $keyword = '%' . $value . '%';
-        if ($this->isWildcard()) {
-            $keyword = $this->wildcardLikeString($value);
-        }
-        // remove escaping slash added on js script request
-        $keyword = str_replace('\\', '%', $keyword);
-
-        return $keyword;
-    }
-
-    /**
-     * Get config use wild card status.
-     *
-     * @return bool
-     */
-    public function isWildcard()
-    {
-        return Config::get('datatables.search.use_wildcards', false);
-    }
-
-    /**
-     * Adds % wildcards to the given string.
-     *
-     * @param string $str
-     * @param bool $lowercase
-     * @return string
-     */
-    public function wildcardLikeString($str, $lowercase = true)
-    {
-        $wild   = '%';
-        $length = strlen($str);
-        if ($length) {
-            for ($i = 0; $i < $length; $i++) {
-                $wild .= $str[$i] . '%';
-            }
-        }
-        if ($lowercase) {
-            $wild = Str::lower($wild);
-        }
-
-        return $wild;
     }
 
     /**

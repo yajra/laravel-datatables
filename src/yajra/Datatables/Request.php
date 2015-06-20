@@ -115,8 +115,7 @@ class Request extends IlluminateRequest
             $order_col = (int) $this->get('order')[$i]['column'];
             $order_dir = $this->get('order')[$i]['dir'];
             if ($this->isColumnOrderable($order_col)) {
-                $column = $this->orderColumnName($order_col);
-                $orderable[] = ['column' => $column, 'direction' => $order_dir];
+                $orderable[] = ['column' => $order_col, 'direction' => $order_dir];
             }
         }
 
