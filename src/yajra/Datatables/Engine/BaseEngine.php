@@ -32,16 +32,16 @@ class BaseEngine
     public $connection;
 
     /**
-     * Query object.
+     * Builder object.
      *
-     * @var EloquentBuilder|QueryBuilder
+     * @var \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     public $query;
 
     /**
-     * QueryBuilder object.
+     * Query builder object.
      *
-     * @var QueryBuilder
+     * @var \Illuminate\Database\Query\Builder
      */
     public $builder;
 
@@ -441,7 +441,7 @@ class BaseEngine
     /**
      * Get Query Builder object.
      *
-     * @return EloquentBuilder|QueryBuilder
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     public function getBuilder()
     {
