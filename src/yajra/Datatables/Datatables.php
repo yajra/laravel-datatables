@@ -12,7 +12,6 @@ namespace yajra\Datatables;
  */
 
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use yajra\Datatables\Engine\CollectionEngine;
 use yajra\Datatables\Engine\EloquentEngine;
@@ -46,28 +45,11 @@ class Datatables
     /**
      * Class Constructor
      *
-     * @param Request $request
+     * @param \yajra\Datatables\Request $request
      */
     public function __construct(Request $request)
     {
-        $this->request = $request;
-
-        $this->isLegacyCode($request);
-    }
-
-    /**
-     * Check if request uses legacy code
-     *
-     * @param  Request $request
-     * @throws \Exception
-     */
-    public function isLegacyCode($request)
-    {
-        if ( ! $request->get('draw') && $request->get('sEcho')) {
-            throw new \Exception('DataTables legacy code is not supported! Please use DataTables 1.10++ coding convention.');
-        } elseif ( ! $request->get('draw') && ! $request->get('columns')) {
-            throw new \Exception('Insufficient parameters');
-        }
+        $this->request = $request->request->count() ? $request : Request::capture();
     }
 
     /**
@@ -98,7 +80,7 @@ class Datatables
      */
     public function usingQueryBuilder(QueryBuilder $builder)
     {
-        return new QueryBuilderEngine($builder, $this->request->all());
+        return new QueryBuilderEngine($builder, $this->request);
     }
 
     /**
@@ -109,7 +91,7 @@ class Datatables
      */
     public function usingCollection(Collection $builder)
     {
-        return new CollectionEngine($builder, $this->request->all());
+        return new CollectionEngine($builder, $this->request);
     }
 
     /**
@@ -138,6 +120,6 @@ class Datatables
      */
     public function usingEloquent($builder)
     {
-        return new EloquentEngine($builder, $this->request->all());
+        return new EloquentEngine($builder, $this->request);
     }
 }

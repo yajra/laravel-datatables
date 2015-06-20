@@ -11,14 +11,15 @@ namespace yajra\Datatables\Engine;
  */
 
 use Illuminate\Database\Query\Builder;
+use yajra\Datatables\Request;
 
 class QueryBuilderEngine extends BaseEngine implements EngineContract
 {
     /**
      * @param Builder $builder
-     * @param array $request
+     * @param \yajra\Datatables\Request $request
      */
-    public function __construct(Builder $builder, array $request)
+    public function __construct(Builder $builder, Request $request)
     {
         $this->query_type = 'builder';
         $this->query      = $builder;

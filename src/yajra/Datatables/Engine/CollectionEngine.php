@@ -14,6 +14,7 @@ use Closure;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use yajra\Datatables\Request;
 
 class CollectionEngine extends BaseEngine implements EngineContract
 {
@@ -34,9 +35,9 @@ class CollectionEngine extends BaseEngine implements EngineContract
 
     /**
      * @param Collection $collection
-     * @param array $request
+     * @param \yajra\Datatables\Request $request
      */
-    public function __construct(Collection $collection, array $request)
+    public function __construct(Collection $collection, Request $request)
     {
         $this->collection          = $collection;
         $this->original_collection = $collection;
@@ -77,11 +78,11 @@ class CollectionEngine extends BaseEngine implements EngineContract
      */
     public function doOrdering()
     {
-        if (array_key_exists('order', $this->input) && count($this->input['order']) > 0) {
-            for ($i = 0, $c = count($this->input['order']); $i < $c; $i++) {
-                $order_col = (int) $this->input['order'][$i]['column'];
-                $order_dir = $this->input['order'][$i]['dir'];
-                if ( ! $this->isColumnOrderable($this->input['columns'][$order_col])) {
+        if (array_key_exists('order', $this->request) && count($this->request['order']) > 0) {
+            for ($i = 0, $c = count($this->request['order']); $i < $c; $i++) {
+                $order_col = (int) $this->request['order'][$i]['column'];
+                $order_dir = $this->request['order'][$i]['dir'];
+                if ( ! $this->isColumnOrderable($this->request['columns'][$order_col])) {
                     continue;
                 }
                 $column           = $this->getOrderColumnName($order_col);
@@ -103,7 +104,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
      */
     public function doFiltering()
     {
-        $columns          = $this->input['columns'];
+        $columns          = $this->request['columns'];
         $this->collection = $this->collection->filter(
             function ($row) use ($columns) {
                 $data  = $this->serialize($row);
@@ -115,7 +116,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
                     }
 
                     $column  = $this->getColumnIdentity($columns, $i);
-                    $keyword = $this->input['search']['value'];
+                    $keyword = $this->request['search']['value'];
 
                     if ( ! $this->columnExists($column, $data)) {
                         continue;
@@ -150,7 +151,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
      */
     public function doColumnSearch()
     {
-        $columns = $this->input['columns'];
+        $columns = $this->request['columns'];
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($columns[$i]['searchable'] != "true" || $columns[$i]['search']['value'] == '') {
                 continue;
@@ -209,7 +210,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
      */
     protected function showDebugger($output)
     {
-        $output["input"] = $this->input;
+        $output["input"] = $this->request;
 
         return $output;
     }
@@ -220,8 +221,8 @@ class CollectionEngine extends BaseEngine implements EngineContract
     protected function paginate()
     {
         $this->collection = $this->collection->slice(
-            $this->input['start'],
-            (int) $this->input['length'] > 0 ? $this->input['length'] : 10
+            $this->request['start'],
+            (int) $this->request['length'] > 0 ? $this->request['length'] : 10
         );
     }
 }

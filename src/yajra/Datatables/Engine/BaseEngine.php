@@ -21,6 +21,7 @@ use Illuminate\View\Compilers\BladeCompiler;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
+use yajra\Datatables\Request;
 
 class BaseEngine
 {
@@ -51,7 +52,7 @@ class BaseEngine
      *
      * @var array
      */
-    public $input;
+    public $request;
 
     /**
      * Array of result columns/fields.
@@ -196,11 +197,11 @@ class BaseEngine
     /**
      * Construct base engine.
      *
-     * @param array $request
+     * @param \yajra\Datatables\Request $request
      */
-    public function __construct(array $request)
+    public function __construct(Request $request)
     {
-        $this->input = $request;
+        $this->request = $request;
         $this->getTotalRecords(); // Total records
     }
 
@@ -277,38 +278,9 @@ class BaseEngine
      */
     public function doOrdering()
     {
-        if ($this->isOrderable()) {
-            for ($i = 0, $c = count($this->input['order']); $i < $c; $i++) {
-                $order_col = (int) $this->input['order'][$i]['column'];
-                $order_dir = $this->input['order'][$i]['dir'];
-                if ( ! $this->isColumnOrderable($this->input['columns'][$order_col])) {
-                    continue;
-                }
-                $column = $this->getOrderColumnName($order_col);
-                $this->query->orderBy($column, $order_dir);
-            }
+        foreach ($this->request->orderableColumns() as $orderable) {
+            $this->query->orderBy($orderable['column'], $orderable['direction']);
         }
-    }
-
-    /**
-     * Check if Datatables ordering is enabled.
-     *
-     * @return bool
-     */
-    protected function isOrderable()
-    {
-        return array_key_exists('order', $this->input) && count($this->input['order']) > 0;
-    }
-
-    /**
-     * Check if a column is orderable.
-     *
-     * @param  $column
-     * @return bool
-     */
-    protected function isColumnOrderable($column)
-    {
-        return $column['orderable'] == 'true';
     }
 
     /**
@@ -319,12 +291,7 @@ class BaseEngine
      */
     protected function getOrderColumnName($order_col)
     {
-        $column = $this->input['columns'][$order_col];
-        if (isset($column['name']) && $column['name'] != '') {
-            return $column['name'];
-        }
-
-        return $this->columns[$order_col];
+        return $this->request->getOrderColumnName($order_col) ?: $this->columns[$order_col];
     }
 
     /**
@@ -332,22 +299,12 @@ class BaseEngine
      */
     protected function compileFiltering()
     {
-        if ($this->autoFilter && $this->isSearchable()) {
+        if ($this->autoFilter && $this->request->isSearchable()) {
             $this->doFiltering();
         }
 
         $this->doColumnSearch();
         $this->getTotalFilteredRecords();
-    }
-
-    /**
-     * Check if Datatables is searchable.
-     *
-     * @return bool
-     */
-    protected function isSearchable()
-    {
-        return ! empty($this->input['search']['value']);
     }
 
     /**
@@ -357,14 +314,10 @@ class BaseEngine
     {
         $this->query->where(
             function ($query) {
-                $columns = $this->input['columns'];
-                for ($i = 0, $c = count($columns); $i < $c; $i++) {
-                    if ( ! $this->isColumnSearchable($columns, $i, false)) {
-                        continue;
-                    }
-
-                    $column  = $this->setupColumn($columns, $i);
-                    $keyword = $this->setupKeyword($this->input['search']['value']);
+                $columns = $this->request->get('columns');
+                $keyword = $this->setupKeyword($this->request->keyword());
+                foreach ($this->request->searchableColumnIndex() as $index) {
+                    $column  = $this->setupColumnName($index);
 
                     if (isset($this->filter_columns[$column])) {
                         $method     = $this->getOrMethod($this->filter_columns[$column]['method']);
@@ -379,32 +332,14 @@ class BaseEngine
     }
 
     /**
-     * Check if a column is searchable.
-     *
-     * @param array $columns
-     * @param int $i
-     * @param bool $column_search
-     * @return bool
-     */
-    protected function isColumnSearchable(array $columns, $i, $column_search = true)
-    {
-        if ($column_search) {
-            return $columns[$i]['searchable'] == 'true' && $columns[$i]['search']['value'] != '' && ! empty($columns[$i]['name']);
-        }
-
-        return $columns[$i]['searchable'] == 'true';
-    }
-
-    /**
      * Setup column name to be use for filtering.
      *
-     * @param array $columns
-     * @param int $i
+     * @param integer $i
      * @return string
      */
-    private function setupColumn(array $columns, $i)
+    private function setupColumnName($i)
     {
-        $column = $this->getColumnIdentity($columns, $i);
+        $column = $this->getColumnIdentity($i);
 
         if (Str::contains(Str::upper($column), ' AS ')) {
             $column = $this->getColumnName($column);
@@ -419,19 +354,12 @@ class BaseEngine
     /**
      * Get column identity from input or database.
      *
-     * @param array $columns
-     * @param int $i
+     * @param integer $i
      * @return string
      */
-    public function getColumnIdentity(array $columns, $i)
+    public function getColumnIdentity($i)
     {
-        if ( ! empty($columns[$i]['name'])) {
-            $column = $columns[$i]['name'];
-        } else {
-            $column = $this->columns[$i];
-        }
-
-        return $column;
+        return $this->request->columnName($i) ?: $this->columns[$i];
     }
 
     /**
@@ -755,11 +683,11 @@ class BaseEngine
      */
     public function doColumnSearch()
     {
-        $columns = $this->input['columns'];
+        $columns = $this->request['columns'];
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
-            if ($this->isColumnSearchable($columns, $i)) {
+            if ($this->request->isColumnSearchable($i)) {
                 $column  = $columns[$i]['name'];
-                $keyword = $this->setupKeyword($columns[$i]['search']['value']);
+                $keyword = $this->setupKeyword($this->request->getColumnKeyword($i));
 
                 if (isset($this->filter_columns[$column])) {
                     $method     = $this->filter_columns[$column]['method'];
@@ -805,7 +733,7 @@ class BaseEngine
      */
     protected function isPaginationable()
     {
-        return ! is_null($this->input['start']) && ! is_null($this->input['length']) && $this->input['length'] != -1;
+        return ! is_null($this->request['start']) && ! is_null($this->request['length']) && $this->request['length'] != -1;
     }
 
     /**
@@ -815,8 +743,8 @@ class BaseEngine
      */
     protected function paginate()
     {
-        return $this->query->skip($this->input['start'])
-            ->take((int) $this->input['length'] > 0 ? $this->input['length'] : 10);
+        return $this->query->skip($this->request['start'])
+            ->take((int) $this->request['length'] > 0 ? $this->request['length'] : 10);
     }
 
     /**
@@ -1123,7 +1051,7 @@ class BaseEngine
     public function output()
     {
         $output = [
-            'draw'            => (int) $this->input['draw'],
+            'draw'            => (int) $this->request['draw'],
             'recordsTotal'    => $this->totalRecords,
             'recordsFiltered' => $this->filteredRecords,
         ];
@@ -1163,7 +1091,7 @@ class BaseEngine
     protected function showDebugger($output)
     {
         $output['queries'] = $this->connection->getQueryLog();
-        $output['input']   = $this->input;
+        $output['input']   = $this->request;
 
         return $output;
     }

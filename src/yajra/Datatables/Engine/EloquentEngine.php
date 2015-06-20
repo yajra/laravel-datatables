@@ -11,14 +11,15 @@ namespace yajra\Datatables\Engine;
  */
 
 use Illuminate\Database\Eloquent\Builder;
+use yajra\Datatables\Request;
 
 class EloquentEngine extends BaseEngine implements EngineContract
 {
     /**
      * @param mixed $model
-     * @param array $request
+     * @param \yajra\Datatables\Request $request
      */
-    public function __construct($model, array $request)
+    public function __construct($model, Request $request)
     {
         $this->query_type = 'eloquent';
         $this->query      = $model instanceof Builder ? $model : $model->getQuery();
