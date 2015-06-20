@@ -5,9 +5,9 @@ namespace yajra\Datatables\Engine;
 /**
  * Laravel Datatables Query Builder Engine
  *
- * @package    Laravel
- * @category   Package
- * @author     Arjay Angeles <aqangeles@gmail.com>
+ * @package  Laravel
+ * @category Package
+ * @author   Arjay Angeles <aqangeles@gmail.com>
  */
 
 use Illuminate\Database\Query\Builder;

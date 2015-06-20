@@ -5,9 +5,9 @@ namespace yajra\Datatables\Engine;
 /**
  * Laravel Datatables Collection Engine
  *
- * @package    Laravel
- * @category   Package
- * @author     Arjay Angeles <aqangeles@gmail.com>
+ * @package  Laravel
+ * @category Package
+ * @author   Arjay Angeles <aqangeles@gmail.com>
  */
 
 use Closure;
@@ -84,9 +84,11 @@ class CollectionEngine extends BaseEngine implements EngineContract
                     continue;
                 }
                 $column           = $this->getOrderColumnName($order_col);
-                $this->collection = $this->collection->sortBy(function ($row) use ($column) {
-                    return $row[$column];
-                });
+                $this->collection = $this->collection->sortBy(
+                    function ($row) use ($column) {
+                        return $row[$column];
+                    }
+                );
 
                 if ($order_dir == 'desc') {
                     $this->collection = $this->collection->reverse();
@@ -101,31 +103,33 @@ class CollectionEngine extends BaseEngine implements EngineContract
     public function doFiltering()
     {
         $columns          = $this->input['columns'];
-        $this->collection = $this->collection->filter(function ($row) use ($columns) {
-            $data = $this->serialize($row);
-            $found = [];
+        $this->collection = $this->collection->filter(
+            function ($row) use ($columns) {
+                $data = $this->serialize($row);
+                $found = [];
 
-            for ($i = 0, $c = count($columns); $i < $c; $i++) {
-                if ($columns[$i]['searchable'] != "true") {
-                    continue;
+                for ($i = 0, $c = count($columns); $i < $c; $i++) {
+                    if ($columns[$i]['searchable'] != "true") {
+                        continue;
+                    }
+
+                    $column = $this->getColumnIdentity($columns, $i);
+                    $keyword = $this->input['search']['value'];
+
+                    if (! $this->columnExists($column, $data)) {
+                        continue;
+                    }
+
+                    if ($this->isCaseInsensitive()) {
+                        $found[] = Str::contains(Str::lower($data[$column]), Str::lower($keyword));
+                    } else {
+                        $found[] = Str::contains($data[$column], $keyword);
+                    }
                 }
 
-                $column = $this->getColumnIdentity($columns, $i);
-                $keyword = $this->input['search']['value'];
-
-                if (! $this->columnExists($column, $data)) {
-                    continue;
-                }
-
-                if ($this->isCaseInsensitive()) {
-                    $found[] = Str::contains(Str::lower($data[$column]), Str::lower($keyword));
-                } else {
-                    $found[] = Str::contains($data[$column], $keyword);
-                }
+                return in_array(true, $found);
             }
-
-            return in_array(true, $found);
-        });
+        );
     }
 
     /**
@@ -143,15 +147,17 @@ class CollectionEngine extends BaseEngine implements EngineContract
 
             $keyword = $columns[$i]['search']['value'];
 
-            $this->collection = $this->collection->filter(function ($row) use ($column, $keyword) {
-                $data = $this->serialize($row);
+            $this->collection = $this->collection->filter(
+                function ($row) use ($column, $keyword) {
+                    $data = $this->serialize($row);
 
-                if ($this->isCaseInsensitive()) {
-                    return strpos(Str::lower($data[$column]), Str::lower($keyword)) !== false;
-                } else {
-                    return strpos($data[$column], $keyword) !== false;
+                    if ($this->isCaseInsensitive()) {
+                        return strpos(Str::lower($data[$column]), Str::lower($keyword)) !== false;
+                    } else {
+                        return strpos($data[$column], $keyword) !== false;
+                    }
                 }
-            });
+            );
         }
     }
 
@@ -200,15 +206,17 @@ class CollectionEngine extends BaseEngine implements EngineContract
      */
     protected function paginate()
     {
-        $this->collection = $this->collection->slice($this->input['start'],
-            (int) $this->input['length'] > 0 ? $this->input['length'] : 10);
+        $this->collection = $this->collection->slice(
+            $this->input['start'],
+            (int) $this->input['length'] > 0 ? $this->input['length'] : 10
+        );
     }
 
     /**
      * Check if column name exists in collection keys
      *
-     * @param string $column
-     * @param array $data
+     * @param  string $column
+     * @param  array  $data
      * @return bool
      */
     private function columnExists($column, array $data)

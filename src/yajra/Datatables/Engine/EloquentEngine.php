@@ -5,9 +5,9 @@ namespace yajra\Datatables\Engine;
 /**
  * Laravel Datatables Eloquent Engine
  *
- * @package    Laravel
- * @category   Package
- * @author     Arjay Angeles <aqangeles@gmail.com>
+ * @package  Laravel
+ * @category Package
+ * @author   Arjay Angeles <aqangeles@gmail.com>
  */
 
 use Illuminate\Database\Eloquent\Builder;
@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 class EloquentEngine extends BaseEngine implements EngineContract
 {
     /**
-     * @param mixed $model
+     * @param mixed   $model
      * @param $request
      */
     public function __construct($model, $request)

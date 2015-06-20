@@ -6,9 +6,9 @@ namespace yajra\Datatables;
  * Laravel Datatables Package
  * This Package is created to handle server-side works of DataTables Jquery Plugin (http://datatables.net)
  *
- * @package    Laravel
- * @category   Package
- * @author     Arjay Angeles <aqangeles@gmail.com>
+ * @package  Laravel
+ * @category Package
+ * @author   Arjay Angeles <aqangeles@gmail.com>
  */
 
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -22,9 +22,9 @@ use yajra\Datatables\Engine\QueryBuilderEngine;
  * Class Datatables
  *
  * @package yajra\Datatables
- * @method EloquentEngine eloquent($builder)
- * @method CollectionEngine collection(Collection $builder)
- * @method QueryBuilderEngine queryBuilder(QueryBuilder $builder)
+ * @method  EloquentEngine eloquent($builder)
+ * @method  CollectionEngine collection(Collection $builder)
+ * @method  QueryBuilderEngine queryBuilder(QueryBuilder $builder)
  */
 class Datatables
 {
@@ -82,7 +82,7 @@ class Datatables
     /**
      * Datatables using Query Builder
      *
-     * @param QueryBuilder $builder
+     * @param  QueryBuilder $builder
      * @return QueryBuilderEngine
      */
     public function usingQueryBuilder(QueryBuilder $builder)
@@ -93,7 +93,7 @@ class Datatables
     /**
      * Datatables using Collection
      *
-     * @param Collection $builder
+     * @param  Collection $builder
      * @return CollectionEngine
      */
     public function usingCollection(Collection $builder)
@@ -104,8 +104,8 @@ class Datatables
     /**
      * Allows api call without the using word
      *
-     * @param $name
-     * @param $arguments
+     * @param  $name
+     * @param  $arguments
      * @return $this|mixed
      */
     public function __call($name, $arguments)
@@ -122,7 +122,7 @@ class Datatables
     /**
      * Datatables using Eloquent
      *
-     * @param mixed $builder
+     * @param  mixed $builder
      * @return EloquentEngine
      */
     public function usingEloquent($builder)

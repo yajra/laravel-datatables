@@ -21,9 +21,11 @@ class DatatablesServiceProvider extends ServiceProvider
     public function boot()
     {
         // Publish config files
-        $this->publishes([
+        $this->publishes(
+            [
             __DIR__ . '/config/config.php' => config_path('datatables.php'),
-        ], 'config');
+            ], 'config'
+        );
     }
 
     /**
@@ -33,9 +35,11 @@ class DatatablesServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app['datatables'] = $this->app->share(function ($app) {
-            return new Datatables($app['request']);
-        });
+        $this->app['datatables'] = $this->app->share(
+            function ($app) {
+                return new Datatables($app['request']);
+            }
+        );
     }
 
     /**

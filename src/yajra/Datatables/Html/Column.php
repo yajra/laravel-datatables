@@ -8,7 +8,7 @@ use Illuminate\Support\Fluent;
  * Class Column
  *
  * @package yajra\Datatables\Html
- * @see https://datatables.net/reference/option/ for possible columns option
+ * @see     https://datatables.net/reference/option/ for possible columns option
  */
 class Column extends Fluent
 {

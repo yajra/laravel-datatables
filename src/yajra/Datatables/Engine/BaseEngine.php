@@ -5,9 +5,9 @@ namespace yajra\Datatables\Engine;
 /**
  * Laravel Datatables Base Engine
  *
- * @package    Laravel
- * @category   Package
- * @author     Arjay Angeles <aqangeles@gmail.com>
+ * @package  Laravel
+ * @category Package
+ * @author   Arjay Angeles <aqangeles@gmail.com>
  */
 
 use Closure;
@@ -223,8 +223,10 @@ class BaseEngine
 
         // if its a normal query ( no union and having word ) replace the select with static text to improve performance
         $myQuery = clone $query;
-        if (! Str::contains(Str::lower($myQuery->toSql()), 'union') && ! Str::contains(Str::lower($myQuery->toSql()),
-                'having')
+        if (! Str::contains(Str::lower($myQuery->toSql()), 'union') && ! Str::contains(
+            Str::lower($myQuery->toSql()),
+            'having'
+        )
         ) {
             $myQuery->select($this->connection->raw("'1' as row_count"));
         }
@@ -236,8 +238,8 @@ class BaseEngine
     /**
      * Organizes works
      *
-     * @param bool $mDataSupport
-     * @param bool $orderFirst For CollectionEngine, ordering should be done first
+     * @param  bool $mDataSupport
+     * @param  bool $orderFirst   For CollectionEngine, ordering should be done first
      * @return JsonResponse
      */
     public function make($mDataSupport = false, $orderFirst = false)
@@ -283,7 +285,7 @@ class BaseEngine
     /**
      * Check if a column is orderable
      *
-     * @param $column
+     * @param  $column
      * @return bool
      */
     protected function isColumnOrderable($column)
@@ -294,13 +296,13 @@ class BaseEngine
     /**
      * Get column name by order column index
      *
-     * @param integer $order_col
+     * @param  integer $order_col
      * @return mixed
      */
     protected function getOrderColumnName($order_col)
     {
         $column = $this->input['columns'][$order_col];
-        if (isset($column['name']) && $column['name'] <> '') {
+        if (isset($column['name']) && $column['name'] != '') {
             return $column['name'];
         }
 
@@ -312,32 +314,34 @@ class BaseEngine
      */
     public function doFiltering()
     {
-        $this->query->where(function ($query) {
-            $columns = $this->input['columns'];
-            for ($i = 0, $c = count($columns); $i < $c; $i++) {
-                if (! $this->isColumnSearchable($columns, $i, false)) {
-                    continue;
-                }
+        $this->query->where(
+            function ($query) {
+                $columns = $this->input['columns'];
+                for ($i = 0, $c = count($columns); $i < $c; $i++) {
+                    if (! $this->isColumnSearchable($columns, $i, false)) {
+                        continue;
+                    }
 
-                $column = $this->setupColumn($columns, $i);
-                $keyword = $this->setupKeyword($this->input['search']['value']);
+                    $column = $this->setupColumn($columns, $i);
+                    $keyword = $this->setupKeyword($this->input['search']['value']);
 
-                if (isset($this->filter_columns[$column])) {
-                    $method = $this->getOrMethod($this->filter_columns[$column]['method']);
-                    $parameters = $this->filter_columns[$column]['parameters'];
-                    $this->compileFilterColumn($method, $parameters, $column);
-                } else {
-                    $this->compileGlobalSearch($query, $column, $keyword);
+                    if (isset($this->filter_columns[$column])) {
+                        $method = $this->getOrMethod($this->filter_columns[$column]['method']);
+                        $parameters = $this->filter_columns[$column]['parameters'];
+                        $this->compileFilterColumn($method, $parameters, $column);
+                    } else {
+                        $this->compileGlobalSearch($query, $column, $keyword);
+                    }
                 }
             }
-        });
+        );
     }
 
     /**
      * Setup column name to be use for filtering
      *
-     * @param array $columns
-     * @param integer $i
+     * @param  array   $columns
+     * @param  integer $i
      * @return string
      */
     private function setupColumn(array $columns, $i)
@@ -357,8 +361,8 @@ class BaseEngine
     /**
      * Get column identity from input or database
      *
-     * @param array $columns
-     * @param integer $i
+     * @param  array   $columns
+     * @param  integer $i
      * @return string
      */
     public function getColumnIdentity(array $columns, $i)
@@ -396,15 +400,19 @@ class BaseEngine
     /**
      * Will prefix column if needed
      *
-     * @param string $column
+     * @param  string $column
      * @return string
      */
     public function prefixColumn($column)
     {
         $table_names = $this->tableNames();
-        if (count(array_filter($table_names, function ($value) use (&$column) {
-            return strpos($column, $value . ".") === 0;
-        }))) {
+        if (count(
+            array_filter(
+                $table_names, function ($value) use (&$column) {
+                    return strpos($column, $value . ".") === 0;
+                }
+            )
+        )) {
             // the column starts with one of the table names
             $column = $this->databasePrefix() . $column;
         }
@@ -472,7 +480,7 @@ class BaseEngine
     /**
      * Setup search keyword
      *
-     * @param $value
+     * @param  $value
      * @return string
      */
     public function setupKeyword($value)
@@ -500,8 +508,8 @@ class BaseEngine
     /**
      * Adds % wildcards to the given string
      *
-     * @param string $str
-     * @param bool $lowercase
+     * @param  string $str
+     * @param  bool   $lowercase
      * @return string
      */
     public function wildcardLikeString($str, $lowercase = true)
@@ -530,17 +538,25 @@ class BaseEngine
     protected function compileFilterColumn($method, $parameters, $column)
     {
         if (method_exists($this->getBuilder(), $method)
-            && count($parameters) <= with(new \ReflectionMethod($this->getBuilder(),
-                $method))->getNumberOfParameters()
+            && count($parameters) <= with(
+                new \ReflectionMethod(
+                    $this->getBuilder(),
+                    $method
+                )
+            )->getNumberOfParameters()
         ) {
             if (Str::contains(Str::lower($method), 'raw')
                 || Str::contains(Str::lower($method), 'exists')
             ) {
-                call_user_func_array([$this->getBuilder(), $method],
-                    $this->parameterize($parameters));
+                call_user_func_array(
+                    [$this->getBuilder(), $method],
+                    $this->parameterize($parameters)
+                );
             } else {
-                call_user_func_array([$this->getBuilder(), $method],
-                    $this->parameterize($column, $parameters));
+                call_user_func_array(
+                    [$this->getBuilder(), $method],
+                    $this->parameterize($column, $parameters)
+                );
             }
         }
     }
@@ -572,7 +588,7 @@ class BaseEngine
     /**
      * Add a query on global search
      *
-     * @param mixed $query
+     * @param mixed  $query
      * @param string $column
      * @param string $keyword
      */
@@ -618,16 +634,16 @@ class BaseEngine
         $column = '';
         foreach ($parts as $key) {
             switch ($this->databaseDriver()) {
-                case 'mysql':
-                    $column .= '`' . str_replace('`', '``', $key) . '`' . '.';
-                    break;
+            case 'mysql':
+                $column .= '`' . str_replace('`', '``', $key) . '`' . '.';
+                break;
 
-                case 'sqlsrv':
-                    $column .= '[' . str_replace(']', ']]', $key) . ']' . '.';
-                    break;
+            case 'sqlsrv':
+                $column .= '[' . str_replace(']', ']]', $key) . ']' . '.';
+                break;
 
-                default:
-                    $column .= $key . '.';
+            default:
+                $column .= $key . '.';
             }
         }
 
@@ -675,9 +691,9 @@ class BaseEngine
     /**
      * Check if a column is searchable
      *
-     * @param array $columns
-     * @param integer $i
-     * @param bool $column_search
+     * @param  array   $columns
+     * @param  integer $i
+     * @param  bool    $column_search
      * @return bool
      */
     protected function isColumnSearchable(array $columns, $i, $column_search = true)
@@ -735,9 +751,11 @@ class BaseEngine
      */
     public function setResults()
     {
-        $this->result_array = array_map(function ($object) {
-            return $object instanceof Arrayable ? $object->toArray() : (array) $object;
-        }, $this->getResults());
+        $this->result_array = array_map(
+            function ($object) {
+                return $object instanceof Arrayable ? $object->toArray() : (array) $object;
+            }, $this->getResults()
+        );
     }
 
     /**
@@ -775,11 +793,11 @@ class BaseEngine
      */
     protected function processContent($value, $data, $rkey)
     {
-        if (is_string($value['content'])):
+        if (is_string($value['content'])) :
             $value['content'] = $this->compileBlade($value['content'], $data);
 
-        return $value; elseif (is_callable($value['content'])):
-            $value['content'] = $value['content']($this->result_object[$rkey]);
+        return $value; elseif (is_callable($value['content'])) :
+                $value['content'] = $value['content']($this->result_object[$rkey]);
 
         return $value;
         endif;
@@ -790,8 +808,8 @@ class BaseEngine
     /**
      * Parses and compiles strings by using Blade Template System
      *
-     * @param $str
-     * @param array $data
+     * @param  $str
+     * @param  array $data
      * @return string
      * @throws \Exception
      */
@@ -819,8 +837,8 @@ class BaseEngine
     /**
      * Places item of extra columns into result_array by care of their order
      *
-     * @param $item
-     * @param $array
+     * @param  $item
+     * @param  $array
      * @return array
      */
     public function includeInArray($item, $array)
@@ -866,7 +884,7 @@ class BaseEngine
      * Setup additional DT row variables
      *
      * @param  string $key
-     * @param  array &$data
+     * @param  array  &$data
      * @return array
      */
     protected function setupDTRowVariables($key, array &$data)
@@ -880,10 +898,10 @@ class BaseEngine
     /**
      * Process DT RowId and Class value
      *
-     * @param string $key
+     * @param string          $key
      * @param string|callable $template
-     * @param string $index
-     * @param array $data
+     * @param string          $index
+     * @param array           $data
      */
     protected function processDTRowValue($key, $template, $index, array &$data)
     {
@@ -899,9 +917,9 @@ class BaseEngine
     /**
      * Determines if content is callable or blade string, processes and returns
      *
-     * @param string|callable $content Pre-processed content
-     * @param mixed $data data to use with blade template
-     * @param mixed $param parameter to call with callable
+     * @param  string|callable $content Pre-processed content
+     * @param  mixed           $data    data to use with blade template
+     * @param  mixed           $param   parameter to call with callable
      * @return string Processed content
      */
     public function getContent($content, $data = null, $param = null)
@@ -921,9 +939,9 @@ class BaseEngine
      * Process DT Row Data and Attr
      *
      * @param string $key
-     * @param array $template
+     * @param array  $template
      * @param string $index
-     * @param array $data
+     * @param array  $data
      */
     protected function processDTRowDataAttr($key, array $template, $index, array &$data)
     {
@@ -992,7 +1010,7 @@ class BaseEngine
     /**
      * Show debug parameters
      *
-     * @param $output
+     * @param  $output
      * @return mixed
      */
     protected function showDebugger($output)
@@ -1040,9 +1058,9 @@ class BaseEngine
     /**
      * Add column in collection
      *
-     * @param string $name
-     * @param string $content
-     * @param bool|int $order
+     * @param  string   $name
+     * @param  string   $content
+     * @param  bool|int $order
      * @return $this
      */
     public function addColumn($name, $content, $order = false)
@@ -1084,7 +1102,7 @@ class BaseEngine
     /**
      * Set auto filter off and run your own filter
      *
-     * @param Closure $callback
+     * @param  Closure $callback
      * @return $this
      */
     public function filter(Closure $callback)
@@ -1101,8 +1119,8 @@ class BaseEngine
      * Allows previous API calls where the methods were snake_case.
      * Will convert a camelCase API call to a snake_case call.
      *
-     * @param $name
-     * @param $arguments
+     * @param  $name
+     * @param  $arguments
      * @return $this|mixed
      */
     public function __call($name, $arguments)
@@ -1123,7 +1141,7 @@ class BaseEngine
      * Sets DT_RowClass template
      * result: <tr class="output_from_your_template">
      *
-     * @param string|callable $content
+     * @param  string|callable $content
      * @return $this
      */
     public function setRowClass($content)
@@ -1137,7 +1155,7 @@ class BaseEngine
      * Sets DT_RowId template
      * result: <tr id="output_from_your_template">
      *
-     * @param string|callable $content
+     * @param  string|callable $content
      * @return $this
      */
     public function setRowId($content)
@@ -1150,7 +1168,7 @@ class BaseEngine
     /**
      * Set DT_RowData templates
      *
-     * @param array $data
+     * @param  array $data
      * @return $this
      */
     public function setRowData(array $data)
@@ -1163,8 +1181,8 @@ class BaseEngine
     /**
      * Add DT_RowData template
      *
-     * @param string $key
-     * @param string|callable $value
+     * @param  string          $key
+     * @param  string|callable $value
      * @return $this
      */
     public function addRowData($key, $value)
@@ -1178,7 +1196,7 @@ class BaseEngine
      * Set DT_RowAttr templates
      * result: <tr attr1="attr1" attr2="attr2">
      *
-     * @param array $data
+     * @param  array $data
      * @return $this
      */
     public function setRowAttr(array $data)
@@ -1191,8 +1209,8 @@ class BaseEngine
     /**
      * Add DT_RowAttr template
      *
-     * @param string $key
-     * @param string|callable $value
+     * @param  string          $key
+     * @param  string|callable $value
      * @return $this
      */
     public function addRowAttr($key, $value)
@@ -1205,9 +1223,9 @@ class BaseEngine
     /**
      * Override default column filter search
      *
-     * @param $column
-     * @param string $method
-     * @return $this
+     * @param    $column
+     * @param    string $method
+     * @return   $this
      * @internal param $mixed ...,... All the individual parameters required for specified $method
      */
     public function filterColumn($column, $method)
@@ -1221,7 +1239,7 @@ class BaseEngine
     /**
      * Set data output transformer
      *
-     * @param TransformerAbstract $transformer
+     * @param  TransformerAbstract $transformer
      * @return $this
      */
     public function setTransformer($transformer)
@@ -1234,9 +1252,9 @@ class BaseEngine
     /**
      * Process add columns
      *
-     * @param array $data
-     * @param string|integer $rkey
-     * @param array|null $rvalue
+     * @param  array          $data
+     * @param  string|integer $rkey
+     * @param  array|null     $rvalue
      * @return array
      */
     protected function processAddColumns(array $data, $rkey, $rvalue)
@@ -1253,9 +1271,9 @@ class BaseEngine
     /**
      * Process edit columns
      *
-     * @param array $data
-     * @param string|integer $rkey
-     * @param array|null $rvalue
+     * @param  array          $data
+     * @param  string|integer $rkey
+     * @param  array|null     $rvalue
      * @return array
      */
     protected function processEditColumns(array $data, $rkey, $rvalue)
@@ -1272,8 +1290,8 @@ class BaseEngine
     /**
      * Converts array object values to associative array
      *
-     * @param array $rvalue
-     * @param string|integer $rkey
+     * @param  array          $rvalue
+     * @param  string|integer $rkey
      * @return array
      */
     protected function convertToArray(array $rvalue, $rkey)
@@ -1350,7 +1368,7 @@ class BaseEngine
     /**
      * Get equivalent or method of query builder
      *
-     * @param string $method
+     * @param  string $method
      * @return string
      */
     protected function getOrMethod($method)
