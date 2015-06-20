@@ -591,24 +591,26 @@ class BaseEngine
      * @param string $column
      * @param string $keyword
      */
-    private function compileGlobalSearch($query, $column, $keyword)
+    protected function compileGlobalSearch($query, $column, $keyword)
     {
-        // Check if the database driver is PostgreSQL
-        // If it is, cast the current column to TEXT datatype
-        $cast_begin = null;
-        $cast_end   = null;
-        if ($this->databaseDriver() === 'pgsql') {
-            $cast_begin = 'CAST(';
-            $cast_end   = ' as TEXT)';
+        $column = $this->castColumn($column);
+        $sql    = $column . ' LIKE ?';
+        if ($this->isCaseInsensitive()) {
+            $sql     = 'LOWER(' . $column . ') LIKE ?';
+            $keyword = Str::lower($keyword);
         }
 
-        // wrap column possibly allow reserved words to be used as column
+        $query->orWhereRaw($sql, [$keyword]);
+    }
+
+    public function castColumn($column)
+    {
         $column = $this->wrapValue($column);
-        if ($this->isCaseInsensitive()) {
-            $query->orWhereRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?', [Str::lower($keyword)]);
-        } else {
-            $query->orWhereRaw($cast_begin . $column . $cast_end . ' LIKE ?', [$keyword]);
+        if ($this->databaseDriver() === 'pgsql') {
+            $sql = 'CAST('. $column . ' as TEXT)';
         }
+
+        return $column;
     }
 
     /**
@@ -694,7 +696,7 @@ class BaseEngine
                     $parameters = $this->filter_columns[$column]['parameters'];
                     $this->compileFilterColumn($method, $parameters, $column);
                 } else {
-                    $column = $this->wrapValue($column);
+                    $column = $this->castColumn($column);
                     if ($this->isCaseInsensitive()) {
                         $this->query->whereRaw('LOWER(' . $column . ') LIKE ?', [Str::lower($keyword)]);
                     } else {
