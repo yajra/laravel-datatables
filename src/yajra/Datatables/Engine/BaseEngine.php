@@ -34,7 +34,7 @@ class BaseEngine
     /**
      * Builder object.
      *
-     * @var \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
+     * @var mixed
      */
     public $query;
 
@@ -441,7 +441,7 @@ class BaseEngine
     /**
      * Get Query Builder object.
      *
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
+     * @return mixed
      */
     public function getBuilder()
     {
@@ -856,8 +856,6 @@ class BaseEngine
                 $count++;
             }
         }
-
-        return [];
     }
 
     /**
