@@ -45,13 +45,23 @@ class Datatables
     /**
      * Class Constructor
      *
-     * @param  Request $request
-     * @throws Exception
+     * @param Request $request
      */
     public function __construct(Request $request)
     {
         $this->request = $request;
 
+        $this->isLegacyCode();
+    }
+
+    /**
+     * Check if request uses legacy code
+     *
+     * @param  Request $request
+     * @throws Exception
+     */
+    public function isLegacyCode($request)
+    {
         if (! $request->get('draw') && $request->get('sEcho')) {
             throw new \Exception('DataTables legacy code is not supported! Please use DataTables 1.10++ coding convention.');
         } elseif (! $request->get('draw') && ! $request->get('columns')) {
