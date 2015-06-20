@@ -224,10 +224,8 @@ class BaseEngine
 
         // if its a normal query ( no union and having word ) replace the select with static text to improve performance
         $myQuery = clone $query;
-        if (! Str::contains(Str::lower($myQuery->toSql()), 'union') && ! Str::contains(
-                Str::lower($myQuery->toSql()),
-                'having'
-            )
+        if (! Str::contains(Str::lower($myQuery->toSql()), 'union')
+            && ! Str::contains(Str::lower($myQuery->toSql()), 'having')
         ) {
             $myQuery->select($this->connection->raw("'1' as row_count"));
         }
@@ -406,11 +404,9 @@ class BaseEngine
     {
         $table_names = $this->tableNames();
         if (count(
-            array_filter(
-                $table_names, function ($value) use (&$column) {
+            array_filter($table_names, function ($value) use (&$column) {
                 return strpos($column, $value . '.') === 0;
-            }
-            )
+            })
         )) {
             // the column starts with one of the table names
             $column = $this->databasePrefix() . $column;
