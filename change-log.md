@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v5.4.3
+    - add column wrapper for postgres. Bugfix #82
+
 ###v5.4.2
     - Throws Exception when using DataTable's legacy code
     - Fixed CS - PSR2
