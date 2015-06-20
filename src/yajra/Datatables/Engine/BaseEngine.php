@@ -683,10 +683,10 @@ class BaseEngine
      */
     public function doColumnSearch()
     {
-        $columns = $this->request['columns'];
+        $columns = $this->request->get('columns');
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($this->request->isColumnSearchable($i)) {
-                $column  = $columns[$i]['name'];
+                $column  = $this->getColumnIdentity($i);
                 $keyword = $this->setupKeyword($this->request->columnKeyword($i));
 
                 if (isset($this->filter_columns[$column])) {
@@ -1091,7 +1091,7 @@ class BaseEngine
     protected function showDebugger($output)
     {
         $output['queries'] = $this->connection->getQueryLog();
-        $output['input']   = $this->request;
+        $output['input']   = $this->request->all();
 
         return $output;
     }

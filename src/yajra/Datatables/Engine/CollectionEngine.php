@@ -18,7 +18,6 @@ use yajra\Datatables\Request;
 
 class CollectionEngine extends BaseEngine implements EngineContract
 {
-
     /**
      * Collection object
      *
@@ -78,23 +77,16 @@ class CollectionEngine extends BaseEngine implements EngineContract
      */
     public function doOrdering()
     {
-        if (array_key_exists('order', $this->request) && count($this->request['order']) > 0) {
-            for ($i = 0, $c = count($this->request['order']); $i < $c; $i++) {
-                $order_col = (int) $this->request['order'][$i]['column'];
-                $order_dir = $this->request['order'][$i]['dir'];
-                if ( ! $this->isColumnOrderable($this->request['columns'][$order_col])) {
-                    continue;
+        foreach ($this->request->orderableColumns() as $orderable) {
+            $column           = $this->getOrderColumnName($orderable['column']);
+            $this->collection = $this->collection->sortBy(
+                function ($row) use ($column) {
+                    return $row[$column];
                 }
-                $column           = $this->getOrderColumnName($order_col);
-                $this->collection = $this->collection->sortBy(
-                    function ($row) use ($column) {
-                        return $row[$column];
-                    }
-                );
+            );
 
-                if ($order_dir == 'desc') {
-                    $this->collection = $this->collection->reverse();
-                }
+            if ($orderable['direction'] == 'desc') {
+                $this->collection = $this->collection->reverse();
             }
         }
     }
@@ -110,13 +102,9 @@ class CollectionEngine extends BaseEngine implements EngineContract
                 $data  = $this->serialize($row);
                 $found = [];
 
-                for ($i = 0, $c = count($columns); $i < $c; $i++) {
-                    if ($columns[$i]['searchable'] != "true") {
-                        continue;
-                    }
-
-                    $column  = $this->getColumnIdentity($columns, $i);
-                    $keyword = $this->request['search']['value'];
+                $keyword = $this->request->keyword();
+                foreach ($this->request->searchableColumnIndex() as $index) {
+                    $column = $this->request->columnName($index);
 
                     if ( ! $this->columnExists($column, $data)) {
                         continue;
@@ -151,27 +139,23 @@ class CollectionEngine extends BaseEngine implements EngineContract
      */
     public function doColumnSearch()
     {
-        $columns = $this->request['columns'];
+        $columns = $this->request->get('columns');
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
-            if ($columns[$i]['searchable'] != "true" || $columns[$i]['search']['value'] == '') {
-                continue;
-            }
+            if ($this->request->isColumnSearchable($i)) {
+                $column = $this->getColumnIdentity($i);
+                $keyword = $this->request->columnKeyword($i);
 
-            $column = $this->getColumnIdentity($columns, $i);
-
-            $keyword = $columns[$i]['search']['value'];
-
-            $this->collection = $this->collection->filter(
-                function ($row) use ($column, $keyword) {
-                    $data = $this->serialize($row);
-
-                    if ($this->isCaseInsensitive()) {
-                        return strpos(Str::lower($data[$column]), Str::lower($keyword)) !== false;
-                    } else {
-                        return strpos($data[$column], $keyword) !== false;
+                $this->collection = $this->collection->filter(
+                    function ($row) use ($column, $keyword) {
+                        $data = $this->serialize($row);
+                        if ($this->isCaseInsensitive()) {
+                            return strpos(Str::lower($data[$column]), Str::lower($keyword)) !== false;
+                        } else {
+                            return strpos($data[$column], $keyword) !== false;
+                        }
                     }
-                }
-            );
+                );
+            }
         }
     }
 
@@ -210,7 +194,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
      */
     protected function showDebugger($output)
     {
-        $output["input"] = $this->request;
+        $output["input"] = $this->request->all();
 
         return $output;
     }
