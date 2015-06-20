@@ -63,9 +63,9 @@ class Datatables
      */
     public function isLegacyCode($request)
     {
-        if (! $request->get('draw') && $request->get('sEcho')) {
+        if ( ! $request->get('draw') && $request->get('sEcho')) {
             throw new \Exception('DataTables legacy code is not supported! Please use DataTables 1.10++ coding convention.');
-        } elseif (! $request->get('draw') && ! $request->get('columns')) {
+        } elseif ( ! $request->get('draw') && ! $request->get('columns')) {
             throw new \Exception('Insufficient parameters');
         }
     }

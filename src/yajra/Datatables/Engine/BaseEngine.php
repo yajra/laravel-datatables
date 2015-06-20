@@ -224,7 +224,7 @@ class BaseEngine
 
         // if its a normal query ( no union and having word ) replace the select with static text to improve performance
         $myQuery = clone $query;
-        if (! Str::contains(Str::lower($myQuery->toSql()), 'union')
+        if ( ! Str::contains(Str::lower($myQuery->toSql()), 'union')
             && ! Str::contains(Str::lower($myQuery->toSql()), 'having')
         ) {
             $myQuery->select($this->connection->raw("'1' as row_count"));
@@ -260,7 +260,7 @@ class BaseEngine
             for ($i = 0, $c = count($this->input['order']); $i < $c; $i++) {
                 $order_col = (int) $this->input['order'][$i]['column'];
                 $order_dir = $this->input['order'][$i]['dir'];
-                if (! $this->isColumnOrderable($this->input['columns'][$order_col])) {
+                if ( ! $this->isColumnOrderable($this->input['columns'][$order_col])) {
                     continue;
                 }
                 $column = $this->getOrderColumnName($order_col);
@@ -315,7 +315,7 @@ class BaseEngine
             function ($query) {
                 $columns = $this->input['columns'];
                 for ($i = 0, $c = count($columns); $i < $c; $i++) {
-                    if (! $this->isColumnSearchable($columns, $i, false)) {
+                    if ( ! $this->isColumnSearchable($columns, $i, false)) {
                         continue;
                     }
 
@@ -364,7 +364,7 @@ class BaseEngine
      */
     public function getColumnIdentity(array $columns, $i)
     {
-        if (! empty($columns[$i]['name'])) {
+        if ( ! empty($columns[$i]['name'])) {
             $column = $columns[$i]['name'];
         } else {
             $column = $this->columns[$i];
@@ -383,7 +383,7 @@ class BaseEngine
     {
         preg_match('#^(\S*?)\s+as\s+(\S*?)$#si', $str, $matches);
 
-        if (! empty($matches)) {
+        if ( ! empty($matches)) {
             return $matches[2];
         } elseif (strpos($str, '.')) {
             $array = explode('.', $str);
@@ -901,8 +901,8 @@ class BaseEngine
      */
     protected function processDTRowValue($key, $template, $index, array &$data)
     {
-        if (! empty($template)) {
-            if (! is_callable($template) && Arr::get($data, $template)) {
+        if ( ! empty($template)) {
+            if ( ! is_callable($template) && Arr::get($data, $template)) {
                 $data[$key] = Arr::get($data, $template);
             } else {
                 $data[$key] = $this->getContent($template, $data, $this->result_object[$index]);
@@ -1024,7 +1024,7 @@ class BaseEngine
      */
     public function useDataColumns()
     {
-        if (! count($this->result_array_r)) {
+        if ( ! count($this->result_array_r)) {
             return [];
         }
 
@@ -1341,7 +1341,7 @@ class BaseEngine
 
         $this->compileFiltering();
 
-        if (! $orderFirst) {
+        if ( ! $orderFirst) {
             $this->doOrdering();
         }
 
@@ -1369,7 +1369,7 @@ class BaseEngine
      */
     protected function getOrMethod($method)
     {
-        if (! Str::contains(Str::lower($method), 'or')) {
+        if ( ! Str::contains(Str::lower($method), 'or')) {
             return 'or' . ucfirst($method);
         }
 

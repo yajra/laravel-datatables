@@ -81,7 +81,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
             for ($i = 0, $c = count($this->input['order']); $i < $c; $i++) {
                 $order_col = (int) $this->input['order'][$i]['column'];
                 $order_dir = $this->input['order'][$i]['dir'];
-                if (! $this->isColumnOrderable($this->input['columns'][$order_col])) {
+                if ( ! $this->isColumnOrderable($this->input['columns'][$order_col])) {
                     continue;
                 }
                 $column           = $this->getOrderColumnName($order_col);
@@ -117,7 +117,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
                     $column  = $this->getColumnIdentity($columns, $i);
                     $keyword = $this->input['search']['value'];
 
-                    if (! $this->columnExists($column, $data)) {
+                    if ( ! $this->columnExists($column, $data)) {
                         continue;
                     }
 
