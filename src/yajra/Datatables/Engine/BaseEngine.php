@@ -334,7 +334,7 @@ class BaseEngine
     /**
      * Setup search keyword.
      *
-     * @param  $value
+     * @param  string $value
      * @return string
      */
     public function setupKeyword($value)
@@ -530,9 +530,9 @@ class BaseEngine
     /**
      * Perform filter column on selected field.
      *
-     * @param $method
-     * @param $parameters
-     * @param $column
+     * @param string $method
+     * @param mixed  $parameters
+     * @param string $column
      */
     protected function compileFilterColumn($method, $parameters, $column)
     {
