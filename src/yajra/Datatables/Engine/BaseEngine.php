@@ -713,6 +713,10 @@ class BaseEngine
                     $column .= '[' . str_replace(']', ']]', $key) . ']' . '.';
                     break;
 
+                case 'pgsql':
+                    $column .= '"' . str_replace('"', '""', $key) . '"' . '.';
+                    break;
+
                 default:
                     $column .= $key . '.';
             }
