@@ -51,7 +51,7 @@ class Datatables
     {
         $this->request = $request;
 
-        $this->isLegacyCode();
+        $this->isLegacyCode($request);
     }
 
     /**
