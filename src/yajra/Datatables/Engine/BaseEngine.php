@@ -687,7 +687,7 @@ class BaseEngine
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($this->request->isColumnSearchable($i)) {
                 $column  = $columns[$i]['name'];
-                $keyword = $this->setupKeyword($this->request->getColumnKeyword($i));
+                $keyword = $this->setupKeyword($this->request->columnKeyword($i));
 
                 if (isset($this->filter_columns[$column])) {
                     $method     = $this->filter_columns[$column]['method'];
