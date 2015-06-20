@@ -613,7 +613,7 @@ class BaseEngine
     {
         $column = $this->wrapValue($column);
         if ($this->databaseDriver() === 'pgsql') {
-            $sql = 'CAST('. $column . ' as TEXT)';
+            $column = 'CAST(' . $column . ' as TEXT)';
         }
 
         return $column;
