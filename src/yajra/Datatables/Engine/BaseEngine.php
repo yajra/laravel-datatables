@@ -196,9 +196,9 @@ class BaseEngine
     /**
      * Construct base engine.
      *
-     * @param $request
+     * @param array $request
      */
-    public function __construct($request)
+    public function __construct(array $request)
     {
         $this->input = $request;
         $this->getTotalRecords(); // Total records
@@ -713,8 +713,8 @@ class BaseEngine
     /**
      * Database column wrapper
      *
-     * @param $key
-     * @param $column
+     * @param string $key
+     * @param string $column
      * @return string
      */
     protected function wrapColumn($key, $column)

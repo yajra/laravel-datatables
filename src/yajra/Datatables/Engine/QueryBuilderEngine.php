@@ -16,9 +16,9 @@ class QueryBuilderEngine extends BaseEngine implements EngineContract
 {
     /**
      * @param Builder $builder
-     * @param         $request
+     * @param array $request
      */
-    public function __construct(Builder $builder, $request)
+    public function __construct(Builder $builder, array $request)
     {
         $this->query_type = 'builder';
         $this->query      = $builder;

@@ -34,9 +34,9 @@ class CollectionEngine extends BaseEngine implements EngineContract
 
     /**
      * @param Collection $collection
-     * @param            $request
+     * @param array $request
      */
-    public function __construct(Collection $collection, $request)
+    public function __construct(Collection $collection, array $request)
     {
         $this->collection          = $collection;
         $this->original_collection = $collection;
@@ -134,6 +134,18 @@ class CollectionEngine extends BaseEngine implements EngineContract
     }
 
     /**
+     * Check if column name exists in collection keys
+     *
+     * @param  string $column
+     * @param  array $data
+     * @return bool
+     */
+    private function columnExists($column, array $data)
+    {
+        return array_key_exists($column, $data);
+    }
+
+    /**
      * @inheritdoc
      */
     public function doColumnSearch()
@@ -211,17 +223,5 @@ class CollectionEngine extends BaseEngine implements EngineContract
             $this->input['start'],
             (int) $this->input['length'] > 0 ? $this->input['length'] : 10
         );
-    }
-
-    /**
-     * Check if column name exists in collection keys
-     *
-     * @param  string $column
-     * @param  array $data
-     * @return bool
-     */
-    private function columnExists($column, array $data)
-    {
-        return array_key_exists($column, $data);
     }
 }

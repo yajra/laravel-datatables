@@ -16,9 +16,9 @@ class EloquentEngine extends BaseEngine implements EngineContract
 {
     /**
      * @param mixed $model
-     * @param       $request
+     * @param array $request
      */
-    public function __construct($model, $request)
+    public function __construct($model, array $request)
     {
         $this->query_type = 'eloquent';
         $this->query      = $model instanceof Builder ? $model : $model->getQuery();
