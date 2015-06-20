@@ -20,6 +20,7 @@ use Illuminate\Support\Str;
 use Illuminate\View\Compilers\BladeCompiler;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
+use League\Fractal\TransformerAbstract;
 
 class BaseEngine
 {
@@ -252,6 +253,26 @@ class BaseEngine
     }
 
     /**
+     * Compile Datatables queries.
+     *
+     * @param bool $orderFirst
+     */
+    protected function compileQueryBuilder($orderFirst)
+    {
+        if ($orderFirst) {
+            $this->doOrdering();
+        }
+
+        $this->compileFiltering();
+
+        if ( ! $orderFirst) {
+            $this->doOrdering();
+        }
+
+        $this->doPaging();
+    }
+
+    /**
      * Datatable ordering.
      */
     public function doOrdering()
@@ -307,6 +328,29 @@ class BaseEngine
     }
 
     /**
+     * Perform all filtering queries.
+     */
+    protected function compileFiltering()
+    {
+        if ($this->autoFilter && $this->isSearchable()) {
+            $this->doFiltering();
+        }
+
+        $this->doColumnSearch();
+        $this->getTotalFilteredRecords();
+    }
+
+    /**
+     * Check if Datatables is searchable.
+     *
+     * @return bool
+     */
+    protected function isSearchable()
+    {
+        return ! empty($this->input['search']['value']);
+    }
+
+    /**
      * Datatables filtering.
      */
     public function doFiltering()
@@ -332,6 +376,23 @@ class BaseEngine
                 }
             }
         );
+    }
+
+    /**
+     * Check if a column is searchable.
+     *
+     * @param array $columns
+     * @param int $i
+     * @param bool $column_search
+     * @return bool
+     */
+    protected function isColumnSearchable(array $columns, $i, $column_search = true)
+    {
+        if ($column_search) {
+            return $columns[$i]['searchable'] == 'true' && $columns[$i]['search']['value'] != '' && ! empty($columns[$i]['name']);
+        }
+
+        return $columns[$i]['searchable'] == 'true';
     }
 
     /**
@@ -524,6 +585,21 @@ class BaseEngine
     }
 
     /**
+     * Get equivalent or method of query builder.
+     *
+     * @param string $method
+     * @return string
+     */
+    protected function getOrMethod($method)
+    {
+        if ( ! Str::contains(Str::lower($method), 'or')) {
+            return 'or' . ucfirst($method);
+        }
+
+        return $method;
+    }
+
+    /**
      * Perform filter column on selected field.
      *
      * @param $method
@@ -684,23 +760,6 @@ class BaseEngine
     }
 
     /**
-     * Check if a column is searchable.
-     *
-     * @param array $columns
-     * @param int $i
-     * @param bool $column_search
-     * @return bool
-     */
-    protected function isColumnSearchable(array $columns, $i, $column_search = true)
-    {
-        if ($column_search) {
-            return $columns[$i]['searchable'] == 'true' && $columns[$i]['search']['value'] != '' && ! empty($columns[$i]['name']);
-        }
-
-        return $columns[$i]['searchable'] == 'true';
-    }
-
-    /**
      * Get filtered records.
      *
      * @return int
@@ -742,6 +801,20 @@ class BaseEngine
     }
 
     /**
+     * Compile Datatables final output.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function compileOutput()
+    {
+        $this->setResults();
+        $this->initColumns();
+        $this->regulateArray();
+
+        return $this->output();
+    }
+
+    /**
      * Set datatables results object and arrays.
      */
     public function setResults()
@@ -777,6 +850,46 @@ class BaseEngine
 
             $rvalue = $this->processEditColumns($data, $rkey, $rvalue);
         }
+    }
+
+    /**
+     * Converts array object values to associative array.
+     *
+     * @param array $rvalue
+     * @param string|int $rKey
+     * @return array
+     */
+    protected function convertToArray(array $rvalue, $rKey)
+    {
+        $data = [];
+        foreach ($rvalue as $key => $value) {
+            if (is_object($this->result_object[$rKey])) {
+                $data[$key] = $this->result_object[$rKey]->$key;
+            } else {
+                $data[$key] = $value;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Process add columns.
+     *
+     * @param array $data
+     * @param string|int $rKey
+     * @param array|null $rvalue
+     * @return array
+     */
+    protected function processAddColumns(array $data, $rKey, $rvalue)
+    {
+        foreach ($this->extra_columns as $key => $value) {
+            $value = $this->processContent($value, $data, $rKey);
+
+            $rvalue = $this->includeInArray($value, $rvalue);
+        }
+
+        return $rvalue;
     }
 
     /**
@@ -856,6 +969,25 @@ class BaseEngine
                 $count++;
             }
         }
+    }
+
+    /**
+     * Process edit columns.
+     *
+     * @param array $data
+     * @param string|int $rkey
+     * @param array|null $rvalue
+     * @return array
+     */
+    protected function processEditColumns(array $data, $rkey, $rvalue)
+    {
+        foreach ($this->edit_columns as $key => $value) {
+            $value = $this->processContent($value, $data, $rkey);
+
+            $rvalue[$value['name']] = $value['content'];
+        }
+
+        return $rvalue;
     }
 
     /**
@@ -967,7 +1099,7 @@ class BaseEngine
     /**
      * Render json response.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function output()
     {
@@ -1219,7 +1351,7 @@ class BaseEngine
     /**
      * Override default column filter search.
      *
-     * @param        $column
+     * @param string $column
      * @param string $method
      * @return $this
      * @internal param $mixed ...,... All the individual parameters required for specified $method
@@ -1235,7 +1367,7 @@ class BaseEngine
     /**
      * Set data output transformer.
      *
-     * @param TransformerAbstract $transformer
+     * @param \League\Fractal\TransformerAbstract $transformer
      * @return $this
      */
     public function setTransformer($transformer)
@@ -1243,136 +1375,5 @@ class BaseEngine
         $this->transformer = $transformer;
 
         return $this;
-    }
-
-    /**
-     * Process add columns.
-     *
-     * @param array $data
-     * @param string|int $rkey
-     * @param array|null $rvalue
-     * @return array
-     */
-    protected function processAddColumns(array $data, $rkey, $rvalue)
-    {
-        foreach ($this->extra_columns as $key => $value) {
-            $value = $this->processContent($value, $data, $rkey);
-
-            $rvalue = $this->includeInArray($value, $rvalue);
-        }
-
-        return $rvalue;
-    }
-
-    /**
-     * Process edit columns.
-     *
-     * @param array $data
-     * @param string|int $rkey
-     * @param array|null $rvalue
-     * @return array
-     */
-    protected function processEditColumns(array $data, $rkey, $rvalue)
-    {
-        foreach ($this->edit_columns as $key => $value) {
-            $value = $this->processContent($value, $data, $rkey);
-
-            $rvalue[$value['name']] = $value['content'];
-        }
-
-        return $rvalue;
-    }
-
-    /**
-     * Converts array object values to associative array.
-     *
-     * @param array $rvalue
-     * @param string|int $rkey
-     * @return array
-     */
-    protected function convertToArray(array $rvalue, $rkey)
-    {
-        $data = [];
-        foreach ($rvalue as $key => $value) {
-            if (is_object($this->result_object[$rkey])) {
-                $data[$key] = $this->result_object[$rkey]->$key;
-            } else {
-                $data[$key] = $value;
-            }
-        }
-
-        return $data;
-    }
-
-    /**
-     * Check if Datatables is searchable.
-     *
-     * @return bool
-     */
-    protected function isSearchable()
-    {
-        return ! empty($this->input['search']['value']);
-    }
-
-    /**
-     * Compile Datatables final output.
-     *
-     * @return JsonResponse
-     */
-    protected function compileOutput()
-    {
-        $this->setResults();
-        $this->initColumns();
-        $this->regulateArray();
-
-        return $this->output();
-    }
-
-    /**
-     * Compile Datatables queries.
-     *
-     * @param bool $orderFirst
-     */
-    protected function compileQueryBuilder($orderFirst)
-    {
-        if ($orderFirst) {
-            $this->doOrdering();
-        }
-
-        $this->compileFiltering();
-
-        if ( ! $orderFirst) {
-            $this->doOrdering();
-        }
-
-        $this->doPaging();
-    }
-
-    /**
-     * Perform all filtering queries.
-     */
-    protected function compileFiltering()
-    {
-        if ($this->autoFilter && $this->isSearchable()) {
-            $this->doFiltering();
-        }
-
-        $this->doColumnSearch();
-        $this->getTotalFilteredRecords();
-    }
-
-    /**
-     * Get equivalent or method of query builder.
-     *
-     * @param string $method
-     * @return string
-     */
-    protected function getOrMethod($method)
-    {
-        if ( ! Str::contains(Str::lower($method), 'or')) {
-            return 'or' . ucfirst($method);
-        }
-
-        return $method;
     }
 }
