@@ -707,7 +707,7 @@ class BaseEngine
             $column = $this->wrapColumn($key, $column);
         }
 
-        return $column;
+        return substr($column, 0, strlen($column) - 1);
     }
 
     /**
@@ -737,7 +737,7 @@ class BaseEngine
                 $column .= $key . '.';
         }
 
-        return substr($column, 0, strlen($column) - 1);
+        return $column;
     }
 
     /**
