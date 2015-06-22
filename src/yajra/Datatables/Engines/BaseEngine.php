@@ -192,6 +192,10 @@ abstract class BaseEngine implements DataTableEngine
      */
     public $transformer = null;
 
+    protected $prefix;
+
+    protected $database;
+
     /**
      * Setup search keyword.
      *
@@ -310,7 +314,7 @@ abstract class BaseEngine implements DataTableEngine
             })
         )) {
             // the column starts with one of the table names
-            $column = $this->databasePrefix() . $column;
+            $column = $this->prefix . $column;
         }
 
         return $column;
@@ -327,7 +331,7 @@ abstract class BaseEngine implements DataTableEngine
         $query          = $this->getQueryBuilder();
         $names[]        = $query->from;
         $joins          = $query->joins ?: [];
-        $databasePrefix = $this->databasePrefix();
+        $databasePrefix = $this->prefix;
         foreach ($joins as $join) {
             $table   = preg_split('/ as /i', $join->table);
             $names[] = $table[0];
@@ -361,16 +365,6 @@ abstract class BaseEngine implements DataTableEngine
     public function isQueryBuilder()
     {
         return $this->query_type == 'builder';
-    }
-
-    /**
-     * Returns current database prefix.
-     *
-     * @return string
-     */
-    public function databasePrefix()
-    {
-        return $this->getQueryBuilder()->getGrammar()->getTablePrefix();
     }
 
     /**
@@ -674,9 +668,7 @@ abstract class BaseEngine implements DataTableEngine
     {
         foreach ($this->result_array as $key => &$value) {
             $data = $this->convertToArray($value, $key);
-
             $value = $this->processAddColumns($data, $key, $value);
-
             $value = $this->processEditColumns($data, $key, $value);
         }
     }
@@ -714,7 +706,6 @@ abstract class BaseEngine implements DataTableEngine
     {
         foreach ($this->extra_columns as $key => $value) {
             $value =  Helper::compileContent($value, $data, $this->result_object[$rKey]);
-
             $rValue = Helper::includeInArray($value, $rValue);
         }
 
@@ -733,7 +724,6 @@ abstract class BaseEngine implements DataTableEngine
     {
         foreach ($this->edit_columns as $key => $value) {
             $value = Helper::compileContent($value, $data, $this->result_object[$rKey]);
-
             $rvalue[$value['name']] = $value['content'];
         }
 
@@ -787,30 +777,9 @@ abstract class BaseEngine implements DataTableEngine
             if ( ! is_callable($template) && Arr::get($data, $template)) {
                 $data[$key] = Arr::get($data, $template);
             } else {
-                $data[$key] = $this->getContent($template, $data, $this->result_object[$index]);
+                $data[$key] = Helper::getContent($template, $data, $this->result_object[$index]);
             }
         }
-    }
-
-    /**
-     * Determines if content is callable or blade string, processes and returns.
-     *
-     * @param string|callable $content Pre-processed content
-     * @param mixed $data data to use with blade template
-     * @param mixed $param parameter to call with callable
-     * @return string Processed content
-     */
-    public function getContent($content, $data = null, $param = null)
-    {
-        if (is_string($content)) {
-            $return = Helper::compileBlade($content, $data);
-        } elseif (is_callable($content)) {
-            $return = $content($param);
-        } else {
-            $return = $content;
-        }
-
-        return $return;
     }
 
     /**
@@ -825,8 +794,8 @@ abstract class BaseEngine implements DataTableEngine
     {
         if (count($template)) {
             $data[$key] = [];
-            foreach ($template as $tkey => $tvalue) {
-                $data[$key][$tkey] = $this->getContent($tvalue, $data, $this->result_object[$index]);
+            foreach ($template as $tKey => $tValue) {
+                $data[$key][$tKey] = Helper::getContent($tValue, $data, $this->result_object[$index]);
             }
         }
     }
@@ -839,8 +808,8 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function removeExcessColumns(array $data)
     {
-        foreach ($this->excess_columns as $evalue) {
-            unset($data[$evalue]);
+        foreach ($this->excess_columns as $value) {
+            unset($data[$value]);
         }
 
         return $data;
@@ -912,54 +881,6 @@ abstract class BaseEngine implements DataTableEngine
     }
 
     /**
-     * Get equivalent or method of query builder.
-     *
-     * @param string $method
-     * @return string
-     */
-    protected function getOrMethod($method)
-    {
-        if ( ! Str::contains(Str::lower($method), 'or')) {
-            return 'or' . ucfirst($method);
-        }
-
-        return $method;
-    }
-
-    /**
-     * Perform filter column on selected field.
-     *
-     * @param string $method
-     * @param mixed $parameters
-     * @param string $column
-     */
-    protected function compileFilterColumn($method, $parameters, $column)
-    {
-        if (method_exists($this->getQueryBuilder(), $method)
-            && count($parameters) <= with(
-                new \ReflectionMethod(
-                    $this->getQueryBuilder(),
-                    $method
-                )
-            )->getNumberOfParameters()
-        ) {
-            if (Str::contains(Str::lower($method), 'raw')
-                || Str::contains(Str::lower($method), 'exists')
-            ) {
-                call_user_func_array(
-                    [$this->getQueryBuilder(), $method],
-                    $this->parameterize($parameters)
-                );
-            } else {
-                call_user_func_array(
-                    [$this->getQueryBuilder(), $method],
-                    $this->parameterize($column, $parameters)
-                );
-            }
-        }
-    }
-
-    /**
      * Build Query Builder Parameters.
      *
      * @return array
@@ -984,25 +905,6 @@ abstract class BaseEngine implements DataTableEngine
     }
 
     /**
-     * Add a query on global search.
-     *
-     * @param mixed $query
-     * @param string $column
-     * @param string $keyword
-     */
-    protected function compileGlobalSearch($query, $column, $keyword)
-    {
-        $column = $this->castColumn($column);
-        $sql    = $column . ' LIKE ?';
-        if ($this->isCaseInsensitive()) {
-            $sql     = 'LOWER(' . $column . ') LIKE ?';
-            $keyword = Str::lower($keyword);
-        }
-
-        $query->orWhereRaw($sql, [$keyword]);
-    }
-
-    /**
      * Wrap a column and cast in pgsql
      *
      * @param  string $column
@@ -1010,8 +912,8 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function castColumn($column)
     {
-        $column = $this->wrapValue($column);
-        if ($this->databaseDriver() === 'pgsql') {
+        $column = Helper::wrapValue($this->database, $column);
+        if ($this->database  === 'pgsql') {
             $column = 'CAST(' . $column . ' as TEXT)';
         }
 
@@ -1029,50 +931,10 @@ abstract class BaseEngine implements DataTableEngine
         $parts  = explode('.', $value);
         $column = '';
         foreach ($parts as $key) {
-            $column = $this->wrapColumn($key, $column);
+            $column = Helper::wrapColumn($this->database, $key, $column);
         }
 
         return substr($column, 0, strlen($column) - 1);
-    }
-
-    /**
-     * Database column wrapper
-     *
-     * @param string $key
-     * @param string $column
-     * @return string
-     */
-    protected function wrapColumn($key, $column)
-    {
-        switch ($this->databaseDriver()) {
-            case 'mysql':
-                $column .= '`' . str_replace('`', '``', $key) . '`' . '.';
-                break;
-
-            case 'sqlsrv':
-                $column .= '[' . str_replace(']', ']]', $key) . ']' . '.';
-                break;
-
-            case 'pgsql':
-            case 'sqlite':
-                $column .= '"' . str_replace('"', '""', $key) . '"' . '.';
-                break;
-
-            default:
-                $column .= $key . '.';
-        }
-
-        return $column;
-    }
-
-    /**
-     * Returns current database driver.
-     *
-     * @return string
-     */
-    public function databaseDriver()
-    {
-        return $this->connection->getDriverName();
     }
 
     /**

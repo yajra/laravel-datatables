@@ -15,6 +15,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Str;
 use yajra\Datatables\Contracts\DataTableEngine;
 use yajra\Datatables\Request;
+use yajra\Datatables\Helper;
 
 class QueryBuilderEngine extends BaseEngine implements DataTableEngine
 {
@@ -30,6 +31,8 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
         $this->query      = $builder;
         $this->columns    = $this->query->columns;
         $this->connection = $this->query->getConnection();
+        $this->prefix     = $this->getQueryBuilder()->getGrammar()->getTablePrefix();
+        $this->database   = $this->connection->getDriverName();
 
         if ($this->isDebugging()) {
             $this->connection->enableQueryLog();
@@ -87,7 +90,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
                     $column = $this->setupColumnName($index);
 
                     if (isset($this->filter_columns[$column])) {
-                        $method     = $this->getOrMethod($this->filter_columns[$column]['method']);
+                        $method     = Helper::getOrMethod($this->filter_columns[$column]['method']);
                         $parameters = $this->filter_columns[$column]['parameters'];
                         $this->compileFilterColumn($method, $parameters, $column);
                     } else {
@@ -96,6 +99,58 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
                 }
             }
         );
+    }
+
+    /**
+     * Perform filter column on selected field.
+     *
+     * @param string $method
+     * @param mixed $parameters
+     * @param string $column
+     */
+    protected function compileFilterColumn($method, $parameters, $column)
+    {
+        if (method_exists($this->getQueryBuilder(), $method)
+            && count($parameters) <= with(
+                new \ReflectionMethod(
+                    $this->getQueryBuilder(),
+                    $method
+                )
+            )->getNumberOfParameters()
+        ) {
+            if (Str::contains(Str::lower($method), 'raw')
+                || Str::contains(Str::lower($method), 'exists')
+            ) {
+                call_user_func_array(
+                    [$this->getQueryBuilder(), $method],
+                    $this->parameterize($parameters)
+                );
+            } else {
+                call_user_func_array(
+                    [$this->getQueryBuilder(), $method],
+                    $this->parameterize($column, $parameters)
+                );
+            }
+        }
+    }
+
+    /**
+     * Add a query on global search.
+     *
+     * @param mixed $query
+     * @param string $column
+     * @param string $keyword
+     */
+    protected function compileGlobalSearch($query, $column, $keyword)
+    {
+        $column = $this->castColumn($column);
+        $sql    = $column . ' LIKE ?';
+        if ($this->isCaseInsensitive()) {
+            $sql     = 'LOWER(' . $column . ') LIKE ?';
+            $keyword = Str::lower($keyword);
+        }
+
+        $query->orWhereRaw($sql, [$keyword]);
     }
 
     /**
