@@ -45,11 +45,7 @@ class EloquentEngine extends QueryBuilderEngine implements DataTableEngine
     {
         $this->result_object = $this->query->get();
 
-        return $this->result_array = array_map(
-            function ($object) {
-                return $object instanceof Arrayable ? $object->toArray() : (array) $object;
-            }, $this->result_object->toArray()
-        );
+        return $this->resultsToArray($this->result_object->toArray());
     }
 
 }

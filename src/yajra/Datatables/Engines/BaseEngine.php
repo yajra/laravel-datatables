@@ -374,40 +374,6 @@ abstract class BaseEngine
     }
 
     /**
-     * Use data columns.
-     *
-     * @return array
-     */
-    public function useDataColumns()
-    {
-        if ( ! count($this->result_array_r)) {
-            return [];
-        }
-
-        $query = clone $this->query;
-        if ($this->isQueryBuilder()) {
-            $this->columns = array_keys((array) $query->first());
-        } else {
-            $this->columns = array_keys((array) $query->getQuery()->first());
-        }
-
-        return $this->columns;
-    }
-
-    /**
-     * Get sColumns output.
-     *
-     * @return array
-     */
-    public function getOutputColumns()
-    {
-        $columns = array_merge($this->columns, $this->sColumns);
-        $columns = array_diff($columns, $this->excess_columns);
-
-        return Arr::flatten($columns);
-    }
-
-    /**
      * Add column in collection.
      *
      * @param string $name
@@ -586,204 +552,17 @@ abstract class BaseEngine
     }
 
     /**
-     * Get equivalent or method of query builder.
+     * Converts all results data to array
      *
-     * @param string $method
-     * @return string
-     */
-    protected function getOrMethod($method)
-    {
-        if ( ! Str::contains(Str::lower($method), 'or')) {
-            return 'or' . ucfirst($method);
-        }
-
-        return $method;
-    }
-
-    /**
-     * Perform filter column on selected field.
-     *
-     * @param string $method
-     * @param mixed $parameters
-     * @param string $column
-     */
-    protected function compileFilterColumn($method, $parameters, $column)
-    {
-        if (method_exists($this->getQueryBuilder(), $method)
-            && count($parameters) <= with(
-                new \ReflectionMethod(
-                    $this->getQueryBuilder(),
-                    $method
-                )
-            )->getNumberOfParameters()
-        ) {
-            if (Str::contains(Str::lower($method), 'raw')
-                || Str::contains(Str::lower($method), 'exists')
-            ) {
-                call_user_func_array(
-                    [$this->getQueryBuilder(), $method],
-                    $this->parameterize($parameters)
-                );
-            } else {
-                call_user_func_array(
-                    [$this->getQueryBuilder(), $method],
-                    $this->parameterize($column, $parameters)
-                );
-            }
-        }
-    }
-
-    /**
-     * Build Query Builder Parameters.
-     *
+     * @param array $data
      * @return array
      */
-    public function parameterize()
+    public function resultsToArray(array $data)
     {
-        $args       = func_get_args();
-        $parameters = [];
-
-        if (count($args) > 1) {
-            $parameters[] = $args[0];
-            foreach ($args[1] as $param) {
-                $parameters[] = $param;
-            }
-        } else {
-            foreach ($args[0] as $param) {
-                $parameters[] = $param;
-            }
-        }
-
-        return $parameters;
-    }
-
-    /**
-     * Add a query on global search.
-     *
-     * @param mixed $query
-     * @param string $column
-     * @param string $keyword
-     */
-    protected function compileGlobalSearch($query, $column, $keyword)
-    {
-        $column = $this->castColumn($column);
-        $sql    = $column . ' LIKE ?';
-        if ($this->isCaseInsensitive()) {
-            $sql     = 'LOWER(' . $column . ') LIKE ?';
-            $keyword = Str::lower($keyword);
-        }
-
-        $query->orWhereRaw($sql, [$keyword]);
-    }
-
-    /**
-     * Wrap a column and cast in pgsql
-     *
-     * @param  string $column
-     * @return string
-     */
-    public function castColumn($column)
-    {
-        $column = $this->wrapValue($column);
-        if ($this->databaseDriver() === 'pgsql') {
-            $column = 'CAST(' . $column . ' as TEXT)';
-        }
-
-        return $column;
-    }
-
-    /**
-     * Wrap value depending on database type.
-     *
-     * @param string $value
-     * @return string
-     */
-    public function wrapValue($value)
-    {
-        $parts  = explode('.', $value);
-        $column = '';
-        foreach ($parts as $key) {
-            $column = $this->wrapColumn($key, $column);
-        }
-
-        return substr($column, 0, strlen($column) - 1);
-    }
-
-    /**
-     * Database column wrapper
-     *
-     * @param string $key
-     * @param string $column
-     * @return string
-     */
-    protected function wrapColumn($key, $column)
-    {
-        switch ($this->databaseDriver()) {
-            case 'mysql':
-                $column .= '`' . str_replace('`', '``', $key) . '`' . '.';
-                break;
-
-            case 'sqlsrv':
-                $column .= '[' . str_replace(']', ']]', $key) . ']' . '.';
-                break;
-
-            case 'pgsql':
-            case 'sqlite':
-                $column .= '"' . str_replace('"', '""', $key) . '"' . '.';
-                break;
-
-            default:
-                $column .= $key . '.';
-        }
-
-        return $column;
-    }
-
-    /**
-     * Returns current database driver.
-     *
-     * @return string
-     */
-    public function databaseDriver()
-    {
-        return $this->connection->getDriverName();
-    }
-
-    /**
-     * Get config is case insensitive status.
-     *
-     * @return bool
-     */
-    public function isCaseInsensitive()
-    {
-        return Config::get('datatables.search.case_insensitive', false);
-    }
-
-    /**
-     * Compile Datatables final output.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function compileOutput()
-    {
-        $this->resultsToArray();
-        $this->initColumns();
-        $this->regulateArray();
-
-        return $this->output();
-    }
-
-    /**
-     * Set datatables results object and arrays.
-     *
-     * @param mixed $results
-     */
-    public function resultsToArray($results)
-    {
-        $this->result_array = array_map(
+        return $this->result_array = array_map(
             function ($object) {
                 return $object instanceof Arrayable ? $object->toArray() : (array) $object;
-            }, $results
+            }, $data
         );
     }
 
@@ -1096,6 +875,180 @@ abstract class BaseEngine
         $output['input']   = $this->request->all();
 
         return $output;
+    }
+
+    /**
+     * Get equivalent or method of query builder.
+     *
+     * @param string $method
+     * @return string
+     */
+    protected function getOrMethod($method)
+    {
+        if ( ! Str::contains(Str::lower($method), 'or')) {
+            return 'or' . ucfirst($method);
+        }
+
+        return $method;
+    }
+
+    /**
+     * Perform filter column on selected field.
+     *
+     * @param string $method
+     * @param mixed $parameters
+     * @param string $column
+     */
+    protected function compileFilterColumn($method, $parameters, $column)
+    {
+        if (method_exists($this->getQueryBuilder(), $method)
+            && count($parameters) <= with(
+                new \ReflectionMethod(
+                    $this->getQueryBuilder(),
+                    $method
+                )
+            )->getNumberOfParameters()
+        ) {
+            if (Str::contains(Str::lower($method), 'raw')
+                || Str::contains(Str::lower($method), 'exists')
+            ) {
+                call_user_func_array(
+                    [$this->getQueryBuilder(), $method],
+                    $this->parameterize($parameters)
+                );
+            } else {
+                call_user_func_array(
+                    [$this->getQueryBuilder(), $method],
+                    $this->parameterize($column, $parameters)
+                );
+            }
+        }
+    }
+
+    /**
+     * Build Query Builder Parameters.
+     *
+     * @return array
+     */
+    public function parameterize()
+    {
+        $args       = func_get_args();
+        $parameters = [];
+
+        if (count($args) > 1) {
+            $parameters[] = $args[0];
+            foreach ($args[1] as $param) {
+                $parameters[] = $param;
+            }
+        } else {
+            foreach ($args[0] as $param) {
+                $parameters[] = $param;
+            }
+        }
+
+        return $parameters;
+    }
+
+    /**
+     * Add a query on global search.
+     *
+     * @param mixed $query
+     * @param string $column
+     * @param string $keyword
+     */
+    protected function compileGlobalSearch($query, $column, $keyword)
+    {
+        $column = $this->castColumn($column);
+        $sql    = $column . ' LIKE ?';
+        if ($this->isCaseInsensitive()) {
+            $sql     = 'LOWER(' . $column . ') LIKE ?';
+            $keyword = Str::lower($keyword);
+        }
+
+        $query->orWhereRaw($sql, [$keyword]);
+    }
+
+    /**
+     * Wrap a column and cast in pgsql
+     *
+     * @param  string $column
+     * @return string
+     */
+    public function castColumn($column)
+    {
+        $column = $this->wrapValue($column);
+        if ($this->databaseDriver() === 'pgsql') {
+            $column = 'CAST(' . $column . ' as TEXT)';
+        }
+
+        return $column;
+    }
+
+    /**
+     * Wrap value depending on database type.
+     *
+     * @param string $value
+     * @return string
+     */
+    public function wrapValue($value)
+    {
+        $parts  = explode('.', $value);
+        $column = '';
+        foreach ($parts as $key) {
+            $column = $this->wrapColumn($key, $column);
+        }
+
+        return substr($column, 0, strlen($column) - 1);
+    }
+
+    /**
+     * Database column wrapper
+     *
+     * @param string $key
+     * @param string $column
+     * @return string
+     */
+    protected function wrapColumn($key, $column)
+    {
+        switch ($this->databaseDriver()) {
+            case 'mysql':
+                $column .= '`' . str_replace('`', '``', $key) . '`' . '.';
+                break;
+
+            case 'sqlsrv':
+                $column .= '[' . str_replace(']', ']]', $key) . ']' . '.';
+                break;
+
+            case 'pgsql':
+            case 'sqlite':
+                $column .= '"' . str_replace('"', '""', $key) . '"' . '.';
+                break;
+
+            default:
+                $column .= $key . '.';
+        }
+
+        return $column;
+    }
+
+    /**
+     * Returns current database driver.
+     *
+     * @return string
+     */
+    public function databaseDriver()
+    {
+        return $this->connection->getDriverName();
+    }
+
+    /**
+     * Get config is case insensitive status.
+     *
+     * @return bool
+     */
+    public function isCaseInsensitive()
+    {
+        return Config::get('datatables.search.case_insensitive', false);
     }
 
 }

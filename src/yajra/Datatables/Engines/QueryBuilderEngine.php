@@ -124,7 +124,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
         $columns = $this->request->get('columns');
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($this->request->isColumnSearchable($i)) {
-                $column  = $this->getColumnIdentity($i);
+                $column  = $this->getColumnName($i);
                 $keyword = $this->setupKeyword($this->request->columnKeyword($i));
 
                 if (isset($this->filter_columns[$column])) {
@@ -173,11 +173,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
     {
         $this->result_object = $this->query->get();
 
-        return $this->result_array = array_map(
-            function ($object) {
-                return $object instanceof Arrayable ? $object->toArray() : (array) $object;
-            }, $this->result_object
-        );
+        return $this->resultsToArray($this->result_object);
     }
 
 }
