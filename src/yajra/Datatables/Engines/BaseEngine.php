@@ -667,7 +667,7 @@ abstract class BaseEngine implements DataTableEngine
     public function initColumns()
     {
         foreach ($this->result_array as $key => &$value) {
-            $data = $this->convertToArray($value, $key);
+            $data  = $this->convertToArray($value, $key);
             $value = $this->processAddColumns($data, $key, $value);
             $value = $this->processEditColumns($data, $key, $value);
         }
@@ -705,7 +705,7 @@ abstract class BaseEngine implements DataTableEngine
     protected function processAddColumns(array $data, $rKey, $rValue)
     {
         foreach ($this->extra_columns as $key => $value) {
-            $value =  Helper::compileContent($value, $data, $this->result_object[$rKey]);
+            $value  = Helper::compileContent($value, $data, $this->result_object[$rKey]);
             $rValue = Helper::includeInArray($value, $rValue);
         }
 
@@ -723,7 +723,7 @@ abstract class BaseEngine implements DataTableEngine
     protected function processEditColumns(array $data, $rKey, $rvalue)
     {
         foreach ($this->edit_columns as $key => $value) {
-            $value = Helper::compileContent($value, $data, $this->result_object[$rKey]);
+            $value                  = Helper::compileContent($value, $data, $this->result_object[$rKey]);
             $rvalue[$value['name']] = $value['content'];
         }
 
@@ -913,7 +913,7 @@ abstract class BaseEngine implements DataTableEngine
     public function castColumn($column)
     {
         $column = Helper::wrapValue($this->database, $column);
-        if ($this->database  === 'pgsql') {
+        if ($this->database === 'pgsql') {
             $column = 'CAST(' . $column . ' as TEXT)';
         }
 

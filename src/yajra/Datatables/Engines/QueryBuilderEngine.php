@@ -14,8 +14,8 @@ use Closure;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Str;
 use yajra\Datatables\Contracts\DataTableEngine;
-use yajra\Datatables\Request;
 use yajra\Datatables\Helper;
+use yajra\Datatables\Request;
 
 class QueryBuilderEngine extends BaseEngine implements DataTableEngine
 {

@@ -1,12 +1,13 @@
 <?php
 
- namespace yajra\Datatables;
+namespace yajra\Datatables;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Illuminate\View\Compilers\BladeCompiler;
 
-class Helper {
+class Helper
+{
 
     /**
      * Parses and compiles strings by using Blade Template System.
@@ -140,6 +141,7 @@ class Helper {
 
         return substr($column, 0, strlen($column) - 1);
     }
+
     /**
      * Database column wrapper
      *
