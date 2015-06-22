@@ -131,12 +131,12 @@ class Helper
      * @param string $value
      * @return string
      */
-    public static function wrapValue($database, $value)
+    public static function wrapDatabaseValue($database, $value)
     {
         $parts  = explode('.', $value);
         $column = '';
         foreach ($parts as $key) {
-            $column = static::wrapColumn($database, $key, $column);
+            $column = static::wrapDatabaseColumn($database, $key, $column);
         }
 
         return substr($column, 0, strlen($column) - 1);
@@ -150,7 +150,7 @@ class Helper
      * @param string $column
      * @return string
      */
-    public static function wrapColumn($database, $key, $column)
+    public static function wrapDatabaseColumn($database, $key, $column)
     {
         switch ($database) {
             case 'mysql':

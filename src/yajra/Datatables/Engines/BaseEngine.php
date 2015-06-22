@@ -20,6 +20,7 @@ use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
 use yajra\Datatables\Contracts\DataTableEngine;
 use yajra\Datatables\Helper;
+use yajra\Datatables\RowProcessor;
 
 abstract class BaseEngine implements DataTableEngine
 {
@@ -192,8 +193,18 @@ abstract class BaseEngine implements DataTableEngine
      */
     public $transformer = null;
 
+    /**
+     * Database prefix
+     *
+     * @var string
+     */
     protected $prefix;
 
+    /**
+     * Database driver used
+     *
+     * @var string
+     */
     protected $database;
 
     /**
@@ -601,7 +612,6 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function count()
     {
-        // TODO: Implement count() method.
     }
 
     /**
@@ -611,7 +621,6 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function ordering()
     {
-        // TODO: Implement ordering() method.
     }
 
     /**
@@ -621,7 +630,6 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function filtering()
     {
-        // TODO: Implement filtering() method.
     }
 
     /**
@@ -631,7 +639,6 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function columnSearch()
     {
-        // TODO: Implement columnSearch() method.
     }
 
     public function paginate()
@@ -648,7 +655,6 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function paging()
     {
-        // TODO: Implement paging() method.
     }
 
     /**
@@ -658,7 +664,6 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function setResults()
     {
-        // TODO: Implement setResults() method.
     }
 
     /**
@@ -737,12 +742,12 @@ abstract class BaseEngine implements DataTableEngine
     {
         if ($this->m_data_support) {
             foreach ($this->result_array as $key => $value) {
-                $this->setupDTRowVariables($key, $value);
+                $value                  = $this->setupDTRowVariables($key, $value);
                 $this->result_array_r[] = $this->removeExcessColumns($value);
             }
         } else {
             foreach ($this->result_array as $key => $value) {
-                $this->setupDTRowVariables($key, $value);
+                $value                  = $this->setupDTRowVariables($key, $value);
                 $this->result_array_r[] = Arr::flatten($this->removeExcessColumns($value));
             }
         }
@@ -755,49 +760,16 @@ abstract class BaseEngine implements DataTableEngine
      * @param array &$data
      * @return array
      */
-    protected function setupDTRowVariables($key, array &$data)
+    protected function setupDTRowVariables($key, array $data)
     {
-        $this->processDTRowValue('DT_RowId', $this->row_id_tmpl, $key, $data);
-        $this->processDTRowValue('DT_RowClass', $this->row_class_tmpl, $key, $data);
-        $this->processDTRowDataAttr('DT_RowData', $this->row_data_tmpls, $key, $data);
-        $this->processDTRowDataAttr('DT_RowAttr', $this->row_attr_tmpls, $key, $data);
-    }
+        $row       = $this->result_object[$key];
+        $processor = new RowProcessor($row);
+        $data      = $processor->rowValue('DT_RowId', $this->row_id_tmpl, $data);
+        $data      = $processor->rowValue('DT_RowClass', $this->row_class_tmpl, $data);
+        $data      = $processor->rowData('DT_RowData', $this->row_data_tmpls, $data);
+        $data      = $processor->rowData('DT_RowAttr', $this->row_attr_tmpls, $data);
 
-    /**
-     * Process DT RowId and Class value.
-     *
-     * @param string $key
-     * @param string|callable $template
-     * @param string $index
-     * @param array $data
-     */
-    protected function processDTRowValue($key, $template, $index, array &$data)
-    {
-        if ( ! empty($template)) {
-            if ( ! is_callable($template) && Arr::get($data, $template)) {
-                $data[$key] = Arr::get($data, $template);
-            } else {
-                $data[$key] = Helper::getContent($template, $data, $this->result_object[$index]);
-            }
-        }
-    }
-
-    /**
-     * Process DT Row Data and Attr.
-     *
-     * @param string $key
-     * @param array $template
-     * @param string $index
-     * @param array $data
-     */
-    protected function processDTRowDataAttr($key, array $template, $index, array &$data)
-    {
-        if (count($template)) {
-            $data[$key] = [];
-            foreach ($template as $tKey => $tValue) {
-                $data[$key][$tKey] = Helper::getContent($tValue, $data, $this->result_object[$index]);
-            }
-        }
+        return $data;
     }
 
     /**
@@ -877,7 +849,6 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function filter(\Closure $callback)
     {
-        // TODO: Implement filter() method.
     }
 
     /**
@@ -912,7 +883,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function castColumn($column)
     {
-        $column = Helper::wrapValue($this->database, $column);
+        $column = Helper::wrapDatabaseValue($this->database, $column);
         if ($this->database === 'pgsql') {
             $column = 'CAST(' . $column . ' as TEXT)';
         }
