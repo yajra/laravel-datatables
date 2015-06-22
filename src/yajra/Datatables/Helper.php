@@ -76,7 +76,7 @@ class Helper
     public static function compileContent($value, $data, $object)
     {
         if (is_string($value['content'])) :
-            $value['content'] = Helper::compileBlade($value['content'], $data);
+            $value['content'] = static::compileBlade($value['content'], $data);
 
             return $value;
         elseif (is_callable($value['content'])) :
@@ -99,7 +99,7 @@ class Helper
     public static function getContent($content, $data = null, $param = null)
     {
         if (is_string($content)) {
-            $return = Helper::compileBlade($content, $data);
+            $return = static::compileBlade($content, $data);
         } elseif (is_callable($content)) {
             $return = $content($param);
         } else {
@@ -136,7 +136,7 @@ class Helper
         $parts  = explode('.', $value);
         $column = '';
         foreach ($parts as $key) {
-            $column = Helper::wrapColumn($database, $key, $column);
+            $column = static::wrapColumn($database, $key, $column);
         }
 
         return substr($column, 0, strlen($column) - 1);

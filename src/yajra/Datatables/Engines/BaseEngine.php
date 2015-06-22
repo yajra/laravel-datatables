@@ -921,23 +921,6 @@ abstract class BaseEngine implements DataTableEngine
     }
 
     /**
-     * Wrap value depending on database type.
-     *
-     * @param string $value
-     * @return string
-     */
-    public function wrapValue($value)
-    {
-        $parts  = explode('.', $value);
-        $column = '';
-        foreach ($parts as $key) {
-            $column = Helper::wrapColumn($this->database, $key, $column);
-        }
-
-        return substr($column, 0, strlen($column) - 1);
-    }
-
-    /**
      * Get config is case insensitive status.
      *
      * @return bool
