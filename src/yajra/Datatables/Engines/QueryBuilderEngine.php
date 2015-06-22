@@ -63,7 +63,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
      */
     public function count()
     {
-        $myQuery = clone $this->query;;
+        $myQuery = clone $this->query;
         // if its a normal query ( no union and having word ) replace the select with static text to improve performance
         if ( ! Str::contains(Str::lower($myQuery->toSql()), 'union')
             && ! Str::contains(Str::lower($myQuery->toSql()), 'having')
@@ -142,10 +142,8 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
      */
     public function paging()
     {
-        if ($this->request->isPaginationable()) {
-            $this->query->skip($this->request['start'])
-                ->take((int) $this->request['length'] > 0 ? $this->request['length'] : 10);
-        }
+        $this->query->skip($this->request['start'])
+            ->take((int) $this->request['length'] > 0 ? $this->request['length'] : 10);
     }
 
     /**

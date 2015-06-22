@@ -12,7 +12,6 @@ namespace yajra\Datatables\Engines;
 
 use Closure;
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use yajra\Datatables\Contracts\DataTableEngine;
@@ -169,12 +168,10 @@ class CollectionEngine extends BaseEngine implements DataTableEngine
      */
     public function paging()
     {
-        if ($this->request->isPaginationable()) {
-            $this->collection = $this->collection->slice(
-                $this->request['start'],
-                (int) $this->request['length'] > 0 ? $this->request['length'] : 10
-            );
-        }
+        $this->collection = $this->collection->slice(
+            $this->request['start'],
+            (int) $this->request['length'] > 0 ? $this->request['length'] : 10
+        );
     }
 
     /**

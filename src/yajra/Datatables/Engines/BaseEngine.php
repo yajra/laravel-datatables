@@ -592,13 +592,20 @@ abstract class BaseEngine implements DataTableEngine
         if ( ! $orderFirst) {
             $this->ordering();
         }
-        $this->paging();
+        $this->paginate();
         $this->setResults();
         $this->initColumns();
         $this->regulateArray();
 
         return $this->output();
 
+    }
+
+    public function paginate()
+    {
+        if ($this->request->isPaginationable()) {
+            $this->paging();
+        }
     }
 
     /**
