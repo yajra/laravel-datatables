@@ -19,6 +19,7 @@ use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
 use yajra\Datatables\Contracts\DataTableEngine;
+use yajra\Datatables\DataProcessor;
 use yajra\Datatables\Helper;
 use yajra\Datatables\RowProcessor;
 
@@ -598,11 +599,8 @@ abstract class BaseEngine implements DataTableEngine
         }
         $this->paginate();
         $this->setResults();
-        $this->initColumns();
-        $this->regulateArray();
 
-        return $this->output();
-
+        return $this->render();
     }
 
     /**
@@ -667,133 +665,13 @@ abstract class BaseEngine implements DataTableEngine
     }
 
     /**
-     * Places extra columns.
-     */
-    public function initColumns()
-    {
-        foreach ($this->result_array as $key => &$value) {
-            $data  = $this->convertToArray($value, $key);
-            $value = $this->processAddColumns($data, $key, $value);
-            $value = $this->processEditColumns($data, $key, $value);
-        }
-    }
-
-    /**
-     * Converts array object values to associative array.
-     *
-     * @param array $row
-     * @param string|int $index
-     * @return array
-     */
-    protected function convertToArray(array $row, $index)
-    {
-        $data = [];
-        foreach ($row as $key => $value) {
-            if (is_object($this->result_object[$index])) {
-                $data[$key] = $this->result_object[$index]->$key;
-            } else {
-                $data[$key] = $value;
-            }
-        }
-
-        return $data;
-    }
-
-    /**
-     * Process add columns.
-     *
-     * @param array $data
-     * @param string|int $rKey
-     * @param array|null $rValue
-     * @return array
-     */
-    protected function processAddColumns(array $data, $rKey, $rValue)
-    {
-        foreach ($this->extra_columns as $key => $value) {
-            $value  = Helper::compileContent($value, $data, $this->result_object[$rKey]);
-            $rValue = Helper::includeInArray($value, $rValue);
-        }
-
-        return $rValue;
-    }
-
-    /**
-     * Process edit columns.
-     *
-     * @param array $data
-     * @param string|int $rKey
-     * @param array|null $rvalue
-     * @return array
-     */
-    protected function processEditColumns(array $data, $rKey, $rvalue)
-    {
-        foreach ($this->edit_columns as $key => $value) {
-            $value                  = Helper::compileContent($value, $data, $this->result_object[$rKey]);
-            $rvalue[$value['name']] = $value['content'];
-        }
-
-        return $rvalue;
-    }
-
-    /**
-     * Converts result_array number indexed array and consider excess columns.
-     */
-    public function regulateArray()
-    {
-        if ($this->m_data_support) {
-            foreach ($this->result_array as $key => $value) {
-                $value                  = $this->setupDTRowVariables($key, $value);
-                $this->result_array_r[] = $this->removeExcessColumns($value);
-            }
-        } else {
-            foreach ($this->result_array as $key => $value) {
-                $value                  = $this->setupDTRowVariables($key, $value);
-                $this->result_array_r[] = Arr::flatten($this->removeExcessColumns($value));
-            }
-        }
-    }
-
-    /**
-     * Setup additional DT row variables.
-     *
-     * @param string $key
-     * @param array &$data
-     * @return array
-     */
-    protected function setupDTRowVariables($key, array $data)
-    {
-        $row       = $this->result_object[$key];
-        $processor = new RowProcessor($row);
-        $data      = $processor->rowValue('DT_RowId', $this->row_id_tmpl, $data);
-        $data      = $processor->rowValue('DT_RowClass', $this->row_class_tmpl, $data);
-        $data      = $processor->rowData('DT_RowData', $this->row_data_tmpls, $data);
-        $data      = $processor->rowData('DT_RowAttr', $this->row_attr_tmpls, $data);
-
-        return $data;
-    }
-
-    /**
-     * Remove declared excess columns.
-     *
-     * @param array $data
-     * @return array
-     */
-    public function removeExcessColumns(array $data)
-    {
-        foreach ($this->excess_columns as $value) {
-            unset($data[$value]);
-        }
-
-        return $data;
-    }
-
-    /**
      * Render json response.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function output()
+    public function render()
     {
+        $data = with(new DataProcessor($this))->process();
         $output = [
             'draw'            => (int) $this->request['draw'],
             'recordsTotal'    => $this->totalRecords,
@@ -802,11 +680,11 @@ abstract class BaseEngine implements DataTableEngine
 
         if (isset($this->transformer)) {
             $fractal        = new Manager();
-            $resource       = new Collection($this->result_array_r, new $this->transformer());
+            $resource       = new Collection($data, new $this->transformer());
             $collection     = $fractal->createData($resource)->toArray();
             $output['data'] = $collection['data'];
         } else {
-            $output['data'] = $this->result_array_r;
+            $output['data'] = $data;
         }
 
         if ($this->isDebugging()) {
@@ -849,30 +727,6 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function filter(\Closure $callback)
     {
-    }
-
-    /**
-     * Build Query Builder Parameters.
-     *
-     * @return array
-     */
-    public function parameterize()
-    {
-        $args       = func_get_args();
-        $parameters = [];
-
-        if (count($args) > 1) {
-            $parameters[] = $args[0];
-            foreach ($args[1] as $param) {
-                $parameters[] = $param;
-            }
-        } else {
-            foreach ($args[0] as $param) {
-                $parameters[] = $param;
-            }
-        }
-
-        return $parameters;
     }
 
     /**

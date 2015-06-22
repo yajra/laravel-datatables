@@ -4,16 +4,26 @@ namespace yajra\Datatables;
 
 use Illuminate\Support\Arr;
 
+/**
+ * Class RowProcessor
+ *
+ * @package yajra\Datatables
+ */
 class RowProcessor
 {
 
+    /**
+     * @var
+     */
     private $data;
 
-    function __construct($data)
+    /**
+     * @param $data
+     */
+    public function __construct($data)
     {
         $this->data = $data;
     }
-
 
     /**
      * Process DT RowId and Class value.

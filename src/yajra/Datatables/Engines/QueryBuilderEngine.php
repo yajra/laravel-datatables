@@ -135,6 +135,30 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
     }
 
     /**
+     * Build Query Builder Parameters.
+     *
+     * @return array
+     */
+    protected function parameterize()
+    {
+        $args       = func_get_args();
+        $parameters = [];
+
+        if (count($args) > 1) {
+            $parameters[] = $args[0];
+            foreach ($args[1] as $param) {
+                $parameters[] = $param;
+            }
+        } else {
+            foreach ($args[0] as $param) {
+                $parameters[] = $param;
+            }
+        }
+
+        return $parameters;
+    }
+
+    /**
      * Add a query on global search.
      *
      * @param mixed $query
