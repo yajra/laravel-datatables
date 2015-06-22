@@ -1,6 +1,6 @@
 <?php
 
-namespace yajra\Datatables\Engine;
+namespace yajra\Datatables\Engines;
 
 /*
  * Laravel Datatables Base Engine
@@ -214,29 +214,22 @@ abstract class BaseEngine
         // set mData support flag
         $this->m_data_support = $mDataSupport;
 
-        $this->compileQueryBuilder($orderFirst);
+        $this->getTotalRecords();
 
-        return $this->compileOutput();
-    }
-
-    /**
-     * Compile Datatables queries.
-     *
-     * @param bool $orderFirst
-     */
-    protected function compileQueryBuilder($orderFirst)
-    {
         if ($orderFirst) {
-            $this->doOrdering();
+            $this->ordering();
         }
 
-        $this->compileFiltering();
+        $this->performFiltering();
+        $this->getTotalFilteredRecords();
 
         if ( ! $orderFirst) {
-            $this->doOrdering();
+            $this->ordering();
         }
 
-        $this->doPaging();
+        $this->paging();
+
+        return $this->compileOutput();
     }
 
     /**
@@ -245,22 +238,21 @@ abstract class BaseEngine
      * @param int $column
      * @return mixed
      */
-    protected function getOrderColumnName($column)
+    protected function getColumnName($column)
     {
-        return $this->request->orderColumnName($column) ?: $this->columns[$column];
+        return $this->request->columnName($column) ?: $this->columns[$column];
     }
 
     /**
      * Perform all filtering queries.
      */
-    protected function compileFiltering()
+    protected function performFiltering()
     {
         if ($this->autoFilter && $this->request->isSearchable()) {
-            $this->doFiltering();
+            $this->filtering();
         }
 
-        $this->doColumnSearch();
-        $this->getTotalFilteredRecords();
+        $this->columnSearch();
     }
 
     /**
@@ -325,7 +317,7 @@ abstract class BaseEngine
         $column = $this->getColumnIdentity($i);
 
         if (Str::contains(Str::upper($column), ' AS ')) {
-            $column = $this->getColumnName($column);
+            $column = $this->extractColumn($column);
         }
 
         // there's no need to put the prefix unless the column name is prefixed with the table name.
@@ -351,7 +343,7 @@ abstract class BaseEngine
      * @param string $str
      * @return string
      */
-    public function getColumnName($str)
+    public function extractColumn($str)
     {
         preg_match('#^(\S*?)\s+as\s+(\S*?)$#si', $str, $matches);
 
@@ -395,7 +387,7 @@ abstract class BaseEngine
     public function tableNames()
     {
         $names          = [];
-        $query          = $this->getBuilder();
+        $query          = $this->getQueryBuilder();
         $names[]        = $query->from;
         $joins          = $query->joins ?: [];
         $databasePrefix = $this->databasePrefix();
@@ -415,7 +407,7 @@ abstract class BaseEngine
      *
      * @return mixed
      */
-    public function getBuilder()
+    public function getQueryBuilder()
     {
         if ($this->isQueryBuilder()) {
             return $this->query;
@@ -441,7 +433,7 @@ abstract class BaseEngine
      */
     public function databasePrefix()
     {
-        return $this->getBuilder()->getGrammar()->getTablePrefix();
+        return $this->getQueryBuilder()->getGrammar()->getTablePrefix();
     }
 
     /**
@@ -468,10 +460,10 @@ abstract class BaseEngine
      */
     protected function compileFilterColumn($method, $parameters, $column)
     {
-        if (method_exists($this->getBuilder(), $method)
+        if (method_exists($this->getQueryBuilder(), $method)
             && count($parameters) <= with(
                 new \ReflectionMethod(
-                    $this->getBuilder(),
+                    $this->getQueryBuilder(),
                     $method
                 )
             )->getNumberOfParameters()
@@ -480,12 +472,12 @@ abstract class BaseEngine
                 || Str::contains(Str::lower($method), 'exists')
             ) {
                 call_user_func_array(
-                    [$this->getBuilder(), $method],
+                    [$this->getQueryBuilder(), $method],
                     $this->parameterize($parameters)
                 );
             } else {
                 call_user_func_array(
-                    [$this->getBuilder(), $method],
+                    [$this->getQueryBuilder(), $method],
                     $this->parameterize($column, $parameters)
                 );
             }
@@ -629,23 +621,13 @@ abstract class BaseEngine
     }
 
     /**
-     * Check if Datatables allow pagination.
-     *
-     * @return bool
-     */
-    protected function isPaginationable()
-    {
-        return ! is_null($this->request['start']) && ! is_null($this->request['length']) && $this->request['length'] != -1;
-    }
-
-    /**
      * Compile Datatables final output.
      *
      * @return \Illuminate\Http\JsonResponse
      */
     protected function compileOutput()
     {
-        $this->setResults();
+        $this->resultsToArray();
         $this->initColumns();
         $this->regulateArray();
 
@@ -655,23 +637,13 @@ abstract class BaseEngine
     /**
      * Set datatables results object and arrays.
      */
-    public function setResults()
+    public function resultsToArray()
     {
         $this->result_array = array_map(
             function ($object) {
                 return $object instanceof Arrayable ? $object->toArray() : (array) $object;
-            }, $this->getResults()
+            }, $this->results()
         );
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getResults()
-    {
-        $this->result_object = $this->query->get();
-
-        return $this->result_object;
     }
 
     /**
@@ -972,20 +944,6 @@ abstract class BaseEngine
     }
 
     /**
-     * Show debug parameters.
-     *
-     * @param  $output
-     * @return mixed
-     */
-    protected function showDebugger($output)
-    {
-        $output['queries'] = $this->connection->getQueryLog();
-        $output['input']   = $this->request->all();
-
-        return $output;
-    }
-
-    /**
      * Use data columns.
      *
      * @return array
@@ -1076,8 +1034,8 @@ abstract class BaseEngine
         $name = Str::camel(Str::lower($name));
         if (method_exists($this, $name)) {
             return call_user_func_array([$this, $name], $arguments);
-        } elseif (method_exists($this->getBuilder(), $name)) {
-            call_user_func_array([$this->getBuilder(), $name], $arguments);
+        } elseif (method_exists($this->getQueryBuilder(), $name)) {
+            call_user_func_array([$this->getQueryBuilder(), $name], $arguments);
         } else {
             trigger_error('Call to undefined method ' . __CLASS__ . '::' . $name . '()', E_USER_ERROR);
         }

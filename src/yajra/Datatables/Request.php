@@ -46,22 +46,6 @@ class Request extends IlluminateRequest
     }
 
     /**
-     * Get column name by order column index.
-     *
-     * @param integer $order_col
-     * @return mixed
-     */
-    public function orderColumnName($order_col)
-    {
-        $column = $this->get('columns')[$order_col];
-        if (isset($column['name']) && $column['name'] != '') {
-            return $column['name'];
-        }
-
-        return false;
-    }
-
-    /**
      * Check if Datatables is searchable.
      *
      * @return bool
@@ -158,6 +142,16 @@ class Request extends IlluminateRequest
     public function columnName($i)
     {
         return $this->get('columns')[$i]['name'];
+    }
+
+    /**
+     * Check if Datatables allow pagination.
+     *
+     * @return bool
+     */
+    public function isPaginationable()
+    {
+        return ! is_null($this->get('start')) && ! is_null($this->get('length')) && $this->get('length') != -1;
     }
 
 }

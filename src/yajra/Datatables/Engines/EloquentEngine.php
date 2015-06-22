@@ -1,6 +1,6 @@
 <?php
 
-namespace yajra\Datatables\Engine;
+namespace yajra\Datatables\Engines;
 
 /**
  * Laravel Datatables Eloquent Engine
@@ -10,10 +10,12 @@ namespace yajra\Datatables\Engine;
  * @author   Arjay Angeles <aqangeles@gmail.com>
  */
 
+use yajra\Datatables\Contracts\DataTableEngine;
+use yajra\Datatables\Contracts\Debugable;
 use Illuminate\Database\Eloquent\Builder;
 use yajra\Datatables\Request;
 
-class EloquentEngine extends QueryBuilderEngine
+class EloquentEngine extends QueryBuilderEngine implements DataTableEngine, Debugable
 {
 
     /**
@@ -32,7 +34,6 @@ class EloquentEngine extends QueryBuilderEngine
         }
 
         $this->request = $request;
-        $this->getTotalRecords();
     }
 
     /**
@@ -40,7 +41,7 @@ class EloquentEngine extends QueryBuilderEngine
      *
      * @return array
      */
-    public function getResults()
+    public function results()
     {
         $this->result_object = $this->query->get();
 

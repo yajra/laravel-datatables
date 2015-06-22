@@ -1,6 +1,6 @@
 <?php
 
-namespace yajra\Datatables\Engine;
+namespace yajra\Datatables\Engines;
 
 /**
  * Laravel Datatables Query Builder Engine
@@ -10,11 +10,13 @@ namespace yajra\Datatables\Engine;
  * @author   Arjay Angeles <aqangeles@gmail.com>
  */
 
+use yajra\Datatables\Contracts\DataTableEngine;
+use yajra\Datatables\Contracts\Debugable;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Str;
 use yajra\Datatables\Request;
 
-class QueryBuilderEngine extends BaseEngine
+class QueryBuilderEngine extends BaseEngine implements DataTableEngine, Debugable
 {
 
     /**
@@ -23,6 +25,7 @@ class QueryBuilderEngine extends BaseEngine
      */
     public function __construct(Builder $builder, Request $request)
     {
+        $this->request    = $request;
         $this->query_type = 'builder';
         $this->query      = $builder;
         $this->columns    = $this->query->columns;
@@ -31,9 +34,16 @@ class QueryBuilderEngine extends BaseEngine
         if ($this->isDebugging()) {
             $this->connection->enableQueryLog();
         }
+    }
 
-        $this->request = $request;
-        $this->getTotalRecords();
+    /**
+     * @inheritdoc
+     */
+    public function results()
+    {
+        $this->result_object = $this->query->get();
+
+        return $this->result_object;
     }
 
     /**
@@ -46,8 +56,7 @@ class QueryBuilderEngine extends BaseEngine
     {
         $this->autoFilter = false;
 
-        $query = $this->query;
-        call_user_func($callback, $query);
+        call_user_func($callback, $this->query);
 
         return $this;
     }
@@ -59,10 +68,8 @@ class QueryBuilderEngine extends BaseEngine
      */
     public function count()
     {
-        $query = $this->query;
-
+        $myQuery = clone $this->query;;
         // if its a normal query ( no union and having word ) replace the select with static text to improve performance
-        $myQuery = clone $query;
         if ( ! Str::contains(Str::lower($myQuery->toSql()), 'union')
             && ! Str::contains(Str::lower($myQuery->toSql()), 'having')
         ) {
@@ -74,20 +81,20 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Datatable ordering.
+     * @inheritdoc
      */
-    public function doOrdering()
+    public function ordering()
     {
         foreach ($this->request->orderableColumns() as $orderable) {
-            $column = $this->getOrderColumnName($orderable['column']);
+            $column = $this->getColumnName($orderable['column']);
             $this->query->orderBy($column, $orderable['direction']);
         }
     }
 
     /**
-     * Datatables filtering.
+     * @inheritdoc
      */
-    public function doFiltering()
+    public function filtering()
     {
         $this->query->where(
             function ($query) {
@@ -108,9 +115,9 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Perform column search.
+     * @inheritdoc
      */
-    public function doColumnSearch()
+    public function columnSearch()
     {
         $columns = $this->request->get('columns');
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
@@ -136,24 +143,24 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Paginate query.
-     *
-     * @return mixed
+     * @inheritdoc
      */
-    protected function paginate()
+    public function paging()
     {
-        return $this->query->skip($this->request['start'])
-            ->take((int) $this->request['length'] > 0 ? $this->request['length'] : 10);
-    }
-
-    /**
-     * Datatables paging.
-     */
-    public function doPaging()
-    {
-        if ($this->isPaginationable()) {
-            $this->paginate();
+        if ($this->request->isPaginationable()) {
+            $this->query->skip($this->request['start'])
+                ->take((int) $this->request['length'] > 0 ? $this->request['length'] : 10);
         }
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function showDebugger(array $output)
+    {
+        $output['queries'] = $this->connection->getQueryLog();
+        $output['input']   = $this->request->all();
+
+        return $output;
+    }
 }

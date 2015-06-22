@@ -13,9 +13,9 @@ namespace yajra\Datatables;
 
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
-use yajra\Datatables\Engine\CollectionEngine;
-use yajra\Datatables\Engine\EloquentEngine;
-use yajra\Datatables\Engine\QueryBuilderEngine;
+use yajra\Datatables\Engines\CollectionEngine;
+use yajra\Datatables\Engines\EloquentEngine;
+use yajra\Datatables\Engines\QueryBuilderEngine;
 
 /**
  * Class Datatables

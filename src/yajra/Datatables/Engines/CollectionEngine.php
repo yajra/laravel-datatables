@@ -1,6 +1,6 @@
 <?php
 
-namespace yajra\Datatables\Engine;
+namespace yajra\Datatables\Engines;
 
 /**
  * Laravel Datatables Collection Engine
@@ -10,13 +10,15 @@ namespace yajra\Datatables\Engine;
  * @author   Arjay Angeles <aqangeles@gmail.com>
  */
 
+use yajra\Datatables\Contracts\DataTableEngine;
+use yajra\Datatables\Contracts\Debugable;
 use Closure;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use yajra\Datatables\Request;
 
-class CollectionEngine extends BaseEngine implements EngineContract
+class CollectionEngine extends BaseEngine implements DataTableEngine, Debugable
 {
 
     /**
@@ -42,9 +44,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
         $this->request             = $request;
         $this->collection          = $collection;
         $this->original_collection = $collection;
-        $this->columns             = array_keys($this->serialize((array) $collection->first()));
-
-        $this->getTotalRecords();
+        $this->columns             = array_keys($this->serialize($collection->first()));
     }
 
     /**
@@ -61,14 +61,6 @@ class CollectionEngine extends BaseEngine implements EngineContract
     /**
      * @inheritdoc
      */
-    public function getTotalRecords()
-    {
-        return $this->totalRecords = $this->collection->count();
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function make($mDataSupport = false, $orderFirst = true)
     {
         return parent::make($mDataSupport, $orderFirst);
@@ -77,10 +69,10 @@ class CollectionEngine extends BaseEngine implements EngineContract
     /**
      * @inheritdoc
      */
-    public function doOrdering()
+    public function ordering()
     {
         foreach ($this->request->orderableColumns() as $orderable) {
-            $column           = $this->getOrderColumnName($orderable['column']);
+            $column           = $this->getColumnName($orderable['column']);
             $this->collection = $this->collection->sortBy(
                 function ($row) use ($column) {
                     return $row[$column];
@@ -96,7 +88,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
     /**
      * @inheritdoc
      */
-    public function doFiltering()
+    public function filtering()
     {
         $columns          = $this->request['columns'];
         $this->collection = $this->collection->filter(
@@ -106,9 +98,9 @@ class CollectionEngine extends BaseEngine implements EngineContract
 
                 $keyword = $this->request->keyword();
                 foreach ($this->request->searchableColumnIndex() as $index) {
-                    $column = $this->request->columnName($index);
+                    $column = $this->getColumnName($index);
 
-                    if ( ! $this->columnExists($column, $data)) {
+                    if ( ! array_key_exists($column, $data)) {
                         continue;
                     }
 
@@ -125,21 +117,9 @@ class CollectionEngine extends BaseEngine implements EngineContract
     }
 
     /**
-     * Check if column name exists in collection keys
-     *
-     * @param  string $column
-     * @param  array $data
-     * @return bool
-     */
-    private function columnExists($column, array $data)
-    {
-        return array_key_exists($column, $data);
-    }
-
-    /**
      * @inheritdoc
      */
-    public function doColumnSearch()
+    public function columnSearch()
     {
         $columns = $this->request->get('columns');
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
@@ -164,15 +144,15 @@ class CollectionEngine extends BaseEngine implements EngineContract
     /**
      * @inheritdoc
      */
-    public function getTotalFilteredRecords()
+    public function count()
     {
-        return $this->filteredRecords = $this->collection->count();
+        return $this->collection->count();
     }
 
     /**
      * @inheritdoc
      */
-    public function getResults()
+    public function results()
     {
         $this->result_object = $this->collection->all();
 
@@ -194,21 +174,24 @@ class CollectionEngine extends BaseEngine implements EngineContract
     /**
      * @inheritdoc
      */
-    protected function showDebugger($output)
+    public function paging()
+    {
+        if ($this->request->isPaginationable()) {
+            $this->collection = $this->collection->slice(
+                $this->request['start'],
+                (int) $this->request['length'] > 0 ? $this->request['length'] : 10
+            );
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function showDebugger(array $output)
     {
         $output["input"] = $this->request->all();
 
         return $output;
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function paginate()
-    {
-        $this->collection = $this->collection->slice(
-            $this->request['start'],
-            (int) $this->request['length'] > 0 ? $this->request['length'] : 10
-        );
-    }
 }
