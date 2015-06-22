@@ -10,10 +10,11 @@ namespace yajra\Datatables\Engines;
  * @author   Arjay Angeles <aqangeles@gmail.com>
  */
 
-use yajra\Datatables\Contracts\DataTableEngine;
-use yajra\Datatables\Contracts\Debugable;
+use Closure;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Str;
+use yajra\Datatables\Contracts\DataTableEngine;
+use yajra\Datatables\Contracts\Debugable;
 use yajra\Datatables\Request;
 
 class QueryBuilderEngine extends BaseEngine implements DataTableEngine, Debugable

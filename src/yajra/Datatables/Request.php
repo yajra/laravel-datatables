@@ -25,6 +25,50 @@ class Request extends IlluminateRequest
     }
 
     /**
+     * Check if Datatables is searchable.
+     *
+     * @return bool
+     */
+    public function isSearchable()
+    {
+        return ! empty($this->get('search')['value']);
+    }
+
+    /**
+     * Get column's search value.
+     *
+     * @param integer $index
+     * @return string
+     */
+    public function columnKeyword($index)
+    {
+        return $this->columns[$index]['search']['value'];
+    }
+
+    /**
+     * Get orderable columns
+     *
+     * @return array
+     */
+    public function orderableColumns()
+    {
+        if ( ! $this->isOrderable()) {
+            return [];
+        }
+
+        $orderable = [];
+        for ($i = 0, $c = count($this->get('order')); $i < $c; $i++) {
+            $order_col = (int) $this->get('order')[$i]['column'];
+            $order_dir = $this->get('order')[$i]['dir'];
+            if ($this->isColumnOrderable($order_col)) {
+                $orderable[] = ['column' => $order_col, 'direction' => $order_dir];
+            }
+        }
+
+        return $orderable;
+    }
+
+    /**
      * Check if Datatables ordering is enabled.
      *
      * @return bool
@@ -46,13 +90,20 @@ class Request extends IlluminateRequest
     }
 
     /**
-     * Check if Datatables is searchable.
+     * Get searchable column indexes
      *
-     * @return bool
+     * @return array
      */
-    public function isSearchable()
+    public function searchableColumnIndex()
     {
-        return ! empty($this->get('search')['value']);
+        $searchable = [];
+        for ($i = 0, $c = count($this->get('columns')); $i < $c; $i++) {
+            if ($this->isColumnSearchable($i, false)) {
+                $searchable[] = $i;
+            }
+        }
+
+        return $searchable;
     }
 
     /**
@@ -70,57 +121,6 @@ class Request extends IlluminateRequest
         }
 
         return $columns[$i]['searchable'] == 'true';
-    }
-
-    /**
-     * Get column's search value.
-     *
-     * @param integer $index
-     * @return string
-     */
-    public function columnKeyword($index)
-    {
-        return $this->columns[$index]['search']['value'];
-    }
-
-    /**
-     * Get orderable columns
-     *
-     * @return array
-     */
-    public function orderableColumns()
-    {
-        if (! $this->isOrderable()) {
-            return [];
-        }
-
-        $orderable = [];
-        for ($i = 0, $c = count($this->get('order')); $i < $c; $i++) {
-            $order_col = (int) $this->get('order')[$i]['column'];
-            $order_dir = $this->get('order')[$i]['dir'];
-            if ($this->isColumnOrderable($order_col)) {
-                $orderable[] = ['column' => $order_col, 'direction' => $order_dir];
-            }
-        }
-
-        return $orderable;
-    }
-
-    /**
-     * Get searchable column indexes
-     *
-     * @return array
-     */
-    public function searchableColumnIndex()
-    {
-        $searchable = [];
-        for ($i = 0, $c = count($this->get('columns')); $i < $c; $i++) {
-            if ($this->isColumnSearchable($i, false)) {
-                $searchable[] = $i;
-            }
-        }
-
-        return $searchable;
     }
 
     /**

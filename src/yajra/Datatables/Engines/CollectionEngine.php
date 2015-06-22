@@ -10,12 +10,12 @@ namespace yajra\Datatables\Engines;
  * @author   Arjay Angeles <aqangeles@gmail.com>
  */
 
-use yajra\Datatables\Contracts\DataTableEngine;
-use yajra\Datatables\Contracts\Debugable;
 use Closure;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use yajra\Datatables\Contracts\DataTableEngine;
+use yajra\Datatables\Contracts\Debugable;
 use yajra\Datatables\Request;
 
 class CollectionEngine extends BaseEngine implements DataTableEngine, Debugable

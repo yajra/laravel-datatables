@@ -2,8 +2,6 @@
 
 namespace yajra\Datatables\Contracts;
 
-use Closure;
-
 interface Debugable
 {
     /**

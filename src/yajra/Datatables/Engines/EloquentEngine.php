@@ -10,9 +10,9 @@ namespace yajra\Datatables\Engines;
  * @author   Arjay Angeles <aqangeles@gmail.com>
  */
 
+use Illuminate\Database\Eloquent\Builder;
 use yajra\Datatables\Contracts\DataTableEngine;
 use yajra\Datatables\Contracts\Debugable;
-use Illuminate\Database\Eloquent\Builder;
 use yajra\Datatables\Request;
 
 class EloquentEngine extends QueryBuilderEngine implements DataTableEngine, Debugable

@@ -102,7 +102,7 @@ class Builder
      */
     public function generateScripts()
     {
-        $args = array_merge(
+        $args       = array_merge(
             $this->attributes, [
                 'ajax'    => $this->ajax,
                 'columns' => $this->collection->toArray()
