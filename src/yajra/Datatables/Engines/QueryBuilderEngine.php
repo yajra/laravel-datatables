@@ -11,7 +11,6 @@ namespace yajra\Datatables\Engines;
  */
 
 use Closure;
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Str;
 use yajra\Datatables\Contracts\DataTableEngine;
@@ -52,26 +51,9 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
     /**
      * @inheritdoc
      */
-    public function make($mDataSupport = false)
+    public function make($mDataSupport = false, $orderFirst = false)
     {
-        $this->m_data_support = $mDataSupport;
-        $this->totalRecords   = $this->count();
-
-        if ($this->autoFilter && $this->request->isSearchable()) {
-            $this->filtering();
-        }
-
-        $this->columnSearch();
-        $this->filteredRecords = $this->count();
-
-        $this->ordering();
-        $this->paging();
-
-        $this->setResults();
-        $this->initColumns();
-        $this->regulateArray();
-
-        return $this->output();
+        return parent::make($mDataSupport, $orderFirst);
     }
 
     /**

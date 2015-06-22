@@ -10,7 +10,6 @@ namespace yajra\Datatables\Engines;
  * @author   Arjay Angeles <aqangeles@gmail.com>
  */
 
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Builder;
 use yajra\Datatables\Contracts\DataTableEngine;
 use yajra\Datatables\Request;

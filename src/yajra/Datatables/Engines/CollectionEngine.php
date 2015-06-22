@@ -61,6 +61,37 @@ class CollectionEngine extends BaseEngine implements DataTableEngine
     /**
      * @inheritdoc
      */
+    public function filter(Closure $callback)
+    {
+        $this->autoFilter = false;
+
+        call_user_func($callback, $this);
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function showDebugger(array $output)
+    {
+        $output["input"] = $this->request->all();
+
+        return $output;
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public function count()
+    {
+        return $this->collection->count();
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function ordering()
     {
         foreach ($this->request->orderableColumns() as $orderable) {
@@ -136,9 +167,14 @@ class CollectionEngine extends BaseEngine implements DataTableEngine
     /**
      * @inheritdoc
      */
-    public function count()
+    public function paging()
     {
-        return $this->collection->count();
+        if ($this->request->isPaginationable()) {
+            $this->collection = $this->collection->slice(
+                $this->request['start'],
+                (int) $this->request['length'] > 0 ? $this->request['length'] : 10
+            );
+        }
     }
 
     /**
@@ -154,62 +190,8 @@ class CollectionEngine extends BaseEngine implements DataTableEngine
     /**
      * @inheritdoc
      */
-    public function filter(Closure $callback)
+    public function make($mDataSupport = false, $orderFirst = true)
     {
-        $this->autoFilter = false;
-
-        call_user_func($callback, $this);
-
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function paging()
-    {
-        if ($this->request->isPaginationable()) {
-            $this->collection = $this->collection->slice(
-                $this->request['start'],
-                (int) $this->request['length'] > 0 ? $this->request['length'] : 10
-            );
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function showDebugger(array $output)
-    {
-        $output["input"] = $this->request->all();
-
-        return $output;
-    }
-
-    /**
-     * Organizes works.
-     *
-     * @param bool $mDataSupport
-     * @return JsonResponse
-     */
-    public function make($mDataSupport = false)
-    {
-        $this->m_data_support = $mDataSupport;
-        $this->totalRecords = $this->count();
-        $this->ordering();
-
-        if ($this->autoFilter && $this->request->isSearchable()) {
-            $this->filtering();
-        }
-        $this->columnSearch();
-        $this->filteredRecords = $this->count();
-
-        $this->paging();
-        $this->setResults();
-        $this->initColumns();
-        $this->regulateArray();
-
-        return $this->output();
-
+        return parent::make($mDataSupport, $orderFirst);
     }
 }

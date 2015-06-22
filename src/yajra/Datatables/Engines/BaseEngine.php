@@ -20,8 +20,9 @@ use Illuminate\View\Compilers\BladeCompiler;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
+use yajra\Datatables\Contracts\DataTableEngine;
 
-abstract class BaseEngine
+abstract class BaseEngine implements DataTableEngine
 {
 
     /**
@@ -567,6 +568,40 @@ abstract class BaseEngine
     }
 
     /**
+     * Organizes works.
+     *
+     * @param bool $mDataSupport
+     * @param bool $orderFirst
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function make($mDataSupport = false, $orderFirst = false)
+    {
+        $this->m_data_support = $mDataSupport;
+        $this->totalRecords   = $this->count();
+
+        if ($orderFirst) {
+            $this->ordering();
+        }
+
+        if ($this->autoFilter && $this->request->isSearchable()) {
+            $this->filtering();
+        }
+        $this->columnSearch();
+        $this->filteredRecords = $this->count();
+
+        if ( ! $orderFirst) {
+            $this->ordering();
+        }
+        $this->paging();
+        $this->setResults();
+        $this->initColumns();
+        $this->regulateArray();
+
+        return $this->output();
+
+    }
+
+    /**
      * Places extra columns.
      */
     public function initColumns()
@@ -1051,4 +1086,75 @@ abstract class BaseEngine
         return Config::get('datatables.search.case_insensitive', false);
     }
 
+    /**
+     * Get engine array results
+     *
+     * @return array
+     */
+    public function setResults()
+    {
+        // TODO: Implement setResults() method.
+    }
+
+    /**
+     * Count results
+     *
+     * @return integer
+     */
+    public function count()
+    {
+        // TODO: Implement count() method.
+    }
+
+    /**
+     * Set auto filter off and run your own filter.
+     * Overrides global search
+     *
+     * @param \Closure $callback
+     * @return $this
+     */
+    public function filter(\Closure $callback)
+    {
+        // TODO: Implement filter() method.
+    }
+
+    /**
+     * Perform global search
+     *
+     * @return void
+     */
+    public function filtering()
+    {
+        // TODO: Implement filtering() method.
+    }
+
+    /**
+     * Perform column search
+     *
+     * @return void
+     */
+    public function columnSearch()
+    {
+        // TODO: Implement columnSearch() method.
+    }
+
+    /**
+     * Perform pagination
+     *
+     * @return void
+     */
+    public function paging()
+    {
+        // TODO: Implement paging() method.
+    }
+
+    /**
+     * Perform sorting of columns
+     *
+     * @return void
+     */
+    public function ordering()
+    {
+        // TODO: Implement ordering() method.
+    }
 }
