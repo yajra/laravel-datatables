@@ -11,13 +11,13 @@ namespace yajra\Datatables\Engines;
  */
 
 use Closure;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Str;
 use yajra\Datatables\Contracts\DataTableEngine;
-use yajra\Datatables\Contracts\Debugable;
 use yajra\Datatables\Request;
 
-class QueryBuilderEngine extends BaseEngine implements DataTableEngine, Debugable
+class QueryBuilderEngine extends BaseEngine implements DataTableEngine
 {
 
     /**
@@ -40,19 +40,6 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine, Debugabl
     /**
      * @inheritdoc
      */
-    public function results()
-    {
-        $this->result_object = $this->query->get();
-
-        return $this->result_object;
-    }
-
-    /**
-     * Set auto filter off and run your own filter.
-     *
-     * @param Closure $callback
-     * @return $this
-     */
     public function filter(Closure $callback)
     {
         $this->autoFilter = false;
@@ -60,6 +47,31 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine, Debugabl
         call_user_func($callback, $this->query);
 
         return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function make($mDataSupport = false)
+    {
+        $this->m_data_support = $mDataSupport;
+        $this->totalRecords   = $this->count();
+
+        if ($this->autoFilter && $this->request->isSearchable()) {
+            $this->filtering();
+        }
+
+        $this->columnSearch();
+        $this->filteredRecords = $this->count();
+
+        $this->ordering();
+        $this->paging();
+
+        $this->setResults();
+        $this->initColumns();
+        $this->regulateArray();
+
+        return $this->output();
     }
 
     /**
@@ -79,17 +91,6 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine, Debugabl
 
         return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
             ->setBindings($myQuery->getBindings())->count();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function ordering()
-    {
-        foreach ($this->request->orderableColumns() as $orderable) {
-            $column = $this->getColumnName($orderable['column']);
-            $this->query->orderBy($column, $orderable['direction']);
-        }
     }
 
     /**
@@ -146,6 +147,17 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine, Debugabl
     /**
      * @inheritdoc
      */
+    public function ordering()
+    {
+        foreach ($this->request->orderableColumns() as $orderable) {
+            $column = $this->getColumnName($orderable['column']);
+            $this->query->orderBy($column, $orderable['direction']);
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function paging()
     {
         if ($this->request->isPaginationable()) {
@@ -157,11 +169,15 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine, Debugabl
     /**
      * @inheritdoc
      */
-    public function showDebugger(array $output)
+    public function setResults()
     {
-        $output['queries'] = $this->connection->getQueryLog();
-        $output['input']   = $this->request->all();
+        $this->result_object = $this->query->get();
 
-        return $output;
+        return $this->result_array = array_map(
+            function ($object) {
+                return $object instanceof Arrayable ? $object->toArray() : (array) $object;
+            }, $this->result_object
+        );
     }
+
 }

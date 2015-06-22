@@ -10,12 +10,12 @@ namespace yajra\Datatables\Engines;
  * @author   Arjay Angeles <aqangeles@gmail.com>
  */
 
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Builder;
 use yajra\Datatables\Contracts\DataTableEngine;
-use yajra\Datatables\Contracts\Debugable;
 use yajra\Datatables\Request;
 
-class EloquentEngine extends QueryBuilderEngine implements DataTableEngine, Debugable
+class EloquentEngine extends QueryBuilderEngine implements DataTableEngine
 {
 
     /**
@@ -41,11 +41,15 @@ class EloquentEngine extends QueryBuilderEngine implements DataTableEngine, Debu
      *
      * @return array
      */
-    public function results()
+    public function setResults()
     {
         $this->result_object = $this->query->get();
 
-        return $this->result_object->toArray();
+        return $this->result_array = array_map(
+            function ($object) {
+                return $object instanceof Arrayable ? $object->toArray() : (array) $object;
+            }, $this->result_object->toArray()
+        );
     }
 
 }

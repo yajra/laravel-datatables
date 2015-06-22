@@ -2,8 +2,6 @@
 
 namespace yajra\Datatables\Contracts;
 
-use Closure;
-
 interface DataTableEngine
 {
     /**
@@ -11,7 +9,7 @@ interface DataTableEngine
      *
      * @return array
      */
-    public function results();
+    public function setResults();
 
     /**
      * Count results
@@ -24,10 +22,10 @@ interface DataTableEngine
      * Set auto filter off and run your own filter.
      * Overrides global search
      *
-     * @param Closure $callback
+     * @param \Closure $callback
      * @return $this
      */
-    public function filter(Closure $callback);
+    public function filter(\Closure $callback);
 
     /**
      * Perform global search
@@ -56,5 +54,14 @@ interface DataTableEngine
      * @return void
      */
     public function ordering();
+
+
+    /**
+     * Organizes works
+     *
+     * @param bool $mDataSupport
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function make($mDataSupport = false);
 
 }

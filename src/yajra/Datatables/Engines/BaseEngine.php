@@ -193,69 +193,6 @@ abstract class BaseEngine
     public $transformer = null;
 
     /**
-     * Get total records.
-     *
-     * @return int
-     */
-    public function getTotalRecords()
-    {
-        return $this->totalRecords = $this->count();
-    }
-
-    /**
-     * Organizes works.
-     *
-     * @param bool $mDataSupport
-     * @param bool $orderFirst For CollectionEngine, ordering should be done first
-     * @return JsonResponse
-     */
-    public function make($mDataSupport = false, $orderFirst = false)
-    {
-        // set mData support flag
-        $this->m_data_support = $mDataSupport;
-
-        $this->getTotalRecords();
-
-        if ($orderFirst) {
-            $this->ordering();
-        }
-
-        $this->performFiltering();
-        $this->getTotalFilteredRecords();
-
-        if ( ! $orderFirst) {
-            $this->ordering();
-        }
-
-        $this->paging();
-
-        return $this->compileOutput();
-    }
-
-    /**
-     * Get column name by order column index.
-     *
-     * @param int $column
-     * @return mixed
-     */
-    protected function getColumnName($column)
-    {
-        return $this->request->columnName($column) ?: $this->columns[$column];
-    }
-
-    /**
-     * Perform all filtering queries.
-     */
-    protected function performFiltering()
-    {
-        if ($this->autoFilter && $this->request->isSearchable()) {
-            $this->filtering();
-        }
-
-        $this->columnSearch();
-    }
-
-    /**
      * Setup search keyword.
      *
      * @param  string $value
@@ -312,12 +249,12 @@ abstract class BaseEngine
      * @param integer $i
      * @return string
      */
-    private function setupColumnName($i)
+    public function setupColumnName($i)
     {
-        $column = $this->getColumnIdentity($i);
+        $column = $this->getColumnName($i);
 
         if (Str::contains(Str::upper($column), ' AS ')) {
-            $column = $this->extractColumn($column);
+            $column = $this->extractColumnName($column);
         }
 
         // there's no need to put the prefix unless the column name is prefixed with the table name.
@@ -327,14 +264,14 @@ abstract class BaseEngine
     }
 
     /**
-     * Get column identity from input or database.
+     * Get column name by order column index.
      *
-     * @param integer $i
-     * @return string
+     * @param int $column
+     * @return mixed
      */
-    public function getColumnIdentity($i)
+    protected function getColumnName($column)
     {
-        return $this->request->columnName($i) ?: $this->columns[$i];
+        return $this->request->columnName($column) ?: $this->columns[$column];
     }
 
     /**
@@ -343,7 +280,7 @@ abstract class BaseEngine
      * @param string $str
      * @return string
      */
-    public function extractColumn($str)
+    public function extractColumnName($str)
     {
         preg_match('#^(\S*?)\s+as\s+(\S*?)$#si', $str, $matches);
 
@@ -434,6 +371,218 @@ abstract class BaseEngine
     public function databasePrefix()
     {
         return $this->getQueryBuilder()->getGrammar()->getTablePrefix();
+    }
+
+    /**
+     * Use data columns.
+     *
+     * @return array
+     */
+    public function useDataColumns()
+    {
+        if ( ! count($this->result_array_r)) {
+            return [];
+        }
+
+        $query = clone $this->query;
+        if ($this->isQueryBuilder()) {
+            $this->columns = array_keys((array) $query->first());
+        } else {
+            $this->columns = array_keys((array) $query->getQuery()->first());
+        }
+
+        return $this->columns;
+    }
+
+    /**
+     * Get sColumns output.
+     *
+     * @return array
+     */
+    public function getOutputColumns()
+    {
+        $columns = array_merge($this->columns, $this->sColumns);
+        $columns = array_diff($columns, $this->excess_columns);
+
+        return Arr::flatten($columns);
+    }
+
+    /**
+     * Add column in collection.
+     *
+     * @param string $name
+     * @param string $content
+     * @param bool|int $order
+     * @return $this
+     */
+    public function addColumn($name, $content, $order = false)
+    {
+        $this->sColumns[] = $name;
+
+        $this->extra_columns[] = ['name' => $name, 'content' => $content, 'order' => $order];
+
+        return $this;
+    }
+
+    /**
+     * Edit column's content.
+     *
+     * @param string $name
+     * @param string $content
+     * @return $this
+     */
+    public function editColumn($name, $content)
+    {
+        $this->edit_columns[] = ['name' => $name, 'content' => $content];
+
+        return $this;
+    }
+
+    /**
+     * Remove column from collection.
+     *
+     * @return $this
+     */
+    public function removeColumn()
+    {
+        $names                = func_get_args();
+        $this->excess_columns = array_merge($this->excess_columns, $names);
+
+        return $this;
+    }
+
+    /**
+     * Allows previous API calls where the methods were snake_case.
+     * Will convert a camelCase API call to a snake_case call.
+     *
+     * @param  $name
+     * @param  $arguments
+     * @return $this|mixed
+     */
+    public function __call($name, $arguments)
+    {
+        $name = Str::camel(Str::lower($name));
+        if (method_exists($this, $name)) {
+            return call_user_func_array([$this, $name], $arguments);
+        } elseif (method_exists($this->getQueryBuilder(), $name)) {
+            call_user_func_array([$this->getQueryBuilder(), $name], $arguments);
+        } else {
+            trigger_error('Call to undefined method ' . __CLASS__ . '::' . $name . '()', E_USER_ERROR);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Sets DT_RowClass template
+     * result: <tr class="output_from_your_template">.
+     *
+     * @param string|callable $content
+     * @return $this
+     */
+    public function setRowClass($content)
+    {
+        $this->row_class_tmpl = $content;
+
+        return $this;
+    }
+
+    /**
+     * Sets DT_RowId template
+     * result: <tr id="output_from_your_template">.
+     *
+     * @param string|callable $content
+     * @return $this
+     */
+    public function setRowId($content)
+    {
+        $this->row_id_tmpl = $content;
+
+        return $this;
+    }
+
+    /**
+     * Set DT_RowData templates.
+     *
+     * @param array $data
+     * @return $this
+     */
+    public function setRowData(array $data)
+    {
+        $this->row_data_tmpls = $data;
+
+        return $this;
+    }
+
+    /**
+     * Add DT_RowData template.
+     *
+     * @param string $key
+     * @param string|callable $value
+     * @return $this
+     */
+    public function addRowData($key, $value)
+    {
+        $this->row_data_tmpls[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Set DT_RowAttr templates
+     * result: <tr attr1="attr1" attr2="attr2">.
+     *
+     * @param array $data
+     * @return $this
+     */
+    public function setRowAttr(array $data)
+    {
+        $this->row_attr_tmpls = $data;
+
+        return $this;
+    }
+
+    /**
+     * Add DT_RowAttr template.
+     *
+     * @param string $key
+     * @param string|callable $value
+     * @return $this
+     */
+    public function addRowAttr($key, $value)
+    {
+        $this->row_attr_tmpls[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Override default column filter search.
+     *
+     * @param string $column
+     * @param string $method
+     * @return $this
+     * @internal param $mixed ...,... All the individual parameters required for specified $method
+     */
+    public function filterColumn($column, $method)
+    {
+        $params                        = func_get_args();
+        $this->filter_columns[$column] = ['method' => $method, 'parameters' => array_splice($params, 2)];
+
+        return $this;
+    }
+
+    /**
+     * Set data output transformer.
+     *
+     * @param \League\Fractal\TransformerAbstract $transformer
+     * @return $this
+     */
+    public function setTransformer($transformer)
+    {
+        $this->transformer = $transformer;
+
+        return $this;
     }
 
     /**
@@ -544,16 +693,6 @@ abstract class BaseEngine
     }
 
     /**
-     * Returns current database driver.
-     *
-     * @return string
-     */
-    public function databaseDriver()
-    {
-        return $this->connection->getDriverName();
-    }
-
-    /**
      * Wrap value depending on database type.
      *
      * @param string $value
@@ -601,6 +740,16 @@ abstract class BaseEngine
     }
 
     /**
+     * Returns current database driver.
+     *
+     * @return string
+     */
+    public function databaseDriver()
+    {
+        return $this->connection->getDriverName();
+    }
+
+    /**
      * Get config is case insensitive status.
      *
      * @return bool
@@ -608,16 +757,6 @@ abstract class BaseEngine
     public function isCaseInsensitive()
     {
         return Config::get('datatables.search.case_insensitive', false);
-    }
-
-    /**
-     * Get filtered records.
-     *
-     * @return int
-     */
-    public function getTotalFilteredRecords()
-    {
-        return $this->filteredRecords = $this->count();
     }
 
     /**
@@ -636,13 +775,15 @@ abstract class BaseEngine
 
     /**
      * Set datatables results object and arrays.
+     *
+     * @param mixed $results
      */
-    public function resultsToArray()
+    public function resultsToArray($results)
     {
         $this->result_array = array_map(
             function ($object) {
                 return $object instanceof Arrayable ? $object->toArray() : (array) $object;
-            }, $this->results()
+            }, $results
         );
     }
 
@@ -651,28 +792,28 @@ abstract class BaseEngine
      */
     public function initColumns()
     {
-        foreach ($this->result_array as $rkey => &$rvalue) {
-            $data = $this->convertToArray($rvalue, $rkey);
+        foreach ($this->result_array as $key => &$value) {
+            $data = $this->convertToArray($value, $key);
 
-            $rvalue = $this->processAddColumns($data, $rkey, $rvalue);
+            $value = $this->processAddColumns($data, $key, $value);
 
-            $rvalue = $this->processEditColumns($data, $rkey, $rvalue);
+            $value = $this->processEditColumns($data, $key, $value);
         }
     }
 
     /**
      * Converts array object values to associative array.
      *
-     * @param array $rvalue
-     * @param string|int $rKey
+     * @param array $row
+     * @param string|int $index
      * @return array
      */
-    protected function convertToArray(array $rvalue, $rKey)
+    protected function convertToArray(array $row, $index)
     {
         $data = [];
-        foreach ($rvalue as $key => $value) {
-            if (is_object($this->result_object[$rKey])) {
-                $data[$key] = $this->result_object[$rKey]->$key;
+        foreach ($row as $key => $value) {
+            if (is_object($this->result_object[$index])) {
+                $data[$key] = $this->result_object[$index]->$key;
             } else {
                 $data[$key] = $value;
             }
@@ -944,215 +1085,17 @@ abstract class BaseEngine
     }
 
     /**
-     * Use data columns.
+     * Append debug parameters on output.
      *
+     * @param  array $output
      * @return array
      */
-    public function useDataColumns()
+    public function showDebugger(array $output)
     {
-        if ( ! count($this->result_array_r)) {
-            return [];
-        }
+        $output['queries'] = $this->connection->getQueryLog();
+        $output['input']   = $this->request->all();
 
-        $query = clone $this->query;
-        if ($this->isQueryBuilder()) {
-            $this->columns = array_keys((array) $query->first());
-        } else {
-            $this->columns = array_keys((array) $query->getQuery()->first());
-        }
-
-        return $this->columns;
-    }
-
-    /**
-     * Get sColumns output.
-     *
-     * @return array
-     */
-    public function getOutputColumns()
-    {
-        $columns = array_merge($this->columns, $this->sColumns);
-        $columns = array_diff($columns, $this->excess_columns);
-
-        return Arr::flatten($columns);
-    }
-
-    /**
-     * Add column in collection.
-     *
-     * @param string $name
-     * @param string $content
-     * @param bool|int $order
-     * @return $this
-     */
-    public function addColumn($name, $content, $order = false)
-    {
-        $this->sColumns[] = $name;
-
-        $this->extra_columns[] = ['name' => $name, 'content' => $content, 'order' => $order];
-
-        return $this;
-    }
-
-    /**
-     * Edit column's content.
-     *
-     * @param string $name
-     * @param string $content
-     * @return $this
-     */
-    public function editColumn($name, $content)
-    {
-        $this->edit_columns[] = ['name' => $name, 'content' => $content];
-
-        return $this;
-    }
-
-    /**
-     * Remove column from collection.
-     *
-     * @return $this
-     */
-    public function removeColumn()
-    {
-        $names                = func_get_args();
-        $this->excess_columns = array_merge($this->excess_columns, $names);
-
-        return $this;
-    }
-
-    /**
-     * Allows previous API calls where the methods were snake_case.
-     * Will convert a camelCase API call to a snake_case call.
-     *
-     * @param  $name
-     * @param  $arguments
-     * @return $this|mixed
-     */
-    public function __call($name, $arguments)
-    {
-        $name = Str::camel(Str::lower($name));
-        if (method_exists($this, $name)) {
-            return call_user_func_array([$this, $name], $arguments);
-        } elseif (method_exists($this->getQueryBuilder(), $name)) {
-            call_user_func_array([$this->getQueryBuilder(), $name], $arguments);
-        } else {
-            trigger_error('Call to undefined method ' . __CLASS__ . '::' . $name . '()', E_USER_ERROR);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Sets DT_RowClass template
-     * result: <tr class="output_from_your_template">.
-     *
-     * @param string|callable $content
-     * @return $this
-     */
-    public function setRowClass($content)
-    {
-        $this->row_class_tmpl = $content;
-
-        return $this;
-    }
-
-    /**
-     * Sets DT_RowId template
-     * result: <tr id="output_from_your_template">.
-     *
-     * @param string|callable $content
-     * @return $this
-     */
-    public function setRowId($content)
-    {
-        $this->row_id_tmpl = $content;
-
-        return $this;
-    }
-
-    /**
-     * Set DT_RowData templates.
-     *
-     * @param array $data
-     * @return $this
-     */
-    public function setRowData(array $data)
-    {
-        $this->row_data_tmpls = $data;
-
-        return $this;
-    }
-
-    /**
-     * Add DT_RowData template.
-     *
-     * @param string $key
-     * @param string|callable $value
-     * @return $this
-     */
-    public function addRowData($key, $value)
-    {
-        $this->row_data_tmpls[$key] = $value;
-
-        return $this;
-    }
-
-    /**
-     * Set DT_RowAttr templates
-     * result: <tr attr1="attr1" attr2="attr2">.
-     *
-     * @param array $data
-     * @return $this
-     */
-    public function setRowAttr(array $data)
-    {
-        $this->row_attr_tmpls = $data;
-
-        return $this;
-    }
-
-    /**
-     * Add DT_RowAttr template.
-     *
-     * @param string $key
-     * @param string|callable $value
-     * @return $this
-     */
-    public function addRowAttr($key, $value)
-    {
-        $this->row_attr_tmpls[$key] = $value;
-
-        return $this;
-    }
-
-    /**
-     * Override default column filter search.
-     *
-     * @param string $column
-     * @param string $method
-     * @return $this
-     * @internal param $mixed ...,... All the individual parameters required for specified $method
-     */
-    public function filterColumn($column, $method)
-    {
-        $params                        = func_get_args();
-        $this->filter_columns[$column] = ['method' => $method, 'parameters' => array_splice($params, 2)];
-
-        return $this;
-    }
-
-    /**
-     * Set data output transformer.
-     *
-     * @param \League\Fractal\TransformerAbstract $transformer
-     * @return $this
-     */
-    public function setTransformer($transformer)
-    {
-        $this->transformer = $transformer;
-
-        return $this;
+        return $output;
     }
 
 }

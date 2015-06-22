@@ -12,13 +12,13 @@ namespace yajra\Datatables\Engines;
 
 use Closure;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use yajra\Datatables\Contracts\DataTableEngine;
-use yajra\Datatables\Contracts\Debugable;
 use yajra\Datatables\Request;
 
-class CollectionEngine extends BaseEngine implements DataTableEngine, Debugable
+class CollectionEngine extends BaseEngine implements DataTableEngine
 {
 
     /**
@@ -56,14 +56,6 @@ class CollectionEngine extends BaseEngine implements DataTableEngine, Debugable
     protected function serialize($collection)
     {
         return $collection instanceof Arrayable ? $collection->toArray() : $collection;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function make($mDataSupport = false, $orderFirst = true)
-    {
-        return parent::make($mDataSupport, $orderFirst);
     }
 
     /**
@@ -152,11 +144,15 @@ class CollectionEngine extends BaseEngine implements DataTableEngine, Debugable
     /**
      * @inheritdoc
      */
-    public function results()
+    public function setResults()
     {
         $this->result_object = $this->collection->all();
 
-        return $this->result_object;
+        return $this->result_array = array_map(
+            function ($object) {
+                return $object instanceof Arrayable ? $object->toArray() : (array) $object;
+            }, $this->result_object
+        );
     }
 
     /**
@@ -194,4 +190,30 @@ class CollectionEngine extends BaseEngine implements DataTableEngine, Debugable
         return $output;
     }
 
+    /**
+     * Organizes works.
+     *
+     * @param bool $mDataSupport
+     * @return JsonResponse
+     */
+    public function make($mDataSupport = false)
+    {
+        $this->m_data_support = $mDataSupport;
+        $this->totalRecords = $this->count();
+        $this->ordering();
+
+        if ($this->autoFilter && $this->request->isSearchable()) {
+            $this->filtering();
+        }
+        $this->columnSearch();
+        $this->filteredRecords = $this->count();
+
+        $this->paging();
+        $this->setResults();
+        $this->initColumns();
+        $this->regulateArray();
+
+        return $this->output();
+
+    }
 }
