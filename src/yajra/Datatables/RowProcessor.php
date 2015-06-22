@@ -17,12 +17,16 @@ class RowProcessor
      */
     private $data;
 
+    private $row;
+
     /**
      * @param $data
+     * @param $row
      */
-    public function __construct($data)
+    public function __construct($data, $row)
     {
         $this->data = $data;
+        $this->row = $row;
     }
 
     /**
@@ -30,7 +34,7 @@ class RowProcessor
      *
      * @param string $attribute
      * @param string|callable $template
-     * @return array
+     * @return $this
      */
     public function rowValue($attribute, $template)
     {
@@ -38,7 +42,7 @@ class RowProcessor
             if ( ! is_callable($template) && Arr::get($this->data, $template)) {
                 $this->data[$attribute] = Arr::get($this->data, $template);
             } else {
-                $this->data[$attribute] = Helper::compileContent($template, $this->data);
+                $this->data[$attribute] = Helper::compileContent($template, $this->data, $this->row);
             }
         }
 
@@ -50,20 +54,22 @@ class RowProcessor
      *
      * @param string $attribute
      * @param array $template
-     * @param array $data
-     * @return array
+     * @return $this
      */
-    public function rowData($attribute, array $template, array $data)
+    public function rowData($attribute, array $template)
     {
         if (count($template)) {
-            $data[$attribute] = [];
+            $this->data[$attribute] = [];
             foreach ($template as $key => $value) {
-                $data[$attribute][$key] = Helper::compileContent($value, $data, $this->data);
+                $this->data[$attribute][$key] = Helper::compileContent($value, $this->data, $this->row);
             }
-
-            return $data;
         }
 
-        return $data;
+        return $this;
+    }
+
+    public function getData()
+    {
+        return $this->data;
     }
 }

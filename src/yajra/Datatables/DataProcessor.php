@@ -54,7 +54,7 @@ class DataProcessor
             $data     = Helper::convertToArray($row);
             $value    = $this->addColumns($data, $row);
             $value    = $this->editColumns($value, $row);
-            $value    = $this->setupRowVariables($value);
+            $value    = $this->setupRowVariables($value, $row);
             if ( ! $this->engine->m_data_support) {
                 $value = Arr::flatten($this->removeExcessColumns($value));
             } else {
@@ -103,18 +103,18 @@ class DataProcessor
     /**
      * Setup additional DT row variables.
      *
-     * @param array $row
+     * @param mixed $data
      * @return array
      */
-    protected function setupRowVariables($row)
+    protected function setupRowVariables($data, $row)
     {
-        $processor = new RowProcessor($row);
-        $data      = $processor->rowValue('DT_RowId', $this->engine->row_id_tmpl, $row);
-        $data      = $processor->rowValue('DT_RowClass', $this->engine->row_class_tmpl, $row);
-        $data      = $processor->rowData('DT_RowData', $this->engine->row_data_tmpls, $row);
-        $data      = $processor->rowData('DT_RowAttr', $this->engine->row_attr_tmpls, $row);
-
-        return $data;
+        $processor = new RowProcessor($data, $row);
+        return $processor
+            ->rowValue('DT_RowId', $this->engine->row_id_tmpl)
+            ->rowValue('DT_RowClass', $this->engine->row_class_tmpl)
+            ->rowData('DT_RowData', $this->engine->row_data_tmpls)
+            ->rowData('DT_RowAttr', $this->engine->row_attr_tmpls)
+            ->getData();
     }
 
     /**
