@@ -51,6 +51,8 @@ class TestDatatablesQueryBuilderEngine extends PHPUnit_Framework_TestCase
             ['id' => 2, 'name' => 'bar'],
         ];
         $builder = m::mock('Illuminate\Database\Query\Builder');
+        $builder->shouldReceive('getGrammar')->once()->andReturn($builder);
+        $builder->shouldReceive('getTablePrefix')->once()->andReturn($builder);
         $builder->shouldReceive('select')->once()->with(['id', 'name'])->andReturn($builder);
         $builder->shouldReceive('from')->once()->with('users')->andReturn($builder);
         $builder->shouldReceive('get')->once()->andReturn($data);
@@ -62,6 +64,7 @@ class TestDatatablesQueryBuilderEngine extends PHPUnit_Framework_TestCase
         // Datatables::of() mocks
         // ******************************
         $builder->shouldReceive('getConnection')->andReturn(m::mock('Illuminate\Database\Connection'));
+        $builder->getConnection()->shouldReceive('getDriverName')->once()->andReturn('dbdriver');
         $builder->shouldReceive('toSql')->times(6)->andReturn('select id, name from users');
         $builder->getConnection()->shouldReceive('raw')->once()->andReturn('select \'1\' as row_count');
         $builder->shouldReceive('select')->once()->andReturn($builder);
