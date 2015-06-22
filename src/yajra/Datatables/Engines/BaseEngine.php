@@ -617,6 +617,7 @@ abstract class BaseEngine implements DataTableEngine
     public function render()
     {
         $data   = with(new DataProcessor($this))->process();
+
         $output = [
             'draw'            => (int) $this->request['draw'],
             'recordsTotal'    => $this->totalRecords,
@@ -629,7 +630,7 @@ abstract class BaseEngine implements DataTableEngine
             $collection     = $fractal->createData($resource)->toArray();
             $output['data'] = $collection['data'];
         } else {
-            $output['data'] = $data;
+            $output['data'] = Helper::transform($data);
         }
 
         if ($this->isDebugging()) {

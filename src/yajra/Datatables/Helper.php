@@ -2,6 +2,7 @@
 
 namespace yajra\Datatables;
 
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Illuminate\View\Compilers\BladeCompiler;
@@ -67,34 +68,6 @@ class Helper
     }
 
     /**
-     * @param array $value
-     * @param array $data
-     * @param mixed $object
-     * @return mixed
-     * @throws \Exception
-     */
-    public static function compileContent(array $value, array $data, $object)
-    {
-        if (is_string($value['content'])) {
-            $parameters = [];
-            foreach (array_keys($data) as $key) {
-                if (isset($object[$key])) {
-                    $parameters[$key] = $object[$key];
-                }
-            }
-            $value['content'] = static::compileBlade($value['content'], $parameters);
-
-            return $value;
-        } elseif (is_callable($value['content'])) {
-            $value['content'] = $value['content']($object);
-
-            return $value;
-        }
-
-        return $value;
-    }
-
-    /**
      * Determines if content is callable or blade string, processes and returns.
      *
      * @param string|callable $content Pre-processed content
@@ -102,17 +75,15 @@ class Helper
      * @param mixed $param parameter to call with callable
      * @return string Processed content
      */
-    public static function getContent($content, $data = null, $param = null)
+    public static function compileContent($content, $data = null, $param = null)
     {
         if (is_string($content)) {
-            $return = static::compileBlade($content, $data);
+            return static::compileBlade($content, $data);
         } elseif (is_callable($content)) {
-            $return = $content($param);
+            return $content($param);
         } else {
-            $return = $content;
+            return $content;
         }
-
-        return $return;
     }
 
     /**
@@ -178,4 +149,41 @@ class Helper
 
         return $column;
     }
+
+    /**
+     * Converts array object values to associative array.
+     *
+     * @param mixed $row
+     * @return array
+     */
+    public static function convertToArray($row)
+    {
+        $data     = $row instanceof Arrayable ? $row->toArray() : (array) $row;
+        foreach (array_keys($data) as $key) {
+            if (is_object($row)) {
+                $data[$key] = $row->$key;
+            } else {
+                $data[$key] = $row[$key];
+            }
+        }
+
+        return $data;
+    }
+
+    public static function transform(array $data)
+    {
+        foreach ($data as &$row) {
+            foreach ($row as $key => $value) {
+                if ($value instanceof \DateTime) {
+                    $row[$key] = $value->format('Y-m-d H:i:s');
+                } else {
+                    $row[$key] = (string) $value;
+                }
+            }
+        }
+
+        return $data;
+    }
+
 }
+

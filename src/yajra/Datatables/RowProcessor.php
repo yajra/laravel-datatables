@@ -30,20 +30,19 @@ class RowProcessor
      *
      * @param string $attribute
      * @param string|callable $template
-     * @param array $data
      * @return array
      */
-    public function rowValue($attribute, $template, array $data)
+    public function rowValue($attribute, $template)
     {
         if ( ! empty($template)) {
-            if ( ! is_callable($template) && Arr::get($data, $template)) {
-                $data[$attribute] = Arr::get($data, $template);
+            if ( ! is_callable($template) && Arr::get($this->data, $template)) {
+                $this->data[$attribute] = Arr::get($this->data, $template);
             } else {
-                $data[$attribute] = Helper::getContent($template, $data, $this->data);
+                $this->data[$attribute] = Helper::compileContent($template, $this->data);
             }
         }
 
-        return $data;
+        return $this;
     }
 
     /**
@@ -59,7 +58,7 @@ class RowProcessor
         if (count($template)) {
             $data[$attribute] = [];
             foreach ($template as $key => $value) {
-                $data[$attribute][$key] = Helper::getContent($value, $data, $this->data);
+                $data[$attribute][$key] = Helper::compileContent($value, $data, $this->data);
             }
 
             return $data;

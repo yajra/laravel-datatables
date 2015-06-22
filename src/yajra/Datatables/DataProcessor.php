@@ -48,50 +48,22 @@ class DataProcessor
      */
     public function process()
     {
-        $output        = [];
+        $this->output        = [];
         $this->results = $this->engine->results();
         foreach ($this->results as $row) {
-            $data     = $row instanceof Arrayable ? $row->toArray() : (array) $row;
-//            $data     = $this->convertToArray($data, $row);
+            $data     = Helper::convertToArray($row);
             $value    = $this->addColumns($data, $row);
             $value    = $this->editColumns($value, $row);
-            $output[] = $value;
-        }
-
-        if ($this->engine->m_data_support) {
-            foreach ($output as $key => $value) {
-                $value          = $this->setupRowVariables($key, $value);
-                $this->output[] = $this->removeExcessColumns($value);
+            $value    = $this->setupRowVariables($value);
+            if ( ! $this->engine->m_data_support) {
+                $value = Arr::flatten($this->removeExcessColumns($value));
+            } else {
+                $value    = $this->removeExcessColumns($value);
             }
-        } else {
-            foreach ($output as $key => $value) {
-                $value          = $this->setupRowVariables($key, $value);
-                $this->output[] = Arr::flatten($this->removeExcessColumns($value));
-            }
+            $this->output[] = $value;
         }
 
         return $this->output;
-    }
-
-    /**
-     * Converts array object values to associative array.
-     *
-     * @param array $data
-     * @param mixed $row
-     * @return array
-     */
-    protected function convertToArray(array $data, $row)
-    {
-        $convert = [];
-        foreach ($data as $key => $value) {
-            if (is_object($value)) {
-                $convert[$key] = $row->$key;
-            } else {
-                $convert[$key] = $value;
-            }
-        }
-
-        return $convert;
     }
 
     /**
@@ -104,7 +76,7 @@ class DataProcessor
     protected function addColumns(array $data, $row)
     {
         foreach ($this->engine->extra_columns as $key => $value) {
-            $value = Helper::compileContent($value, $data, $row);
+            $value['content'] = Helper::compileContent($value['content'], $data, $row);
             $data  = Helper::includeInArray($value, $data);
         }
 
@@ -121,7 +93,7 @@ class DataProcessor
     protected function editColumns(array $data, $row)
     {
         foreach ($this->engine->edit_columns as $key => $value) {
-            $value                = Helper::compileContent($value, $data, $row);
+            $value['content']     = Helper::compileContent($value['content'], $data, $row);
             $data[$value['name']] = $value['content'];
         }
 
@@ -131,18 +103,16 @@ class DataProcessor
     /**
      * Setup additional DT row variables.
      *
-     * @param string $key
-     * @param array $data
+     * @param array $row
      * @return array
      */
-    protected function setupRowVariables($key, array $data)
+    protected function setupRowVariables($row)
     {
-        $row       = $this->results[$key];
         $processor = new RowProcessor($row);
-        $data      = $processor->rowValue('DT_RowId', $this->engine->row_id_tmpl, $data);
-        $data      = $processor->rowValue('DT_RowClass', $this->engine->row_class_tmpl, $data);
-        $data      = $processor->rowData('DT_RowData', $this->engine->row_data_tmpls, $data);
-        $data      = $processor->rowData('DT_RowAttr', $this->engine->row_attr_tmpls, $data);
+        $data      = $processor->rowValue('DT_RowId', $this->engine->row_id_tmpl, $row);
+        $data      = $processor->rowValue('DT_RowClass', $this->engine->row_class_tmpl, $row);
+        $data      = $processor->rowData('DT_RowData', $this->engine->row_data_tmpls, $row);
+        $data      = $processor->rowData('DT_RowAttr', $this->engine->row_attr_tmpls, $row);
 
         return $data;
     }
