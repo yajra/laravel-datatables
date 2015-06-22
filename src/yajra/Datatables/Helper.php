@@ -176,8 +176,10 @@ class Helper
             foreach ($row as $key => $value) {
                 if ($value instanceof \DateTime) {
                     $row[$key] = $value->format('Y-m-d H:i:s');
-                } else {
+                } else if (is_string($value)) {
                     $row[$key] = (string) $value;
+                } else {
+                    $row[$key] = $value;
                 }
             }
         }
