@@ -18,6 +18,7 @@ use yajra\Datatables\Request;
 
 class CollectionEngine extends BaseEngine implements EngineContract
 {
+
     /**
      * Collection object
      *
@@ -38,11 +39,12 @@ class CollectionEngine extends BaseEngine implements EngineContract
      */
     public function __construct(Collection $collection, Request $request)
     {
+        $this->request             = $request;
         $this->collection          = $collection;
         $this->original_collection = $collection;
         $this->columns             = array_keys($this->serialize((array) $collection->first()));
 
-        parent::__construct($request);
+        $this->getTotalRecords();
     }
 
     /**
@@ -142,7 +144,7 @@ class CollectionEngine extends BaseEngine implements EngineContract
         $columns = $this->request->get('columns');
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($this->request->isColumnSearchable($i)) {
-                $column = $this->getColumnIdentity($i);
+                $column  = $this->getColumnIdentity($i);
                 $keyword = $this->request->columnKeyword($i);
 
                 $this->collection = $this->collection->filter(

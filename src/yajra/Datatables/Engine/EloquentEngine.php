@@ -13,8 +13,9 @@ namespace yajra\Datatables\Engine;
 use Illuminate\Database\Eloquent\Builder;
 use yajra\Datatables\Request;
 
-class EloquentEngine extends BaseEngine implements EngineContract
+class EloquentEngine extends QueryBuilderEngine
 {
+
     /**
      * @param mixed $model
      * @param \yajra\Datatables\Request $request
@@ -30,6 +31,20 @@ class EloquentEngine extends BaseEngine implements EngineContract
             $this->connection->enableQueryLog();
         }
 
-        parent::__construct($request);
+        $this->request = $request;
+        $this->getTotalRecords();
     }
+
+    /**
+     * Get results of query and convert to array.
+     *
+     * @return array
+     */
+    public function getResults()
+    {
+        $this->result_object = $this->query->get();
+
+        return $this->result_object->toArray();
+    }
+
 }
