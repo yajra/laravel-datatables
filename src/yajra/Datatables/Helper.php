@@ -39,7 +39,7 @@ class Helper
     }
 
     /**
-     * Places item of extra columns into result_array by care of their order.
+     * Places item of extra columns into results by care of their order.
      *
      * @param  $item
      * @param  $array
@@ -67,23 +67,29 @@ class Helper
     }
 
     /**
-     * @param mixed $value
-     * @param mixed $data
+     * @param array $value
+     * @param array $data
      * @param mixed $object
      * @return mixed
      * @throws \Exception
      */
-    public static function compileContent($value, $data, $object)
+    public static function compileContent(array $value, array $data, $object)
     {
-        if (is_string($value['content'])) :
-            $value['content'] = static::compileBlade($value['content'], $data);
+        if (is_string($value['content'])) {
+            $parameters = [];
+            foreach (array_keys($data) as $key) {
+                if (isset($object[$key])) {
+                    $parameters[$key] = $object[$key];
+                }
+            }
+            $value['content'] = static::compileBlade($value['content'], $parameters);
 
             return $value;
-        elseif (is_callable($value['content'])) :
+        } elseif (is_callable($value['content'])) {
             $value['content'] = $value['content']($object);
 
             return $value;
-        endif;
+        }
 
         return $value;
     }

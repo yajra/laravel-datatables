@@ -177,11 +177,9 @@ class CollectionEngine extends BaseEngine implements DataTableEngine
     /**
      * @inheritdoc
      */
-    public function setResults()
+    public function results()
     {
-        $this->result_object = $this->collection->all();
-
-        return $this->resultsToArray($this->result_object);
+        return $this->collection->all();
     }
 
     /**

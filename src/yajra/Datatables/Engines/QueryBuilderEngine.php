@@ -226,13 +226,13 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
     }
 
     /**
-     * @inheritdoc
+     * Get results
+     *
+     * @return array|static[]
      */
-    public function setResults()
+    public function results()
     {
-        $this->result_object = $this->query->get();
-
-        return $this->resultsToArray($this->result_object);
+        return $this->query->get();
     }
 
 }

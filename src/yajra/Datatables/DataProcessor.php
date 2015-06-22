@@ -2,6 +2,7 @@
 
 namespace yajra\Datatables;
 
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use yajra\Datatables\Engines\BaseEngine;
 
@@ -17,6 +18,13 @@ class DataProcessor
      * @var \yajra\Datatables\Engines\BaseEngine
      */
     protected $engine;
+
+    /**
+     * Processed data
+     *
+     * @var array
+     */
+    protected $results;
 
     /**
      * Processed data output
@@ -40,11 +48,13 @@ class DataProcessor
      */
     public function process()
     {
-        $output = [];
-        foreach ($this->engine->result_array as $key => $value) {
-            $data     = $this->convertToArray($value, $key);
-            $value    = $this->addColumns($data, $key, $value);
-            $value    = $this->editColumns($data, $key, $value);
+        $output        = [];
+        $this->results = $this->engine->results();
+        foreach ($this->results as $row) {
+            $data     = $row instanceof Arrayable ? $row->toArray() : (array) $row;
+//            $data     = $this->convertToArray($data, $row);
+            $value    = $this->addColumns($data, $row);
+            $value    = $this->editColumns($value, $row);
             $output[] = $value;
         }
 
@@ -66,37 +76,36 @@ class DataProcessor
     /**
      * Converts array object values to associative array.
      *
-     * @param array $row
-     * @param string|int $index
+     * @param array $data
+     * @param mixed $row
      * @return array
      */
-    protected function convertToArray(array $row, $index)
+    protected function convertToArray(array $data, $row)
     {
-        $data = [];
-        foreach ($row as $key => $value) {
-            if (is_object($this->engine->result_object[$index])) {
-                $data[$key] = $this->engine->result_object[$index]->$key;
+        $convert = [];
+        foreach ($data as $key => $value) {
+            if (is_object($value)) {
+                $convert[$key] = $row->$key;
             } else {
-                $data[$key] = $value;
+                $convert[$key] = $value;
             }
         }
 
-        return $data;
+        return $convert;
     }
 
     /**
      * Process add columns.
      *
      * @param array $data
-     * @param string|int $rKey
-     * @param array|null $rValue
+     * @param mixed $row
      * @return array
      */
-    protected function addColumns(array $data, $rKey, $rValue)
+    protected function addColumns(array $data, $row)
     {
         foreach ($this->engine->extra_columns as $key => $value) {
-            $value = Helper::compileContent($value, $data, $this->engine->result_object[$rKey]);
-            $data  = Helper::includeInArray($value, $rValue);
+            $value = Helper::compileContent($value, $data, $row);
+            $data  = Helper::includeInArray($value, $data);
         }
 
         return $data;
@@ -106,18 +115,17 @@ class DataProcessor
      * Process edit columns.
      *
      * @param array $data
-     * @param string|int $rKey
-     * @param array|null $rvalue
+     * @param mixed $row
      * @return array
      */
-    protected function editColumns(array $data, $rKey, $rvalue)
+    protected function editColumns(array $data, $row)
     {
         foreach ($this->engine->edit_columns as $key => $value) {
-            $value                  = Helper::compileContent($value, $data, $this->engine->result_object[$rKey]);
-            $rvalue[$value['name']] = $value['content'];
+            $value                = Helper::compileContent($value, $data, $row);
+            $data[$value['name']] = $value['content'];
         }
 
-        return $rvalue;
+        return $data;
     }
 
     /**
@@ -129,7 +137,7 @@ class DataProcessor
      */
     protected function setupRowVariables($key, array $data)
     {
-        $row       = $this->engine->result_object[$key];
+        $row       = $this->results[$key];
         $processor = new RowProcessor($row);
         $data      = $processor->rowValue('DT_RowId', $this->engine->row_id_tmpl, $data);
         $data      = $processor->rowValue('DT_RowClass', $this->engine->row_class_tmpl, $data);

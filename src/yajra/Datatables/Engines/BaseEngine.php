@@ -60,13 +60,6 @@ abstract class BaseEngine implements DataTableEngine
     public $columns = [];
 
     /**
-     * Array of last columns.
-     *
-     * @var array
-     */
-    public $last_columns = [];
-
-    /**
      * Query type.
      *
      * @var string
@@ -114,27 +107,6 @@ abstract class BaseEngine implements DataTableEngine
      * @var int
      */
     public $filteredRecords = 0;
-
-    /**
-     * Eloquent/Builder result object.
-     *
-     * @var mixed
-     */
-    public $result_object;
-
-    /**
-     * Result array.
-     *
-     * @var array
-     */
-    public $result_array = [];
-
-    /**
-     * Regulated result array.
-     *
-     * @var array
-     */
-    public $result_array_r = [];
 
     /**
      * Flag for DT support for mData.
@@ -556,21 +528,6 @@ abstract class BaseEngine implements DataTableEngine
     }
 
     /**
-     * Converts all results data to array
-     *
-     * @param array $data
-     * @return array
-     */
-    public function resultsToArray(array $data)
-    {
-        return $this->result_array = array_map(
-            function ($object) {
-                return $object instanceof Arrayable ? $object->toArray() : (array) $object;
-            }, $data
-        );
-    }
-
-    /**
      * Organizes works.
      *
      * @param bool $mDataSupport
@@ -596,7 +553,6 @@ abstract class BaseEngine implements DataTableEngine
             $this->ordering();
         }
         $this->paginate();
-        $this->setResults();
 
         return $this->render();
     }
@@ -650,15 +606,6 @@ abstract class BaseEngine implements DataTableEngine
      * @return void
      */
     public function paging()
-    {
-    }
-
-    /**
-     * Get engine array results
-     *
-     * @return array
-     */
-    public function setResults()
     {
     }
 
@@ -751,5 +698,14 @@ abstract class BaseEngine implements DataTableEngine
     public function isCaseInsensitive()
     {
         return Config::get('datatables.search.case_insensitive', false);
+    }
+
+    /**
+     * Get results
+     *
+     * @return array
+     */
+    public function results()
+    {
     }
 }

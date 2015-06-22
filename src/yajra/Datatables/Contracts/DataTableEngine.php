@@ -5,11 +5,11 @@ namespace yajra\Datatables\Contracts;
 interface DataTableEngine
 {
     /**
-     * Get engine array results
+     * Get results
      *
-     * @return array
+     * @return mixed
      */
-    public function setResults();
+    public function results();
 
     /**
      * Count results
