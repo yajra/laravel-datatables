@@ -1,0 +1,88 @@
+<?php
+
+ namespace yajra\Datatables;
+
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\View\Compilers\BladeCompiler;
+
+class Helper {
+
+    /**
+     * Parses and compiles strings by using Blade Template System.
+     *
+     * @param       $str
+     * @param array $data
+     * @return string
+     * @throws \Exception
+     */
+    public static function compileBlade($str, $data = [])
+    {
+        $empty_filesystem_instance = new Filesystem();
+        $blade                     = new BladeCompiler($empty_filesystem_instance, 'datatables');
+        $parsed_string             = $blade->compileString($str);
+
+        ob_start() && extract($data, EXTR_SKIP);
+
+        try {
+            eval('?>' . $parsed_string);
+        } catch (\Exception $e) {
+            ob_end_clean();
+            throw $e;
+        }
+
+        $str = ob_get_contents();
+        ob_end_clean();
+
+        return $str;
+    }
+
+    /**
+     * Places item of extra columns into result_array by care of their order.
+     *
+     * @param  $item
+     * @param  $array
+     * @return array
+     */
+    public static function includeInArray($item, $array)
+    {
+        if ($item['order'] === false) {
+            return array_merge($array, [$item['name'] => $item['content']]);
+        } else {
+            $count = 0;
+            $last  = $array;
+            $first = [];
+            foreach ($array as $key => $value) {
+                if ($count == $item['order']) {
+                    return array_merge($first, [$item['name'] => $item['content']], $last);
+                }
+
+                unset($last[$key]);
+                $first[$key] = $value;
+
+                $count++;
+            }
+        }
+    }
+
+    /**
+     * @param mixed $value
+     * @param mixed $data
+     * @param mixed $object
+     * @return mixed
+     * @throws \Exception
+     */
+    public static function compileContent($value, $data, $object)
+    {
+        if (is_string($value['content'])) :
+            $value['content'] = Helper::compileBlade($value['content'], $data);
+
+            return $value;
+        elseif (is_callable($value['content'])) :
+            $value['content'] = $value['content']($object);
+
+            return $value;
+        endif;
+
+        return $value;
+    }
+}

@@ -11,16 +11,15 @@ namespace yajra\Datatables\Engines;
  */
 
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
-use Illuminate\View\Compilers\BladeCompiler;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
 use yajra\Datatables\Contracts\DataTableEngine;
+use yajra\Datatables\Helper;
 
 abstract class BaseEngine implements DataTableEngine
 {
@@ -601,11 +600,71 @@ abstract class BaseEngine implements DataTableEngine
 
     }
 
+    /**
+     * Count results
+     *
+     * @return integer
+     */
+    public function count()
+    {
+        // TODO: Implement count() method.
+    }
+
+    /**
+     * Perform sorting of columns
+     *
+     * @return void
+     */
+    public function ordering()
+    {
+        // TODO: Implement ordering() method.
+    }
+
+    /**
+     * Perform global search
+     *
+     * @return void
+     */
+    public function filtering()
+    {
+        // TODO: Implement filtering() method.
+    }
+
+    /**
+     * Perform column search
+     *
+     * @return void
+     */
+    public function columnSearch()
+    {
+        // TODO: Implement columnSearch() method.
+    }
+
     public function paginate()
     {
         if ($this->request->isPaginationable()) {
             $this->paging();
         }
+    }
+
+    /**
+     * Perform pagination
+     *
+     * @return void
+     */
+    public function paging()
+    {
+        // TODO: Implement paging() method.
+    }
+
+    /**
+     * Get engine array results
+     *
+     * @return array
+     */
+    public function setResults()
+    {
+        // TODO: Implement setResults() method.
     }
 
     /**
@@ -648,111 +707,32 @@ abstract class BaseEngine implements DataTableEngine
      *
      * @param array $data
      * @param string|int $rKey
-     * @param array|null $rvalue
+     * @param array|null $rValue
      * @return array
      */
-    protected function processAddColumns(array $data, $rKey, $rvalue)
+    protected function processAddColumns(array $data, $rKey, $rValue)
     {
         foreach ($this->extra_columns as $key => $value) {
-            $value = $this->processContent($value, $data, $rKey);
+            $value =  Helper::compileContent($value, $data, $this->result_object[$rKey]);
 
-            $rvalue = $this->includeInArray($value, $rvalue);
+            $rValue = Helper::includeInArray($value, $rValue);
         }
 
-        return $rvalue;
-    }
-
-    /**
-     * @param $value
-     * @param $data
-     * @param $rkey
-     * @return mixed
-     * @throws \Exception
-     */
-    protected function processContent($value, $data, $rkey)
-    {
-        if (is_string($value['content'])) :
-            $value['content'] = $this->compileBlade($value['content'], $data);
-
-            return $value;
-        elseif (is_callable($value['content'])) :
-            $value['content'] = $value['content']($this->result_object[$rkey]);
-
-            return $value;
-        endif;
-
-        return $value;
-    }
-
-    /**
-     * Parses and compiles strings by using Blade Template System.
-     *
-     * @param       $str
-     * @param array $data
-     * @return string
-     * @throws \Exception
-     */
-    public function compileBlade($str, $data = [])
-    {
-        $empty_filesystem_instance = new Filesystem();
-        $blade                     = new BladeCompiler($empty_filesystem_instance, 'datatables');
-        $parsed_string             = $blade->compileString($str);
-
-        ob_start() && extract($data, EXTR_SKIP);
-
-        try {
-            eval('?>' . $parsed_string);
-        } catch (\Exception $e) {
-            ob_end_clean();
-            throw $e;
-        }
-
-        $str = ob_get_contents();
-        ob_end_clean();
-
-        return $str;
-    }
-
-    /**
-     * Places item of extra columns into result_array by care of their order.
-     *
-     * @param  $item
-     * @param  $array
-     * @return array
-     */
-    public function includeInArray($item, $array)
-    {
-        if ($item['order'] === false) {
-            return array_merge($array, [$item['name'] => $item['content']]);
-        } else {
-            $count = 0;
-            $last  = $array;
-            $first = [];
-            foreach ($array as $key => $value) {
-                if ($count == $item['order']) {
-                    return array_merge($first, [$item['name'] => $item['content']], $last);
-                }
-
-                unset($last[$key]);
-                $first[$key] = $value;
-
-                $count++;
-            }
-        }
+        return $rValue;
     }
 
     /**
      * Process edit columns.
      *
      * @param array $data
-     * @param string|int $rkey
+     * @param string|int $rKey
      * @param array|null $rvalue
      * @return array
      */
-    protected function processEditColumns(array $data, $rkey, $rvalue)
+    protected function processEditColumns(array $data, $rKey, $rvalue)
     {
         foreach ($this->edit_columns as $key => $value) {
-            $value = $this->processContent($value, $data, $rkey);
+            $value = Helper::compileContent($value, $data, $this->result_object[$rKey]);
 
             $rvalue[$value['name']] = $value['content'];
         }
@@ -823,7 +803,7 @@ abstract class BaseEngine implements DataTableEngine
     public function getContent($content, $data = null, $param = null)
     {
         if (is_string($content)) {
-            $return = $this->compileBlade($content, $data);
+            $return = Helper::compileBlade($content, $data);
         } elseif (is_callable($content)) {
             $return = $content($param);
         } else {
@@ -917,6 +897,18 @@ abstract class BaseEngine implements DataTableEngine
         $output['input']   = $this->request->all();
 
         return $output;
+    }
+
+    /**
+     * Set auto filter off and run your own filter.
+     * Overrides global search
+     *
+     * @param \Closure $callback
+     * @return $this
+     */
+    public function filter(\Closure $callback)
+    {
+        // TODO: Implement filter() method.
     }
 
     /**
@@ -1091,77 +1083,5 @@ abstract class BaseEngine implements DataTableEngine
     public function isCaseInsensitive()
     {
         return Config::get('datatables.search.case_insensitive', false);
-    }
-
-    /**
-     * Get engine array results
-     *
-     * @return array
-     */
-    public function setResults()
-    {
-        // TODO: Implement setResults() method.
-    }
-
-    /**
-     * Count results
-     *
-     * @return integer
-     */
-    public function count()
-    {
-        // TODO: Implement count() method.
-    }
-
-    /**
-     * Set auto filter off and run your own filter.
-     * Overrides global search
-     *
-     * @param \Closure $callback
-     * @return $this
-     */
-    public function filter(\Closure $callback)
-    {
-        // TODO: Implement filter() method.
-    }
-
-    /**
-     * Perform global search
-     *
-     * @return void
-     */
-    public function filtering()
-    {
-        // TODO: Implement filtering() method.
-    }
-
-    /**
-     * Perform column search
-     *
-     * @return void
-     */
-    public function columnSearch()
-    {
-        // TODO: Implement columnSearch() method.
-    }
-
-    /**
-     * Perform pagination
-     *
-     * @return void
-     */
-    public function paging()
-    {
-        // TODO: Implement paging() method.
-    }
-
-    /**
-     * Perform sorting of columns
-     *
-     * @return void
-     */
-    public function ordering()
-    {
-        // TODO: Implement ordering() method.
     }
 }
