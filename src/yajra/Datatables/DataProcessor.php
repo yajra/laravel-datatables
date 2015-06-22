@@ -14,6 +14,11 @@ class DataProcessor
 {
 
     /**
+     * @var \yajra\Datatables\Engines\BaseEngine
+     */
+    protected $engine;
+
+    /**
      * Processed data output
      *
      * @var array
@@ -35,25 +40,27 @@ class DataProcessor
      */
     public function process()
     {
-        foreach ($this->engine->result_array as $key => &$value) {
-            $data  = $this->convertToArray($value, $key);
-            $value = $this->addColumns($data, $key, $value);
-            $value = $this->editColumns($data, $key, $value);
+        $output = [];
+        foreach ($this->engine->result_array as $key => $value) {
+            $data     = $this->convertToArray($value, $key);
+            $value    = $this->addColumns($data, $key, $value);
+            $value    = $this->editColumns($data, $key, $value);
+            $output[] = $value;
         }
 
         if ($this->engine->m_data_support) {
-            foreach ($this->engine->result_array as $key => $value) {
+            foreach ($output as $key => $value) {
                 $value          = $this->setupRowVariables($key, $value);
-                $this->engine->result_array_r[] = $this->removeExcessColumns($value);
+                $this->output[] = $this->removeExcessColumns($value);
             }
         } else {
-            foreach ($this->engine->result_array as $key => $value) {
+            foreach ($output as $key => $value) {
                 $value          = $this->setupRowVariables($key, $value);
-                $this->engine->result_array_r[] = Arr::flatten($this->removeExcessColumns($value));
+                $this->output[] = Arr::flatten($this->removeExcessColumns($value));
             }
         }
 
-        return $this->engine->result_array_r;
+        return $this->output;
     }
 
     /**
@@ -72,6 +79,24 @@ class DataProcessor
             } else {
                 $data[$key] = $value;
             }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Process add columns.
+     *
+     * @param array $data
+     * @param string|int $rKey
+     * @param array|null $rValue
+     * @return array
+     */
+    protected function addColumns(array $data, $rKey, $rValue)
+    {
+        foreach ($this->engine->extra_columns as $key => $value) {
+            $value = Helper::compileContent($value, $data, $this->engine->result_object[$rKey]);
+            $data  = Helper::includeInArray($value, $rValue);
         }
 
         return $data;
@@ -120,31 +145,13 @@ class DataProcessor
      * @param array $data
      * @return array
      */
-    public function removeExcessColumns(array $data)
+    protected function removeExcessColumns(array $data)
     {
         foreach ($this->engine->excess_columns as $value) {
             unset($data[$value]);
         }
 
         return $data;
-    }
-
-    /**
-     * Process add columns.
-     *
-     * @param array $data
-     * @param string|int $rKey
-     * @param array|null $rValue
-     * @return array
-     */
-    protected function addColumns(array $data, $rKey, $rValue)
-    {
-        foreach ($this->engine->extra_columns as $key => $value) {
-            $value  = Helper::compileContent($value, $data, $this->engine->result_object[$rKey]);
-            $rValue = Helper::includeInArray($value, $rValue);
-        }
-
-        return $rValue;
     }
 
 }

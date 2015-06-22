@@ -12,7 +12,6 @@ namespace yajra\Datatables\Engines;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use League\Fractal\Manager;
@@ -21,7 +20,6 @@ use League\Fractal\TransformerAbstract;
 use yajra\Datatables\Contracts\DataTableEngine;
 use yajra\Datatables\DataProcessor;
 use yajra\Datatables\Helper;
-use yajra\Datatables\RowProcessor;
 
 abstract class BaseEngine implements DataTableEngine
 {
@@ -671,7 +669,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function render()
     {
-        $data = with(new DataProcessor($this))->process();
+        $data   = with(new DataProcessor($this))->process();
         $output = [
             'draw'            => (int) $this->request['draw'],
             'recordsTotal'    => $this->totalRecords,
