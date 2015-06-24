@@ -170,13 +170,28 @@ class Helper
         return $data;
     }
 
+    /**
+     * @param array $data
+     * @return array
+     */
     public static function transform(array $data)
     {
-        foreach ($data as &$row) {
-            foreach ($row as $key => $value) {
-                if ($value instanceof \DateTime) {
-                    $row[$key] = $value->format('Y-m-d H:i:s');
-                } else if (is_string($value)) {
+        return array_map(function($row) {
+           return self::transformRow($row);
+        }, $data);
+    }
+
+    /**
+     * @param $row
+     * @return mixed
+     */
+    protected static function transformRow($row)
+    {
+        foreach ($row as $key => $value) {
+            if ($value instanceof \DateTime) {
+                $row[$key] = $value->format('Y-m-d H:i:s');
+            } else {
+                if (is_string($value)) {
                     $row[$key] = (string) $value;
                 } else {
                     $row[$key] = $value;
@@ -184,7 +199,7 @@ class Helper
             }
         }
 
-        return $data;
+        return $row;
     }
 
 }
