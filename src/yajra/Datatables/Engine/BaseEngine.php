@@ -117,6 +117,13 @@ class BaseEngine
     public $filteredRecords = 0;
 
     /**
+     * [internal] Track if any filter was applied for atleast one column
+     *
+     * @var bool
+     */
+    protected $isFilterApplied = false;
+
+    /**
      * Eloquent/Builder result object.
      *
      * @var mixed
@@ -374,6 +381,8 @@ class BaseEngine
                         $this->compileGlobalSearch($query, $column, $keyword);
                     }
                 }
+                
+                $this->isFilterApplied = true;
             }
         );
     }
@@ -774,6 +783,8 @@ class BaseEngine
                         $this->query->whereRaw($col . ' LIKE ?', [$keyword]);
                     }
                 }
+                
+                $this->isFilterApplied = true;
             }
         }
     }
@@ -785,7 +796,7 @@ class BaseEngine
      */
     public function getTotalFilteredRecords()
     {
-        return $this->filteredRecords = $this->count();
+        return $this->filteredRecords = $this->isFilterApplied ? $this->count() : $this->totalRecords;
     }
 
     /**
