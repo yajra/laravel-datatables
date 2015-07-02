@@ -525,55 +525,50 @@ abstract class BaseEngine implements DataTableEngine
     }
 
     /**
-     * Count results
+     * Count results.
      *
      * @return integer
      */
-    public function count()
-    {
-    }
+    abstract public function count();
 
     /**
-     * Perform sorting of columns
+     * Perform sorting of columns.
      *
      * @return void
      */
-    public function ordering()
-    {
-    }
+    abstract public function ordering();
 
     /**
-     * Perform global search
+     * Perform global search.
      *
      * @return void
      */
-    public function filtering()
-    {
-    }
+    abstract public function filtering();
 
     /**
-     * Perform column search
+     * Perform column search.
      *
      * @return void
      */
-    public function columnSearch()
-    {
-    }
-
-    public function paginate()
-    {
-        if ($this->request->isPaginationable()) {
-            $this->paging();
-        }
-    }
+    abstract public function columnSearch();
 
     /**
      * Perform pagination
      *
      * @return void
      */
-    public function paging()
+    abstract public function paging();
+
+    /**
+     * Apply pagination.
+     *
+     * @return void
+     */
+    public function paginate()
     {
+        if ($this->request->isPaginationable()) {
+            $this->paging();
+        }
     }
 
     /**
@@ -618,9 +613,7 @@ abstract class BaseEngine implements DataTableEngine
      *
      * @return array
      */
-    public function results()
-    {
-    }
+    abstract public function results();
 
     /**
      * Check if app is in debug mode.
@@ -653,9 +646,7 @@ abstract class BaseEngine implements DataTableEngine
      * @param \Closure $callback
      * @return $this
      */
-    public function filter(\Closure $callback)
-    {
-    }
+    abstract public function filter(\Closure $callback);
 
     /**
      * Get config is case insensitive status.
