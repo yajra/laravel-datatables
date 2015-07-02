@@ -28,40 +28,42 @@ abstract class BaseEngine implements DataTableEngine
      *
      * @var \Illuminate\Database\Connection
      */
-    public $connection;
+    protected $connection;
 
     /**
      * Builder object.
      *
      * @var mixed
      */
-    public $query;
+    protected $query;
 
     /**
      * Query builder object.
      *
      * @var \Illuminate\Database\Query\Builder
      */
-    public $builder;
+    protected $builder;
 
     /**
      * Input variables.
      *
      * @var \yajra\Datatables\Request
      */
-    public $request;
+    protected $request;
 
     /**
      * Array of result columns/fields.
      *
      * @var array
      */
-    public $columns = [];
+    protected $columns = [];
 
     /**
+     * DT columns definitions container (add/edit/remove).
+     *
      * @var array
      */
-    public $columnDef = [
+    protected $columnDef = [
         'append' => [],
         'edit'   => [],
         'excess' => ['rn', 'row_num'],
@@ -72,7 +74,7 @@ abstract class BaseEngine implements DataTableEngine
      *
      * @var string
      */
-    public $query_type;
+    protected $query_type;
 
 
     /**
@@ -80,42 +82,35 @@ abstract class BaseEngine implements DataTableEngine
      *
      * @var array
      */
-    public $sColumns = [];
+    protected $sColumns = [];
 
     /**
      * Total records.
      *
      * @var int
      */
-    public $totalRecords = 0;
+    protected $totalRecords = 0;
 
     /**
      * Total filtered records.
      *
      * @var int
      */
-    public $filteredRecords = 0;
-
-    /**
-     * Flag for DT support for mData.
-     *
-     * @var bool
-     */
-    public $m_data_support = false;
+    protected $filteredRecords = 0;
 
     /**
      * Auto-filter flag.
      *
      * @var bool
      */
-    public $autoFilter = true;
+    protected $autoFilter = true;
 
     /**
      * DT row templates container
      *
      * @var array
      */
-    public $templates = [
+    protected $templates = [
         'DT_RowId'    => '',
         'DT_RowClass' => '',
         'DT_RowData'  => [],
@@ -127,14 +122,14 @@ abstract class BaseEngine implements DataTableEngine
      *
      * @var array
      */
-    public $filter_columns = [];
+    protected $filter_columns = [];
 
     /**
      * Output transformer.
      *
      * @var TransformerAbstract
      */
-    public $transformer = null;
+    protected $transformer = null;
 
     /**
      * Database prefix
@@ -515,7 +510,6 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function make($mDataSupport = false, $orderFirst = false)
     {
-        $this->m_data_support = $mDataSupport;
         $this->totalRecords   = $this->count();
 
         if ($orderFirst) {
@@ -533,7 +527,7 @@ abstract class BaseEngine implements DataTableEngine
         }
         $this->paginate();
 
-        return $this->render();
+        return $this->render($mDataSupport);
     }
 
     /**
@@ -591,9 +585,10 @@ abstract class BaseEngine implements DataTableEngine
     /**
      * Render json response.
      *
+     * @param bool $object
      * @return \Illuminate\Http\JsonResponse
      */
-    public function render()
+    public function render($object = false)
     {
         $processor = new DataProcessor(
             $this->results(),
@@ -601,7 +596,7 @@ abstract class BaseEngine implements DataTableEngine
             $this->templates
         );
 
-        $data   = $processor->process($this->m_data_support);
+        $data   = $processor->process($object);
         $output = [
             'draw'            => (int) $this->request['draw'],
             'recordsTotal'    => $this->totalRecords,
