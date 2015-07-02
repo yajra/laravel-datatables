@@ -13,15 +13,18 @@ class RowProcessor
 {
 
     /**
-     * @var
+     * @var mixed
      */
     private $data;
 
+    /**
+     * @var mixed
+     */
     private $row;
 
     /**
-     * @param $data
-     * @param $row
+     * @param mixed $data
+     * @param mixed $row
      */
     public function __construct($data, $row)
     {
@@ -68,6 +71,9 @@ class RowProcessor
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
     public function getData()
     {
         return $this->data;

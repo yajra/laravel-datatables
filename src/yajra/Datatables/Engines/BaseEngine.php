@@ -613,8 +613,8 @@ abstract class BaseEngine implements DataTableEngine
             $this->excess_columns,
             $this->templates
         );
-        $data      = $processor->process($this->m_data_support);
 
+        $data   = $processor->process($this->m_data_support);
         $output = [
             'draw'            => (int) $this->request['draw'],
             'recordsTotal'    => $this->totalRecords,
