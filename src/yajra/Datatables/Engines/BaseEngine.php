@@ -366,7 +366,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function removeColumn()
     {
-        $names                       = func_get_args();
+        $names                     = func_get_args();
         $this->columnDef['excess'] = array_merge($this->columnDef['excess'], $names);
 
         return $this;
