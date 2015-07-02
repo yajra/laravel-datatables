@@ -20,13 +20,6 @@ class DataProcessor
     protected $engine;
 
     /**
-     * Processed data
-     *
-     * @var array
-     */
-    protected $results;
-
-    /**
      * Processed data output
      *
      * @var array
@@ -48,9 +41,8 @@ class DataProcessor
      */
     public function process()
     {
-        $this->output        = [];
-        $this->results = $this->engine->results();
-        foreach ($this->results as $row) {
+        $this->output  = [];
+        foreach ($this->engine->results() as $row) {
             $data     = Helper::convertToArray($row);
             $value    = $this->addColumns($data, $row);
             $value    = $this->editColumns($value, $row);
