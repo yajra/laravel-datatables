@@ -23,7 +23,7 @@ class EloquentEngine extends QueryBuilderEngine implements DataTableEngine
      */
     public function __construct($model, Request $request)
     {
-        $this->request = $request;
+        $this->request    = $request;
         $this->query_type = 'eloquent';
         $this->query      = $model instanceof Builder ? $model : $model->getQuery();
         $this->columns    = $this->query->getQuery()->columns;

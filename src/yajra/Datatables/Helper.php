@@ -2,6 +2,7 @@
 
 namespace yajra\Datatables;
 
+use DateTime;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
@@ -9,35 +10,6 @@ use Illuminate\View\Compilers\BladeCompiler;
 
 class Helper
 {
-
-    /**
-     * Parses and compiles strings by using Blade Template System.
-     *
-     * @param       $str
-     * @param array $data
-     * @return string
-     * @throws \Exception
-     */
-    public static function compileBlade($str, $data = [])
-    {
-        $empty_filesystem_instance = new Filesystem();
-        $blade                     = new BladeCompiler($empty_filesystem_instance, 'datatables');
-        $parsed_string             = $blade->compileString($str);
-
-        ob_start() && extract($data, EXTR_SKIP);
-
-        try {
-            eval('?>' . $parsed_string);
-        } catch (\Exception $e) {
-            ob_end_clean();
-            throw $e;
-        }
-
-        $str = ob_get_contents();
-        ob_end_clean();
-
-        return $str;
-    }
 
     /**
      * Places item of extra columns into results by care of their order.
@@ -84,6 +56,35 @@ class Helper
         } else {
             return $content;
         }
+    }
+
+    /**
+     * Parses and compiles strings by using Blade Template System.
+     *
+     * @param       $str
+     * @param array $data
+     * @return string
+     * @throws \Exception
+     */
+    public static function compileBlade($str, $data = [])
+    {
+        $empty_filesystem_instance = new Filesystem();
+        $blade                     = new BladeCompiler($empty_filesystem_instance, 'datatables');
+        $parsed_string             = $blade->compileString($str);
+
+        ob_start() && extract($data, EXTR_SKIP);
+
+        try {
+            eval('?>' . $parsed_string);
+        } catch (\Exception $e) {
+            ob_end_clean();
+            throw $e;
+        }
+
+        $str = ob_get_contents();
+        ob_end_clean();
+
+        return $str;
     }
 
     /**
@@ -176,7 +177,7 @@ class Helper
      */
     public static function transform(array $data)
     {
-        return array_map(function($row) {
+        return array_map(function ($row) {
             return self::transformRow($row);
         }, $data);
     }
@@ -188,7 +189,7 @@ class Helper
     protected static function transformRow($row)
     {
         foreach ($row as $key => $value) {
-            if ($value instanceof \DateTime) {
+            if ($value instanceof DateTime) {
                 $row[$key] = $value->format('Y-m-d H:i:s');
             } else {
                 if (is_string($value)) {
@@ -201,6 +202,5 @@ class Helper
 
         return $row;
     }
-
 }
 

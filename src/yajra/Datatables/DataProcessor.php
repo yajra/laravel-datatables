@@ -2,7 +2,6 @@
 
 namespace yajra\Datatables;
 
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use yajra\Datatables\Engines\BaseEngine;
 
@@ -41,16 +40,16 @@ class DataProcessor
      */
     public function process()
     {
-        $this->output  = [];
+        $this->output = [];
         foreach ($this->engine->results() as $row) {
-            $data     = Helper::convertToArray($row);
-            $value    = $this->addColumns($data, $row);
-            $value    = $this->editColumns($value, $row);
-            $value    = $this->setupRowVariables($value, $row);
+            $data  = Helper::convertToArray($row);
+            $value = $this->addColumns($data, $row);
+            $value = $this->editColumns($value, $row);
+            $value = $this->setupRowVariables($value, $row);
             if ( ! $this->engine->m_data_support) {
                 $value = Arr::flatten($this->removeExcessColumns($value));
             } else {
-                $value    = $this->removeExcessColumns($value);
+                $value = $this->removeExcessColumns($value);
             }
             $this->output[] = $value;
         }
@@ -69,7 +68,7 @@ class DataProcessor
     {
         foreach ($this->engine->extra_columns as $key => $value) {
             $value['content'] = Helper::compileContent($value['content'], $data, $row);
-            $data  = Helper::includeInArray($value, $data);
+            $data             = Helper::includeInArray($value, $data);
         }
 
         return $data;
@@ -101,6 +100,7 @@ class DataProcessor
     protected function setupRowVariables($data, $row)
     {
         $processor = new RowProcessor($data, $row);
+
         return $processor
             ->rowValue('DT_RowId', $this->engine->row_id_tmpl)
             ->rowValue('DT_RowClass', $this->engine->row_class_tmpl)

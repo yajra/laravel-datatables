@@ -10,7 +10,6 @@ namespace yajra\Datatables\Engines;
  * @author   Arjay Angeles <aqangeles@gmail.com>
  */
 
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
@@ -623,7 +622,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function render()
     {
-        $data   = with(new DataProcessor($this))->process();
+        $data = with(new DataProcessor($this))->process();
 
         $output = [
             'draw'            => (int) $this->request['draw'],
