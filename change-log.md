@@ -8,6 +8,10 @@
 
 ##Change Log
 
+###v5.5.0
+    - Refactor classes to improve code quality
+    - Implemented PR #95
+
 ###v5.4.4
     - Added column wrapper for SQLITE.
 
