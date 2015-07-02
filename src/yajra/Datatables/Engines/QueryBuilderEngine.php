@@ -96,6 +96,8 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
                     } else {
                         $this->compileGlobalSearch($query, $column, $keyword);
                     }
+
+                    $this->isFilterApplied = true;
                 }
             }
         );
@@ -201,6 +203,8 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
                         $this->query->whereRaw($col . ' LIKE ?', [$keyword]);
                     }
                 }
+
+                $this->isFilterApplied = true;
             }
         }
     }

@@ -53,35 +53,34 @@ class TestDatatablesQueryBuilderEngine extends PHPUnit_Framework_TestCase
         $builder = m::mock('Illuminate\Database\Query\Builder');
         $builder->shouldReceive('getGrammar')->once()->andReturn($builder);
         $builder->shouldReceive('getTablePrefix')->once()->andReturn($builder);
+        $builder->shouldReceive('getConnection')->andReturn(m::mock('Illuminate\Database\Connection'));
+        $builder->getConnection()->shouldReceive('getDriverName')->once()->andReturn('dbdriver');
+
+        // setup builder
         $builder->shouldReceive('select')->once()->with(['id', 'name'])->andReturn($builder);
         $builder->shouldReceive('from')->once()->with('users')->andReturn($builder);
-        $builder->shouldReceive('get')->once()->andReturn($data);
-
         $builder->columns = ['id', 'name'];
         $builder->select(['id', 'name'])->from('users');
 
-        // ******************************
-        // Datatables::of() mocks
-        // ******************************
-        $builder->shouldReceive('getConnection')->andReturn(m::mock('Illuminate\Database\Connection'));
-        $builder->getConnection()->shouldReceive('getDriverName')->once()->andReturn('dbdriver');
-        $builder->shouldReceive('toSql')->times(6)->andReturn('select id, name from users');
+        // count total records
+        $builder->shouldReceive('toSql')->times(2)->andReturn('select id, name from users');
+        $builder->shouldReceive('select')->once()->andReturn($builder);
         $builder->getConnection()->shouldReceive('raw')->once()->andReturn('select \'1\' as row_count');
-        $builder->shouldReceive('select')->once()->andReturn($builder);
+        $builder->getConnection()->shouldReceive('table')->once()->andReturn($builder);
         $builder->getConnection()->shouldReceive('raw')->andReturn('(select id, name from users) count_row_table');
-        $builder->shouldReceive('select')->once()->andReturn($builder);
-        $builder->getConnection()->shouldReceive('table')->times(2)->andReturn($builder);
-        $builder->shouldReceive('getBindings')->times(2)->andReturn([]);
-        $builder->shouldReceive('setBindings')->times(2)->with([])->andReturn($builder);
+        $builder->shouldReceive('toSql')->once()->andReturn('select id, name from users');
+        $builder->shouldReceive('getBindings')->once()->andReturn([]);
+        $builder->shouldReceive('setBindings')->once()->with([])->andReturn($builder);
+        $builder->shouldReceive('count')->once()->andReturn(2);
 
-        // ******************************
-        // Datatables::make() mocks
-        // ******************************
+        // get data
+        $builder->shouldReceive('get')->once()->andReturn($data);
+
+        // pagination
         if ( ! $showAllRecords) {
             $builder->shouldReceive('skip')->once()->andReturn($builder);
             $builder->shouldReceive('take')->once()->andReturn($builder);
         }
-        $builder->shouldReceive('count')->times(2)->andReturn(2);
 
         return $builder;
     }

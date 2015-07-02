@@ -179,6 +179,13 @@ abstract class BaseEngine implements DataTableEngine
     protected $database;
 
     /**
+     * [internal] Track if any filter was applied for atleast one column
+     *
+     * @var boolean
+     */
+    protected $isFilterApplied = false;
+
+    /**
      * Setup search keyword.
      *
      * @param  string $value
@@ -547,7 +554,7 @@ abstract class BaseEngine implements DataTableEngine
             $this->filtering();
         }
         $this->columnSearch();
-        $this->filteredRecords = $this->count();
+        $this->filteredRecords = $this->isFilterApplied ? $this->count() : $this->totalRecords;
 
         if ( ! $orderFirst) {
             $this->ordering();
