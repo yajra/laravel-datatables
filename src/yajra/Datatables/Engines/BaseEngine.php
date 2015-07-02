@@ -682,22 +682,6 @@ abstract class BaseEngine implements DataTableEngine
     }
 
     /**
-     * Wrap a column and cast in pgsql
-     *
-     * @param  string $column
-     * @return string
-     */
-    public function castColumn($column)
-    {
-        $column = Helper::wrapDatabaseValue($this->database, $column);
-        if ($this->database === 'pgsql') {
-            $column = 'CAST(' . $column . ' as TEXT)';
-        }
-
-        return $column;
-    }
-
-    /**
      * Get config is case insensitive status.
      *
      * @return bool
