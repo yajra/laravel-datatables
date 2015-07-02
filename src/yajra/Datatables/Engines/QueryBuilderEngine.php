@@ -89,9 +89,9 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
                 foreach ($this->request->searchableColumnIndex() as $index) {
                     $column = $this->setupColumnName($index);
 
-                    if (isset($this->filter_columns[$column])) {
-                        $method     = Helper::getOrMethod($this->filter_columns[$column]['method']);
-                        $parameters = $this->filter_columns[$column]['parameters'];
+                    if (isset($this->columnDef['filter'][$column])) {
+                        $method     = Helper::getOrMethod($this->columnDef['filter'][$column]['method']);
+                        $parameters = $this->columnDef['filter'][$column]['parameters'];
                         $this->compileFilterColumn($method, $parameters, $column);
                     } else {
                         $this->compileGlobalSearch($query, $column, $keyword);
@@ -206,9 +206,9 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
                 $column  = $this->getColumnName($i);
                 $keyword = $this->setupKeyword($this->request->columnKeyword($i));
 
-                if (isset($this->filter_columns[$column])) {
-                    $method     = $this->filter_columns[$column]['method'];
-                    $parameters = $this->filter_columns[$column]['parameters'];
+                if (isset($this->columnDef['filter'][$column])) {
+                    $method     = $this->columnDef['filter'][$column]['method'];
+                    $parameters = $this->columnDef['filter'][$column]['parameters'];
                     $this->compileFilterColumn($method, $parameters, $column);
                 } else {
                     $column = $this->castColumn($column);

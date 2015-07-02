@@ -67,6 +67,7 @@ abstract class BaseEngine implements DataTableEngine
         'append' => [],
         'edit'   => [],
         'excess' => ['rn', 'row_num'],
+        'filter' => [],
     ];
 
     /**
@@ -116,13 +117,6 @@ abstract class BaseEngine implements DataTableEngine
         'DT_RowData'  => [],
         'DT_RowAttr'  => [],
     ];
-
-    /**
-     * Override column search query type.
-     *
-     * @var array
-     */
-    protected $filter_columns = [];
 
     /**
      * Output transformer.
@@ -483,7 +477,7 @@ abstract class BaseEngine implements DataTableEngine
     public function filterColumn($column, $method)
     {
         $params                        = func_get_args();
-        $this->filter_columns[$column] = ['method' => $method, 'parameters' => array_splice($params, 2)];
+        $this->columnDef['filter'][$column] = ['method' => $method, 'parameters' => array_splice($params, 2)];
 
         return $this;
     }
