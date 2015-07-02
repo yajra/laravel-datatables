@@ -122,32 +122,16 @@ abstract class BaseEngine implements DataTableEngine
     public $autoFilter = true;
 
     /**
-     * DT_RowID template.
-     *
-     * @var string|callable
-     */
-    public $row_id_tmpl;
-
-    /**
-     * DT_RowClass template.
-     *
-     * @var string|callable
-     */
-    public $row_class_tmpl;
-
-    /**
-     * DT_RowData template.
+     * DT row templates container
      *
      * @var array
      */
-    public $row_data_tmpls = [];
-
-    /**
-     * DT_RowAttr template.
-     *
-     * @var array
-     */
-    public $row_attr_tmpls = [];
+    public $templates = [
+        'DT_RowId'    => '',
+        'DT_RowClass' => '',
+        'DT_RowData'  => [],
+        'DT_RowAttr'  => [],
+    ];
 
     /**
      * Override column search query type.
@@ -178,7 +162,7 @@ abstract class BaseEngine implements DataTableEngine
     protected $database;
 
     /**
-     * [internal] Track if any filter was applied for atleast one column
+     * [internal] Track if any filter was applied for at least one column
      *
      * @var boolean
      */
@@ -430,7 +414,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function setRowClass($content)
     {
-        $this->row_class_tmpl = $content;
+        $this->templates['DT_RowClass'] = $content;
 
         return $this;
     }
@@ -444,7 +428,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function setRowId($content)
     {
-        $this->row_id_tmpl = $content;
+        $this->templates['DT_RowId'] = $content;
 
         return $this;
     }
@@ -457,7 +441,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function setRowData(array $data)
     {
-        $this->row_data_tmpls = $data;
+        $this->templates['DT_RowData'] = $data;
 
         return $this;
     }
@@ -471,7 +455,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function addRowData($key, $value)
     {
-        $this->row_data_tmpls[$key] = $value;
+        $this->templates['DT_RowData'][$key] = $value;
 
         return $this;
     }
@@ -485,7 +469,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function setRowAttr(array $data)
     {
-        $this->row_attr_tmpls = $data;
+        $this->templates['DT_RowAttr'] = $data;
 
         return $this;
     }
@@ -499,7 +483,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function addRowAttr($key, $value)
     {
-        $this->row_attr_tmpls[$key] = $value;
+        $this->templates['DT_RowAttr'][$key] = $value;
 
         return $this;
     }
@@ -622,7 +606,14 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function render()
     {
-        $data = with(new DataProcessor($this))->process();
+        $processor = new DataProcessor(
+            $this->results(),
+            $this->extra_columns,
+            $this->edit_columns,
+            $this->excess_columns,
+            $this->templates
+        );
+        $data      = $processor->process($this->m_data_support);
 
         $output = [
             'draw'            => (int) $this->request['draw'],
@@ -644,6 +635,15 @@ abstract class BaseEngine implements DataTableEngine
         }
 
         return new JsonResponse($output);
+    }
+
+    /**
+     * Get results
+     *
+     * @return array
+     */
+    public function results()
+    {
     }
 
     /**
@@ -705,14 +705,5 @@ abstract class BaseEngine implements DataTableEngine
     public function isCaseInsensitive()
     {
         return Config::get('datatables.search.case_insensitive', false);
-    }
-
-    /**
-     * Get results
-     *
-     * @return array
-     */
-    public function results()
-    {
     }
 }

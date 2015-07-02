@@ -3,7 +3,6 @@
 namespace yajra\Datatables;
 
 use Illuminate\Support\Arr;
-use yajra\Datatables\Engines\BaseEngine;
 
 /**
  * Class DataProcessor
@@ -26,27 +25,61 @@ class DataProcessor
     private $output = [];
 
     /**
-     * @param \yajra\Datatables\Engines\BaseEngine $engine
+     * @var array
      */
-    public function __construct(BaseEngine $engine)
+    private $appendColumns;
+
+    /**
+     * @var array
+     */
+    private $editColumns;
+
+    /**
+     * @var array
+     */
+    private $excessColumns;
+
+    /**
+     * @var mixed
+     */
+    private $results;
+
+    /**
+     * @var array
+     */
+    private $templates;
+
+    /**
+     * @param mixed $results
+     * @param array $append
+     * @param array $edit
+     * @param array $excess
+     * @param array $templates
+     */
+    public function __construct($results, array $append, array $edit, array $excess, array $templates)
     {
-        $this->engine = $engine;
+        $this->results       = $results;
+        $this->appendColumns = $append;
+        $this->editColumns   = $edit;
+        $this->excessColumns = $excess;
+        $this->templates     = $templates;
     }
 
     /**
      * Process data to output on browser
      *
+     * @param bool $object
      * @return array
      */
-    public function process()
+    public function process($object = false)
     {
         $this->output = [];
-        foreach ((array) $this->engine->results() as $row) {
+        foreach ($this->results as $row) {
             $data  = Helper::convertToArray($row);
             $value = $this->addColumns($data, $row);
             $value = $this->editColumns($value, $row);
             $value = $this->setupRowVariables($value, $row);
-            if ( ! $this->engine->m_data_support) {
+            if ( ! $object) {
                 $value = Arr::flatten($this->removeExcessColumns($value));
             } else {
                 $value = $this->removeExcessColumns($value);
@@ -66,7 +99,7 @@ class DataProcessor
      */
     protected function addColumns(array $data, $row)
     {
-        foreach ($this->engine->extra_columns as $key => $value) {
+        foreach ($this->appendColumns as $key => $value) {
             $value['content'] = Helper::compileContent($value['content'], $data, $row);
             $data             = Helper::includeInArray($value, $data);
         }
@@ -83,7 +116,7 @@ class DataProcessor
      */
     protected function editColumns(array $data, $row)
     {
-        foreach ($this->engine->edit_columns as $key => $value) {
+        foreach ($this->editColumns as $key => $value) {
             $value['content']     = Helper::compileContent($value['content'], $data, $row);
             $data[$value['name']] = $value['content'];
         }
@@ -103,10 +136,10 @@ class DataProcessor
         $processor = new RowProcessor($data, $row);
 
         return $processor
-            ->rowValue('DT_RowId', $this->engine->row_id_tmpl)
-            ->rowValue('DT_RowClass', $this->engine->row_class_tmpl)
-            ->rowData('DT_RowData', $this->engine->row_data_tmpls)
-            ->rowData('DT_RowAttr', $this->engine->row_attr_tmpls)
+            ->rowValue('DT_RowId', $this->templates['DT_RowId'])
+            ->rowValue('DT_RowClass', $this->templates['DT_RowClass'])
+            ->rowData('DT_RowData', $this->templates['DT_RowData'])
+            ->rowData('DT_RowAttr', $this->templates['DT_RowAttr'])
             ->getData();
     }
 
@@ -118,7 +151,7 @@ class DataProcessor
      */
     protected function removeExcessColumns(array $data)
     {
-        foreach ($this->engine->excess_columns as $value) {
+        foreach ($this->excessColumns as $value) {
             unset($data[$value]);
         }
 
