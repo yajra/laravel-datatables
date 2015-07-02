@@ -1,8 +1,9 @@
 <?php
 
-namespace yajra\Datatables;
+namespace yajra\Datatables\Processors;
 
 use Illuminate\Support\Arr;
+use yajra\Datatables\Helper;
 
 /**
  * Class DataProcessor

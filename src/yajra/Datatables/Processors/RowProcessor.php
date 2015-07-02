@@ -1,6 +1,6 @@
 <?php
 
-namespace yajra\Datatables;
+namespace yajra\Datatables\Processors;
 
 use Illuminate\Support\Arr;
 

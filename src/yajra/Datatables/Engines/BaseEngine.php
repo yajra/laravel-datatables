@@ -17,7 +17,7 @@ use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
 use yajra\Datatables\Contracts\DataTableEngine;
-use yajra\Datatables\DataProcessor;
+use yajra\Datatables\Processors\DataProcessor;
 use yajra\Datatables\Helper;
 
 abstract class BaseEngine implements DataTableEngine
