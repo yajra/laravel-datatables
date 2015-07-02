@@ -476,7 +476,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function filterColumn($column, $method)
     {
-        $params                        = func_get_args();
+        $params                             = func_get_args();
         $this->columnDef['filter'][$column] = ['method' => $method, 'parameters' => array_splice($params, 2)];
 
         return $this;
@@ -504,7 +504,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function make($mDataSupport = false, $orderFirst = false)
     {
-        $this->totalRecords   = $this->count();
+        $this->totalRecords = $this->count();
 
         if ($orderFirst) {
             $this->ordering();
