@@ -61,8 +61,8 @@ class Helper
     /**
      * Parses and compiles strings by using Blade Template System.
      *
-     * @param       $str
-     * @param array $data
+     * @param string $str
+     * @param array  $data
      * @return string
      * @throws \Exception
      */
