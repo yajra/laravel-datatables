@@ -31,8 +31,13 @@
 
 						<ul>
 				<li>
-					<a href="namespace-yajra.Datatables.Engine.html">
-						Engine					</a>
+					<a href="namespace-yajra.Datatables.Contracts.html">
+						Contracts					</a>
+
+						</li>
+				<li>
+					<a href="namespace-yajra.Datatables.Engines.html">
+						Engines					</a>
 
 						</li>
 				<li>
@@ -43,6 +48,11 @@
 				<li class="active">
 					<a href="namespace-yajra.Datatables.Html.html">
 						Html					</a>
+
+						</li>
+				<li>
+					<a href="namespace-yajra.Datatables.Processors.html">
+						Processors					</a>
 
 						</li>
 							</ul></li></ul></li>
@@ -117,7 +127,7 @@
 		<b>Namespace:</b> <a href="namespace-yajra.html">yajra</a>\<a href="namespace-yajra.Datatables.html">Datatables</a>\<a href="namespace-yajra.Datatables.Html.html">Html</a><br>
 		<b>Package:</b> yajra\Datatables\Html<br>
 
-			<b>Located at</b> <a href="source-class-yajra.Datatables.Html.Builder.html#10-218" title="Go to source code">yajra/Datatables/Html/Builder.php</a>
+			<b>Located at</b> <a href="source-class-yajra.Datatables.Html.Builder.html#12-227" title="Go to source code">yajra/Datatables/Html/Builder.php</a>
 		<br>
 	</div>
 
@@ -137,7 +147,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-yajra.Datatables.Html.Builder.html#63-83" title="Go to source code">__construct</a>( <span>Illuminate\Contracts\Config\Repository <var>$config</var></span>, <span>Illuminate\Contracts\View\Factory <var>$view</var></span>, <span>Collective\Html\HtmlBuilder <var>$html</var></span>, <span>Illuminate\Routing\UrlGenerator <var>$url</var></span>, <span>Collective\Html\FormBuilder <var>$form</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Html.Builder.html#66-86" title="Go to source code">__construct</a>( <span>Illuminate\Contracts\Config\Repository <var>$config</var></span>, <span>Illuminate\Contracts\View\Factory <var>$view</var></span>, <span>Collective\Html\HtmlBuilder <var>$html</var></span>, <span>Illuminate\Routing\UrlGenerator <var>$url</var></span>, <span>Collective\Html\FormBuilder <var>$form</var></span> )</code>
 
 		<div class="description short">
 			
@@ -180,7 +190,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_scripts">#</a>
-		<code><a href="source-class-yajra.Datatables.Html.Builder.html#85-97" title="Go to source code">scripts</a>( <span>null <var>$script</var> = <span class="php-keyword1">null</span></span>, <span>array <var>$attributes</var> = [<span class="php-quote">'type'</span> =&gt; <span class="php-quote">'text/javascript'</span>]</span> )</code>
+		<code><a href="source-class-yajra.Datatables.Html.Builder.html#88-100" title="Go to source code">scripts</a>( <span>null <var>$script</var> = <span class="php-keyword1">null</span></span>, <span>array <var>$attributes</var> = [<span class="php-quote">'type'</span> =&gt; <span class="php-quote">'text/javascript'</span>]</span> )</code>
 
 		<div class="description short">
 			<p>Generate DataTable javascript</p>
@@ -221,7 +231,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_generateScripts">#</a>
-		<code><a href="source-class-yajra.Datatables.Html.Builder.html#99-111" title="Go to source code">generateScripts</a>( )</code>
+		<code><a href="source-class-yajra.Datatables.Html.Builder.html#102-116" title="Go to source code">generateScripts</a>( )</code>
 
 		<div class="description short">
 			<p>Get generated raw scripts</p>
@@ -251,7 +261,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_parameterize">#</a>
-		<code><a href="source-class-yajra.Datatables.Html.Builder.html#113-122" title="Go to source code">parameterize</a>( <span>array <var>$attributes</var> = []</span> )</code>
+		<code><a href="source-class-yajra.Datatables.Html.Builder.html#118-127" title="Go to source code">parameterize</a>( <span>array <var>$attributes</var> = []</span> )</code>
 
 		<div class="description short">
 			<p>Generate datatable js parameters</p>
@@ -290,7 +300,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_addColumn">#</a>
-		<code><a href="source-class-yajra.Datatables.Html.Builder.html#124-135" title="Go to source code">addColumn</a>( <span>array <var>$attributes</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Html.Builder.html#129-140" title="Go to source code">addColumn</a>( <span>array <var>$attributes</var></span> )</code>
 
 		<div class="description short">
 			<p>Add a column in collection</p>
@@ -329,7 +339,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_addCheckbox">#</a>
-		<code><a href="source-class-yajra.Datatables.Html.Builder.html#137-157" title="Go to source code">addCheckbox</a>( <span>array <var>$attributes</var> = []</span> )</code>
+		<code><a href="source-class-yajra.Datatables.Html.Builder.html#142-164" title="Go to source code">addCheckbox</a>( <span>array <var>$attributes</var> = []</span> )</code>
 
 		<div class="description short">
 			<p>Add a checkbox column</p>
@@ -368,7 +378,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_addAction">#</a>
-		<code><a href="source-class-yajra.Datatables.Html.Builder.html#159-178" title="Go to source code">addAction</a>( <span>array <var>$attributes</var> = []</span> )</code>
+		<code><a href="source-class-yajra.Datatables.Html.Builder.html#166-187" title="Go to source code">addAction</a>( <span>array <var>$attributes</var> = []</span> )</code>
 
 		<div class="description short">
 			<p>Add a action column</p>
@@ -407,7 +417,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_ajax">#</a>
-		<code><a href="source-class-yajra.Datatables.Html.Builder.html#180-191" title="Go to source code">ajax</a>( <span>string|array <var>$attributes</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Html.Builder.html#189-200" title="Go to source code">ajax</a>( <span>string|array <var>$attributes</var></span> )</code>
 
 		<div class="description short">
 			<p>Setup ajax parameter</p>
@@ -446,7 +456,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_table">#</a>
-		<code><a href="source-class-yajra.Datatables.Html.Builder.html#193-204" title="Go to source code">table</a>( <span>array <var>$attributes</var> = []</span> )</code>
+		<code><a href="source-class-yajra.Datatables.Html.Builder.html#202-213" title="Go to source code">table</a>( <span>array <var>$attributes</var> = []</span> )</code>
 
 		<div class="description short">
 			<p>Generate DataTable's table html</p>
@@ -485,7 +495,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_parameters">#</a>
-		<code><a href="source-class-yajra.Datatables.Html.Builder.html#206-217" title="Go to source code">parameters</a>( <span>array <var>$attributes</var> = []</span> )</code>
+		<code><a href="source-class-yajra.Datatables.Html.Builder.html#215-226" title="Go to source code">parameters</a>( <span>array <var>$attributes</var> = []</span> )</code>
 
 		<div class="description short">
 			<p>Configure DataTable's parameters</p>
@@ -534,7 +544,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Html.Builder.html#17-20" title="Go to source code"><var>$ajax</var></a>
+				<a href="source-class-yajra.Datatables.Html.Builder.html#20-23" title="Go to source code"><var>$ajax</var></a>
 
 			<div class="description short">
 				
@@ -559,7 +569,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Html.Builder.html#22-25" title="Go to source code"><var>$tableAttributes</var></a>
+				<a href="source-class-yajra.Datatables.Html.Builder.html#25-28" title="Go to source code"><var>$tableAttributes</var></a>
 
 			<div class="description short">
 				
@@ -584,7 +594,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Html.Builder.html#27-30" title="Go to source code"><var>$attributes</var></a>
+				<a href="source-class-yajra.Datatables.Html.Builder.html#30-33" title="Go to source code"><var>$attributes</var></a>
 
 			<div class="description short">
 				
@@ -609,7 +619,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Html.Builder.html#32-35" title="Go to source code"><var>$collection</var></a>
+				<a href="source-class-yajra.Datatables.Html.Builder.html#35-38" title="Go to source code"><var>$collection</var></a>
 
 			<div class="description short">
 				
@@ -634,7 +644,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Html.Builder.html#37-40" title="Go to source code"><var>$config</var></a>
+				<a href="source-class-yajra.Datatables.Html.Builder.html#40-43" title="Go to source code"><var>$config</var></a>
 
 			<div class="description short">
 				
@@ -659,7 +669,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Html.Builder.html#42-45" title="Go to source code"><var>$view</var></a>
+				<a href="source-class-yajra.Datatables.Html.Builder.html#45-48" title="Go to source code"><var>$view</var></a>
 
 			<div class="description short">
 				
@@ -684,7 +694,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Html.Builder.html#47-50" title="Go to source code"><var>$html</var></a>
+				<a href="source-class-yajra.Datatables.Html.Builder.html#50-53" title="Go to source code"><var>$html</var></a>
 
 			<div class="description short">
 				
@@ -709,7 +719,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Html.Builder.html#52-55" title="Go to source code"><var>$url</var></a>
+				<a href="source-class-yajra.Datatables.Html.Builder.html#55-58" title="Go to source code"><var>$url</var></a>
 
 			<div class="description short">
 				
@@ -734,7 +744,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-yajra.Datatables.Html.Builder.html#57-60" title="Go to source code"><var>$form</var></a>
+				<a href="source-class-yajra.Datatables.Html.Builder.html#60-63" title="Go to source code"><var>$form</var></a>
 
 			<div class="description short">
 				
