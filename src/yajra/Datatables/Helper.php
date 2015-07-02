@@ -158,7 +158,7 @@ class Helper
      */
     public static function convertToArray($row)
     {
-        $data     = $row instanceof Arrayable ? $row->toArray() : (array) $row;
+        $data = $row instanceof Arrayable ? $row->toArray() : (array) $row;
         foreach (array_keys($data) as $key) {
             if (is_object($row)) {
                 $data[$key] = $row->$key;
@@ -177,7 +177,7 @@ class Helper
     public static function transform(array $data)
     {
         return array_map(function($row) {
-           return self::transformRow($row);
+            return self::transformRow($row);
         }, $data);
     }
 
