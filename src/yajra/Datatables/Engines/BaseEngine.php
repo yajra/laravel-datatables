@@ -59,32 +59,21 @@ abstract class BaseEngine implements DataTableEngine
     public $columns = [];
 
     /**
+     * @var array
+     */
+    public $columnDef = [
+        'append' => [],
+        'edit'   => [],
+        'excess' => ['rn', 'row_num'],
+    ];
+
+    /**
      * Query type.
      *
      * @var string
      */
     public $query_type;
 
-    /**
-     * Array of columns to be added on result.
-     *
-     * @var array
-     */
-    public $extra_columns = [];
-
-    /**
-     * Array of columns to be removed on output.
-     *
-     * @var array
-     */
-    public $excess_columns = ['rn', 'row_num'];
-
-    /**
-     * Array of columns to be edited.
-     *
-     * @var array
-     */
-    public $edit_columns = [];
 
     /**
      * sColumns to output.
@@ -351,7 +340,7 @@ abstract class BaseEngine implements DataTableEngine
     {
         $this->sColumns[] = $name;
 
-        $this->extra_columns[] = ['name' => $name, 'content' => $content, 'order' => $order];
+        $this->columnDef['append'][] = ['name' => $name, 'content' => $content, 'order' => $order];
 
         return $this;
     }
@@ -365,7 +354,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function editColumn($name, $content)
     {
-        $this->edit_columns[] = ['name' => $name, 'content' => $content];
+        $this->columnDef['edit'][] = ['name' => $name, 'content' => $content];
 
         return $this;
     }
@@ -377,8 +366,8 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function removeColumn()
     {
-        $names                = func_get_args();
-        $this->excess_columns = array_merge($this->excess_columns, $names);
+        $names                       = func_get_args();
+        $this->columnDef['excess'] = array_merge($this->columnDef['excess'], $names);
 
         return $this;
     }
@@ -608,9 +597,7 @@ abstract class BaseEngine implements DataTableEngine
     {
         $processor = new DataProcessor(
             $this->results(),
-            $this->extra_columns,
-            $this->edit_columns,
-            $this->excess_columns,
+            $this->columnDef,
             $this->templates
         );
 

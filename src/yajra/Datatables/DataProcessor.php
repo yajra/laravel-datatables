@@ -51,17 +51,15 @@ class DataProcessor
 
     /**
      * @param mixed $results
-     * @param array $append
-     * @param array $edit
-     * @param array $excess
+     * @param array $columnDef
      * @param array $templates
      */
-    public function __construct($results, array $append, array $edit, array $excess, array $templates)
+    public function __construct($results, array $columnDef, array $templates)
     {
         $this->results       = $results;
-        $this->appendColumns = $append;
-        $this->editColumns   = $edit;
-        $this->excessColumns = $excess;
+        $this->appendColumns = $columnDef['append'];
+        $this->editColumns   = $columnDef['edit'];
+        $this->excessColumns = $columnDef['excess'];
         $this->templates     = $templates;
     }
 
