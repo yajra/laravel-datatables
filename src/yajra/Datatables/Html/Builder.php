@@ -1,4 +1,6 @@
-<?php namespace yajra\Datatables\Html;
+<?php
+
+namespace yajra\Datatables\Html;
 
 use Collective\Html\FormBuilder;
 use Collective\Html\HtmlBuilder;
