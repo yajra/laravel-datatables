@@ -3,6 +3,7 @@
 namespace yajra\Datatables\Processors;
 
 use Illuminate\Support\Arr;
+use yajra\Datatables\Helper;
 
 /**
  * Class RowProcessor
