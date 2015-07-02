@@ -34,7 +34,7 @@ class DataProcessor
     }
 
     /**
-     * Converts result_array number indexed array and consider excess columns.
+     * Process data to output on browser
      *
      * @return array
      */
@@ -95,6 +95,7 @@ class DataProcessor
      * Setup additional DT row variables.
      *
      * @param mixed $data
+     * @param mixed $row
      * @return array
      */
     protected function setupRowVariables($data, $row)
