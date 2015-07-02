@@ -41,7 +41,7 @@ class DataProcessor
     public function process()
     {
         $this->output = [];
-        foreach ($this->engine->results() as $row) {
+        foreach ((array) $this->engine->results() as $row) {
             $data  = Helper::convertToArray($row);
             $value = $this->addColumns($data, $row);
             $value = $this->editColumns($value, $row);
