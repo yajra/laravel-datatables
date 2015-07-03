@@ -62,9 +62,10 @@ class CollectionEngine extends BaseEngine implements DataTableEngine
      */
     public function filter(Closure $callback)
     {
-        $this->autoFilter = false;
-
-        call_user_func($callback, $this);
+        $this->autoFilter               = false;
+        $this->isFilterApplied          = true;
+        $this->filterCallback           = $callback;
+        $this->filterCallbackParameters = $this;
 
         return $this;
     }
@@ -116,6 +117,7 @@ class CollectionEngine extends BaseEngine implements DataTableEngine
         $this->collection = $this->collection->filter(
             function ($row) use ($columns) {
                 $data  = $this->serialize($row);
+                $this->isFilterApplied = true;
                 $found = [];
 
                 $keyword = $this->request->keyword();
@@ -151,6 +153,7 @@ class CollectionEngine extends BaseEngine implements DataTableEngine
 
                 $this->collection = $this->collection->filter(
                     function ($row) use ($column, $keyword) {
+                        $this->isFilterApplied = true;
                         $data = $this->serialize($row);
                         if ($this->isCaseInsensitive()) {
                             return strpos(Str::lower($data[$column]), Str::lower($keyword)) !== false;
