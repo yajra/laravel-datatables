@@ -689,7 +689,7 @@ abstract class BaseEngine implements DataTableEngine
      * @param  mixed $parameters
      * @return void
      */
-    public function overrideGlobalSearch($callback, $parameters)
+    public function overrideGlobalSearch(\Closure $callback, $parameters)
     {
         $this->autoFilter               = false;
         $this->isFilterApplied          = true;
