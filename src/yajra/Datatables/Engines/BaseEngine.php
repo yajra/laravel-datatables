@@ -520,10 +520,34 @@ abstract class BaseEngine implements DataTableEngine
     {
         $this->totalRecords = $this->count();
 
-        if ($orderFirst) {
+        $this->orderRecords( ! $orderFirst);
+        $this->filterRecords();
+        $this->orderRecords($orderFirst);
+        $this->paginate();
+
+        return $this->render($mDataSupport);
+    }
+
+    /**
+     * Sort records.
+     *
+     * @param  boolean $skip
+     * @return void
+     */
+    public function orderRecords($skip)
+    {
+        if ( ! $skip) {
             $this->ordering();
         }
+    }
 
+    /**
+     * Perform necessary filters.
+     *
+     * @return void
+     */
+    public function filterRecords()
+    {
         if ($this->autoFilter && $this->request->isSearchable()) {
             $this->filtering();
         } else if (is_callable($this->filterCallback)) {
@@ -532,13 +556,6 @@ abstract class BaseEngine implements DataTableEngine
 
         $this->columnSearch();
         $this->filteredRecords = $this->isFilterApplied ? $this->count() : $this->totalRecords;
-
-        if ( ! $orderFirst) {
-            $this->ordering();
-        }
-        $this->paginate();
-
-        return $this->render($mDataSupport);
     }
 
     /**
@@ -664,6 +681,19 @@ abstract class BaseEngine implements DataTableEngine
      * @return $this
      */
     abstract public function filter(\Closure $callback);
+
+    /**
+     * Update flags to disable global search
+     *
+     * @return void
+     */
+    public function overrideGlobalSearch($callback, $parameters)
+    {
+        $this->autoFilter               = false;
+        $this->isFilterApplied          = true;
+        $this->filterCallback           = $callback;
+        $this->filterCallbackParameters = $this->query;
+    }
 
     /**
      * Get config is case insensitive status.

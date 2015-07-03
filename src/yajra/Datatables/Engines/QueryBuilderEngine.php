@@ -44,10 +44,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
      */
     public function filter(Closure $callback)
     {
-        $this->autoFilter               = false;
-        $this->isFilterApplied          = true;
-        $this->filterCallback           = $callback;
-        $this->filterCallbackParameters = $this->query;
+        $this->overrideGlobalSearch($callback, $this->query);
 
         return $this;
     }
