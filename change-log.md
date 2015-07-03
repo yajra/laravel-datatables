@@ -8,9 +8,19 @@
 
 ##Change Log
 
+###v5.5.3
+    - Fix total filtered records count when overriding global search.
+    - Fix implementation of PR #95 on Collection Engine.
+
+###v5.5.2
+    - Fix database driver detection on Eloquent Engine.
+
+###v5.5.1
+    - Fix missing import of Helper class.
+
 ###v5.5.0
-    - Refactor classes to improve code quality
-    - Implemented PR #95
+    - Refactor classes to improve code quality.
+    - Implemented PR #95.
 
 ###v5.4.4
     - Added column wrapper for SQLITE.
@@ -67,6 +77,6 @@
 
 ###v3.6.x
     - Stable version for Laravel 4.2.
-    
+
 ###v2.x
     - Stable version for Laravel 4.0 and 4.1
