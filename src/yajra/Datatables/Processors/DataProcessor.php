@@ -14,11 +14,6 @@ class DataProcessor
 {
 
     /**
-     * @var \yajra\Datatables\Engines\BaseEngine
-     */
-    protected $engine;
-
-    /**
      * Processed data output
      *
      * @var array
@@ -28,17 +23,17 @@ class DataProcessor
     /**
      * @var array
      */
-    private $appendColumns;
+    private $appendColumns = [];
 
     /**
      * @var array
      */
-    private $editColumns;
+    private $editColumns = [];
 
     /**
      * @var array
      */
-    private $excessColumns;
+    private $excessColumns = [];
 
     /**
      * @var mixed
