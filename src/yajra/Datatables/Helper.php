@@ -161,8 +161,10 @@ class Helper
     {
         $data = $row instanceof Arrayable ? $row->toArray() : (array) $row;
         foreach (array_keys($data) as $key) {
-            if (is_object($row)) {
+            if (is_object($data[$key])) {
                 $data[$key] = $row->$key;
+            } else if (is_array($data[$key])) {
+                $data[$key] = static::convertToArray($data[$key]);
             } else {
                 $data[$key] = $row[$key];
             }
@@ -203,4 +205,3 @@ class Helper
         return $row;
     }
 }
-
