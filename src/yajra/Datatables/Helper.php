@@ -43,19 +43,33 @@ class Helper
      * Determines if content is callable or blade string, processes and returns.
      *
      * @param string|callable $content Pre-processed content
-     * @param mixed $data data to use with blade template
+     * @param array $data data to use with blade template
      * @param mixed $param parameter to call with callable
      * @return string Processed content
      */
-    public static function compileContent($content, $data = null, $param = null)
+    public static function compileContent($content, array $data = null, $param = null)
     {
         if (is_string($content)) {
-            return static::compileBlade($content, $data);
+            return static::compileBlade($content, static::getMixedValue($data, $param));
         } elseif (is_callable($content)) {
             return $content($param);
         } else {
             return $content;
         }
+    }
+
+    /**
+     * @param  array $data
+     * @param  mixed $param
+     * @return array
+     */
+    public static function getMixedValue(array $data, $param)
+    {
+        foreach ($data as $key => $value) {
+            $data[$key] = $param[$key];
+        }
+
+        return $data;
     }
 
     /**

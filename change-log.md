@@ -8,8 +8,11 @@
 
 ##Change Log
 
+###v5.5.7
+    - Fix and enhance support when passing variables using blade templating approach.
+
 ###v5.5.6
-    - Fix eager loading of hasOne and hasMany relationships. Issue #105
+    - Fix eager loading of hasOne and hasMany relationships. Issue #105.
 
 ###v5.5.5
     - Fix collection engine sorting when columns is not defined
