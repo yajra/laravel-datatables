@@ -57,26 +57,12 @@ class Helper
             return $content;
         }
     }
-
-    /**
-     * @param  array $data
-     * @param  mixed $param
-     * @return array
-     */
-    public static function getMixedValue(array $data, $param)
-    {
-        foreach ($data as $key => $value) {
-            $data[$key] = $param[$key];
-        }
-
-        return $data;
-    }
-
+    
     /**
      * Parses and compiles strings by using Blade Template System.
      *
      * @param string $str
-     * @param array  $data
+     * @param array $data
      * @return string
      * @throws \Exception
      */
@@ -99,6 +85,26 @@ class Helper
         ob_end_clean();
 
         return $str;
+    }
+
+    /**
+     * @param  array $data
+     * @param  mixed $param
+     * @return array
+     */
+    public static function getMixedValue(array $data, $param)
+    {
+        if ($param instanceof \stdClass) {
+            $param = (array) $param;
+        }
+
+        foreach ($data as $key => $value) {
+            if (isset($param[$key])) {
+                $data[$key] = $param[$key];
+            }
+        }
+
+        return $data;
     }
 
     /**
@@ -177,8 +183,10 @@ class Helper
         foreach (array_keys($data) as $key) {
             if (is_object($data[$key])) {
                 $data[$key] = $row->$key;
-            } else if (is_array($data[$key])) {
-                $data[$key] = static::convertToArray($data[$key]);
+            } else {
+                if (is_array($data[$key])) {
+                    $data[$key] = static::convertToArray($data[$key]);
+                }
             }
         }
 
