@@ -53,9 +53,9 @@ class Helper
             return static::compileBlade($content, static::getMixedValue($data, $param));
         } elseif (is_callable($content)) {
             return $content($param);
-        } else {
-            return $content;
         }
+
+        return $content;
     }
 
     /**
