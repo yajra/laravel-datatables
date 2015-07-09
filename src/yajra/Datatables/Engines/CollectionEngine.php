@@ -43,7 +43,7 @@ class CollectionEngine extends BaseEngine implements DataTableEngine
         $this->request             = $request;
         $this->collection          = $collection;
         $this->original_collection = $collection;
-        $this->columns             = array_keys($this->serialize((array) $collection->first()));
+        $this->columns             = array_keys($this->serialize($collection->first()));
     }
 
     /**
@@ -54,7 +54,7 @@ class CollectionEngine extends BaseEngine implements DataTableEngine
      */
     protected function serialize($collection)
     {
-        return $collection instanceof Arrayable ? $collection->toArray() : $collection;
+        return $collection instanceof Arrayable ? $collection->toArray() : (array) $collection;
     }
 
     /**
