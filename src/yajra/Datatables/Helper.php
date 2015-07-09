@@ -47,7 +47,7 @@ class Helper
      * @param mixed $param parameter to call with callable
      * @return string Processed content
      */
-    public static function compileContent($content, array $data = null, $param = null)
+    public static function compileContent($content, array $data, $param)
     {
         if (is_string($content)) {
             return static::compileBlade($content, static::getMixedValue($data, $param));
