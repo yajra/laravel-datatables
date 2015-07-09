@@ -8,6 +8,12 @@
 
 ##Change Log
 
+###v5.5.5
+    - Fix collection engine sorting when columns is not defined
+
+###v5.5.4
+    - Fix support for collection of objects
+
 ###v5.5.3
     - Fix total filtered records count when overriding global search.
     - Fix implementation of PR #95 on Collection Engine.
