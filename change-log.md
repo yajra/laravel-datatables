@@ -10,6 +10,7 @@
 
 ###v5.5.7
     - Fix and enhance support when passing object variables using blade templating approach.
+    - Random code clean-up.
 
 ###v5.5.6
     - Fix eager loading of hasOne and hasMany relationships. Issue #105.
