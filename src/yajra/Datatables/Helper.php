@@ -57,7 +57,7 @@ class Helper
             return $content;
         }
     }
-    
+
     /**
      * Parses and compiles strings by using Blade Template System.
      *
@@ -94,9 +94,7 @@ class Helper
      */
     public static function getMixedValue(array $data, $param)
     {
-        if ($param instanceof \stdClass) {
-            $param = (array) $param;
-        }
+        $param = self::castToArray($param);
 
         foreach ($data as $key => $value) {
             if (isset($param[$key])) {
@@ -105,6 +103,21 @@ class Helper
         }
 
         return $data;
+    }
+
+    /**
+     * @param $param
+     * @return array
+     */
+    protected static function castToArray($param)
+    {
+        if ($param instanceof \stdClass) {
+            $param = (array) $param;
+
+            return $param;
+        }
+
+        return $param;
     }
 
     /**
