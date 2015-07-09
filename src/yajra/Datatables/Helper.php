@@ -165,8 +165,6 @@ class Helper
                 $data[$key] = $row->$key;
             } else if (is_array($data[$key])) {
                 $data[$key] = static::convertToArray($data[$key]);
-            } else {
-                $data[$key] = $row[$key];
             }
         }
 
