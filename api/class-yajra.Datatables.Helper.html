@@ -125,7 +125,7 @@
 		<b>Namespace:</b> <a href="namespace-yajra.html">yajra</a>\<a href="namespace-yajra.Datatables.html">Datatables</a><br>
 		
 
-			<b>Located at</b> <a href="source-class-yajra.Datatables.Helper.html#11-205" title="Go to source code">yajra/Datatables/Helper.php</a>
+			<b>Located at</b> <a href="source-class-yajra.Datatables.Helper.html#11-228" title="Go to source code">yajra/Datatables/Helper.php</a>
 		<br>
 	</div>
 
@@ -186,7 +186,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_compileContent">#</a>
-		<code><a href="source-class-yajra.Datatables.Helper.html#42-59" title="Go to source code">compileContent</a>( <span>string|callable <var>$content</var></span>, <span>mixed <var>$data</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$param</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Helper.html#42-59" title="Go to source code">compileContent</a>( <span>string|callable <var>$content</var></span>, <span>array <var>$data</var></span>, <span>mixed <var>$param</var></span> )</code>
 
 		<div class="description short">
 			<p>Determines if content is callable or blade string, processes and returns.</p>
@@ -229,7 +229,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_compileBlade">#</a>
-		<code><a href="source-class-yajra.Datatables.Helper.html#61-88" title="Go to source code">compileBlade</a>( <span>string <var>$str</var></span>, <span>array <var>$data</var> = []</span> )</code>
+		<code><a href="source-class-yajra.Datatables.Helper.html#61-80" title="Go to source code">compileBlade</a>( <span>string <var>$str</var></span>, <span>array <var>$data</var> = []</span> )</code>
 
 		<div class="description short">
 			<p>Parses and compiles strings by using Blade Template System.</p>
@@ -252,10 +252,86 @@
 					string
 				</div>
 
-				<h4>Throws</h4>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getMixedValue" id="_getMixedValue">
+
+		<td class="attributes"><code>
+			 public static
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getMixedValue">#</a>
+		<code><a href="source-class-yajra.Datatables.Helper.html#82-98" title="Go to source code">getMixedValue</a>( <span>array <var>$data</var></span>, <span>mixed <var>$param</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$data</var></dt>
+					<dd></dd>
+					<dt><var>$param</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
 				<div class="list">
-					Exception
+					array
 				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="castToArray" id="_castToArray">
+
+		<td class="attributes"><code>
+			 protected static
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_castToArray">#</a>
+		<code><a href="source-class-yajra.Datatables.Helper.html#100-113" title="Go to source code">castToArray</a>( <span> <var>$param</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$param</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					array
+				</div>
+
 
 
 
@@ -274,7 +350,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getOrMethod">#</a>
-		<code><a href="source-class-yajra.Datatables.Helper.html#90-103" title="Go to source code">getOrMethod</a>( <span>string <var>$method</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Helper.html#115-128" title="Go to source code">getOrMethod</a>( <span>string <var>$method</var></span> )</code>
 
 		<div class="description short">
 			<p>Get equivalent or method of query builder.</p>
@@ -313,7 +389,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_wrapDatabaseValue">#</a>
-		<code><a href="source-class-yajra.Datatables.Helper.html#105-121" title="Go to source code">wrapDatabaseValue</a>( <span>string <var>$database</var></span>, <span>string <var>$value</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Helper.html#130-146" title="Go to source code">wrapDatabaseValue</a>( <span>string <var>$database</var></span>, <span>string <var>$value</var></span> )</code>
 
 		<div class="description short">
 			<p>Wrap value depending on database type.</p>
@@ -354,7 +430,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_wrapDatabaseColumn">#</a>
-		<code><a href="source-class-yajra.Datatables.Helper.html#123-152" title="Go to source code">wrapDatabaseColumn</a>( <span>string <var>$database</var></span>, <span>string <var>$key</var></span>, <span>string <var>$column</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Helper.html#148-177" title="Go to source code">wrapDatabaseColumn</a>( <span>string <var>$database</var></span>, <span>string <var>$key</var></span>, <span>string <var>$column</var></span> )</code>
 
 		<div class="description short">
 			<p>Database column wrapper</p>
@@ -397,7 +473,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_convertToArray">#</a>
-		<code><a href="source-class-yajra.Datatables.Helper.html#154-172" title="Go to source code">convertToArray</a>( <span>mixed <var>$row</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Helper.html#179-195" title="Go to source code">convertToArray</a>( <span>mixed <var>$row</var></span> )</code>
 
 		<div class="description short">
 			<p>Converts array object values to associative array.</p>
@@ -436,7 +512,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_transform">#</a>
-		<code><a href="source-class-yajra.Datatables.Helper.html#174-183" title="Go to source code">transform</a>( <span>array <var>$data</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Helper.html#197-206" title="Go to source code">transform</a>( <span>array <var>$data</var></span> )</code>
 
 		<div class="description short">
 			
@@ -475,7 +551,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_transformRow">#</a>
-		<code><a href="source-class-yajra.Datatables.Helper.html#185-204" title="Go to source code">transformRow</a>( <span> <var>$row</var></span> )</code>
+		<code><a href="source-class-yajra.Datatables.Helper.html#208-227" title="Go to source code">transformRow</a>( <span> <var>$row</var></span> )</code>
 
 		<div class="description short">
 			
