@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v5.5.8
+    - Fix issue when converting object to array. Fix #108.
+
 ###v5.5.7
     - Fix and enhance support when passing object variables using blade templating approach.
     - Random code clean-up.
