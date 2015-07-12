@@ -95,7 +95,7 @@ class CollectionEngine extends BaseEngine implements DataTableEngine
             $column           = $this->getColumnName($orderable['column']);
             $this->collection = $this->collection->sortBy(
                 function ($row) use ($column) {
-                    return $row[$column];
+                    return with((array) $row)[$column];
                 }
             );
 
