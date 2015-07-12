@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v5.5.9
+    - Fix ordering of collection when data is stdClass.
+
 ###v5.5.8
     - Fix issue when converting object to array. Fix #108.
 
