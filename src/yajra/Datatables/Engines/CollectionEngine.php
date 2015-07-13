@@ -16,6 +16,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use yajra\Datatables\Contracts\DataTableEngine;
 use yajra\Datatables\Request;
+use yajra\Datatables\Helper;
 
 class CollectionEngine extends BaseEngine implements DataTableEngine
 {
@@ -95,7 +96,9 @@ class CollectionEngine extends BaseEngine implements DataTableEngine
             $column           = $this->getColumnName($orderable['column']);
             $this->collection = $this->collection->sortBy(
                 function ($row) use ($column) {
-                    return with((array) $row)[$column];
+                    $row = Helper::castToArray($row);
+
+                    return $row[$column];
                 }
             );
 

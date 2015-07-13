@@ -101,7 +101,7 @@ class Helper
      * @param $param
      * @return array
      */
-    protected static function castToArray($param)
+    public static function castToArray($param)
     {
         if ($param instanceof \stdClass) {
             $param = (array) $param;

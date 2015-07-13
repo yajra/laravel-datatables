@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v5.5.10
+    - Fix casting specific to stdClass only. Fix #114.
+
 ###v5.5.9
     - Fix ordering of collection when data is stdClass.
 
