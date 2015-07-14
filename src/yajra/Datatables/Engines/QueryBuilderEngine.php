@@ -229,7 +229,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
     public function ordering()
     {
         foreach ($this->request->orderableColumns() as $orderable) {
-            $column = $this->getColumnName($orderable['column']);
+            $column = $this->setupColumnName($orderable['column']);
             $this->query->orderBy($column, $orderable['direction']);
         }
     }

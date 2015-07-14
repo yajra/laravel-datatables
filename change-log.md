@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v5.5.11
+    - Fix ordering for when using column alias and make(false). Fix #103.
+
 ###v5.5.10
     - Fix casting specific to stdClass only. Fix #114.
 
