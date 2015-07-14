@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    3.6.5
+ * @version    3.6.6
  */
 
 use Closure;
@@ -668,7 +668,8 @@ class Datatables
                 } else {
                     if (isset($this->columns[$order_col])) {
                         if ($this->input['columns'][$order_col]['orderable'] == "true") {
-                            $this->query->orderBy($this->columns[$order_col], $order_dir);
+                            $column = $this->getColumnName($this->columns[$order_col]);
+                            $this->query->orderBy($column, $order_dir);
                         }
                     }
                 }
