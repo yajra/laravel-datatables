@@ -26,17 +26,21 @@ class HelperTest extends PHPUnit_Framework_TestCase
 
     public function test_include_in_array_with_order()
     {
-        $data = ['id' => 1];
+        $data = [
+            'id'  => 1,
+            'foo' => 'bar',
+        ];
         $item = [
             'name'    => 'user',
             'content' => 'John',
-            'order'   => 0,
+            'order'   => 1,
         ];
 
         $data     = Helper::includeInArray($item, $data);
         $expected = [
-            'user' => 'John',
             'id'   => 1,
+            'user' => 'John',
+            'foo'  => 'bar',
         ];
         $this->assertEquals($expected, $data);
     }
@@ -61,6 +65,17 @@ class HelperTest extends PHPUnit_Framework_TestCase
 
         $compiled = Helper::compileContent($content, $data, $obj);
         $this->assertEquals('string', $compiled);
+    }
+
+    public function test_compile_content_integer()
+    {
+        $content = 1;
+        $data    = ['id' => 2];
+        $obj     = new stdClass();
+        $obj->id = 2;
+
+        $compiled = Helper::compileContent($content, $data, $obj);
+        $this->assertEquals(1, $compiled);
     }
 
     public function test_compile_content_callable()
@@ -123,6 +138,10 @@ class HelperTest extends PHPUnit_Framework_TestCase
     public function test_get_or_method()
     {
         $method = 'whereIn';
+        $result = Helper::getOrMethod($method);
+        $this->assertEquals('orWhereIn', $result);
+
+        $method = 'orWhereIn';
         $result = Helper::getOrMethod($method);
         $this->assertEquals('orWhereIn', $result);
     }
@@ -216,9 +235,9 @@ class HelperTest extends PHPUnit_Framework_TestCase
 
     public function test_build_parameters_with_3_args()
     {
-        $args = ['whereIn', ['foo', ['y','x']], 'keyword'];
-        $result = Helper::buildParameters($args);
-        $expected =[
+        $args     = ['whereIn', ['foo', ['y', 'x']], 'keyword'];
+        $result   = Helper::buildParameters($args);
+        $expected = [
             'whereIn',
             'foo',
             ['y', 'x']
@@ -228,13 +247,9 @@ class HelperTest extends PHPUnit_Framework_TestCase
 
     public function test_build_parameters_with_2_args()
     {
-        $args = ['where', ['foo', 'bar'], 'keyword'];
-        $result = Helper::buildParameters($args);
-        $expected =[
-            'where',
-            'foo',
-            'bar'
-        ];
+        $args     = [['where', 'foo'], 'keyword'];
+        $result   = Helper::buildParameters($args);
+        $expected = ['where','foo'];
         $this->assertEquals($expected, $result);
     }
 
@@ -245,7 +260,7 @@ class HelperTest extends PHPUnit_Framework_TestCase
             ['$1']
         ];
         $keyword = 'bar';
-        $result = Helper::replacePatternWithKeyword($subject, $keyword, '$1');
+        $result  = Helper::replacePatternWithKeyword($subject, $keyword, '$1');
         $this->assertEquals(['foo in ?', ['bar']], $result);
     }
 
