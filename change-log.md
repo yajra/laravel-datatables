@@ -8,6 +8,11 @@
 
 ##Change Log
 
+###v5.6.1
+    - Make BaseEngine $request property public.
+    - Fix global searching when search value is zero (0).
+    - Refactor methods from v5.6.0.
+
 ###v5.6.0
     - Re-implement filterColumn function with special variable $1.
     - Fix filterColumn not getting included on OR statements within global search.
