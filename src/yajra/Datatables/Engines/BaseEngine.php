@@ -17,8 +17,8 @@ use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
 use yajra\Datatables\Contracts\DataTableEngine;
-use yajra\Datatables\Processors\DataProcessor;
 use yajra\Datatables\Helper;
+use yajra\Datatables\Processors\DataProcessor;
 
 abstract class BaseEngine implements DataTableEngine
 {
@@ -310,15 +310,20 @@ abstract class BaseEngine implements DataTableEngine
     /**
      * Get Query Builder object.
      *
+     * @param mixed $instance
      * @return mixed
      */
-    public function getQueryBuilder()
+    public function getQueryBuilder($instance = null)
     {
-        if ($this->isQueryBuilder()) {
-            return $this->query;
+        if ( ! $instance) {
+            $instance = $this->query;
         }
 
-        return $this->query->getQuery();
+        if ($this->isQueryBuilder()) {
+            return $instance;
+        }
+
+        return $instance->getQuery();
     }
 
     /**
@@ -550,8 +555,10 @@ abstract class BaseEngine implements DataTableEngine
     {
         if ($this->autoFilter && $this->request->isSearchable()) {
             $this->filtering();
-        } else if (is_callable($this->filterCallback)) {
-            call_user_func($this->filterCallback, $this->filterCallbackParameters);
+        } else {
+            if (is_callable($this->filterCallback)) {
+                call_user_func($this->filterCallback, $this->filterCallbackParameters);
+            }
         }
 
         $this->columnSearch();

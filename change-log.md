@@ -8,6 +8,11 @@
 
 ##Change Log
 
+###v5.6.0
+    - Re-implement filterColumn function with special variable $1.
+    - Fix filterColumn not getting included on OR statements within global search.
+    - Fix #115.
+
 ###v5.5.11
     - Fix ordering for when using column alias and make(false). Fix #103.
 

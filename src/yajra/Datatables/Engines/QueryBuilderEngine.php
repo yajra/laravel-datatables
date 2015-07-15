@@ -90,9 +90,9 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
                     if (isset($this->columnDef['filter'][$column])) {
                         $method     = Helper::getOrMethod($this->columnDef['filter'][$column]['method']);
                         $parameters = $this->columnDef['filter'][$column]['parameters'];
-                        $this->compileFilterColumn($method, $parameters, $column);
+                        $this->compileFilterColumn($this->getQueryBuilder($query), $method, $parameters, $column, $keyword);
                     } else {
-                        $this->compileGlobalSearch($query, $column, $keyword);
+                        $this->compileGlobalSearch($this->getQueryBuilder($query), $column, $keyword);
                     }
 
                     $this->isFilterApplied = true;
@@ -104,31 +104,28 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
     /**
      * Perform filter column on selected field.
      *
+     * @param mixed $query
      * @param string $method
      * @param mixed $parameters
      * @param string $column
+     * @param string $keyword
      */
-    protected function compileFilterColumn($method, $parameters, $column)
+    protected function compileFilterColumn($query, $method, $parameters, $column, $keyword)
     {
-        if (method_exists($this->getQueryBuilder(), $method)
-            && count($parameters) <= with(
-                new \ReflectionMethod(
-                    $this->getQueryBuilder(),
-                    $method
-                )
-            )->getNumberOfParameters()
+        if (method_exists($query, $method)
+            && count($parameters) <= with(new \ReflectionMethod($query, $method))->getNumberOfParameters()
         ) {
             if (Str::contains(Str::lower($method), 'raw')
                 || Str::contains(Str::lower($method), 'exists')
             ) {
                 call_user_func_array(
-                    [$this->getQueryBuilder(), $method],
-                    $this->parameterize($parameters)
+                    [$query, $method],
+                    $this->parameterize($parameters, $keyword)
                 );
             } else {
                 call_user_func_array(
-                    [$this->getQueryBuilder(), $method],
-                    $this->parameterize($column, $parameters)
+                    [$query, $method],
+                    $this->parameterize($column, $parameters, $keyword)
                 );
             }
         }
@@ -144,14 +141,39 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
         $args       = func_get_args();
         $parameters = [];
 
-        if (count($args) > 1) {
+        if (count($args) > 2) {
             $parameters[] = $args[0];
+            $keyword      = $args[2];
+
             foreach ($args[1] as $param) {
                 $parameters[] = $param;
             }
         } else {
+            $keyword = $args[1];
             foreach ($args[0] as $param) {
                 $parameters[] = $param;
+            }
+        }
+        $parameters = $this->replaceWithKeyword($parameters, $keyword);
+
+        return $parameters;
+    }
+
+    /**
+     * Replace all $1 occurrences with keyword
+     *
+     * @param array $subject
+     * @param string $keyword
+     * @return array
+     */
+    public function replaceWithKeyword(array $subject, $keyword)
+    {
+        $parameters = [];
+        foreach ($subject as $param) {
+            if (is_array($param)) {
+                $parameters[] = $this->replaceWithKeyword($param, $keyword);
+            } else {
+                $parameters[] = str_replace('$1', $keyword, $param);
             }
         }
 
@@ -201,13 +223,13 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
         $columns = $this->request->get('columns');
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($this->request->isColumnSearchable($i)) {
-                $column  = $this->getColumnName($i);
+                $column  = $this->setupColumnName($i);
                 $keyword = $this->setupKeyword($this->request->columnKeyword($i));
 
                 if (isset($this->columnDef['filter'][$column])) {
                     $method     = $this->columnDef['filter'][$column]['method'];
                     $parameters = $this->columnDef['filter'][$column]['parameters'];
-                    $this->compileFilterColumn($method, $parameters, $column);
+                    $this->compileFilterColumn($this->getQueryBuilder(), $method, $parameters, $column, $keyword);
                 } else {
                     $column = $this->castColumn($column);
                     if ($this->isCaseInsensitive()) {
