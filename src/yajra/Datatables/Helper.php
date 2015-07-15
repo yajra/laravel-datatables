@@ -258,12 +258,12 @@ class Helper
      * @param string $pattern
      * @return array
      */
-    public static function replaceWithKeyword(array $subject, $keyword, $pattern = '$1')
+    public static function replacePatternWithKeyword(array $subject, $keyword, $pattern = '$1')
     {
         $parameters = [];
         foreach ($subject as $param) {
             if (is_array($param)) {
-                $parameters[] = self::replaceWithKeyword($param, $keyword);
+                $parameters[] = self::replacePatternWithKeyword($param, $keyword, $pattern);
             } else {
                 $parameters[] = str_replace($pattern, $keyword, $param);
             }

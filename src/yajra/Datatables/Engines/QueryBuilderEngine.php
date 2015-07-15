@@ -141,7 +141,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
         $args       = func_get_args();
         $keyword    = count($args) > 2 ? $args[2] : $args[1];
         $parameters = Helper::buildParameters($args);
-        $parameters = Helper::replaceWithKeyword($parameters, $keyword, '$1');
+        $parameters = Helper::replacePatternWithKeyword($parameters, $keyword, '$1');
 
         return $parameters;
     }
