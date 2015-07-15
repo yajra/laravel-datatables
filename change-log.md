@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v5.7.0
+    - Added orderColumn feature.
+
 ###v5.6.1
     - Make BaseEngine $request property public.
     - Fix global searching when search value is zero (0).
