@@ -89,8 +89,9 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
                     if (isset($this->columnDef['filter'][$column])) {
                         $method     = Helper::getOrMethod($this->columnDef['filter'][$column]['method']);
                         $parameters = $this->columnDef['filter'][$column]['parameters'];
-                        $this->compileColumnQuery($this->getQueryBuilder($query), $method, $parameters, $column,
-                            $keyword);
+                        $this->compileColumnQuery(
+                            $this->getQueryBuilder($query), $method, $parameters, $column, $keyword
+                        );
                     } else {
                         $this->compileGlobalSearch($this->getQueryBuilder($query), $column, $keyword);
                     }
