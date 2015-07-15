@@ -153,7 +153,7 @@
 </span></span><span id="31" class="l"><a href="#31"> 31: </a><span class="php-comment">     */</span>
 </span><span id="32" class="l"><a href="#32"> 32: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> isSearchable()
 </span><span id="33" class="l"><a href="#33"> 33: </a>    {
-</span><span id="34" class="l"><a href="#34"> 34: </a>        <span class="php-keyword1">return</span> ! <span class="php-keyword1">empty</span>(<span class="php-var">$this</span>-&gt;get(<span class="php-quote">'search'</span>)[<span class="php-quote">'value'</span>]);
+</span><span id="34" class="l"><a href="#34"> 34: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;get(<span class="php-quote">'search'</span>)[<span class="php-quote">'value'</span>] &lt;&gt; <span class="php-quote">''</span>;
 </span><span id="35" class="l"><a href="#35"> 35: </a>    }
 </span><span id="36" class="l"><a href="#36"> 36: </a>
 </span><span id="37" class="l"><a href="#37"> 37: </a>    <span class="php-comment">/**

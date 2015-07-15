@@ -223,7 +223,7 @@
 </span></span><span id="101" class="l"><a href="#101">101: </a><span class="php-comment">     * @param $param
 </span></span><span id="102" class="l"><a href="#102">102: </a><span class="php-comment">     * @return array
 </span></span><span id="103" class="l"><a href="#103">103: </a><span class="php-comment">     */</span>
-</span><span id="104" class="l"><a href="#104">104: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> castToArray(<span class="php-var">$param</span>)
+</span><span id="104" class="l"><a href="#104">104: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> castToArray(<span class="php-var">$param</span>)
 </span><span id="105" class="l"><a href="#105">105: </a>    {
 </span><span id="106" class="l"><a href="#106">106: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$param</span> <span class="php-keyword1">instanceof</span> \stdClass) {
 </span><span id="107" class="l"><a href="#107">107: </a>            <span class="php-var">$param</span> = (<span class="php-keyword1">array</span>) <span class="php-var">$param</span>;
@@ -347,8 +347,54 @@
 </span><span id="225" class="l"><a href="#225">225: </a>
 </span><span id="226" class="l"><a href="#226">226: </a>        <span class="php-keyword1">return</span> <span class="php-var">$row</span>;
 </span><span id="227" class="l"><a href="#227">227: </a>    }
-</span><span id="228" class="l"><a href="#228">228: </a>}
-</span><span id="229" class="l"><a href="#229">229: </a></span></code></pre>
+</span><span id="228" class="l"><a href="#228">228: </a>
+</span><span id="229" class="l"><a href="#229">229: </a>    <span class="php-comment">/**
+</span></span><span id="230" class="l"><a href="#230">230: </a><span class="php-comment">     * Build parameters depending on # of arguments passed.
+</span></span><span id="231" class="l"><a href="#231">231: </a><span class="php-comment">     *
+</span></span><span id="232" class="l"><a href="#232">232: </a><span class="php-comment">     * @param array $args
+</span></span><span id="233" class="l"><a href="#233">233: </a><span class="php-comment">     * @return array
+</span></span><span id="234" class="l"><a href="#234">234: </a><span class="php-comment">     */</span>
+</span><span id="235" class="l"><a href="#235">235: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> buildParameters(<span class="php-keyword1">array</span> <span class="php-var">$args</span>)
+</span><span id="236" class="l"><a href="#236">236: </a>    {
+</span><span id="237" class="l"><a href="#237">237: </a>        <span class="php-var">$parameters</span> = [];
+</span><span id="238" class="l"><a href="#238">238: </a>
+</span><span id="239" class="l"><a href="#239">239: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">count</span>(<span class="php-var">$args</span>) &gt; <span class="php-num">2</span>) {
+</span><span id="240" class="l"><a href="#240">240: </a>            <span class="php-var">$parameters</span>[] = <span class="php-var">$args</span>[<span class="php-num">0</span>];
+</span><span id="241" class="l"><a href="#241">241: </a>            <span class="php-keyword1">foreach</span> (<span class="php-var">$args</span>[<span class="php-num">1</span>] <span class="php-keyword1">as</span> <span class="php-var">$param</span>) {
+</span><span id="242" class="l"><a href="#242">242: </a>                <span class="php-var">$parameters</span>[] = <span class="php-var">$param</span>;
+</span><span id="243" class="l"><a href="#243">243: </a>            }
+</span><span id="244" class="l"><a href="#244">244: </a>        } <span class="php-keyword1">else</span> {
+</span><span id="245" class="l"><a href="#245">245: </a>            <span class="php-keyword1">foreach</span> (<span class="php-var">$args</span>[<span class="php-num">0</span>] <span class="php-keyword1">as</span> <span class="php-var">$param</span>) {
+</span><span id="246" class="l"><a href="#246">246: </a>                <span class="php-var">$parameters</span>[] = <span class="php-var">$param</span>;
+</span><span id="247" class="l"><a href="#247">247: </a>            }
+</span><span id="248" class="l"><a href="#248">248: </a>        }
+</span><span id="249" class="l"><a href="#249">249: </a>
+</span><span id="250" class="l"><a href="#250">250: </a>        <span class="php-keyword1">return</span> <span class="php-var">$parameters</span>;
+</span><span id="251" class="l"><a href="#251">251: </a>    }
+</span><span id="252" class="l"><a href="#252">252: </a>
+</span><span id="253" class="l"><a href="#253">253: </a>    <span class="php-comment">/**
+</span></span><span id="254" class="l"><a href="#254">254: </a><span class="php-comment">     * Replace all pattern occurrences with keyword
+</span></span><span id="255" class="l"><a href="#255">255: </a><span class="php-comment">     *
+</span></span><span id="256" class="l"><a href="#256">256: </a><span class="php-comment">     * @param array $subject
+</span></span><span id="257" class="l"><a href="#257">257: </a><span class="php-comment">     * @param string $keyword
+</span></span><span id="258" class="l"><a href="#258">258: </a><span class="php-comment">     * @param string $pattern
+</span></span><span id="259" class="l"><a href="#259">259: </a><span class="php-comment">     * @return array
+</span></span><span id="260" class="l"><a href="#260">260: </a><span class="php-comment">     */</span>
+</span><span id="261" class="l"><a href="#261">261: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> replacePatternWithKeyword(<span class="php-keyword1">array</span> <span class="php-var">$subject</span>, <span class="php-var">$keyword</span>, <span class="php-var">$pattern</span> = <span class="php-quote">'$1'</span>)
+</span><span id="262" class="l"><a href="#262">262: </a>    {
+</span><span id="263" class="l"><a href="#263">263: </a>        <span class="php-var">$parameters</span> = [];
+</span><span id="264" class="l"><a href="#264">264: </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$subject</span> <span class="php-keyword1">as</span> <span class="php-var">$param</span>) {
+</span><span id="265" class="l"><a href="#265">265: </a>            <span class="php-keyword1">if</span> (<span class="php-keyword2">is_array</span>(<span class="php-var">$param</span>)) {
+</span><span id="266" class="l"><a href="#266">266: </a>                <span class="php-var">$parameters</span>[] = self::replacePatternWithKeyword(<span class="php-var">$param</span>, <span class="php-var">$keyword</span>, <span class="php-var">$pattern</span>);
+</span><span id="267" class="l"><a href="#267">267: </a>            } <span class="php-keyword1">else</span> {
+</span><span id="268" class="l"><a href="#268">268: </a>                <span class="php-var">$parameters</span>[] = <span class="php-keyword2">str_replace</span>(<span class="php-var">$pattern</span>, <span class="php-var">$keyword</span>, <span class="php-var">$param</span>);
+</span><span id="269" class="l"><a href="#269">269: </a>            }
+</span><span id="270" class="l"><a href="#270">270: </a>        }
+</span><span id="271" class="l"><a href="#271">271: </a>
+</span><span id="272" class="l"><a href="#272">272: </a>        <span class="php-keyword1">return</span> <span class="php-var">$parameters</span>;
+</span><span id="273" class="l"><a href="#273">273: </a>    }
+</span><span id="274" class="l"><a href="#274">274: </a>}
+</span><span id="275" class="l"><a href="#275">275: </a></span></code></pre>
 
 	<div id="footer">
 		 API documentation generated by <a href="http://apigen.org">ApiGen</a>
