@@ -225,4 +225,50 @@ class Helper
 
         return $row;
     }
+
+    /**
+     * Build parameters depending on # of arguments passed.
+     *
+     * @param array $args
+     * @return array
+     */
+    public static function buildParameters(array $args)
+    {
+        $parameters = [];
+
+        if (count($args) > 2) {
+            $parameters[] = $args[0];
+            foreach ($args[1] as $param) {
+                $parameters[] = $param;
+            }
+        } else {
+            foreach ($args[0] as $param) {
+                $parameters[] = $param;
+            }
+        }
+
+        return $parameters;
+    }
+
+    /**
+     * Replace all pattern occurrences with keyword
+     *
+     * @param array $subject
+     * @param string $keyword
+     * @param string $pattern
+     * @return array
+     */
+    public static function replaceWithKeyword(array $subject, $keyword, $pattern = '$1')
+    {
+        $parameters = [];
+        foreach ($subject as $param) {
+            if (is_array($param)) {
+                $parameters[] = self::replaceWithKeyword($param, $keyword);
+            } else {
+                $parameters[] = str_replace($pattern, $keyword, $param);
+            }
+        }
+
+        return $parameters;
+    }
 }

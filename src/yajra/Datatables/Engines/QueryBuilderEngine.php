@@ -140,51 +140,8 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
     {
         $args       = func_get_args();
         $keyword    = count($args) > 2 ? $args[2] : $args[1];
-        $parameters = $this->buildParameters($args);
-        $parameters = $this->replaceWithKeyword($parameters, $keyword);
-
-        return $parameters;
-    }
-
-    /**
-     * @param $args
-     * @return array
-     */
-    protected function buildParameters($args)
-    {
-        $parameters = [];
-
-        if (count($args) > 2) {
-            $parameters[] = $args[0];
-            foreach ($args[1] as $param) {
-                $parameters[] = $param;
-            }
-        } else {
-            foreach ($args[0] as $param) {
-                $parameters[] = $param;
-            }
-        }
-
-        return $parameters;
-    }
-
-    /**
-     * Replace all $1 occurrences with keyword
-     *
-     * @param array $subject
-     * @param string $keyword
-     * @return array
-     */
-    protected function replaceWithKeyword(array $subject, $keyword)
-    {
-        $parameters = [];
-        foreach ($subject as $param) {
-            if (is_array($param)) {
-                $parameters[] = $this->replaceWithKeyword($param, $keyword);
-            } else {
-                $parameters[] = str_replace('$1', $keyword, $param);
-            }
-        }
+        $parameters = Helper::buildParameters($args);
+        $parameters = Helper::replaceWithKeyword($parameters, $keyword, '$1');
 
         return $parameters;
     }
