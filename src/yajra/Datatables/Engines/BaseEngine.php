@@ -24,6 +24,13 @@ abstract class BaseEngine implements DataTableEngine
 {
 
     /**
+     * Datatables Request object.
+     *
+     * @var \yajra\Datatables\Request
+     */
+    public $request;
+
+    /**
      * Database connection used.
      *
      * @var \Illuminate\Database\Connection
@@ -45,13 +52,6 @@ abstract class BaseEngine implements DataTableEngine
     protected $builder;
 
     /**
-     * Datatables Request object.
-     *
-     * @var \yajra\Datatables\Request
-     */
-    public $request;
-
-    /**
      * Array of result columns/fields.
      *
      * @var array
@@ -59,7 +59,7 @@ abstract class BaseEngine implements DataTableEngine
     protected $columns = [];
 
     /**
-     * DT columns definitions container (add/edit/remove).
+     * DT columns definitions container (add/edit/remove/filter/order).
      *
      * @var array
      */
@@ -68,6 +68,7 @@ abstract class BaseEngine implements DataTableEngine
         'edit'   => [],
         'excess' => ['rn', 'row_num'],
         'filter' => [],
+        'order'  => [],
     ];
 
     /**
@@ -502,6 +503,22 @@ abstract class BaseEngine implements DataTableEngine
     }
 
     /**
+     * Override default column ordering.
+     *
+     * @param string $column
+     * @param string $sql
+     * @param array $bindings
+     * @return $this
+     * @internal string $1 Special variable that returns the requested order direction of the column.
+     */
+    public function orderColumn($column, $sql, $bindings = [])
+    {
+        $this->columnDef['order'][$column] = ['method' => 'orderByRaw', 'parameters' => [$sql, $bindings]];
+
+        return $this;
+    }
+
+    /**
      * Set data output transformer.
      *
      * @param \League\Fractal\TransformerAbstract $transformer
@@ -525,13 +542,20 @@ abstract class BaseEngine implements DataTableEngine
     {
         $this->totalRecords = $this->count();
 
-        $this->orderRecords( ! $orderFirst);
+        $this->orderRecords(! $orderFirst);
         $this->filterRecords();
         $this->orderRecords($orderFirst);
         $this->paginate();
 
         return $this->render($mDataSupport);
     }
+
+    /**
+     * Count results.
+     *
+     * @return integer
+     */
+    abstract public function count();
 
     /**
      * Sort records.
@@ -545,6 +569,13 @@ abstract class BaseEngine implements DataTableEngine
             $this->ordering();
         }
     }
+
+    /**
+     * Perform sorting of columns.
+     *
+     * @return void
+     */
+    abstract public function ordering();
 
     /**
      * Perform necessary filters.
@@ -566,20 +597,6 @@ abstract class BaseEngine implements DataTableEngine
     }
 
     /**
-     * Count results.
-     *
-     * @return integer
-     */
-    abstract public function count();
-
-    /**
-     * Perform sorting of columns.
-     *
-     * @return void
-     */
-    abstract public function ordering();
-
-    /**
      * Perform global search.
      *
      * @return void
@@ -594,13 +611,6 @@ abstract class BaseEngine implements DataTableEngine
     abstract public function columnSearch();
 
     /**
-     * Perform pagination
-     *
-     * @return void
-     */
-    abstract public function paging();
-
-    /**
      * Apply pagination.
      *
      * @return void
@@ -611,6 +621,13 @@ abstract class BaseEngine implements DataTableEngine
             $this->paging();
         }
     }
+
+    /**
+     * Perform pagination
+     *
+     * @return void
+     */
+    abstract public function paging();
 
     /**
      * Render json response.
