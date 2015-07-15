@@ -19,9 +19,8 @@ use yajra\Datatables\Request;
 
 class QueryBuilderEngine extends BaseEngine implements DataTableEngine
 {
-
     /**
-     * @param Builder $builder
+     * @param \Illuminate\Database\Query\Builder $builder
      * @param \yajra\Datatables\Request $request
      */
     public function __construct(Builder $builder, Request $request)
@@ -90,7 +89,8 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
                     if (isset($this->columnDef['filter'][$column])) {
                         $method     = Helper::getOrMethod($this->columnDef['filter'][$column]['method']);
                         $parameters = $this->columnDef['filter'][$column]['parameters'];
-                        $this->compileFilterColumn($this->getQueryBuilder($query), $method, $parameters, $column, $keyword);
+                        $this->compileColumnQuery($this->getQueryBuilder($query), $method, $parameters, $column,
+                            $keyword);
                     } else {
                         $this->compileGlobalSearch($this->getQueryBuilder($query), $column, $keyword);
                     }
@@ -110,7 +110,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
      * @param string $column
      * @param string $keyword
      */
-    protected function compileFilterColumn($query, $method, $parameters, $column, $keyword)
+    protected function compileColumnQuery($query, $method, $parameters, $column, $keyword)
     {
         if (method_exists($query, $method)
             && count($parameters) <= with(new \ReflectionMethod($query, $method))->getNumberOfParameters()
@@ -195,7 +195,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
                 if (isset($this->columnDef['filter'][$column])) {
                     $method     = $this->columnDef['filter'][$column]['method'];
                     $parameters = $this->columnDef['filter'][$column]['parameters'];
-                    $this->compileFilterColumn($this->getQueryBuilder(), $method, $parameters, $column, $keyword);
+                    $this->compileColumnQuery($this->getQueryBuilder(), $method, $parameters, $column, $keyword);
                 } else {
                     $column = $this->castColumn($column);
                     if ($this->isCaseInsensitive()) {
@@ -218,7 +218,15 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
     {
         foreach ($this->request->orderableColumns() as $orderable) {
             $column = $this->setupColumnName($orderable['column']);
-            $this->query->orderBy($column, $orderable['direction']);
+            if (isset($this->columnDef['order'][$column])) {
+                $method     = $this->columnDef['order'][$column]['method'];
+                $parameters = $this->columnDef['order'][$column]['parameters'];
+                $this->compileColumnQuery(
+                    $this->getQueryBuilder(), $method, $parameters, $column, $orderable['direction']
+                );
+            } else {
+                $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
+            }
         }
     }
 

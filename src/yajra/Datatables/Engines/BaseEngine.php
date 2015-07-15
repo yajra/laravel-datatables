@@ -59,7 +59,7 @@ abstract class BaseEngine implements DataTableEngine
     protected $columns = [];
 
     /**
-     * DT columns definitions container (add/edit/remove).
+     * DT columns definitions container (add/edit/remove/filter/order).
      *
      * @var array
      */
@@ -68,6 +68,7 @@ abstract class BaseEngine implements DataTableEngine
         'edit'   => [],
         'excess' => ['rn', 'row_num'],
         'filter' => [],
+        'order'  => [],
     ];
 
     /**
@@ -497,6 +498,20 @@ abstract class BaseEngine implements DataTableEngine
     {
         $params                             = func_get_args();
         $this->columnDef['filter'][$column] = ['method' => $method, 'parameters' => array_splice($params, 2)];
+
+        return $this;
+    }
+
+    /**
+     * Override default column ordering.
+     *
+     * @param string $column
+     * @param string $sql
+     * @return $this
+     */
+    public function orderColumn($column, $sql)
+    {
+        $this->columnDef['order'][$column] = ['method' => 'orderByRaw', 'parameters' => [$sql, []]];
 
         return $this;
     }
