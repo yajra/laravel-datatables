@@ -19,9 +19,11 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 - Works with **ALL the DATABASE** supported by Laravel
 - Works with **Oracle Database** using [Laravel-OCI8](https://github.com/yajra/laravel-oci8) package
 - Works with [DataTables](http://datatables.net) v1.10++.
-	- **Note:** DT Legacy code is not supported on v5.x
+    - **Note:** DT Legacy code is not supported on v5.x
 - Works with [DataTables](http://datatables.net) v1.9 and v1.10 legacy code.
-	- **Note:** Use [v4.x](https://github.com/yajra/laravel-datatables-oracle/tree/v4.3.2) for Laravel 5 and [v3.x](https://github.com/yajra/laravel-datatables-oracle/tree/L4) for Laravel 4
+    - **Note:** Use [v4.x](https://github.com/yajra/laravel-datatables-oracle/tree/v4.3.2) for Laravel 5 and [v3.x](https://github.com/yajra/laravel-datatables-oracle/tree/L4) for Laravel 4
+- Extended column filtering via `filterColumn` API.
+- Extended column ordering via `orderColumn` API.
 - Extended Query Builder functionality allowing you to filter using Datatables class directly.
 - Decorate your data output using [`league\fractal`](https://github.com/thephpleague/fractal) Transformer.
 - Works with Laravel Dependency Injection and IoC Container.
