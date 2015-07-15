@@ -24,6 +24,13 @@ abstract class BaseEngine implements DataTableEngine
 {
 
     /**
+     * Datatables Request object.
+     *
+     * @var \yajra\Datatables\Request
+     */
+    public $request;
+
+    /**
      * Database connection used.
      *
      * @var \Illuminate\Database\Connection
@@ -43,13 +50,6 @@ abstract class BaseEngine implements DataTableEngine
      * @var \Illuminate\Database\Query\Builder
      */
     protected $builder;
-
-    /**
-     * Datatables Request object.
-     *
-     * @var \yajra\Datatables\Request
-     */
-    public $request;
 
     /**
      * Array of result columns/fields.
@@ -542,13 +542,20 @@ abstract class BaseEngine implements DataTableEngine
     {
         $this->totalRecords = $this->count();
 
-        $this->orderRecords( ! $orderFirst);
+        $this->orderRecords(! $orderFirst);
         $this->filterRecords();
         $this->orderRecords($orderFirst);
         $this->paginate();
 
         return $this->render($mDataSupport);
     }
+
+    /**
+     * Count results.
+     *
+     * @return integer
+     */
+    abstract public function count();
 
     /**
      * Sort records.
@@ -562,6 +569,13 @@ abstract class BaseEngine implements DataTableEngine
             $this->ordering();
         }
     }
+
+    /**
+     * Perform sorting of columns.
+     *
+     * @return void
+     */
+    abstract public function ordering();
 
     /**
      * Perform necessary filters.
@@ -583,20 +597,6 @@ abstract class BaseEngine implements DataTableEngine
     }
 
     /**
-     * Count results.
-     *
-     * @return integer
-     */
-    abstract public function count();
-
-    /**
-     * Perform sorting of columns.
-     *
-     * @return void
-     */
-    abstract public function ordering();
-
-    /**
      * Perform global search.
      *
      * @return void
@@ -611,13 +611,6 @@ abstract class BaseEngine implements DataTableEngine
     abstract public function columnSearch();
 
     /**
-     * Perform pagination
-     *
-     * @return void
-     */
-    abstract public function paging();
-
-    /**
      * Apply pagination.
      *
      * @return void
@@ -628,6 +621,13 @@ abstract class BaseEngine implements DataTableEngine
             $this->paging();
         }
     }
+
+    /**
+     * Perform pagination
+     *
+     * @return void
+     */
+    abstract public function paging();
 
     /**
      * Render json response.
