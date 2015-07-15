@@ -49,7 +49,7 @@ abstract class BaseEngine implements DataTableEngine
      *
      * @var \yajra\Datatables\Request
      */
-    protected $request;
+    public $request;
 
     /**
      * Array of result columns/fields.
