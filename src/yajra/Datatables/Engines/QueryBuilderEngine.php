@@ -139,22 +139,31 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
     protected function parameterize()
     {
         $args       = func_get_args();
+        $keyword    = count($args) > 2 ? $args[2] : $args[1];
+        $parameters = $this->buildParameters($args);
+        $parameters = $this->replaceWithKeyword($parameters, $keyword);
+
+        return $parameters;
+    }
+
+    /**
+     * @param $args
+     * @return array
+     */
+    protected function buildParameters($args)
+    {
         $parameters = [];
 
         if (count($args) > 2) {
             $parameters[] = $args[0];
-            $keyword      = $args[2];
-
             foreach ($args[1] as $param) {
                 $parameters[] = $param;
             }
         } else {
-            $keyword = $args[1];
             foreach ($args[0] as $param) {
                 $parameters[] = $param;
             }
         }
-        $parameters = $this->replaceWithKeyword($parameters, $keyword);
 
         return $parameters;
     }
@@ -166,7 +175,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
      * @param string $keyword
      * @return array
      */
-    public function replaceWithKeyword(array $subject, $keyword)
+    protected function replaceWithKeyword(array $subject, $keyword)
     {
         $parameters = [];
         foreach ($subject as $param) {
