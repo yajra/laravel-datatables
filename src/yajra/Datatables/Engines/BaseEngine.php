@@ -45,7 +45,7 @@ abstract class BaseEngine implements DataTableEngine
     protected $builder;
 
     /**
-     * Input variables.
+     * Datatables Request object.
      *
      * @var \yajra\Datatables\Request
      */
