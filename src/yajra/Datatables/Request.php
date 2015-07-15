@@ -31,7 +31,7 @@ class Request extends IlluminateRequest
      */
     public function isSearchable()
     {
-        return ! empty($this->get('search')['value']);
+        return $this->get('search')['value'] <> '';
     }
 
     /**
