@@ -45,7 +45,7 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 
 #### Facade
 **Laravel 4**
-`'Datatables'      => 'yajra\Datatables\Datatables',`
+`'Datatables'      => 'yajra\Datatables\Facades\Datatables',`
 
 **Laravel 5**
 `'Datatables'      => 'yajra\Datatables\Datatables',`
