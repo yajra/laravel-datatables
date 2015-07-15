@@ -493,6 +493,7 @@ abstract class BaseEngine implements DataTableEngine
      * @param string $method
      * @return $this
      * @internal param $mixed ...,... All the individual parameters required for specified $method
+     * @internal string $1 Special variable that returns the requested search keyword.
      */
     public function filterColumn($column, $method)
     {
