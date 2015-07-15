@@ -507,11 +507,13 @@ abstract class BaseEngine implements DataTableEngine
      *
      * @param string $column
      * @param string $sql
+     * @param array $bindings
      * @return $this
+     * @internal string $1 Special variable that returns the requested order direction of the column.
      */
-    public function orderColumn($column, $sql)
+    public function orderColumn($column, $sql, $bindings = [])
     {
-        $this->columnDef['order'][$column] = ['method' => 'orderByRaw', 'parameters' => [$sql, []]];
+        $this->columnDef['order'][$column] = ['method' => 'orderByRaw', 'parameters' => [$sql, $bindings]];
 
         return $this;
     }
