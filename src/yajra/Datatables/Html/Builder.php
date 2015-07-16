@@ -190,7 +190,7 @@ class Builder
     public function setTitle($title, array $attributes)
     {
         if ( ! isset($attributes['title'])) {
-            $attributes['title'] = $this->getQualifiedTitle($title);;
+            $attributes['title'] = $this->getQualifiedTitle($title);
         }
 
         return $attributes;
