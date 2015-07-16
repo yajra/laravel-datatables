@@ -16,7 +16,6 @@ use Illuminate\Support\Collection;
 use yajra\Datatables\Engines\CollectionEngine;
 use yajra\Datatables\Engines\EloquentEngine;
 use yajra\Datatables\Engines\QueryBuilderEngine;
-use yajra\Datatables\Html\Builder as HtmlBuilder;
 
 /**
  * Class Datatables
@@ -131,7 +130,7 @@ class Datatables
      */
     public function getHtmlBuilder()
     {
-        return app(HtmlBuilder::class);
+        return app('\yajra\Datatables\Html\Builder');
     }
 
     /**
