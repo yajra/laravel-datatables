@@ -16,6 +16,7 @@ use Illuminate\Support\Collection;
 use yajra\Datatables\Engines\CollectionEngine;
 use yajra\Datatables\Engines\EloquentEngine;
 use yajra\Datatables\Engines\QueryBuilderEngine;
+use yajra\Datatables\Html\Builder as HtmlBuilder;
 
 /**
  * Class Datatables
@@ -29,14 +30,14 @@ class Datatables
 {
 
     /**
-     * Input Request
+     * Datatables request object.
      *
-     * @var Request
+     * @var \yajra\Datatables\Request
      */
     public $request;
 
     /**
-     * Datatables builder
+     * Datatables builder.
      *
      * @var mixed
      */
@@ -55,7 +56,7 @@ class Datatables
     /**
      * Gets query and returns instance of class
      *
-     * @param  $builder
+     * @param  mixed $builder
      * @return mixed
      */
     public static function of($builder)
@@ -73,10 +74,10 @@ class Datatables
     }
 
     /**
-     * Datatables using Query Builder
+     * Datatables using Query Builder.
      *
-     * @param  QueryBuilder $builder
-     * @return QueryBuilderEngine
+     * @param \Illuminate\Database\Query\Builder $builder
+     * @return \yajra\Datatables\Engines\QueryBuilderEngine
      */
     public function usingQueryBuilder(QueryBuilder $builder)
     {
@@ -84,10 +85,10 @@ class Datatables
     }
 
     /**
-     * Datatables using Collection
+     * Datatables using Collection.
      *
-     * @param  Collection $builder
-     * @return CollectionEngine
+     * @param \Illuminate\Support\Collection $builder
+     * @return \yajra\Datatables\Engines\CollectionEngine
      */
     public function usingCollection(Collection $builder)
     {
@@ -95,10 +96,10 @@ class Datatables
     }
 
     /**
-     * Allows api call without the using word
+     * Allows api call without the "using" word.
      *
-     * @param  $name
-     * @param  $arguments
+     * @param  string $name
+     * @param  mixed $arguments
      * @return $this|mixed
      */
     public function __call($name, $arguments)
@@ -116,10 +117,30 @@ class Datatables
      * Datatables using Eloquent
      *
      * @param  mixed $builder
-     * @return EloquentEngine
+     * @return \yajra\Datatables\Engines\EloquentEngine
      */
     public function usingEloquent($builder)
     {
         return new EloquentEngine($builder, $this->request);
+    }
+
+    /**
+     * Get html builder class.
+     *
+     * @return \yajra\Datatables\Html\Builder
+     */
+    public function getHtmlBuilder()
+    {
+        return app(HtmlBuilder::class);
+    }
+
+    /**
+     * Get request object.
+     *
+     * @return \yajra\Datatables\Request|static
+     */
+    public function getRequest()
+    {
+        return $this->request;
     }
 }

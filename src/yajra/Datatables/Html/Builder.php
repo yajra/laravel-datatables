@@ -8,6 +8,7 @@ use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 /**
  * Class Builder
@@ -16,21 +17,6 @@ use Illuminate\Support\Collection;
  */
 class Builder
 {
-
-    /**
-     * @var string|array
-     */
-    protected $ajax;
-
-    /**
-     * @var array
-     */
-    protected $tableAttributes = ['class' => 'table', 'id' => 'dataTableBuilder'];
-
-    /**
-     * @var array
-     */
-    protected $attributes = [];
 
     /**
      * @var Collection
@@ -62,6 +48,20 @@ class Builder
      */
     public $form;
 
+    /**
+     * @var string|array
+     */
+    protected $ajax;
+
+    /**
+     * @var array
+     */
+    protected $tableAttributes = ['class' => 'table', 'id' => 'dataTableBuilder'];
+
+    /**
+     * @var array
+     */
+    protected $attributes = [];
 
     /**
      * @param Repository $config
@@ -86,7 +86,7 @@ class Builder
     }
 
     /**
-     * Generate DataTable javascript
+     * Generate DataTable javascript.
      *
      * @param  null $script
      * @param  array $attributes
@@ -100,23 +100,26 @@ class Builder
     }
 
     /**
-     * Get generated raw scripts
+     * Get generated raw scripts.
+     *
+     * @return string
      */
     public function generateScripts()
     {
         $args = array_merge(
             $this->attributes, [
                 'ajax'    => $this->ajax,
-                'columns' => $this->collection->toArray()
+                'columns' => $this->collection->toArray(),
             ]
         );
+
         $parameters = $this->parameterize($args);
 
         return sprintf('$(function(){ $("#%s").DataTable(%s);});', $this->tableAttributes['id'], $parameters);
     }
 
     /**
-     * Generate datatable js parameters
+     * Generate datatable js parameters.
      *
      * @param  array $attributes
      * @return string
@@ -127,7 +130,7 @@ class Builder
     }
 
     /**
-     * Add a column in collection
+     * Add a column in collection using attributes.
      *
      * @param  array $attributes
      * @return $this
@@ -140,7 +143,72 @@ class Builder
     }
 
     /**
-     * Add a checkbox column
+     * Add a Column object in collection.
+     *
+     * @param \yajra\Datatables\Html\Column $column
+     * @return $this
+     */
+    public function add(Column $column)
+    {
+        $this->collection->push($column);
+
+        return $this;
+    }
+
+    /**
+     * Set datatables columns from array definition.
+     *
+     * @param array $columns
+     * @return $this
+     */
+    public function columns(array $columns)
+    {
+        foreach ($columns as $key => $value) {
+            if (is_array($value)) {
+                $attributes = ['name' => $key] + $this->setTitle($key, $value);
+            } else {
+                $attributes = [
+                    'name'  => $value,
+                    'data'  => $value,
+                    'title' => $this->getQualifiedTitle($value),
+                ];
+            }
+
+            $this->collection->push(new Column($attributes));
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set title attribute of an array if not set.
+     *
+     * @param string $title
+     * @param array $attributes
+     * @return array
+     */
+    public function setTitle($title, array $attributes)
+    {
+        if ( ! isset($attributes['title'])) {
+            $attributes['title'] = $this->getQualifiedTitle($title);;
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * Convert string into a readable title.
+     *
+     * @param string $title
+     * @return string
+     */
+    public function getQualifiedTitle($title)
+    {
+        return Str::title(str_replace(['.', '_'], ' ', Str::snake($title)));
+    }
+
+    /**
+     * Add a checkbox column.
      *
      * @param  array $attributes
      * @return $this
@@ -164,7 +232,7 @@ class Builder
     }
 
     /**
-     * Add a action column
+     * Add a action column.
      *
      * @param  array $attributes
      * @return $this
@@ -178,7 +246,7 @@ class Builder
                 'name'           => 'action',
                 'title'          => 'Action',
                 'orderable'      => false,
-                'searchable'     => false
+                'searchable'     => false,
             ], $attributes
         );
         $this->collection->push(new Column($attributes));
@@ -200,7 +268,7 @@ class Builder
     }
 
     /**
-     * Generate DataTable's table html
+     * Generate DataTable's table html.
      *
      * @param  array $attributes
      * @return string
@@ -213,7 +281,7 @@ class Builder
     }
 
     /**
-     * Configure DataTable's parameters
+     * Configure DataTable's parameters.
      *
      * @param  array $attributes
      * @return $this
