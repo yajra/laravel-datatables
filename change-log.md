@@ -8,6 +8,13 @@
 
 ##Change Log
 
+###v5.8.0
+    - Enhanced html builder class.
+    - Added function to load html builder `columns` via mixed array.
+        - Automatic resolution of qualified title based on field name.
+        - Overriding of column attributes.
+    - Added html builder and request object getter from main Datatables class.
+
 ###v5.7.0
     - Added orderColumn feature.
 
