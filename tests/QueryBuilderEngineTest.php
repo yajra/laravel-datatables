@@ -63,7 +63,7 @@ class TestDatatablesQueryBuilderEngine extends PHPUnit_Framework_TestCase
         $builder->select(['id', 'name'])->from('users');
 
         // count total records
-        $builder->shouldReceive('toSql')->times(2)->andReturn('select id, name from users');
+        $builder->shouldReceive('toSql')->times(1)->andReturn('select id, name from users');
         $builder->shouldReceive('select')->once()->andReturn($builder);
         $builder->getConnection()->shouldReceive('raw')->once()->andReturn('select \'1\' as row_count');
         $builder->getConnection()->shouldReceive('table')->once()->andReturn($builder);
