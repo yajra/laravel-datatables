@@ -64,10 +64,9 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
     public function count()
     {
         $myQuery = clone $this->query;
-        // if its a normal query ( no union and having word ) replace the select with static text to improve performance
-        if ( ! Str::contains(Str::lower($myQuery->toSql()), 'union')
-            && ! Str::contains(Str::lower($myQuery->toSql()), 'having')
-        ) {
+        // if its a normal query ( no union, having and distinct word )
+        // replace the select with static text to improve performance
+        if ( ! Str::contains(Str::lower($myQuery->toSql()), ['union', 'having', 'distinct'])) {
             $myQuery->select($this->connection->raw("'1' as row_count"));
         }
 

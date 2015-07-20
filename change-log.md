@@ -8,7 +8,10 @@
 
 ##Change Log
 
-###v5.8.0
+###v5.8.2
+    - Fix count when using DISTINCT query. Fix #125
+
+###v5.8.1
     - Fix compatiblity with PHP 5.4.
 
 ###v5.8.0
