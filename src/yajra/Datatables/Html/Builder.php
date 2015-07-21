@@ -165,7 +165,7 @@ class Builder
     {
         foreach ($columns as $key => $value) {
             if (is_array($value)) {
-                $attributes = ['name' => $key] + $this->setTitle($key, $value);
+                $attributes = ['name' => $key, 'data' => $key] + $this->setTitle($key, $value);
             } else {
                 $attributes = [
                     'name'  => $value,
@@ -277,7 +277,7 @@ class Builder
     {
         $this->tableAttributes = $attributes ?: $this->tableAttributes;
 
-        return '<table' . $this->html->attributes($this->tableAttributes) . '></table>';
+        return '<table ' . $this->html->attributes($this->tableAttributes) . '></table>';
     }
 
     /**

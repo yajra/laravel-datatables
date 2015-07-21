@@ -130,7 +130,7 @@ class Datatables
      */
     public function getHtmlBuilder()
     {
-        return app('\yajra\Datatables\Html\Builder');
+        return app('yajra\Datatables\Html\Builder');
     }
 
     /**
