@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v5.8.4
+    - Fix html builder merging of column attributes.
+
 ###v5.8.3
     - Added space when setting html builder table attributes.
     - Set a default data value when adding a column.
