@@ -277,7 +277,7 @@ class Builder
     {
         $this->tableAttributes = $attributes ?: $this->tableAttributes;
 
-        return '<table' . $this->html->attributes($this->tableAttributes) . '></table>';
+        return '<table ' . $this->html->attributes($this->tableAttributes) . '></table>';
     }
 
     /**
