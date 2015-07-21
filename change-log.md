@@ -8,6 +8,13 @@
 
 ##Change Log
 
+###v5.8.3
+    - Added space when setting html builder table attributes.
+    - Set a default data value when adding a column.
+    - Removed unnecessary slash when getting html builder.
+    - Added html builder unit test.
+    - Improved test coverage.
+
 ###v5.8.2
     - Fix count when using DISTINCT query. Fix #125
 
