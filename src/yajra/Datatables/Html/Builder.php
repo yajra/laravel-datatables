@@ -165,7 +165,7 @@ class Builder
     {
         foreach ($columns as $key => $value) {
             if (is_array($value)) {
-                $attributes = ['name' => $key, 'data' => $key] + $this->setTitle($key, $value);
+                $attributes = array_merge(['name' => $key, 'data' => $key], $this->setTitle($key, $value));
             } else {
                 $attributes = [
                     'name'  => $value,
