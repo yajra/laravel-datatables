@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    3.6.6
+ * @version    3.6.8
  */
 
 use Closure;
@@ -446,7 +446,7 @@ class Datatables
     public function doColumnSearch(array $columns)
     {
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
-            if ($columns[$i]['searchable'] == "true" and ! empty($columns[$i]['search']['value']) and ! empty($columns[$i]['name'])) {
+            if ($columns[$i]['searchable'] == "true" && $columns[$i]['search']['value'] <> '' && ! empty($columns[$i]['name'])) {
                 $column  = $columns[$i]['name'];
                 $keyword = $this->setupKeyword($columns[$i]['search']['value']);
 
