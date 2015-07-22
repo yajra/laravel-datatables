@@ -66,3 +66,8 @@ And that's it! Start building out some awesome DataTables!
 ## License
 
 Licensed under the [MIT License](https://github.com/yajra/laravel-datatables/blob/master/LICENSE).
+
+## Credits
+
+- This project is used to be a fork from [bllim/laravel4-datatables-package](https://github.com/bllim/laravel4-datatables-package).
+- Credits to all the contributors of this package
