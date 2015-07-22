@@ -8,6 +8,10 @@
 
 ##Change Log
 
+###v5.8.6
+    - Fix DT_Row options when returning a flatten array response.
+    - Fix PR #126.
+    
 ###v5.8.5
     - Revert try-catch when compiling blade.
     - Fix html builder unit test.
