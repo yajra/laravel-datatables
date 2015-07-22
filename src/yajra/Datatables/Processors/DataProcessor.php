@@ -72,12 +72,12 @@ class DataProcessor
             $data  = Helper::convertToArray($row);
             $value = $this->addColumns($data, $row);
             $value = $this->editColumns($value, $row);
-            $value = $this->setupRowVariables($value, $row);
             if ( ! $object) {
                 $value = Arr::flatten($this->removeExcessColumns($value));
             } else {
                 $value = $this->removeExcessColumns($value);
             }
+            $value = $this->setupRowVariables($value, $row);
             $this->output[] = $value;
         }
 
