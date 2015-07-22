@@ -1,6 +1,5 @@
 <?php
 
-
 use yajra\Datatables\Datatables;
 use yajra\Datatables\Html\Column;
 use yajra\Datatables\Request;

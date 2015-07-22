@@ -8,6 +8,10 @@
 
 ##Change Log
 
+###v5.8.5
+    - Revert try-catch when compiling blade.
+    - Fix html builder unit test.
+
 ###v5.8.4
     - Fix html builder merging of column attributes.
 
