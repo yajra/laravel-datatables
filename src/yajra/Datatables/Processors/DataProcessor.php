@@ -13,6 +13,13 @@ class DataProcessor
 {
 
     /**
+     * Columns to escape value.
+     *
+     * @var array
+     */
+    private $escapeColumns = [];
+
+    /**
      * Processed data output
      *
      * @var array
@@ -55,6 +62,7 @@ class DataProcessor
         $this->appendColumns = $columnDef['append'];
         $this->editColumns   = $columnDef['edit'];
         $this->excessColumns = $columnDef['excess'];
+        $this->escapeColumns = $columnDef['escape'];
         $this->templates     = $templates;
     }
 
@@ -77,7 +85,7 @@ class DataProcessor
             $this->output[] = $object ? $value : $this->flatten($value);
         }
 
-        return $this->output;
+        return $this->escapeColumns($this->output);
     }
 
     /**
@@ -168,5 +176,24 @@ class DataProcessor
         }
 
         return $return;
+    }
+
+    /**
+     * Escape column values as declared.
+     *
+     * @param array $output
+     * @return array
+     */
+    protected function escapeColumns(array $output)
+    {
+        return array_map(function ($row) {
+            foreach ($row as $key => $value) {
+                if (in_array($key, $this->escapeColumns) || $this->escapeColumns == '*') {
+                    $row[$key] = e($value);
+                }
+            }
+
+            return $row;
+        }, $output);
     }
 }
