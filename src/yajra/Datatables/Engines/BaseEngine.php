@@ -557,7 +557,7 @@ abstract class BaseEngine implements DataTableEngine
     {
         $this->totalRecords = $this->count();
 
-        $this->orderRecords(! $orderFirst);
+        $this->orderRecords( ! $orderFirst);
         $this->filterRecords();
         $this->orderRecords($orderFirst);
         $this->paginate();
