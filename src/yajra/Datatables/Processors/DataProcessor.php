@@ -188,7 +188,7 @@ class DataProcessor
     {
         return array_map(function ($row) {
             foreach ($row as $key => $value) {
-                if (in_array($key, $this->escapeColumns) || $this->escapeColumns == '*') {
+                if ($this->escapeColumns == '*' || in_array($key, $this->escapeColumns, true)) {
                     $row[$key] = e($value);
                 }
             }
