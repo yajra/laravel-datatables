@@ -8,6 +8,10 @@
 
 ##Change Log
 
+###v5.9.0
+    - Added escapeColumns feature to escape the values.
+    - Addresses XSS filtering issue #128.
+    
 ###v5.8.6
     - Fix DT_Row options when returning a flatten array response.
     - Fix PR #126.

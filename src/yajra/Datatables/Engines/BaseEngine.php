@@ -59,7 +59,7 @@ abstract class BaseEngine implements DataTableEngine
     protected $columns = [];
 
     /**
-     * DT columns definitions container (add/edit/remove/filter/order).
+     * DT columns definitions container (add/edit/remove/filter/order/escape).
      *
      * @var array
      */
@@ -69,6 +69,7 @@ abstract class BaseEngine implements DataTableEngine
         'excess' => ['rn', 'row_num'],
         'filter' => [],
         'order'  => [],
+        'escape' => [],
     ];
 
     /**
@@ -136,7 +137,7 @@ abstract class BaseEngine implements DataTableEngine
     /**
      * Output transformer.
      *
-     * @var TransformerAbstract
+     * @var \League\Fractal\TransformerAbstract
      */
     protected $transformer = null;
 
@@ -377,6 +378,19 @@ abstract class BaseEngine implements DataTableEngine
     {
         $names                     = func_get_args();
         $this->columnDef['excess'] = array_merge($this->columnDef['excess'], $names);
+
+        return $this;
+    }
+
+    /**
+     * Declare columns to escape values.
+     *
+     * @param string|array $columns
+     * @return $this
+     */
+    public function escapeColumns($columns = '*')
+    {
+        $this->columnDef['escape'] = $columns;
 
         return $this;
     }
