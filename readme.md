@@ -57,7 +57,7 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 `'Datatables'      => yajra\Datatables\Datatables::class,`
 
 #### Configuration
-**Laravel 5:** `$ php artisan vendor:publish`
+**Laravel 5:** `$ php artisan vendor:publish --provider="yajra\Datatables\DatatablesServiceProvider"`
 
 **Laravel 4:** `$ php artisan config:publish yajra/laravel-datatables-oracle`
 
