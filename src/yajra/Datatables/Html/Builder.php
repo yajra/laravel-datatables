@@ -51,7 +51,7 @@ class Builder
     /**
      * @var string|array
      */
-    protected $ajax;
+    protected $ajax = '';
 
     /**
      * @var array
