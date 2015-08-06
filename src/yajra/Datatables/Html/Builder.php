@@ -275,7 +275,7 @@ class Builder
      * @param $attributes
      * @return $this
      */
-    public function setTableAttributes(array $attributes)
+    public function tableAttributes(array $attributes)
     {
         if (in_array('id', $attributes))
         {
