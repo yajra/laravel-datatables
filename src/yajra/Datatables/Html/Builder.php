@@ -287,7 +287,7 @@ class Builder
             $attributes['class'] .= ' table';
         }
 
-        $this->tableAttributes = $attributes;
+        $this->tableAttributes = array_merge($attributes, ['id' => $this->tableAttributes['id']]);
         return $this;
     }
 
