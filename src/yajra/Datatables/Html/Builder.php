@@ -2,6 +2,7 @@
 
 namespace yajra\Datatables\Html;
 
+use App;
 use Collective\Html\FormBuilder;
 use Collective\Html\HtmlBuilder;
 use Illuminate\Contracts\Config\Repository;
@@ -264,6 +265,29 @@ class Builder
     {
         $this->ajax = $attributes;
 
+        return $this;
+    }
+
+    /**
+     * Setup table attributes
+     * It checks for id to not be changed and if changing classes, that "table" class should be present
+     *
+     * @param $attributes
+     * @return $this
+     */
+    public function setTableAttributes(array $attributes)
+    {
+        if (in_array('id', $attributes))
+        {
+            App::abort(500, 'The id of the table must not be changed.');
+        }
+
+        if (in_array('class', $attributes) && !in_array('table',explode(' ',$attributes['class'])))
+        {
+            $attributes['class'] .= ' table';
+        }
+
+        $this->tableAttributes = $attributes;
         return $this;
     }
 
