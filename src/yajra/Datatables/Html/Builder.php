@@ -115,7 +115,7 @@ class Builder
 
         $parameters = $this->parameterize($args);
 
-        return sprintf('$(function(){ $("#%s").DataTable(%s);});', $this->tableAttributes['id'], $parameters);
+        return sprintf('(function(window,$){window.LaravelDataTables=window.LaravelDataTables||{};window.LaravelDataTables["%s"]=$("#%s").DataTable(%s);})(window,jQuery);', $this->tableAttributes['id'], $this->tableAttributes['id'], $parameters);
     }
 
     /**
