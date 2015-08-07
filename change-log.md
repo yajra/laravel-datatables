@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v5.10.0
+    - Add LaravelDataTables on js window namespace. Issue #129. Credits to @greabock.
+
 ###v5.9.2
     - Fix possible error when rendering table and overriding the attributes.
     - Merge DT parameters.
