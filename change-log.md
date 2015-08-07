@@ -8,6 +8,10 @@
 
 ##Change Log
 
+###v5.9.2
+    - Fix possible error when rendering table and overriding the attributes.
+    - Merge DT parameters.
+
 ###v5.9.1
     - Fix default ajax value causing js data null error.
 
