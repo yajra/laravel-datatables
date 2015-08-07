@@ -275,7 +275,7 @@ class Builder
      */
     public function table(array $attributes = [])
     {
-        $this->tableAttributes = $attributes ?: $this->tableAttributes;
+        $this->tableAttributes = array_merge($this->tableAttributes, $attributes);
 
         return '<table ' . $this->html->attributes($this->tableAttributes) . '></table>';
     }
@@ -288,7 +288,7 @@ class Builder
      */
     public function parameters(array $attributes = [])
     {
-        $this->attributes = $attributes;
+        $this->attributes = array_merge($this->attributes, $attributes);
 
         return $this;
     }
