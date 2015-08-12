@@ -19,3 +19,22 @@ function app($instance) {
 
 	return new Datatables(Request::capture());
 }
+
+function view($view = null, array $data = []) {
+    if ( ! $view) {
+        return new BladeView();
+    }
+
+    return (new BladeView())->exists($view);
+}
+
+/**
+* Blade View Stub
+*/
+class BladeView
+{
+    public function exists($view)
+    {
+        return false;
+    }
+}
