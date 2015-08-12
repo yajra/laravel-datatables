@@ -68,6 +68,10 @@ class Helper
      */
     public static function compileBlade($str, $data = [])
     {
+        if (view()->exists($str)) {
+            return view($str, $data)->render();
+        }
+
         $empty_filesystem_instance = new Filesystem();
         $blade                     = new BladeCompiler($empty_filesystem_instance, 'datatables');
         $parsed_string             = $blade->compileString($str);
