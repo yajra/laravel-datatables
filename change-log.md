@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v5.11.0
+    - Add support for rendering view directly on addColumn and editColumn.
+
 ###v5.10.0
     - Add LaravelDataTables on js window namespace. Issue #129. Credits to @greabock.
 
