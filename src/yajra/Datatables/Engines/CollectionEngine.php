@@ -123,15 +123,33 @@ class CollectionEngine extends BaseEngine implements DataTableEngine
                 $keyword = $this->request->keyword();
                 foreach ($this->request->searchableColumnIndex() as $index) {
                     $column = $this->getColumnName($index);
-
-                    if ( ! array_key_exists($column, $data)) {
-                        continue;
-                    }
-
-                    if ($this->isCaseInsensitive()) {
-                        $found[] = Str::contains(Str::lower($data[$column]), Str::lower($keyword));
+                    /**
+                     * Convert 'foo.bar' => ['foo']['bar']
+                     */
+                    $keys = explode('.', $column);
+                    $column = $keys[0];
+                    $value = $data[$column];
+                    if ( count($keys) == 1) {
+                        /**
+                         * Regular column
+                         */
+                        if ( ! array_key_exists($column, $data)) {
+                            continue;
+                        }
                     } else {
-                        $found[] = Str::contains($data[$column], $keyword);
+                        /**
+                         * Compound column
+                         */
+                        $value = null;
+                        foreach ($keys as $key) {
+                            $column = $key;
+                            $value = $value ? $value[$column] : $data[$column];
+                        }
+                    }
+                    if ($this->isCaseInsensitive()) {
+                        $found[] = Str::contains(Str::lower($value), Str::lower($keyword));
+                    } else {
+                        $found[] = Str::contains($value, $keyword);
                     }
                 }
 
