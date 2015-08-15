@@ -12,6 +12,7 @@ namespace yajra\Datatables\Engines;
 
 use Closure;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use yajra\Datatables\Contracts\DataTableEngine;
@@ -98,7 +99,7 @@ class CollectionEngine extends BaseEngine implements DataTableEngine
                 function ($row) use ($column) {
                     $row = Helper::castToArray($row);
 
-                    return $row[$column];
+                    return Arr::get($row, $column);
                 }
             );
 
@@ -123,15 +124,14 @@ class CollectionEngine extends BaseEngine implements DataTableEngine
                 $keyword = $this->request->keyword();
                 foreach ($this->request->searchableColumnIndex() as $index) {
                     $column = $this->getColumnName($index);
-
-                    if ( ! array_key_exists($column, $data)) {
+                    if ( ! $value = Arr::get($data, $column)) {
                         continue;
                     }
 
                     if ($this->isCaseInsensitive()) {
-                        $found[] = Str::contains(Str::lower($data[$column]), Str::lower($keyword));
+                        $found[] = Str::contains(Str::lower($value), Str::lower($keyword));
                     } else {
-                        $found[] = Str::contains($data[$column], $keyword);
+                        $found[] = Str::contains($value, $keyword);
                     }
                 }
 
