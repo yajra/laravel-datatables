@@ -99,7 +99,7 @@ class CollectionEngine extends BaseEngine implements DataTableEngine
                 function ($row) use ($column) {
                     $row = Helper::castToArray($row);
 
-                    return $row[$column];
+                    return Arr::get($row, $column);
                 }
             );
 
