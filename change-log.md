@@ -8,6 +8,11 @@
 
 ##Change Log
 
+###v5.11.1
+    - Collection engine enhancement.
+    - Add support for filtering compound key PR #146.
+    - Add support for ordering using compound key.
+
 ###v5.11.0
     - Add support for rendering view directly on addColumn and editColumn.
 
