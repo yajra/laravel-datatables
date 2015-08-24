@@ -190,7 +190,11 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($this->request->isColumnSearchable($i)) {
                 $column  = $this->setupColumnName($i);
-                $keyword = $this->setupKeyword($this->request->columnKeyword($i));
+                if ($this->request->isRegex($i)) {
+                    $keyword = $this->request->columnKeyword($i);
+                } else {
+                    $keyword = $this->setupKeyword($this->request->columnKeyword($i));
+                }
 
                 if (isset($this->columnDef['filter'][$column])) {
                     $method     = $this->columnDef['filter'][$column]['method'];
@@ -199,10 +203,18 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
                 } else {
                     $column = $this->castColumn($column);
                     if ($this->isCaseInsensitive()) {
-                        $this->query->whereRaw('LOWER(' . $column . ') LIKE ?', [Str::lower($keyword)]);
+                        if ($this->request->isRegex($i)) {
+                            $this->query->whereRaw('LOWER(' . $column . ') REGEXP ?', [Str::lower($keyword)]);
+                        } else {
+                            $this->query->whereRaw('LOWER(' . $column . ') LIKE ?', [Str::lower($keyword)]);
+                        }
                     } else {
                         $col = strstr($column, '(') ? $this->connection->raw($column) : $column;
-                        $this->query->whereRaw($col . ' LIKE ?', [$keyword]);
+                        if ($this->request->isRegex($i)) {
+                            $this->query->whereRaw($col . ' REGEXP ?', [$keyword]);
+                        } else {
+                            $this->query->whereRaw($col . ' LIKE ?', [$keyword]);
+                        }
                     }
                 }
 
