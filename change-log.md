@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v5.11.2
+    - Add support for regular expressions search on column.
+
 ###v5.11.1
     - Collection engine enhancement.
     - Add support for filtering compound key PR #146.
