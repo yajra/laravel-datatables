@@ -46,6 +46,23 @@ class Request extends IlluminateRequest
     }
 
     /**
+     * Check if Datatables must uses regular expressions
+     *
+     * @param integer $index
+     * @return string
+     */
+    public function isRegex($index)
+    {
+        if ($this->columns[$index]['search']['regex'] === 'false') {
+            $return = false;
+        } else {
+            $return = true;
+        }
+
+        return $return;
+    }
+
+    /**
      * Get orderable columns
      *
      * @return array
