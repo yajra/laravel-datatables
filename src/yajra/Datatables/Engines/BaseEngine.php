@@ -667,7 +667,20 @@ abstract class BaseEngine implements DataTableEngine
 
         if (isset($this->transformer)) {
             $fractal        = new Manager();
-            $resource       = new Collection($data, new $this->transformer());
+            
+            //Get transformer reflection
+            //Firs method parameter should be data/object to transform
+            $reflection = new \ReflectionMethod($this->transformer,'transform');
+            $parameter = $reflection->getParameters()[0];
+
+            //If parameter is class assuming it requires object
+            //Else just pass array by default
+            if($parameter->getClass()){
+                $resource = new Collection($this->result_object, new $this->transformer());
+            }else{
+                $resource = new Collection($this->result_array_r, new $this->transformer());
+            }
+
             $collection     = $fractal->createData($resource)->toArray();
             $output['data'] = $collection['data'];
         } else {
