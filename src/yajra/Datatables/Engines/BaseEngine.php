@@ -676,9 +676,9 @@ abstract class BaseEngine implements DataTableEngine
             //If parameter is class assuming it requires object
             //Else just pass array by default
             if($parameter->getClass()){
-                $resource = new Collection($this->result_object, new $this->transformer());
+                $resource = new Collection($this->results(), new $this->transformer());
             }else{
-                $resource = new Collection($this->result_array_r, new $this->transformer());
+                $resource = new Collection($data, new $this->transformer());
             }
 
             $collection     = $fractal->createData($resource)->toArray();
