@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    3.6.8
+ * @version    3.6.9
  */
 
 use Closure;
@@ -353,6 +353,7 @@ class Datatables
             $this->doFiltering();
         }
 
+        $this->doColumnSearch();
         $this->getFilteredRecords(); // Filtered records
         $this->doPaging();
         $this->doOrdering();
@@ -432,22 +433,40 @@ class Datatables
                 }
             });
         }
-
-        // column search
-        $this->doColumnSearch($columns);
     }
 
     /**
      * Perform column search
      *
-     * @param  array $columns
      * @return void
      */
-    public function doColumnSearch(array $columns)
+    public function doColumnSearch()
     {
+        $input = $this->input;
+        $columns = $input['columns'];
+
+        // if older version, set the column name to query's fields
+        // or if new version but does not use mData support
+        if ( ! $this->new_version or ( ! $this->mDataSupport and $this->new_version)) {
+            for ($i = 0; $i < count($columns); $i++) {
+                if ( ! isset($this->columns[$i])) {
+                    continue;
+                }
+
+                $columns[$i]['name'] = $this->columns[$i];
+                if (stripos($columns[$i]['name'], ' AS ') !== false or
+                    $columns[$i]['name'] instanceof Expression
+                ) {
+                    $columns[$i]['name'] = '';
+                    $columns[$i]['searchable'] = false;
+                    $columns[$i]['orderable'] = false;
+                }
+            }
+        }
+
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
-            if ($columns[$i]['searchable'] == "true" && $columns[$i]['search']['value'] <> '' && ! empty($columns[$i]['name'])) {
-                $column  = $columns[$i]['name'];
+            if ($columns[$i]['searchable'] == "true" and ! empty($columns[$i]['search']['value']) and ! empty($columns[$i]['name'])) {
+                $column = $columns[$i]['name'];
                 $keyword = $this->setupKeyword($columns[$i]['search']['value']);
 
                 // wrap column possibly allow reserved words to be used as column
