@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v5.11.3
+    - Pass object or array to transformer. PR #155
+
 ###v5.11.2
     - Add support for regular expressions search on column.
 
