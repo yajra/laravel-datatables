@@ -659,18 +659,18 @@ abstract class BaseEngine implements DataTableEngine
         ];
 
         if (isset($this->transformer)) {
-            $fractal        = new Manager();
+            $fractal = new Manager();
 
             //Get transformer reflection
             //Firs method parameter should be data/object to transform
-            $reflection = new \ReflectionMethod($this->transformer,'transform');
-            $parameter = $reflection->getParameters()[0];
+            $reflection = new \ReflectionMethod($this->transformer, 'transform');
+            $parameter  = $reflection->getParameters()[0];
 
             //If parameter is class assuming it requires object
             //Else just pass array by default
-            if($parameter->getClass()){
+            if ($parameter->getClass()) {
                 $resource = new Collection($this->results(), new $this->transformer());
-            }else{
+            } else {
                 $resource = new Collection(
                     $this->getProcessedData($object),
                     new $this->transformer()
@@ -691,13 +691,20 @@ abstract class BaseEngine implements DataTableEngine
     }
 
     /**
-     * Get processed data
-     *
-     * @param bool|false $object
+     * Get results
      *
      * @return array
      */
-    private function getProcessedData($object = false){
+    abstract public function results();
+
+    /**
+     * Get processed data
+     *
+     * @param bool|false $object
+     * @return array
+     */
+    private function getProcessedData($object = false)
+    {
         $processor = new DataProcessor(
             $this->results(),
             $this->columnDef,
@@ -706,13 +713,6 @@ abstract class BaseEngine implements DataTableEngine
 
         return $processor->process($object);
     }
-
-    /**
-     * Get results
-     *
-     * @return array
-     */
-    abstract public function results();
 
     /**
      * Check if app is in debug mode.
