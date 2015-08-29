@@ -652,13 +652,6 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function render($object = false)
     {
-        $processor = new DataProcessor(
-            $this->results(),
-            $this->columnDef,
-            $this->templates
-        );
-
-        $data   = $processor->process($object);
         $output = [
             'draw'            => (int) $this->request['draw'],
             'recordsTotal'    => $this->totalRecords,
@@ -667,11 +660,27 @@ abstract class BaseEngine implements DataTableEngine
 
         if (isset($this->transformer)) {
             $fractal        = new Manager();
-            $resource       = new Collection($data, new $this->transformer());
+
+            //Get transformer reflection
+            //Firs method parameter should be data/object to transform
+            $reflection = new \ReflectionMethod($this->transformer,'transform');
+            $parameter = $reflection->getParameters()[0];
+
+            //If parameter is class assuming it requires object
+            //Else just pass array by default
+            if($parameter->getClass()){
+                $resource = new Collection($this->results(), new $this->transformer());
+            }else{
+                $resource = new Collection(
+                    $this->getProcessedData($object),
+                    new $this->transformer()
+                );
+            }
+
             $collection     = $fractal->createData($resource)->toArray();
             $output['data'] = $collection['data'];
         } else {
-            $output['data'] = Helper::transform($data);
+            $output['data'] = Helper::transform($this->getProcessedData($object));
         }
 
         if ($this->isDebugging()) {
@@ -679,6 +688,23 @@ abstract class BaseEngine implements DataTableEngine
         }
 
         return new JsonResponse($output);
+    }
+
+    /**
+     * Get processed data
+     *
+     * @param bool|false $object
+     *
+     * @return array
+     */
+    private function getProcessedData($object = false){
+        $processor = new DataProcessor(
+            $this->results(),
+            $this->columnDef,
+            $this->templates
+        );
+
+        return $processor->process($object);
     }
 
     /**
