@@ -241,16 +241,10 @@ abstract class BaseEngine implements DataTableEngine
      */
     protected function getColumnName($column)
     {
-        //the proper way to fix it
-        $columnName = $this->request->columnName($column) ?: isset($this->columns[$column]) ? $this->columns[$column] : false;
-
-        return $columnName !== false && !in_array($columnName, $this->sColumns, true) ? $columnName : $this->columns[0];
-
-        //the proper another way to fix it
-//        return $this->request->columnName($column) ?: isset($this->columns[$column]) ? $this->columns[$column] : $this->columns[0];
-
-        //yourself
+        $name = $this->request->columnName($column) ?: (isset($this->columns[$column]) ? $this->columns[$column] : $this->columns[0]);
+        return in_array($name, $this->sColumns, true) ? $this->columns[0] : $name;
 //        return $this->request->columnName($column) ?: $this->columns[$column];
+//        return $this->request->columnName($column) ?: (isset($this->columns[$column]) ? $this->columns[$column] : $this->columns[0]);
     }
 
     /**
