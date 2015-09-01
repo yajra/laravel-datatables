@@ -81,11 +81,11 @@ abstract class BaseEngine implements DataTableEngine
 
 
     /**
-     * sColumns to output.
+     * Extra/Added columns.
      *
      * @var array
      */
-    protected $sColumns = [];
+    protected $extraColumns = [];
 
     /**
      * Total records.
@@ -242,9 +242,8 @@ abstract class BaseEngine implements DataTableEngine
     protected function getColumnName($column)
     {
         $name = $this->request->columnName($column) ?: (isset($this->columns[$column]) ? $this->columns[$column] : $this->columns[0]);
-        return in_array($name, $this->sColumns, true) ? $this->columns[0] : $name;
-//        return $this->request->columnName($column) ?: $this->columns[$column];
-//        return $this->request->columnName($column) ?: (isset($this->columns[$column]) ? $this->columns[$column] : $this->columns[0]);
+
+        return in_array($name, $this->extraColumns, true) ? $this->columns[0] : $name;
     }
 
     /**
@@ -351,7 +350,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function addColumn($name, $content, $order = false)
     {
-        $this->sColumns[] = $name;
+        $this->extraColumns[] = $name;
 
         $this->columnDef['append'][] = ['name' => $name, 'content' => $content, 'order' => $order];
 
