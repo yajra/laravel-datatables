@@ -8,6 +8,10 @@
 
 ##Change Log
 
+###v5.11.4
+    - Fix Undefined offset issue when using addColumn. 
+    - Credits to @openvast for PR #158
+
 ###v5.11.3
     - Pass object or array to transformer. PR #155
 
