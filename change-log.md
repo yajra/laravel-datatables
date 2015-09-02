@@ -8,8 +8,12 @@
 
 ##Change Log
 
+###v5.11.5
+    - Fix issues on database prefix. #161 and #162
+    - Fix database prefix value when using Eloquent.
+
 ###v5.11.4
-    - Fix Undefined offset issue when using addColumn. 
+    - Fix Undefined offset issue when using addColumn.
     - Credits to @openvast for PR #158
 
 ###v5.11.3

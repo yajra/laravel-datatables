@@ -227,9 +227,6 @@ abstract class BaseEngine implements DataTableEngine
             $column = $this->extractColumnName($column);
         }
 
-        // there's no need to put the prefix unless the column name is prefixed with the table name.
-        $column = $this->prefixColumn($column);
-
         return $column;
     }
 
