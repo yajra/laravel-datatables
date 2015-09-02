@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v5.11.6
+    - Refactor eloquent and query builder engine duplicate codes. 
+
 ###v5.11.5
     - Fix issues on database prefix. #161 and #162
     - Fix database prefix value when using Eloquent.
