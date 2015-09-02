@@ -25,14 +25,25 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
      */
     public function __construct(Builder $builder, Request $request)
     {
-        $this->request    = $request;
-        $this->query_type = 'builder';
-        $this->query      = $builder;
-        $this->columns    = $this->query->columns;
-        $this->connection = $this->query->getConnection();
-        $this->prefix     = $this->getQueryBuilder()->getGrammar()->getTablePrefix();
-        $this->database   = $this->connection->getDriverName();
+        $this->query = $builder;
+        $this->init($request, $builder);
+    }
 
+    /**
+     * Initialize attributes.
+     *
+     * @param  \yajra\Datatables\Request $request
+     * @param  \Illuminate\Database\Query\Builder $builder
+     * @param  string $type
+     */
+    protected function init($request, $builder, $type = 'builder')
+    {
+        $this->request    = $request;
+        $this->query_type = $type;
+        $this->columns    = $builder->columns;
+        $this->connection = $builder->getConnection();
+        $this->prefix     = $this->connection->getTablePrefix();
+        $this->database   = $this->connection->getDriverName();
         if ($this->isDebugging()) {
             $this->connection->enableQueryLog();
         }
@@ -71,7 +82,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
         }
 
         return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
-            ->setBindings($myQuery->getBindings())->count();
+                                ->setBindings($myQuery->getBindings())->count();
     }
 
     /**
@@ -190,7 +201,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
         $columns = $this->request->get('columns');
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($this->request->isColumnSearchable($i)) {
-                $column  = $this->setupColumnName($i);
+                $column = $this->setupColumnName($i);
                 if ($this->request->isRegex($i)) {
                     $keyword = $this->request->columnKeyword($i);
                 } else {
@@ -249,7 +260,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
     public function paging()
     {
         $this->query->skip($this->request['start'])
-            ->take((int) $this->request['length'] > 0 ? $this->request['length'] : 10);
+                    ->take((int) $this->request['length'] > 0 ? $this->request['length'] : 10);
     }
 
     /**
