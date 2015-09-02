@@ -85,10 +85,9 @@ class TestDatatablesQueryBuilderEngine extends PHPUnit_Framework_TestCase
             ['id' => 2, 'name' => 'bar'],
         ];
         $builder = m::mock('Illuminate\Database\Query\Builder');
-        $builder->shouldReceive('getGrammar')->once()->andReturn($builder);
-        $builder->shouldReceive('getTablePrefix')->once()->andReturn($builder);
         $builder->shouldReceive('getConnection')->andReturn(m::mock('Illuminate\Database\Connection'));
         $builder->getConnection()->shouldReceive('getDriverName')->once()->andReturn('dbdriver');
+        $builder->getConnection()->shouldReceive('getTablePrefix')->once()->andReturn('');
 
         // setup builder
         $builder->shouldReceive('select')->once()->with(['id', 'name'])->andReturn($builder);
