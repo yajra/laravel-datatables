@@ -25,19 +25,20 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
      */
     public function __construct(Builder $builder, Request $request)
     {
-        $this->request = $request;
-        $this->query   = $builder;
-        $this->init($builder);
+        $this->query = $builder;
+        $this->init($request, $builder);
     }
 
     /**
      * Initialize attributes.
      *
+     * @param  \yajra\Datatables\Request $request
      * @param  \Illuminate\Database\Query\Builder $builder
      * @param  string $type
      */
-    protected function init($builder, $type = 'builder')
+    protected function init($request, $builder, $type = 'builder')
     {
+        $this->request    = $request;
         $this->query_type = $type;
         $this->columns    = $builder->columns;
         $this->connection = $builder->getConnection();
