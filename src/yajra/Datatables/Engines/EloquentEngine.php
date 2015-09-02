@@ -28,6 +28,7 @@ class EloquentEngine extends QueryBuilderEngine implements DataTableEngine
         $this->query      = $model instanceof Builder ? $model : $model->getQuery();
         $this->columns    = $this->query->getQuery()->columns;
         $this->connection = $this->query->getQuery()->getConnection();
+        $this->prefix     = $this->connection->getTablePrefix();
         $this->database   = $this->connection->getDriverName();
 
         if ($this->isDebugging()) {
