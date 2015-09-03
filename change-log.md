@@ -8,6 +8,11 @@
 
 ##Change Log
 
+###v5.11.7
+    - Fix escaping of row when using eager loading. Fix #164
+    - Add support for escaping rows using array dot notation when declaring escapeColumns.
+        Example: `->escapeColumns(['name', 'post.title'])` 
+
 ###v5.11.6
     - Refactor eloquent and query builder engine duplicate codes. 
 
