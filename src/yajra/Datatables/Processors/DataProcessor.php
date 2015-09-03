@@ -187,13 +187,37 @@ class DataProcessor
     protected function escapeColumns(array $output)
     {
         return array_map(function ($row) {
-            foreach ($row as $key => $value) {
-                if ($this->escapeColumns == '*' || in_array($key, $this->escapeColumns, true)) {
-                    $row[$key] = e($value);
+            if ($this->escapeColumns == '*') {
+                $row = $this->escapeRow($row, $this->escapeColumns);
+            } else {
+                foreach ($this->escapeColumns as $key) {
+                    if (array_get($row, $key)) {
+                        array_set($row, $key, e(array_get($row, $key)));
+                    }
                 }
             }
 
             return $row;
         }, $output);
+    }
+
+    /**
+     * Escape all values of row.
+     *
+     * @param array $row
+     * @param string|array $escapeColumns
+     * @return array
+     */
+    protected function escapeRow(array $row, $escapeColumns)
+    {
+        foreach ($row as $key => $value) {
+            if (is_array($value)) {
+                $row[$key] = $this->escapeRow($value, $escapeColumns);
+            } else {
+                $row[$key] = e($value);
+            }
+        }
+
+        return $row;
     }
 }
