@@ -81,11 +81,11 @@ abstract class BaseEngine implements DataTableEngine
 
 
     /**
-     * sColumns to output.
+     * Extra/Added columns.
      *
      * @var array
      */
-    protected $sColumns = [];
+    protected $extraColumns = [];
 
     /**
      * Total records.
@@ -227,9 +227,6 @@ abstract class BaseEngine implements DataTableEngine
             $column = $this->extractColumnName($column);
         }
 
-        // there's no need to put the prefix unless the column name is prefixed with the table name.
-        $column = $this->prefixColumn($column);
-
         return $column;
     }
 
@@ -241,7 +238,9 @@ abstract class BaseEngine implements DataTableEngine
      */
     protected function getColumnName($column)
     {
-        return $this->request->columnName($column) ?: $this->columns[$column];
+        $name = $this->request->columnName($column) ?: (isset($this->columns[$column]) ? $this->columns[$column] : $this->columns[0]);
+
+        return in_array($name, $this->extraColumns, true) ? $this->columns[0] : $name;
     }
 
     /**
@@ -348,7 +347,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function addColumn($name, $content, $order = false)
     {
-        $this->sColumns[] = $name;
+        $this->extraColumns[] = $name;
 
         $this->columnDef['append'][] = ['name' => $name, 'content' => $content, 'order' => $order];
 
@@ -652,13 +651,6 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function render($object = false)
     {
-        $processor = new DataProcessor(
-            $this->results(),
-            $this->columnDef,
-            $this->templates
-        );
-
-        $data   = $processor->process($object);
         $output = [
             'draw'            => (int) $this->request['draw'],
             'recordsTotal'    => $this->totalRecords,
@@ -666,12 +658,28 @@ abstract class BaseEngine implements DataTableEngine
         ];
 
         if (isset($this->transformer)) {
-            $fractal        = new Manager();
-            $resource       = new Collection($data, new $this->transformer());
+            $fractal = new Manager();
+
+            //Get transformer reflection
+            //Firs method parameter should be data/object to transform
+            $reflection = new \ReflectionMethod($this->transformer, 'transform');
+            $parameter  = $reflection->getParameters()[0];
+
+            //If parameter is class assuming it requires object
+            //Else just pass array by default
+            if ($parameter->getClass()) {
+                $resource = new Collection($this->results(), new $this->transformer());
+            } else {
+                $resource = new Collection(
+                    $this->getProcessedData($object),
+                    new $this->transformer()
+                );
+            }
+
             $collection     = $fractal->createData($resource)->toArray();
             $output['data'] = $collection['data'];
         } else {
-            $output['data'] = Helper::transform($data);
+            $output['data'] = Helper::transform($this->getProcessedData($object));
         }
 
         if ($this->isDebugging()) {
@@ -687,6 +695,23 @@ abstract class BaseEngine implements DataTableEngine
      * @return array
      */
     abstract public function results();
+
+    /**
+     * Get processed data
+     *
+     * @param bool|false $object
+     * @return array
+     */
+    private function getProcessedData($object = false)
+    {
+        $processor = new DataProcessor(
+            $this->results(),
+            $this->columnDef,
+            $this->templates
+        );
+
+        return $processor->process($object);
+    }
 
     /**
      * Check if app is in debug mode.

@@ -25,14 +25,25 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
      */
     public function __construct(Builder $builder, Request $request)
     {
-        $this->request    = $request;
-        $this->query_type = 'builder';
-        $this->query      = $builder;
-        $this->columns    = $this->query->columns;
-        $this->connection = $this->query->getConnection();
-        $this->prefix     = $this->getQueryBuilder()->getGrammar()->getTablePrefix();
-        $this->database   = $this->connection->getDriverName();
+        $this->query = $builder;
+        $this->init($request, $builder);
+    }
 
+    /**
+     * Initialize attributes.
+     *
+     * @param  \yajra\Datatables\Request $request
+     * @param  \Illuminate\Database\Query\Builder $builder
+     * @param  string $type
+     */
+    protected function init($request, $builder, $type = 'builder')
+    {
+        $this->request    = $request;
+        $this->query_type = $type;
+        $this->columns    = $builder->columns;
+        $this->connection = $builder->getConnection();
+        $this->prefix     = $this->connection->getTablePrefix();
+        $this->database   = $this->connection->getDriverName();
         if ($this->isDebugging()) {
             $this->connection->enableQueryLog();
         }
@@ -71,7 +82,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
         }
 
         return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
-            ->setBindings($myQuery->getBindings())->count();
+                                ->setBindings($myQuery->getBindings())->count();
     }
 
     /**
@@ -92,6 +103,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
                             $this->getQueryBuilder($query), $method, $parameters, $column, $keyword
                         );
                     } else {
+                        $column = $this->prefixColumn($column);
                         $this->compileGlobalSearch($this->getQueryBuilder($query), $column, $keyword);
                     }
 
@@ -189,8 +201,12 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
         $columns = $this->request->get('columns');
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($this->request->isColumnSearchable($i)) {
-                $column  = $this->setupColumnName($i);
-                $keyword = $this->setupKeyword($this->request->columnKeyword($i));
+                $column = $this->setupColumnName($i);
+                if ($this->request->isRegex($i)) {
+                    $keyword = $this->request->columnKeyword($i);
+                } else {
+                    $keyword = $this->setupKeyword($this->request->columnKeyword($i));
+                }
 
                 if (isset($this->columnDef['filter'][$column])) {
                     $method     = $this->columnDef['filter'][$column]['method'];
@@ -199,10 +215,18 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
                 } else {
                     $column = $this->castColumn($column);
                     if ($this->isCaseInsensitive()) {
-                        $this->query->whereRaw('LOWER(' . $column . ') LIKE ?', [Str::lower($keyword)]);
+                        if ($this->request->isRegex($i)) {
+                            $this->query->whereRaw('LOWER(' . $column . ') REGEXP ?', [Str::lower($keyword)]);
+                        } else {
+                            $this->query->whereRaw('LOWER(' . $column . ') LIKE ?', [Str::lower($keyword)]);
+                        }
                     } else {
                         $col = strstr($column, '(') ? $this->connection->raw($column) : $column;
-                        $this->query->whereRaw($col . ' LIKE ?', [$keyword]);
+                        if ($this->request->isRegex($i)) {
+                            $this->query->whereRaw($col . ' REGEXP ?', [$keyword]);
+                        } else {
+                            $this->query->whereRaw($col . ' LIKE ?', [$keyword]);
+                        }
                     }
                 }
 
@@ -236,7 +260,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
     public function paging()
     {
         $this->query->skip($this->request['start'])
-            ->take((int) $this->request['length'] > 0 ? $this->request['length'] : 10);
+                    ->take((int) $this->request['length'] > 0 ? $this->request['length'] : 10);
     }
 
     /**
