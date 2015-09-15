@@ -8,13 +8,18 @@
 
 ##Change Log
 
+###v5.11.8
+    - Skip search, order and pagination on empty records.
+    - Fix #149 and #176 empty collection error when using make(false).
+    - Fix credits to @gabrielwelsche.
+
 ###v5.11.7
     - Fix escaping of row when using eager loading. Fix #164
     - Add support for escaping rows using array dot notation when declaring escapeColumns.
-        Example: `->escapeColumns(['name', 'post.title'])` 
+        Example: `->escapeColumns(['name', 'post.title'])`
 
 ###v5.11.6
-    - Refactor eloquent and query builder engine duplicate codes. 
+    - Refactor eloquent and query builder engine duplicate codes.
 
 ###v5.11.5
     - Fix issues on database prefix. #161 and #162
