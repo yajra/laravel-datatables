@@ -2,6 +2,7 @@
 
 namespace yajra\Datatables\Services;
 
+use Illuminate\Contracts\View\Factory;
 use yajra\Datatables\Datatables;
 
 abstract class DataTableAbstract implements DataTableInterface, DataTableButtonsInterface
@@ -12,11 +13,18 @@ abstract class DataTableAbstract implements DataTableInterface, DataTableButtons
     protected $datatables;
 
     /**
-     * @param \yajra\Datatables\Datatables $datatables
+     * @var \Illuminate\Contracts\View\Factory
      */
-    public function __construct(Datatables $datatables)
+    protected $view;
+
+    /**
+     * @param \yajra\Datatables\Datatables $datatables
+     * @param \Illuminate\Contracts\View\Factory $view
+     */
+    public function __construct(Datatables $datatables, Factory $view)
     {
         $this->datatables = $datatables;
+        $this->view = $view;
     }
 
     /**
@@ -47,7 +55,7 @@ abstract class DataTableAbstract implements DataTableInterface, DataTableButtons
                 return $this->printPreview();
 
             default:
-                return view($view, $data, $mergeData)->with('dataTable', $this->html());
+                return $this->view->make($view, $data, $mergeData)->with('dataTable', $this->html());
         }
     }
 
