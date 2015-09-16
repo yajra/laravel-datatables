@@ -25,6 +25,13 @@ abstract class DataTableAbstract implements DataTableInterface, DataTableButtons
     protected $printPreview;
 
     /**
+     * List of columns to be exported.
+     *
+     * @var string|array
+     */
+    protected $exportColumns = '*';
+
+    /**
      * @param \yajra\Datatables\Datatables $datatables
      * @param \Illuminate\Contracts\View\Factory $viewFactory
      */
@@ -85,7 +92,16 @@ abstract class DataTableAbstract implements DataTableInterface, DataTableButtons
     {
         return app('excel')->create('export', function ($excel) {
             $excel->sheet('exported-data', function ($sheet) {
-                $sheet->fromArray($this->getDecoratedData());
+                $decoratedData = $this->getDecoratedData();
+                $results = array_map(function ($row) {
+                    if (is_array($this->exportColumns)) {
+                        return array_only($row, $this->exportColumns);
+                    }
+
+                    return $row;
+                }, $decoratedData);
+
+                $sheet->fromArray($results);
             });
         });
     }
@@ -136,6 +152,17 @@ abstract class DataTableAbstract implements DataTableInterface, DataTableButtons
         $view = $this->printPreview ?: 'datatables::print';
 
         return $this->viewFactory->make($view, compact('data'));
+    }
+
+    /**
+     * Abstract function for html builder.
+     *
+     * @return mixed
+     */
+    public function html()
+    {
+        // optional method if you want to use html builder.
+        // implement on child class.
     }
 
     /**
