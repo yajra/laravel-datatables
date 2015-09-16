@@ -21,12 +21,15 @@ class DatatablesServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Publish config files
-        $this->publishes(
-            [
-                __DIR__ . '/config/config.php' => config_path('datatables.php'),
-            ], 'config'
-        );
+        $this->publishes([
+            __DIR__ . '/config/config.php' => config_path('datatables.php'),
+        ], 'config');
+
+        $this->publishes([
+            __DIR__ . '/resources/assets/buttons.server-side.js' => public_path('vendor/datatables/buttons.server-side.js'),
+        ], 'assets');
+
+        $this->loadViewsFrom(__DIR__ . '/resources/views', 'datatables');
     }
 
     /**

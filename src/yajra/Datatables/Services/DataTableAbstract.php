@@ -18,6 +18,13 @@ abstract class DataTableAbstract implements DataTableInterface, DataTableButtons
     protected $viewFactory;
 
     /**
+     * Datatables print preview view.
+     *
+     * @var string
+     */
+    protected $printPreview;
+
+    /**
      * @param \yajra\Datatables\Datatables $datatables
      * @param \Illuminate\Contracts\View\Factory $viewFactory
      */
@@ -119,11 +126,16 @@ abstract class DataTableAbstract implements DataTableInterface, DataTableButtons
     }
 
     /**
-     * @return string
+     * Display printable view of datatables.
+     *
+     * @return \Illuminate\Contracts\View\View
      */
     public function printPreview()
     {
-        return 'print file';
+        $data = $this->getDecoratedData();
+        $view = $this->printPreview ?: 'datatables::print';
+
+        return $this->viewFactory->make($view, compact('data'));
     }
 
     /**
