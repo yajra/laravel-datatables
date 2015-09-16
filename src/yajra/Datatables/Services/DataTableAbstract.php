@@ -92,18 +92,27 @@ abstract class DataTableAbstract implements DataTableInterface, DataTableButtons
     {
         return app('excel')->create('export', function ($excel) {
             $excel->sheet('exported-data', function ($sheet) {
-                $decoratedData = $this->getDecoratedData();
-                $results = array_map(function ($row) {
-                    if (is_array($this->exportColumns)) {
-                        return array_only($row, $this->exportColumns);
-                    }
-
-                    return $row;
-                }, $decoratedData);
-
-                $sheet->fromArray($results);
+                $sheet->fromArray($this->getDataForExport());
             });
         });
+    }
+
+    /**
+     * Get mapped columns versus final decorated output.
+     *
+     * @return array
+     */
+    protected function getDataForExport()
+    {
+        $decoratedData = $this->getAjaxResponseData();
+
+        return array_map(function ($row) {
+            if (is_array($this->exportColumns)) {
+                return array_only($row, $this->exportColumns);
+            }
+
+            return $row;
+        }, $decoratedData);
     }
 
     /**
@@ -111,7 +120,7 @@ abstract class DataTableAbstract implements DataTableInterface, DataTableButtons
      *
      * @return mixed
      */
-    protected function getDecoratedData()
+    protected function getAjaxResponseData()
     {
         $this->datatables->getRequest()->merge(['length' => -1]);
 
@@ -148,7 +157,7 @@ abstract class DataTableAbstract implements DataTableInterface, DataTableButtons
      */
     public function printPreview()
     {
-        $data = $this->getDecoratedData();
+        $data = $this->getAjaxResponseData();
         $view = $this->printPreview ?: 'datatables::print';
 
         return $this->viewFactory->make($view, compact('data'));
