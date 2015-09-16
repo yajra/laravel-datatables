@@ -79,7 +79,6 @@ abstract class BaseEngine implements DataTableEngine
      */
     protected $query_type;
 
-
     /**
      * Extra/Added columns.
      *
