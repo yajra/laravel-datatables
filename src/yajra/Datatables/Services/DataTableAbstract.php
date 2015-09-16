@@ -15,16 +15,16 @@ abstract class DataTableAbstract implements DataTableInterface, DataTableButtons
     /**
      * @var \Illuminate\Contracts\View\Factory
      */
-    protected $view;
+    protected $viewFactory;
 
     /**
      * @param \yajra\Datatables\Datatables $datatables
-     * @param \Illuminate\Contracts\View\Factory $view
+     * @param \Illuminate\Contracts\View\Factory $viewFactory
      */
-    public function __construct(Datatables $datatables, Factory $view)
+    public function __construct(Datatables $datatables, Factory $viewFactory)
     {
-        $this->datatables = $datatables;
-        $this->view = $view;
+        $this->datatables  = $datatables;
+        $this->viewFactory = $viewFactory;
     }
 
     /**
@@ -37,11 +37,11 @@ abstract class DataTableAbstract implements DataTableInterface, DataTableButtons
      */
     public function render($view, $data = [], $mergeData = [])
     {
-        if ($this->datatables->request->ajax()) {
+        if ($this->datatables->getRequest()->ajax()) {
             return $this->ajax();
         }
 
-        switch ($this->datatables->request->get('action')) {
+        switch ($this->datatables->getRequest()->get('action')) {
             case 'excel':
                 return $this->excel();
 
@@ -55,48 +55,67 @@ abstract class DataTableAbstract implements DataTableInterface, DataTableButtons
                 return $this->printPreview();
 
             default:
-                return $this->view->make($view, $data, $mergeData)->with('dataTable', $this->html());
+                return $this->viewFactory->make($view, $data, $mergeData)->with('dataTable', $this->html());
         }
     }
 
     /**
-     * @return \yajra\Datatables\Html\Builder
-     */
-    public function builder()
-    {
-        return $this->datatables->getHtmlBuilder();
-    }
-
-    /**
-     * @return \yajra\Datatables\Request
-     */
-    public function request()
-    {
-        return $this->datatables->getRequest();
-    }
-
-    /**
-     * @return string
+     * Export results to Excel file.
+     *
+     * @return mixed
      */
     public function excel()
     {
-        return 'excel file';
+        return $this->buildExcelFile()->download('xls');
     }
 
     /**
-     * @return string
+     * Build excel file and prepare for export.
+     *
+     * @return mixed
+     */
+    protected function buildExcelFile()
+    {
+        return app('excel')->create('export', function ($excel) {
+            $excel->sheet('exported-data', function ($sheet) {
+                $sheet->fromArray($this->getDecoratedData());
+            });
+        });
+    }
+
+    /**
+     * Get decorated data as defined in datatables ajax response.
+     *
+     * @return mixed
+     */
+    protected function getDecoratedData()
+    {
+        $this->datatables->getRequest()->merge(['length' => -1]);
+
+        $response = $this->ajax();
+        $data     = $response->getData(true);
+
+        return $data['data'];
+    }
+
+    /**
+     * Export results to CSV file.
+     *
+     * @return mixed
      */
     public function csv()
     {
-        return 'csv file';
+        return $this->buildExcelFile()->download('csv');
     }
 
     /**
-     * @return string
+     * Export results to PDF file.
+     *
+     * @return mixed
      */
     public function pdf()
     {
-        return 'pdf file';
+        return $this->buildExcelFile()->download('pdf');
     }
 
     /**
@@ -105,5 +124,25 @@ abstract class DataTableAbstract implements DataTableInterface, DataTableButtons
     public function printPreview()
     {
         return 'print file';
+    }
+
+    /**
+     * Get Datatables Html Builder instance.
+     *
+     * @return \yajra\Datatables\Html\Builder
+     */
+    public function builder()
+    {
+        return $this->datatables->getHtmlBuilder();
+    }
+
+    /**
+     * Get Datatables Request instance.
+     *
+     * @return \yajra\Datatables\Request
+     */
+    public function request()
+    {
+        return $this->datatables->getRequest();
     }
 }
