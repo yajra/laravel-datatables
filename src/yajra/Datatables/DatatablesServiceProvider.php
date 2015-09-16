@@ -29,6 +29,10 @@ class DatatablesServiceProvider extends ServiceProvider
             __DIR__ . '/resources/assets/buttons.server-side.js' => public_path('vendor/datatables/buttons.server-side.js'),
         ], 'assets');
 
+        $this->publishes([
+            __DIR__ . '/resources/views' => base_path('/resources/views/vendor/datatables'),
+        ], 'views');
+
         $this->loadViewsFrom(__DIR__ . '/resources/views', 'datatables');
     }
 
