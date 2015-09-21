@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v5.11.9
+    - Add fix for QueryBuilder: ORDER BY *. PR #194.
+
 ###v5.11.8
     - Skip search, order and pagination on empty records.
     - Fix #149 and #176 empty collection error when using make(false).
