@@ -249,6 +249,13 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
                     $this->getQueryBuilder(), $method, $parameters, $column, $orderable['direction']
                 );
             } else {
+                /**
+                 * If we perform a select("*"), the ORDER BY clause will look like this:
+                 * ORDER BY * ASC
+                 * which causes a query exception
+                 * The temporary fix is modify `*` column to `id` column 
+                 */
+                if ($column === '*') $column = 'id';
                 $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
             }
         }
