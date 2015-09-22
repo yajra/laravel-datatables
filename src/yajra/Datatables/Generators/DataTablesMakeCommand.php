@@ -29,16 +29,6 @@ class DataTablesMakeCommand extends GeneratorCommand
     protected $type = 'DataTable';
 
     /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function fire()
-    {
-        parent::fire();
-    }
-
-    /**
      * Get the default namespace for the class.
      *
      * @param  string $rootNamespace

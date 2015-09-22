@@ -1,10 +1,10 @@
 <?php
 
-namespace {{namespace}};
+namespace DummyNamespace;
 
 use yajra\Datatables\Contracts\DataTableScopeContract;
 
-class {{class}} implements DataTableScopeContract
+class DummyClass implements DataTableScopeContract
 {
     /**
      * Apply a query scope.

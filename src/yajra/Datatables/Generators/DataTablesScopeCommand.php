@@ -6,7 +6,6 @@ use Illuminate\Console\GeneratorCommand;
 
 class DataTablesScopeCommand extends GeneratorCommand
 {
-
     /**
      * The console command name.
      *
@@ -27,16 +26,6 @@ class DataTablesScopeCommand extends GeneratorCommand
      * @var string
      */
     protected $type = 'DataTable Scope';
-
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function fire()
-    {
-        parent::fire();
-    }
 
     /**
      * Get the default namespace for the class.

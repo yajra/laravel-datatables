@@ -1,11 +1,11 @@
 <?php
 
-namespace {{namespace}};
+namespace DummyNamespace;
 
 use App\User;
 use yajra\Datatables\Services\DataTable;
 
-class {{class}} extends DataTable
+class DummyClass extends DataTable
 {
     // protected $printPreview = 'path-to-print-preview-view';
     // protected $exportColumns = ['id', 'name'];
