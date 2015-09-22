@@ -3,10 +3,12 @@
 namespace {{namespace}};
 
 use App\User;
-use yajra\Datatables\Services\DataTableAbstract;
-use yajra\Datatables\Services\DataTableInterface;
+use yajra\Datatables\Services\DataTableService;
+use yajra\Datatables\Contracts\DataTableButtonsContract;
+use yajra\Datatables\Contracts\DataTableContract;
 
-class {{class}} extends DataTableAbstract implements DataTableInterface, DataTableButtonsInterface
+
+class {{class}} extends DataTableService implements DataTableContract, DataTableButtonsContract
 {
 
     //    protected $printPreview = 'path-to-print-preview-view';

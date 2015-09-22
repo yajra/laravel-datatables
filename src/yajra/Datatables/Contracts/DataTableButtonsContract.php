@@ -1,8 +1,8 @@
 <?php
 
-namespace yajra\Datatables\Services;
+namespace yajra\Datatables\Contracts;
 
-interface DataTableButtonsInterface
+interface DataTableButtonsContract
 {
     /**
      * Export to excel file.

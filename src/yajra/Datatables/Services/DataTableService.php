@@ -3,9 +3,11 @@
 namespace yajra\Datatables\Services;
 
 use Illuminate\Contracts\View\Factory;
+use yajra\Datatables\Contracts\DataTableButtonsContract;
+use yajra\Datatables\Contracts\DataTableContract;
 use yajra\Datatables\Datatables;
 
-abstract class DataTableAbstract implements DataTableInterface, DataTableButtonsInterface
+abstract class DataTableService implements DataTableContract, DataTableButtonsContract
 {
     /**
      * @var \yajra\Datatables\Datatables
