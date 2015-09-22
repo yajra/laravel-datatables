@@ -100,11 +100,21 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      */
     protected function buildExcelFile()
     {
-        return app('excel')->create('export', function ($excel) {
+        return app('excel')->create($this->filename(), function ($excel) {
             $excel->sheet('exported-data', function ($sheet) {
                 $sheet->fromArray($this->getDataForExport());
             });
         });
+    }
+
+    /**
+     * Get filename for export.
+     *
+     * @return string
+     */
+    protected function filename()
+    {
+        return 'export_' . time();
     }
 
     /**
