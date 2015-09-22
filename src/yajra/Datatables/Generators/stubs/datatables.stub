@@ -39,7 +39,7 @@ class {{class}} extends DataTableService implements DataTableContract, DataTable
     }
 
     /**
-     * Get html builder.
+     * Optional method if you want to use html builder.
      *
      * @return \yajra\Datatables\Html\Builder
      */

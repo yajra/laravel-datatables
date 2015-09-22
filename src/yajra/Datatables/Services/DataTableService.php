@@ -174,14 +174,13 @@ abstract class DataTableService implements DataTableContract, DataTableButtonsCo
     }
 
     /**
-     * Abstract function for html builder.
+     * Optional method if you want to use html builder.
      *
      * @return mixed
      */
     public function html()
     {
-        // optional method if you want to use html builder.
-        // implement on child class.
+        return $this->builder();
     }
 
     /**
