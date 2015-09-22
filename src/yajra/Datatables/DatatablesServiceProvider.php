@@ -3,6 +3,7 @@
 namespace yajra\Datatables;
 
 use Illuminate\Support\ServiceProvider;
+use yajra\Datatables\Generators\DataTablesMakeCommand;
 
 class DatatablesServiceProvider extends ServiceProvider
 {
@@ -45,11 +46,13 @@ class DatatablesServiceProvider extends ServiceProvider
     {
         $this->app['datatables'] = $this->app->share(
             function ($app) {
-                $request = $app->make('yajra\Datatables\Request');
+                $request = $app->make(Request::class);
 
                 return new Datatables($request);
             }
         );
+
+        $this->commands(DataTablesMakeCommand::class);
     }
 
     /**

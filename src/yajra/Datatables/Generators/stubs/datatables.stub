@@ -1,0 +1,56 @@
+<?php
+
+namespace {{namespace}};
+
+use App\User;
+use yajra\Datatables\Services\DataTableAbstract;
+use yajra\Datatables\Services\DataTableInterface;
+
+class {{class}} extends DataTableAbstract implements DataTableInterface, DataTableButtonsInterface
+{
+
+    //    protected $printPreview = 'path-to-print-preview-view';
+    //    protected $exportColumns = ['id', 'name'];
+
+    /**
+     * Display ajax response.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function ajax()
+    {
+        return $this->datatables
+            ->of($this->query())
+            ->make(true);
+    }
+
+    /**
+     * Get the query object to be processed by datatables.
+     *
+     * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
+     */
+    public function query()
+    {
+        $users = User::select();
+
+        return $this->applyScopes($users);
+    }
+
+    /**
+     * Get html builder.
+     *
+     * @return \yajra\Datatables\Html\Builder
+     */
+    public function html()
+    {
+        return $this->datatables
+            ->getHtmlBuilder()
+            ->columns([
+                'id',
+            ])
+            ->ajax('')
+            ->parameters([
+                'buttons' => ['csv', 'excel', 'pdf', 'print'],
+            ]);
+    }
+}
