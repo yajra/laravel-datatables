@@ -16,11 +16,11 @@ use Illuminate\Support\Str;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
-use yajra\Datatables\Contracts\DataTableEngine;
+use yajra\Datatables\Contracts\DataTableEngineContract;
 use yajra\Datatables\Helper;
 use yajra\Datatables\Processors\DataProcessor;
 
-abstract class BaseEngine implements DataTableEngine
+abstract class BaseEngine implements DataTableEngineContract
 {
 
     /**
@@ -78,7 +78,6 @@ abstract class BaseEngine implements DataTableEngine
      * @var string
      */
     protected $query_type;
-
 
     /**
      * Extra/Added columns.

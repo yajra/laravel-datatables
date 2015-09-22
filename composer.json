@@ -16,12 +16,16 @@
         "illuminate/view": "~5.0",
         "illuminate/http": "~5.0",
         "illuminate/filesystem": "~5.0",
-        "league/fractal": "0.12.*",
         "laravelcollective/html": "~5.0"
     },
     "require-dev": {
         "mockery/mockery": "~0.9",
         "phpunit/phpunit": "~4.0"
+    },
+    "suggest": {
+      "league/fractal": "0.12.* for transforming of ajax response",
+      "maatwebsite/excel": "^2.0 for DataTables server-side buttons implementation.",
+      "dompdf/dompdf": "^0.6.1 for exporting to PDF files."
     },
     "autoload": {
         "psr-0": {

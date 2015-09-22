@@ -15,11 +15,11 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use yajra\Datatables\Contracts\DataTableEngine;
+use yajra\Datatables\Contracts\DataTableEngineContract;
 use yajra\Datatables\Request;
 use yajra\Datatables\Helper;
 
-class CollectionEngine extends BaseEngine implements DataTableEngine
+class CollectionEngine extends BaseEngine implements DataTableEngineContract
 {
 
     /**

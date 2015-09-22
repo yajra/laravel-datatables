@@ -1,0 +1,61 @@
+<?php
+
+namespace yajra\Datatables\Generators;
+
+use Illuminate\Console\GeneratorCommand;
+
+class DataTablesScopeCommand extends GeneratorCommand
+{
+
+    /**
+     * The console command name.
+     *
+     * @var string
+     */
+    protected $name = 'datatables:scope';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Create a new DataTable Scope class.';
+
+    /**
+     * The type of class being generated.
+     *
+     * @var string
+     */
+    protected $type = 'DataTable Scope';
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function fire()
+    {
+        parent::fire();
+    }
+
+    /**
+     * Get the default namespace for the class.
+     *
+     * @param  string $rootNamespace
+     * @return string
+     */
+    protected function getDefaultNamespace($rootNamespace)
+    {
+        return $rootNamespace . '\DataTables\Scopes';
+    }
+
+    /**
+     * Get the stub file for the generator.
+     *
+     * @return string
+     */
+    protected function getStub()
+    {
+        return __DIR__ . '/stubs/scopes.stub';
+    }
+}

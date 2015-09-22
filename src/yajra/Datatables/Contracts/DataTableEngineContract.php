@@ -2,7 +2,7 @@
 
 namespace yajra\Datatables\Contracts;
 
-interface DataTableEngine
+interface DataTableEngineContract
 {
     /**
      * Get results

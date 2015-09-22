@@ -11,10 +11,10 @@ namespace yajra\Datatables\Engines;
  */
 
 use Illuminate\Database\Eloquent\Builder;
-use yajra\Datatables\Contracts\DataTableEngine;
+use yajra\Datatables\Contracts\DataTableEngineContract;
 use yajra\Datatables\Request;
 
-class EloquentEngine extends QueryBuilderEngine implements DataTableEngine
+class EloquentEngine extends QueryBuilderEngine implements DataTableEngineContract
 {
 
     /**
