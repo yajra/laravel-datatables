@@ -29,6 +29,14 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 - Works with Laravel Dependency Injection and IoC Container.
 - Provides a [DataTable Html Builder](http://datatables.yajrabox.com/html) to help you use the package with less code.
 - Provides XSS filtering function to optionally escape all or specified column values using `escapeColumns('*'\['column'])` method.
+- DataTable as a Service implementation.
+    - Provides DataTable Service.
+    - Provides artisan command for creating a service. `php artisan datatables:make UsersDataTable`
+    - Provides artisan command for creating a DataTable scope. `php artisan datatables:scope ActiveUserScope`
+    - Provides built-in support for server-side buttons. (Formerly TableTools).
+        - Available buttons are `csv, excel, pdf, print`.
+        - Built-in support for exporting to CSV, EXCEL and PDF using [Laravel-Excel](https://github.com/Maatwebsite/Laravel-Excel).
+        - Built-in printer friendly view or create your own by overriding `printPreview()` method.
 
 ## Buy me a beer
 <a href='https://pledgie.com/campaigns/29515'><img alt='Click here to lend your support to: Laravel Datatables and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/29515.png?skin_name=chrome' border='0' ></a>
@@ -39,7 +47,7 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 - [Demo Application](http://datatables.yajrabox.com) is available for artisan's reference.
 
 ## Quick Installation
-**Laravel 5:** `composer require yajra/laravel-datatables-oracle:~5.0`
+**Laravel 5:** `composer require yajra/laravel-datatables-oracle:~6.0`
 
 **Laravel 4:** `composer require yajra/laravel-datatables-oracle:~3.0`
 
@@ -64,11 +72,20 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 
 And that's it! Start building out some awesome DataTables!
 
-## License
+## Contributing
 
-Licensed under the [MIT License](https://github.com/yajra/laravel-datatables/blob/master/LICENSE).
+Please see [CONTRIBUTING](https://github.com/yajra/laravel-datatables/blob/master/CONTRIBUTING.md) for details.
+
+## Security
+
+If you discover any security related issues, please email [aqangeles@gmail.com](mailto:aqangeles@gmail.com) instead of using the issue tracker.
 
 ## Credits
 
 - This project is used to be a fork from [bllim/laravel4-datatables-package](https://github.com/bllim/laravel4-datatables-package).
-- Credits to all the contributors of this package
+- [All Contributors](https://github.com/yajra/laravel-datatables/graphs/contributors)
+
+## License
+
+The MIT License (MIT). Please see [License File](https://github.com/yajra/laravel-datatables/blob/master/LICENSE.md) for more information.
+
