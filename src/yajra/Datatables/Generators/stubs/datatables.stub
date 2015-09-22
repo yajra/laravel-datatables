@@ -7,12 +7,10 @@ use yajra\Datatables\Services\DataTableService;
 use yajra\Datatables\Contracts\DataTableButtonsContract;
 use yajra\Datatables\Contracts\DataTableContract;
 
-
 class {{class}} extends DataTableService implements DataTableContract, DataTableButtonsContract
 {
-
-    //    protected $printPreview = 'path-to-print-preview-view';
-    //    protected $exportColumns = ['id', 'name'];
+    // protected $printPreview = 'path-to-print-preview-view';
+    // protected $exportColumns = ['id', 'name'];
 
     /**
      * Display ajax response.
