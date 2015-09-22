@@ -4,7 +4,7 @@ namespace yajra\Datatables\Generators;
 
 use Illuminate\Console\GeneratorCommand;
 
-class DataTablesMakeCommand extends GeneratorCommand
+class DataTablesScopeCommand extends GeneratorCommand
 {
 
     /**
@@ -12,21 +12,21 @@ class DataTablesMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $name = 'datatables:make';
+    protected $name = 'datatables:scope';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create a new DataTable Service class.';
+    protected $description = 'Create a new DataTable Scope class.';
 
     /**
      * The type of class being generated.
      *
      * @var string
      */
-    protected $type = 'DataTable';
+    protected $type = 'DataTable Scope';
 
     /**
      * Execute the console command.
@@ -46,7 +46,7 @@ class DataTablesMakeCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace . '\DataTables';
+        return $rootNamespace . '\DataTables\Scopes';
     }
 
     /**
@@ -56,6 +56,6 @@ class DataTablesMakeCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        return __DIR__ . '/stubs/datatables.stub';
+        return __DIR__ . '/stubs/scopes.stub';
     }
 }

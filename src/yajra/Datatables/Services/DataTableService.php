@@ -5,6 +5,7 @@ namespace yajra\Datatables\Services;
 use Illuminate\Contracts\View\Factory;
 use yajra\Datatables\Contracts\DataTableButtonsContract;
 use yajra\Datatables\Contracts\DataTableContract;
+use yajra\Datatables\Contracts\DataTableScopeContract;
 use yajra\Datatables\Datatables;
 
 abstract class DataTableService implements DataTableContract, DataTableButtonsContract
@@ -206,12 +207,12 @@ abstract class DataTableService implements DataTableContract, DataTableButtonsCo
     /**
      * Add basic array query scopes.
      *
-     * @param array $scope
+     * @param \yajra\Datatables\Contracts\DataTableScopeContract $scope
      * @return $this
      */
-    public function addScope(array $scope)
+    public function addScope(DataTableScopeContract $scope)
     {
-        $this->scopes = array_merge($this->scopes, $scope);
+        $this->scopes[] = $scope;
 
         return $this;
     }
@@ -224,8 +225,8 @@ abstract class DataTableService implements DataTableContract, DataTableButtonsCo
      */
     public function applyScopes($query)
     {
-        if (count($this->scopes)) {
-            $query->where($this->scopes);
+        foreach ($this->scopes as $scope) {
+            $scope->apply($query);
         }
 
         return $query;

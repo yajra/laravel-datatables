@@ -4,6 +4,7 @@ namespace yajra\Datatables;
 
 use Illuminate\Support\ServiceProvider;
 use yajra\Datatables\Generators\DataTablesMakeCommand;
+use yajra\Datatables\Generators\DataTablesScopeCommand;
 
 class DatatablesServiceProvider extends ServiceProvider
 {
@@ -53,6 +54,7 @@ class DatatablesServiceProvider extends ServiceProvider
         );
 
         $this->commands(DataTablesMakeCommand::class);
+        $this->commands(DataTablesScopeCommand::class);
     }
 
     /**
