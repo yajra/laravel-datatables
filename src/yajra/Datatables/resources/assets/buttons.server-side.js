@@ -61,5 +61,29 @@
         }
     };
 
+    DataTable.ext.buttons.refresh = {
+        className: 'buttons-refresh',
+
+        text: function (dt) {
+            return dt.i18n('buttons.refresh', 'Refresh');
+        },
+
+        action: function (e, dt, button, config) {
+            dt.search('').draw(false);
+        }
+    };
+
+    DataTable.ext.buttons.reload = {
+        className: 'buttons-reload',
+
+        text: function (dt) {
+            return dt.i18n('buttons.reload', 'Reload');
+        },
+
+        action: function (e, dt, button, config) {
+            dt.ajax.reload();
+        }
+    };
+
 
 })(jQuery, jQuery.fn.dataTable);
