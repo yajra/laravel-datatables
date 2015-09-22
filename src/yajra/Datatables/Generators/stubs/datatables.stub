@@ -45,8 +45,7 @@ class {{class}} extends DataTableService implements DataTableContract, DataTable
      */
     public function html()
     {
-        return $this->datatables
-            ->getHtmlBuilder()
+        return $this->builder()
             ->columns([
                 'id',
             ])
