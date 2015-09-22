@@ -8,7 +8,7 @@ use yajra\Datatables\Contracts\DataTableContract;
 use yajra\Datatables\Contracts\DataTableScopeContract;
 use yajra\Datatables\Datatables;
 
-abstract class DataTableService implements DataTableContract, DataTableButtonsContract
+abstract class DataTable implements DataTableContract, DataTableButtonsContract
 {
     /**
      * @var \yajra\Datatables\Datatables
