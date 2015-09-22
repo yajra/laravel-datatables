@@ -32,6 +32,13 @@ abstract class DataTableAbstract implements DataTableInterface, DataTableButtons
     protected $exportColumns = '*';
 
     /**
+     * Query scopes.
+     *
+     * @var array
+     */
+    protected $scopes = [];
+
+    /**
      * @param \yajra\Datatables\Datatables $datatables
      * @param \Illuminate\Contracts\View\Factory $viewFactory
      */
@@ -192,5 +199,33 @@ abstract class DataTableAbstract implements DataTableInterface, DataTableButtons
     public function request()
     {
         return $this->datatables->getRequest();
+    }
+
+    /**
+     * Add basic array query scopes.
+     *
+     * @param array $scope
+     * @return $this
+     */
+    public function addScope(array $scope)
+    {
+        $this->scopes = array_merge($this->scopes, $scope);
+
+        return $this;
+    }
+
+    /**
+     * Apply query scopes.
+     *
+     * @param \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder $query
+     * @return mixed
+     */
+    public function applyScopes($query)
+    {
+        if (count($this->scopes)) {
+            $query->where($this->scopes);
+        }
+
+        return $query;
     }
 }
