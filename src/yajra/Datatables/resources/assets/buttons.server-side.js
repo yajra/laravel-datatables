@@ -85,5 +85,17 @@
         }
     };
 
+    DataTable.ext.buttons.create = {
+        className: 'buttons-create',
+
+        text: function (dt) {
+            return dt.i18n('buttons.create', 'Create');
+        },
+
+        action: function (e, dt, button, config) {
+            window.location = window.location.href + '/create';
+        }
+    };
+
 
 })(jQuery, jQuery.fn.dataTable);
