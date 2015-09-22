@@ -14,6 +14,6 @@ class {{class}} implements DataTableScopeContract
      */
     public function apply($query)
     {
-        // $query->where('id', 1);
+        // return $query->where('id', 1);
     }
 }
