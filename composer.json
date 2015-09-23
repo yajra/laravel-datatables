@@ -28,8 +28,8 @@
       "dompdf/dompdf": "^0.6.1 for exporting to PDF files."
     },
     "autoload": {
-        "psr-0": {
-            "yajra\\Datatables": "src/"
+        "psr-4": {
+            "yajra\\Datatables\\": "src/"
         }
     },
     "minimum-stability": "stable"
