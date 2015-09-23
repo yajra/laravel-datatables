@@ -93,7 +93,7 @@
         },
 
         action: function (e, dt, button, config) {
-            window.location = window.location.href + '/create';
+            window.location = window.location.href.replace(/\/+$/, "") + '/create';
         }
     };
 
