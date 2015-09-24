@@ -61,15 +61,15 @@
         }
     };
 
-    DataTable.ext.buttons.refresh = {
-        className: 'buttons-refresh',
+    DataTable.ext.buttons.reset = {
+        className: 'buttons-reset',
 
         text: function (dt) {
-            return dt.i18n('buttons.refresh', 'Refresh');
+            return dt.i18n('buttons.reset', 'Reset');
         },
 
         action: function (e, dt, button, config) {
-            dt.search('').draw(false);
+            dt.search('').draw();
         }
     };
 
@@ -81,7 +81,7 @@
         },
 
         action: function (e, dt, button, config) {
-            dt.ajax.reload();
+            dt.draw(false);
         }
     };
 
