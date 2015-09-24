@@ -16,9 +16,7 @@
             @foreach($data as $row)
                 <tr>
                     @foreach($row as $key => $value)
-                        @if (is_array($value))
-                            <td>{{ implode(",", $value) }}</td>
-                        @else
+                        @if (is_string($value))
                             <td>{!! $value !!}</td>
                         @endif
                     @endforeach
