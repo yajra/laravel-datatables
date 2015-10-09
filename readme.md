@@ -30,7 +30,7 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 - Provides a [DataTable Html Builder](http://datatables.yajrabox.com/html) to help you use the package with less code.
 - Provides XSS filtering function to optionally escape all or specified column values using `escapeColumns('*'\['column'])` method.
 
-## Laravel 4.2 & DataTable v1.9.x Users 
+## Laravel 4.2 & DataTables v1.9.x Users 
 Most of the latest updates/features are not available on these versions. Please check [L4 Branch](https://github.com/yajra/laravel-datatables/tree/L4) and [L5 DT1.9](https://github.com/yajra/laravel-datatables/tree/L5-DT1.9) for old documentations of its features.
 
 ## Buy me a beer
