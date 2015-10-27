@@ -660,6 +660,9 @@ abstract class BaseEngine implements DataTableEngineContract
 
         if (isset($this->transformer)) {
             $fractal = new Manager();
+            if ($this->request->get('include')) {
+                $fractal->parseIncludes($this->request->get('include'));
+            }
 
             //Get transformer reflection
             //Firs method parameter should be data/object to transform
