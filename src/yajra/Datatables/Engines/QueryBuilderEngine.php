@@ -186,7 +186,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
      */
     public function castColumn($column)
     {
-        $column = Helper::wrapDatabaseValue($this->database, $column);
+        $column = $this->connection->getQueryGrammar()->wrap($column);
         if ($this->database === 'pgsql') {
             $column = 'CAST(' . $column . ' as TEXT)';
         }
