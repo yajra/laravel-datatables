@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v5.11.12
+    - Use connection grammar to wrap columns and table name.
+
 ###v5.11.11
     - Parse includes in fractal. Fix #225.
 
