@@ -78,7 +78,8 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
         // if its a normal query ( no union, having and distinct word )
         // replace the select with static text to improve performance
         if ( ! Str::contains(Str::lower($myQuery->toSql()), ['union', 'having', 'distinct'])) {
-            $myQuery->select($this->connection->raw("'1' as row_count"));
+            $row_count = $this->connection->getQueryGrammar()->wrap('row_count');
+            $myQuery->select($this->connection->raw("'1' as {$row_count}"));
         }
 
         return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
@@ -185,7 +186,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
      */
     public function castColumn($column)
     {
-        $column = Helper::wrapDatabaseValue($this->database, $column);
+        $column = $this->connection->getQueryGrammar()->wrap($column);
         if ($this->database === 'pgsql') {
             $column = 'CAST(' . $column . ' as TEXT)';
         }
