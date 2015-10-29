@@ -86,8 +86,9 @@ class TestDatatablesQueryBuilderEngine extends PHPUnit_Framework_TestCase
         ];
         $builder = m::mock('Illuminate\Database\Query\Builder');
         $builder->shouldReceive('getConnection')->andReturn(m::mock('Illuminate\Database\Connection'));
-        $builder->getConnection()->shouldReceive('getDriverName')->once()->andReturn('dbdriver');
-        $builder->getConnection()->shouldReceive('getTablePrefix')->once()->andReturn('');
+        $connection = $builder->getConnection();
+        $connection->shouldReceive('getDriverName')->once()->andReturn('dbdriver');
+        $connection->shouldReceive('getTablePrefix')->once()->andReturn('');
 
         // setup builder
         $builder->shouldReceive('select')->once()->with(['id', 'name'])->andReturn($builder);
@@ -97,10 +98,12 @@ class TestDatatablesQueryBuilderEngine extends PHPUnit_Framework_TestCase
 
         // count total records
         $builder->shouldReceive('toSql')->times(1)->andReturn('select id, name from users');
-        $builder->shouldReceive('select')->once()->andReturn($builder);
-        $builder->getConnection()->shouldReceive('raw')->once()->andReturn('select \'1\' as row_count');
-        $builder->getConnection()->shouldReceive('table')->once()->andReturn($builder);
-        $builder->getConnection()->shouldReceive('raw')->andReturn('(select id, name from users) count_row_table');
+        $connection->shouldReceive('getQueryGrammar')->andReturn(m::mock('Illuminate\Database\Grammar'));
+        $connection->getQueryGrammar()->shouldReceive('wrap')->andReturn('row_count');
+        $builder->shouldReceive('select')->once()->andReturn('select \'1\' as row_count');
+        $connection->shouldReceive('raw')->once()->andReturn('select \'1\' as row_count');
+        $connection->shouldReceive('table')->once()->andReturn($builder);
+        $connection->shouldReceive('raw')->andReturn('(select id, name from users) count_row_table');
         $builder->shouldReceive('toSql')->once()->andReturn('select id, name from users');
         $builder->shouldReceive('getBindings')->once()->andReturn([]);
         $builder->shouldReceive('setBindings')->once()->with([])->andReturn($builder);
