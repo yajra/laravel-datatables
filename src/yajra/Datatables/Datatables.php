@@ -680,8 +680,8 @@ class Datatables
                     if ($column['orderable'] == "true") {
                         if (! empty($column['name'])) {
                             $this->query->orderBy($column['name'], $order_dir);
-                        } elseif (isset($columns[$order_col])) {
-                            $this->query->orderBy($columns[$order_col], $order_dir);
+                        } elseif (isset($this->columns[$order_col])) {
+                            $this->query->orderBy($this->columns[$order_col], $order_dir);
                         }
                     }
                 } else {
