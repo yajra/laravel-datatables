@@ -703,16 +703,19 @@ class Datatables
      */
     private function getResult()
     {
-        $this->result_object = $this->query->get();
-        if ($this->query_type == 'builder') {
-            $this->result_array = array_map(function ($object) {
-                return (array) $object;
-            }, $this->result_object);
-        } else {
-            $this->result_array = array_map(function ($object) {
-                return (array) $object;
-            }, $this->result_object->toArray());
-        }
+        $cacheKey = sha1($this->query->toSql());
+        $this->result_array = \Cache::get($cacheKey, function() {
+            $this->result_object = $this->query->get();
+            if ($this->query_type == 'builder') {
+                return array_map(function ($object) {
+                    return (array) $object;
+                }, $this->result_object);
+            } else {
+                return array_map(function ($object) {
+                    return (array) $object;
+                }, $this->result_object->toArray());
+            }
+        });
     }
 
     /**
