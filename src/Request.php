@@ -53,13 +53,7 @@ class Request extends IlluminateRequest
      */
     public function isRegex($index)
     {
-        if ($this->columns[$index]['search']['regex'] === 'false') {
-            $return = false;
-        } else {
-            $return = true;
-        }
-
-        return $return;
+        return $this->columns[$index]['search']['regex'] === 'true';
     }
 
     /**
