@@ -202,12 +202,8 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
         $columns = $this->request->get('columns');
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($this->request->isColumnSearchable($i)) {
-                $column = $this->setupColumnName($i);
-                if ($this->request->isRegex($i)) {
-                    $keyword = $this->request->columnKeyword($i);
-                } else {
-                    $keyword = $this->setupKeyword($this->request->columnKeyword($i));
-                }
+                $column  = $this->setupColumnName($i);
+                $keyword = $this->getSearchKeyword($i);
 
                 if (isset($this->columnDef['filter'][$column])) {
                     $method     = $this->columnDef['filter'][$column]['method'];
@@ -237,6 +233,21 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
     }
 
     /**
+     * Get proper keyword to use for search.
+     *
+     * @param int $i
+     * @return string
+     */
+    private function getSearchKeyword($i)
+    {
+        if ($this->request->isRegex($i)) {
+            return $this->request->columnKeyword($i);
+        }
+
+        return $this->setupKeyword($this->request->columnKeyword($i));
+    }
+
+    /**
      * @inheritdoc
      */
     public function ordering()
@@ -254,9 +265,11 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
                  * If we perform a select("*"), the ORDER BY clause will look like this:
                  * ORDER BY * ASC
                  * which causes a query exception
-                 * The temporary fix is modify `*` column to `id` column 
+                 * The temporary fix is modify `*` column to `id` column
                  */
-                if ($column === '*') $column = 'id';
+                if ($column === '*') {
+                    $column = 'id';
+                }
                 $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
             }
         }
