@@ -29,6 +29,7 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 - Works with Laravel Dependency Injection and IoC Container.
 - Provides a [DataTable Html Builder](http://datatables.yajrabox.com/html) to help you use the package with less code.
 - Provides XSS filtering function to optionally escape all or specified column values using `escapeColumns('*'\['column'])` method.
+- Provides Query Logging when application is in debug state. **Important: Make sure that debug is set to false when your code is in production**
 - DataTable as a Service implementation.
     - Provides DataTable Service.
     - Provides artisan command for creating a service. `php artisan datatables:make UsersDataTable`
