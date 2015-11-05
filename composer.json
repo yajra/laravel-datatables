@@ -16,7 +16,7 @@
         "illuminate/view": "~5.0",
         "illuminate/http": "~5.0",
         "illuminate/filesystem": "~5.0",
-        "league/fractal": "0.12.*",
+        "league/fractal": "~0.12",
         "laravelcollective/html": "~5.0"
     },
     "require-dev": {
