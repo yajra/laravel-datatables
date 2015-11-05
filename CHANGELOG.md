@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v5.11.13
+    - Allow fractal v0.12 and up. Fix #237.
+
 ###v5.11.12
     - Use connection grammar to wrap columns and table name.
 
