@@ -681,14 +681,15 @@ class Datatables
                         if (! empty($column['name'])) {
                             $this->query->orderBy($column['name'], $order_dir);
                         } elseif (isset($this->columns[$order_col])) {
-                            $this->query->orderBy($this->columns[$order_col], $order_dir);
+                            $column_name = $this->getColumnName($this->columns[$order_col]);
+                            $this->query->orderBy($column_name, $order_dir);
                         }
                     }
                 } else {
                     if (isset($this->columns[$order_col])) {
                         if ($this->input['columns'][$order_col]['orderable'] == "true") {
-                            $column = $this->getColumnName($this->columns[$order_col]);
-                            $this->query->orderBy($column, $order_dir);
+                            $column_name = $this->getColumnName($this->columns[$order_col]);
+                            $this->query->orderBy($column_name, $order_dir);
                         }
                     }
                 }
