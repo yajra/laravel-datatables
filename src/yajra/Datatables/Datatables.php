@@ -327,9 +327,9 @@ class Datatables
     {
         $query = $this->query;
 
-        // if its a normal query ( no union ) replace the select with static text to improve performance
+        // if its a normal query ( no union, having or distinct ) replace the select with static text to improve performance
         $myQuery = clone $query;
-        if (! preg_match('/UNION/i', strtoupper($myQuery->toSql()))) {
+        if ( ! Str::contains(Str::lower($myQuery->toSql()), ['union', 'having', 'distinct'])) {
             $myQuery->select($this->connection->raw("'1' as row_count"));
         }
 
