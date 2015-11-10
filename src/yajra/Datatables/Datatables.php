@@ -295,7 +295,7 @@ class Datatables
      */
     private function getColumnName($str)
     {
-        $matches = explode(' as ', $str);
+        $matches = explode(' as ', Str::lower($str));
 
         if (! empty($matches)) {
             return array_pop($matches);
