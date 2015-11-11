@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v5.11.14
+    - Sort by a multi-line 'select as' query. PR #245
+
 ###v5.11.13
     - Allow fractal v0.12 and up. Fix #237.
 

@@ -250,10 +250,10 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function extractColumnName($str)
     {
-        preg_match('#^(\S*?)\s+as\s+(\S*?)$#si', $str, $matches);
+        $matches = explode(' as ', Str::lower($str));
 
         if ( ! empty($matches)) {
-            return $matches[2];
+            return array_pop($matches);
         } elseif (strpos($str, '.')) {
             $array = explode('.', $str);
 

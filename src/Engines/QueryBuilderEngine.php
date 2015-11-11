@@ -95,17 +95,17 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
             function ($query) {
                 $keyword = $this->setupKeyword($this->request->keyword());
                 foreach ($this->request->searchableColumnIndex() as $index) {
-                    $column = $this->setupColumnName($index);
+                    $columnName = $this->setupColumnName($index);
 
-                    if (isset($this->columnDef['filter'][$column])) {
-                        $method     = Helper::getOrMethod($this->columnDef['filter'][$column]['method']);
-                        $parameters = $this->columnDef['filter'][$column]['parameters'];
+                    if (isset($this->columnDef['filter'][$columnName])) {
+                        $method     = Helper::getOrMethod($this->columnDef['filter'][$columnName]['method']);
+                        $parameters = $this->columnDef['filter'][$columnName]['parameters'];
                         $this->compileColumnQuery(
-                            $this->getQueryBuilder($query), $method, $parameters, $column, $keyword
+                            $this->getQueryBuilder($query), $method, $parameters, $columnName, $keyword
                         );
                     } else {
-                        $column = $this->prefixColumn($column);
-                        $this->compileGlobalSearch($this->getQueryBuilder($query), $column, $keyword);
+                        $columnName = $this->prefixColumn($columnName);
+                        $this->compileGlobalSearch($this->getQueryBuilder($query), $columnName, $keyword);
                     }
 
                     $this->isFilterApplied = true;
