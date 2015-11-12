@@ -16,7 +16,6 @@ use Illuminate\Support\Str;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Serializer\DataArraySerializer;
-use League\Fractal\Serializer\SerializerAbstract;
 use yajra\Datatables\Contracts\DataTableEngine;
 use yajra\Datatables\Helper;
 use yajra\Datatables\Processors\DataProcessor;
@@ -162,9 +161,9 @@ abstract class BaseEngine implements DataTableEngine
     protected $isFilterApplied = false;
 
     /**
-     * Fractal serializer.
+     * Fractal serializer class.
      *
-     * @var SerializerAbstract
+     * @var string
      */
     protected $serializer;
 
