@@ -8,6 +8,6 @@ return [
     ],
 
     'fractal' => [
-        'serializer' => League\Fractal\Serializer\DataArraySerializer::class,
+        'serializer' => 'League\Fractal\Serializer\DataArraySerializer',
     ],
 ];
