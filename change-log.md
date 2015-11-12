@@ -8,6 +8,16 @@
 
 ##Change Log
 
+###v5.12.0
+    - Added support for Fractal Serializer.
+    - Added config for default serializer.
+    - Note: Should be used along with setTransformer method.
+    - Usage: 
+        return Datatables::of($model)
+            ->setTransformer(ModelTransformer::class)
+            ->setSerializer(ModelSerializer::class)
+            ->make(true);
+    
 ###v5.11.14
     - Sort by a multi-line 'select as' query. PR #245
 
