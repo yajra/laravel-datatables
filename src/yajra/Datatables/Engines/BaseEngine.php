@@ -678,7 +678,7 @@ abstract class BaseEngine implements DataTableEngine
         ];
 
         if (isset($this->transformer)) {
-            $fractal = new Manager();
+            $fractal = app('League\Fractal\Manager');
             if ($this->request->get('include')) {
                 $fractal->parseIncludes($this->request->get('include'));
             }
