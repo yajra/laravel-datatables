@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v5.12.1
+    - Fix support for PHP5.4.
+
 ###v5.12.0
     - Added support for Fractal Serializer.
     - Added config for default serializer.
