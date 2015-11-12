@@ -25,7 +25,7 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 - Extended column filtering via [`filterColumn`](http://yajra.github.io/laravel-datatables/api/source-class-yajra.Datatables.Engines.BaseEngine.html#489-503) API.
 - Extended column ordering via [`orderColumn`](http://yajra.github.io/laravel-datatables/api/source-class-yajra.Datatables.Engines.BaseEngine.html#505-519) API.
 - Extended Query Builder functionality allowing you to filter using Datatables class directly.
-- Decorate your data output using [`league\fractal`](https://github.com/thephpleague/fractal) Transformer.
+- Decorate your data output using [`league\fractal`](https://github.com/thephpleague/fractal) Transformer with Serializer support.
 - Works with Laravel Dependency Injection and IoC Container.
 - Provides a [DataTable Html Builder](http://datatables.yajrabox.com/html) to help you use the package with less code.
 - Provides XSS filtering function to optionally escape all or specified column values using `escapeColumns('*'\['column'])` method.
