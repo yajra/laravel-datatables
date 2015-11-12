@@ -15,14 +15,14 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
-use League\Fractal\TransformerAbstract;
+use League\Fractal\Serializer\DataArraySerializer;
+use League\Fractal\Serializer\SerializerAbstract;
 use yajra\Datatables\Contracts\DataTableEngine;
 use yajra\Datatables\Helper;
 use yajra\Datatables\Processors\DataProcessor;
 
 abstract class BaseEngine implements DataTableEngine
 {
-
     /**
      * Datatables Request object.
      *
@@ -161,6 +161,13 @@ abstract class BaseEngine implements DataTableEngine
      * @var boolean
      */
     protected $isFilterApplied = false;
+
+    /**
+     * Fractal serializer.
+     *
+     * @var SerializerAbstract
+     */
+    protected $serializer;
 
     /**
      * Setup search keyword.
@@ -546,6 +553,19 @@ abstract class BaseEngine implements DataTableEngine
     }
 
     /**
+     * Set fractal serializer class.
+     *
+     * @param string $serializer
+     * @return $this
+     */
+    public function setSerializer($serializer)
+    {
+        $this->serializer = $serializer;
+
+        return $this;
+    }
+
+    /**
      * Organizes works.
      *
      * @param bool $mDataSupport
@@ -664,6 +684,9 @@ abstract class BaseEngine implements DataTableEngine
             if ($this->request->get('include')) {
                 $fractal->parseIncludes($this->request->get('include'));
             }
+
+            $serializer = $this->serializer ?: Config::get('datatables.fractal.serializer', DataArraySerializer::class);
+            $fractal->setSerializer(new $serializer);
 
             //Get transformer reflection
             //Firs method parameter should be data/object to transform
