@@ -30,6 +30,13 @@ abstract class DataTableAbstract implements DataTableInterface, DataTableButtons
      * @var string|array
      */
     protected $exportColumns = '*';
+    
+    /**
+     * List of columns to be printed.
+     *
+     * @var string|array
+     */
+    protected $printColumns = '*';
 
     /**
      * @param \yajra\Datatables\Datatables $datatables
@@ -116,6 +123,24 @@ abstract class DataTableAbstract implements DataTableInterface, DataTableButtons
     }
 
     /**
+     * Get mapped columns versus final decorated output.
+     *
+     * @return array
+     */
+    protected function getDataForPrint()
+    {
+        $decoratedData = $this->getAjaxResponseData();
+
+        return array_map(function ($row) {
+            if (is_array($this->printColumns)) {
+                return array_only($row, $this->printColumns);
+            }
+
+            return $row;
+        }, $decoratedData);
+    }
+
+    /**
      * Get decorated data as defined in datatables ajax response.
      *
      * @return mixed
@@ -157,7 +182,7 @@ abstract class DataTableAbstract implements DataTableInterface, DataTableButtons
      */
     public function printPreview()
     {
-        $data = $this->getAjaxResponseData();
+        $data = $this->getDataForPrint();
         $view = $this->printPreview ?: 'datatables::print';
 
         return $this->viewFactory->make($view, compact('data'));
