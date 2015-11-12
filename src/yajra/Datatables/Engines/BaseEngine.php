@@ -79,7 +79,6 @@ abstract class BaseEngine implements DataTableEngine
      */
     protected $query_type;
 
-
     /**
      * Extra/Added columns.
      *
@@ -109,21 +108,21 @@ abstract class BaseEngine implements DataTableEngine
     protected $autoFilter = true;
 
     /**
-     * Callback to override global search
+     * Callback to override global search.
      *
      * @var \Closure
      */
     protected $filterCallback;
 
     /**
-     * Parameters to passed on filterCallback
+     * Parameters to passed on filterCallback.
      *
      * @var mixed
      */
     protected $filterCallbackParameters;
 
     /**
-     * DT row templates container
+     * DT row templates container.
      *
      * @var array
      */
@@ -149,7 +148,7 @@ abstract class BaseEngine implements DataTableEngine
     protected $prefix;
 
     /**
-     * Database driver used
+     * Database driver used.
      *
      * @var string
      */
