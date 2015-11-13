@@ -33,6 +33,13 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      * @var string|array
      */
     protected $exportColumns = '*';
+    
+    /**
+     * List of columns to be printed.
+     *
+     * @var string|array
+     */
+    protected $printColumns = '*';
 
     /**
      * Query scopes.
@@ -134,7 +141,25 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
             return $row;
         }, $decoratedData);
     }
+    
+    /**
+     * Get mapped columns versus final decorated output.
+     *
+     * @return array
+     */
+    protected function getDataForPrint()
+    {
+        $decoratedData = $this->getAjaxResponseData();
 
+        return array_map(function ($row) {
+            if (is_array($this->printColumns)) {
+                return array_only($row, $this->printColumns);
+            }
+
+            return $row;
+        }, $decoratedData);
+    }
+    
     /**
      * Get decorated data as defined in datatables ajax response.
      *
@@ -177,7 +202,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      */
     public function printPreview()
     {
-        $data = $this->getAjaxResponseData();
+        $data = $this->getDataForPrint();
         $view = $this->printPreview ?: 'datatables::print';
 
         return $this->viewFactory->make($view, compact('data'));
