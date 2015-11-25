@@ -56,20 +56,20 @@ Most of the latest updates/features are not available on these versions. Please 
 **Laravel 4:** `composer require yajra/laravel-datatables-oracle:~3.0`
 
 #### Service Provider
-`yajra\Datatables\DatatablesServiceProvider`
+`Yajra\Datatables\DatatablesServiceProvider`
 
 #### Facade
 **Laravel 4**
-`'Datatables'      => 'yajra\Datatables\Facades\Datatables',`
+`'Datatables'      => 'Yajra\Datatables\Facades\Datatables',`
 
 **Laravel 5**
-`'Datatables'      => 'yajra\Datatables\Datatables',`
+`'Datatables'      => 'Yajra\Datatables\Datatables',`
 
 **Laravel 5.1**
-`'Datatables'      => yajra\Datatables\Datatables::class,`
+`'Datatables'      => Yajra\Datatables\Datatables::class,`
 
 #### Configuration
-**Laravel 5:** `$ php artisan vendor:publish --provider="yajra\Datatables\DatatablesServiceProvider"`
+**Laravel 5:** `$ php artisan vendor:publish --tag=datatables`
 
 **Laravel 4:** `$ php artisan config:publish yajra/laravel-datatables-oracle`
 
