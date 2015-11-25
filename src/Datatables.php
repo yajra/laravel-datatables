@@ -1,6 +1,6 @@
 <?php
 
-namespace yajra\Datatables;
+namespace Yajra\Datatables;
 
 /**
  * Laravel Datatables Package
@@ -13,25 +13,24 @@ namespace yajra\Datatables;
 
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
-use yajra\Datatables\Engines\CollectionEngine;
-use yajra\Datatables\Engines\EloquentEngine;
-use yajra\Datatables\Engines\QueryBuilderEngine;
+use Yajra\Datatables\Engines\CollectionEngine;
+use Yajra\Datatables\Engines\EloquentEngine;
+use Yajra\Datatables\Engines\QueryBuilderEngine;
 
 /**
  * Class Datatables
  *
- * @package yajra\Datatables
+ * @package Yajra\Datatables
  * @method  EloquentEngine eloquent($builder)
  * @method  CollectionEngine collection(Collection $builder)
  * @method  QueryBuilderEngine queryBuilder(QueryBuilder $builder)
  */
 class Datatables
 {
-
     /**
      * Datatables request object.
      *
-     * @var \yajra\Datatables\Request
+     * @var \Yajra\Datatables\Request
      */
     public $request;
 
@@ -45,7 +44,7 @@ class Datatables
     /**
      * Class Constructor
      *
-     * @param \yajra\Datatables\Request $request
+     * @param \Yajra\Datatables\Request $request
      */
     public function __construct(Request $request)
     {
@@ -76,7 +75,7 @@ class Datatables
      * Datatables using Query Builder.
      *
      * @param \Illuminate\Database\Query\Builder $builder
-     * @return \yajra\Datatables\Engines\QueryBuilderEngine
+     * @return \Yajra\Datatables\Engines\QueryBuilderEngine
      */
     public function usingQueryBuilder(QueryBuilder $builder)
     {
@@ -87,7 +86,7 @@ class Datatables
      * Datatables using Collection.
      *
      * @param \Illuminate\Support\Collection $builder
-     * @return \yajra\Datatables\Engines\CollectionEngine
+     * @return \Yajra\Datatables\Engines\CollectionEngine
      */
     public function usingCollection(Collection $builder)
     {
@@ -116,7 +115,7 @@ class Datatables
      * Datatables using Eloquent
      *
      * @param  mixed $builder
-     * @return \yajra\Datatables\Engines\EloquentEngine
+     * @return \Yajra\Datatables\Engines\EloquentEngine
      */
     public function usingEloquent($builder)
     {
@@ -126,17 +125,17 @@ class Datatables
     /**
      * Get html builder class.
      *
-     * @return \yajra\Datatables\Html\Builder
+     * @return \Yajra\Datatables\Html\Builder
      */
     public function getHtmlBuilder()
     {
-        return app('yajra\Datatables\Html\Builder');
+        return app('Yajra\Datatables\Html\Builder');
     }
 
     /**
      * Get request object.
      *
-     * @return \yajra\Datatables\Request|static
+     * @return \Yajra\Datatables\Request|static
      */
     public function getRequest()
     {

@@ -1,13 +1,13 @@
 <?php
 
-namespace yajra\Datatables\Html;
+namespace Yajra\Datatables\Html;
 
 use Illuminate\Support\Fluent;
 
 /**
  * Class Column
  *
- * @package yajra\Datatables\Html
+ * @package Yajra\Datatables\Html
  * @see     https://datatables.net/reference/option/ for possible columns option
  */
 class Column extends Fluent

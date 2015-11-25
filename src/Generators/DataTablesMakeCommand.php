@@ -1,12 +1,11 @@
 <?php
 
-namespace yajra\Datatables\Generators;
+namespace Yajra\Datatables\Generators;
 
 use Illuminate\Console\GeneratorCommand;
 
 class DataTablesMakeCommand extends GeneratorCommand
 {
-
     /**
      * The console command name.
      *

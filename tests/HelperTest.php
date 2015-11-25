@@ -2,11 +2,10 @@
 
 
 use Carbon\Carbon;
-use yajra\Datatables\Helper;
+use Yajra\Datatables\Helper;
 
 class HelperTest extends PHPUnit_Framework_TestCase
 {
-
     public function test_include_in_array()
     {
         $data = ['id' => 1];
@@ -263,5 +262,4 @@ class HelperTest extends PHPUnit_Framework_TestCase
         $result  = Helper::replacePatternWithKeyword($subject, $keyword, '$1');
         $this->assertEquals(['foo in ?', ['bar']], $result);
     }
-
 }

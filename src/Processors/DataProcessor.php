@@ -1,17 +1,16 @@
 <?php
 
-namespace yajra\Datatables\Processors;
+namespace Yajra\Datatables\Processors;
 
-use yajra\Datatables\Helper;
+use Yajra\Datatables\Helper;
 
 /**
  * Class DataProcessor
  *
- * @package yajra\Datatables
+ * @package Yajra\Datatables
  */
 class DataProcessor
 {
-
     /**
      * Columns to escape value.
      *

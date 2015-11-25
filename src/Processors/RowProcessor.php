@@ -1,18 +1,17 @@
 <?php
 
-namespace yajra\Datatables\Processors;
+namespace Yajra\Datatables\Processors;
 
 use Illuminate\Support\Arr;
-use yajra\Datatables\Helper;
+use Yajra\Datatables\Helper;
 
 /**
  * Class RowProcessor
  *
- * @package yajra\Datatables
+ * @package Yajra\Datatables
  */
 class RowProcessor
 {
-
     /**
      * @var mixed
      */
@@ -42,8 +41,8 @@ class RowProcessor
      */
     public function rowValue($attribute, $template)
     {
-        if ( ! empty($template)) {
-            if ( ! is_callable($template) && Arr::get($this->data, $template)) {
+        if (! empty($template)) {
+            if (! is_callable($template) && Arr::get($this->data, $template)) {
                 $this->data[$attribute] = Arr::get($this->data, $template);
             } else {
                 $this->data[$attribute] = Helper::compileContent($template, $this->data, $this->row);

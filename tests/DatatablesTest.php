@@ -1,30 +1,29 @@
 <?php
 
 
-use yajra\Datatables\Datatables;
-use yajra\Datatables\Request;
+use Yajra\Datatables\Datatables;
+use Yajra\Datatables\Request;
 
 class DatatablesTest extends PHPUnit_Framework_TestCase
 {
-
     public function test_get_html_builder()
     {
         $datatables = $this->getDatatables();
         $html       = $datatables->getHtmlBuilder();
 
-        $this->assertInstanceOf('yajra\Datatables\Html\Builder', $html);
+        $this->assertInstanceOf('Yajra\Datatables\Html\Builder', $html);
     }
 
     public function test_get_request()
     {
         $datatables = $this->getDatatables();
-        $request = $datatables->getRequest();
+        $request    = $datatables->getRequest();
 
-        $this->assertInstanceOf('yajra\Datatables\Request', $request);
+        $this->assertInstanceOf('Yajra\Datatables\Request', $request);
     }
 
     /**
-     * @return \yajra\Datatables\Datatables
+     * @return \Yajra\Datatables\Datatables
      */
     protected function getDatatables()
     {

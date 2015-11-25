@@ -1,18 +1,17 @@
 <?php
 
-namespace yajra\Datatables\Html;
+namespace Yajra\Datatables\Html;
 
 use Illuminate\Support\Fluent;
 
 /**
  * Class Parameters
  *
- * @package yajra\Datatables\Html
+ * @package Yajra\Datatables\Html
  * @see     https://datatables.net/reference/option/ for possible columns option
  */
 class Parameters extends Fluent
 {
-
     /**
      * @var array
      */
@@ -22,5 +21,4 @@ class Parameters extends Fluent
         'ajax'       => '',
         'columns'    => []
     ];
-
 }

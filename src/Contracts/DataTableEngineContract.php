@@ -1,6 +1,6 @@
 <?php
 
-namespace yajra\Datatables\Contracts;
+namespace Yajra\Datatables\Contracts;
 
 interface DataTableEngineContract
 {
@@ -63,5 +63,4 @@ interface DataTableEngineContract
      * @return \Illuminate\Http\JsonResponse
      */
     public function make($mDataSupport = false);
-
 }

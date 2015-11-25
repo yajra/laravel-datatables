@@ -1,6 +1,6 @@
 <?php
 
-namespace yajra\Datatables\Facades;
+namespace Yajra\Datatables\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

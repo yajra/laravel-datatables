@@ -1,6 +1,6 @@
 <?php
 
-namespace yajra\Datatables;
+namespace Yajra\Datatables;
 
 use DateTime;
 use Illuminate\Contracts\Support\Arrayable;
@@ -10,7 +10,6 @@ use Illuminate\View\Compilers\BladeCompiler;
 
 class Helper
 {
-
     /**
      * Places item of extra columns into results by care of their order.
      *
@@ -132,7 +131,7 @@ class Helper
      */
     public static function getOrMethod($method)
     {
-        if ( ! Str::contains(Str::lower($method), 'or')) {
+        if (! Str::contains(Str::lower($method), 'or')) {
             return 'or' . ucfirst($method);
         }
 

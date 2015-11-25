@@ -1,6 +1,6 @@
 <?php
 
-namespace yajra\Datatables\Contracts;
+namespace Yajra\Datatables\Contracts;
 
 interface DataTableScopeContract
 {

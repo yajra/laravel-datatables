@@ -1,14 +1,13 @@
 <?php
 
-namespace yajra\Datatables;
+namespace Yajra\Datatables;
 
 use Illuminate\Support\ServiceProvider;
-use yajra\Datatables\Generators\DataTablesMakeCommand;
-use yajra\Datatables\Generators\DataTablesScopeCommand;
+use Yajra\Datatables\Generators\DataTablesMakeCommand;
+use Yajra\Datatables\Generators\DataTablesScopeCommand;
 
 class DatatablesServiceProvider extends ServiceProvider
 {
-
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -23,19 +22,11 @@ class DatatablesServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->publishes([
-            __DIR__ . '/config/config.php' => config_path('datatables.php'),
-        ], 'config');
-
-        $this->publishes([
-            __DIR__ . '/resources/assets/buttons.server-side.js' => public_path('vendor/datatables/buttons.server-side.js'),
-        ], 'assets');
-
-        $this->publishes([
-            __DIR__ . '/resources/views' => base_path('/resources/views/vendor/datatables'),
-        ], 'views');
-
         $this->loadViewsFrom(__DIR__ . '/resources/views', 'datatables');
+
+        $this->publishAssets();
+
+        $this->registerCommands();
     }
 
     /**
@@ -52,9 +43,6 @@ class DatatablesServiceProvider extends ServiceProvider
                 return new Datatables($request);
             }
         );
-
-        $this->commands(DataTablesMakeCommand::class);
-        $this->commands(DataTablesScopeCommand::class);
     }
 
     /**
@@ -65,5 +53,32 @@ class DatatablesServiceProvider extends ServiceProvider
     public function provides()
     {
         return ['datatables'];
+    }
+
+    /**
+     * Publish datatables assets.
+     */
+    private function publishAssets()
+    {
+        $this->publishes([
+            __DIR__ . '/config/config.php' => config_path('datatables.php'),
+        ], 'datatables');
+
+        $this->publishes([
+            __DIR__ . '/resources/assets/buttons.server-side.js' => public_path('vendor/datatables/buttons.server-side.js'),
+        ], 'datatables');
+
+        $this->publishes([
+            __DIR__ . '/resources/views' => base_path('/resources/views/vendor/datatables'),
+        ], 'datatables');
+    }
+
+    /**
+     * Register datatables commands.
+     */
+    private function registerCommands()
+    {
+        $this->commands(DataTablesMakeCommand::class);
+        $this->commands(DataTablesScopeCommand::class);
     }
 }

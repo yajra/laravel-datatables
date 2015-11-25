@@ -1,10 +1,9 @@
 <?php
 
-use yajra\Datatables\Request;
+use Yajra\Datatables\Request;
 
 class RequestTest extends PHPUnit_Framework_TestCase
 {
-
     public function test_check_legacy_code()
     {
         $_GET['sEcho'] = 1;

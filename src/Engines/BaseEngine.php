@@ -1,6 +1,6 @@
 <?php
 
-namespace yajra\Datatables\Engines;
+namespace Yajra\Datatables\Engines;
 
 /*
  * Laravel Datatables Base Engine
@@ -15,16 +15,16 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
-use yajra\Datatables\Contracts\DataTableEngineContract;
-use yajra\Datatables\Helper;
-use yajra\Datatables\Processors\DataProcessor;
+use Yajra\Datatables\Contracts\DataTableEngineContract;
+use Yajra\Datatables\Helper;
+use Yajra\Datatables\Processors\DataProcessor;
 
 abstract class BaseEngine implements DataTableEngineContract
 {
     /**
      * Datatables Request object.
      *
-     * @var \yajra\Datatables\Request
+     * @var \Yajra\Datatables\Request
      */
     public $request;
 
@@ -257,7 +257,7 @@ abstract class BaseEngine implements DataTableEngineContract
     {
         $matches = explode(' as ', Str::lower($str));
 
-        if ( ! empty($matches)) {
+        if (! empty($matches)) {
             return array_pop($matches);
         } elseif (strpos($str, '.')) {
             $array = explode('.', $str);
@@ -320,7 +320,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function getQueryBuilder($instance = null)
     {
-        if ( ! $instance) {
+        if (! $instance) {
             $instance = $this->query;
         }
 
@@ -574,7 +574,7 @@ abstract class BaseEngine implements DataTableEngineContract
         $this->totalRecords = $this->count();
 
         if ($this->totalRecords) {
-            $this->orderRecords( ! $orderFirst);
+            $this->orderRecords(! $orderFirst);
             $this->filterRecords();
             $this->orderRecords($orderFirst);
             $this->paginate();
@@ -598,7 +598,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function orderRecords($skip)
     {
-        if ( ! $skip) {
+        if (! $skip) {
             $this->ordering();
         }
     }

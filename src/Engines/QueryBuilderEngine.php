@@ -1,6 +1,6 @@
 <?php
 
-namespace yajra\Datatables\Engines;
+namespace Yajra\Datatables\Engines;
 
 /**
  * Laravel Datatables Query Builder Engine
@@ -13,15 +13,15 @@ namespace yajra\Datatables\Engines;
 use Closure;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Str;
-use yajra\Datatables\Contracts\DataTableEngineContract;
-use yajra\Datatables\Helper;
-use yajra\Datatables\Request;
+use Yajra\Datatables\Contracts\DataTableEngineContract;
+use Yajra\Datatables\Helper;
+use Yajra\Datatables\Request;
 
 class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
 {
     /**
      * @param \Illuminate\Database\Query\Builder $builder
-     * @param \yajra\Datatables\Request $request
+     * @param \Yajra\Datatables\Request $request
      */
     public function __construct(Builder $builder, Request $request)
     {
@@ -32,7 +32,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
     /**
      * Initialize attributes.
      *
-     * @param  \yajra\Datatables\Request $request
+     * @param  \Yajra\Datatables\Request $request
      * @param  \Illuminate\Database\Query\Builder $builder
      * @param  string $type
      */
@@ -77,7 +77,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
         $myQuery = clone $this->query;
         // if its a normal query ( no union, having and distinct word )
         // replace the select with static text to improve performance
-        if ( ! Str::contains(Str::lower($myQuery->toSql()), ['union', 'having', 'distinct'])) {
+        if (! Str::contains(Str::lower($myQuery->toSql()), ['union', 'having', 'distinct'])) {
             $row_count = $this->connection->getQueryGrammar()->wrap('row_count');
             $myQuery->select($this->connection->raw("'1' as {$row_count}"));
         }
@@ -293,5 +293,4 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
     {
         return $this->query->get();
     }
-
 }

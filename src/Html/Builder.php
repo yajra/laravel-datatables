@@ -1,6 +1,6 @@
 <?php
 
-namespace yajra\Datatables\Html;
+namespace Yajra\Datatables\Html;
 
 use Collective\Html\FormBuilder;
 use Collective\Html\HtmlBuilder;
@@ -13,11 +13,10 @@ use Illuminate\Support\Str;
 /**
  * Class Builder
  *
- * @package yajra\Datatables\Html
+ * @package Yajra\Datatables\Html
  */
 class Builder
 {
-
     /**
      * @var Collection
      */
@@ -145,7 +144,7 @@ class Builder
     /**
      * Add a Column object in collection.
      *
-     * @param \yajra\Datatables\Html\Column $column
+     * @param \Yajra\Datatables\Html\Column $column
      * @return $this
      */
     public function add(Column $column)
@@ -189,7 +188,7 @@ class Builder
      */
     public function setTitle($title, array $attributes)
     {
-        if ( ! isset($attributes['title'])) {
+        if (! isset($attributes['title'])) {
             $attributes['title'] = $this->getQualifiedTitle($title);
         }
 

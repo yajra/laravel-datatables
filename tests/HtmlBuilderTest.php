@@ -1,8 +1,8 @@
 <?php
 
-use yajra\Datatables\Datatables;
-use yajra\Datatables\Html\Column;
-use yajra\Datatables\Request;
+use Yajra\Datatables\Datatables;
+use Yajra\Datatables\Html\Column;
+use Yajra\Datatables\Request;
 
 require_once 'helper.php';
 
@@ -17,9 +17,9 @@ class HtmlBuilderTest extends PHPUnit_Framework_TestCase
         $builder->form->shouldReceive('checkbox')->once()->andReturn('<input type="checkbox "id"="dataTablesCheckbox"/>');
         $builder->addCheckbox(['id' => 'foo'])
             ->columns(['foo', 'bar' => ['data' => 'foo']])
-            ->addColumn(['name' => 'id', 'data' => 'id', 'title' => 'Id'])
+            ->addColumn(['name'      => 'id', 'data' => 'id', 'title' => 'Id'])
             ->add(new Column(['name' => 'a', 'data' => 'a', 'title' => 'A']))
-            ->addAction(['title' => 'Options'])
+            ->addAction(['title'     => 'Options'])
             ->ajax('ajax-url')
             ->parameters(['bFilter' => false]);
         $table = $builder->table(['id' => 'foo']);
@@ -35,7 +35,7 @@ class HtmlBuilderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \yajra\Datatables\Datatables
+     * @return \Yajra\Datatables\Datatables
      */
     protected function getDatatables()
     {
@@ -43,5 +43,4 @@ class HtmlBuilderTest extends PHPUnit_Framework_TestCase
 
         return $datatables;
     }
-
 }

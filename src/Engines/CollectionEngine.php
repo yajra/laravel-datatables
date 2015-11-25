@@ -1,6 +1,6 @@
 <?php
 
-namespace yajra\Datatables\Engines;
+namespace Yajra\Datatables\Engines;
 
 /**
  * Laravel Datatables Collection Engine
@@ -15,13 +15,12 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use yajra\Datatables\Contracts\DataTableEngineContract;
-use yajra\Datatables\Request;
-use yajra\Datatables\Helper;
+use Yajra\Datatables\Contracts\DataTableEngineContract;
+use Yajra\Datatables\Request;
+use Yajra\Datatables\Helper;
 
 class CollectionEngine extends BaseEngine implements DataTableEngineContract
 {
-
     /**
      * Collection object
      *
@@ -38,7 +37,7 @@ class CollectionEngine extends BaseEngine implements DataTableEngineContract
 
     /**
      * @param Collection $collection
-     * @param \yajra\Datatables\Request $request
+     * @param \Yajra\Datatables\Request $request
      */
     public function __construct(Collection $collection, Request $request)
     {
@@ -124,7 +123,7 @@ class CollectionEngine extends BaseEngine implements DataTableEngineContract
                 $keyword = $this->request->keyword();
                 foreach ($this->request->searchableColumnIndex() as $index) {
                     $column = $this->getColumnName($index);
-                    if ( ! $value = Arr::get($data, $column)) {
+                    if (! $value = Arr::get($data, $column)) {
                         continue;
                     }
 

@@ -1,17 +1,17 @@
 <?php
 
-namespace yajra\Datatables\Services;
+namespace Yajra\Datatables\Services;
 
 use Illuminate\Contracts\View\Factory;
-use yajra\Datatables\Contracts\DataTableButtonsContract;
-use yajra\Datatables\Contracts\DataTableContract;
-use yajra\Datatables\Contracts\DataTableScopeContract;
-use yajra\Datatables\Datatables;
+use Yajra\Datatables\Contracts\DataTableButtonsContract;
+use Yajra\Datatables\Contracts\DataTableContract;
+use Yajra\Datatables\Contracts\DataTableScopeContract;
+use Yajra\Datatables\Datatables;
 
 abstract class DataTable implements DataTableContract, DataTableButtonsContract
 {
     /**
-     * @var \yajra\Datatables\Datatables
+     * @var \Yajra\Datatables\Datatables
      */
     protected $datatables;
 
@@ -33,7 +33,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      * @var string|array
      */
     protected $exportColumns = '*';
-    
+
     /**
      * List of columns to be printed.
      *
@@ -49,7 +49,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     protected $scopes = [];
 
     /**
-     * @param \yajra\Datatables\Datatables $datatables
+     * @param \Yajra\Datatables\Datatables $datatables
      * @param \Illuminate\Contracts\View\Factory $viewFactory
      */
     public function __construct(Datatables $datatables, Factory $viewFactory)
@@ -141,7 +141,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
             return $row;
         }, $decoratedData);
     }
-    
+
     /**
      * Get mapped columns versus final decorated output.
      *
@@ -159,7 +159,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
             return $row;
         }, $decoratedData);
     }
-    
+
     /**
      * Get decorated data as defined in datatables ajax response.
      *
@@ -221,7 +221,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     /**
      * Get Datatables Html Builder instance.
      *
-     * @return \yajra\Datatables\Html\Builder
+     * @return \Yajra\Datatables\Html\Builder
      */
     public function builder()
     {
@@ -231,7 +231,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     /**
      * Get Datatables Request instance.
      *
-     * @return \yajra\Datatables\Request
+     * @return \Yajra\Datatables\Request
      */
     public function request()
     {
@@ -241,7 +241,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     /**
      * Add basic array query scopes.
      *
-     * @param \yajra\Datatables\Contracts\DataTableScopeContract $scope
+     * @param \Yajra\Datatables\Contracts\DataTableScopeContract $scope
      * @return $this
      */
     public function addScope(DataTableScopeContract $scope)

@@ -1,6 +1,6 @@
 <?php
 
-namespace yajra\Datatables;
+namespace Yajra\Datatables;
 
 use Exception;
 use Illuminate\Http\Request as IlluminateRequest;
@@ -17,9 +17,9 @@ class Request extends IlluminateRequest
      */
     public function checkLegacyCode()
     {
-        if ( ! $this->get('draw') && $this->get('sEcho')) {
+        if (! $this->get('draw') && $this->get('sEcho')) {
             throw new Exception('DataTables legacy code is not supported! Please use DataTables 1.10++ coding convention.');
-        } elseif ( ! $this->get('draw') && ! $this->get('columns')) {
+        } elseif (! $this->get('draw') && ! $this->get('columns')) {
             throw new Exception('Insufficient parameters');
         }
     }
@@ -31,7 +31,7 @@ class Request extends IlluminateRequest
      */
     public function isSearchable()
     {
-        return $this->get('search')['value'] <> '';
+        return $this->get('search')['value'] != '';
     }
 
     /**
@@ -63,7 +63,7 @@ class Request extends IlluminateRequest
      */
     public function orderableColumns()
     {
-        if ( ! $this->isOrderable()) {
+        if (! $this->isOrderable()) {
             return [];
         }
 
@@ -164,5 +164,4 @@ class Request extends IlluminateRequest
     {
         return ! is_null($this->get('start')) && ! is_null($this->get('length')) && $this->get('length') != -1;
     }
-
 }
