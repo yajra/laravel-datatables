@@ -13,7 +13,7 @@
         className: 'buttons-excel',
 
         text: function (dt) {
-            return dt.i18n('buttons.excel', 'Excel');
+            return '<i class="fa fa-file-excel-o"></i> ' + dt.i18n('buttons.excel', 'Excel');
         },
 
         action: function (e, dt, button, config) {
@@ -26,7 +26,7 @@
         className: 'buttons-csv',
 
         text: function (dt) {
-            return dt.i18n('buttons.csv', 'CSV');
+            return '<i class="fa fa-file-excel-o"></i> ' + dt.i18n('buttons.csv', 'CSV');
         },
 
         action: function (e, dt, button, config) {
@@ -39,7 +39,7 @@
         className: 'buttons-pdf',
 
         text: function (dt) {
-            return dt.i18n('buttons.pdf', 'PDF');
+            return '<i class="fa fa-file-pdf-o"></i> ' + dt.i18n('buttons.pdf', 'PDF');
         },
 
         action: function (e, dt, button, config) {
@@ -52,7 +52,7 @@
         className: 'buttons-print',
 
         text: function (dt) {
-            return dt.i18n('buttons.print', 'Print');
+            return  '<i class="fa fa-print"></i> ' + dt.i18n('buttons.print', 'Print');
         },
 
         action: function (e, dt, button, config) {
@@ -65,7 +65,7 @@
         className: 'buttons-reset',
 
         text: function (dt) {
-            return dt.i18n('buttons.reset', 'Reset');
+            return '<i class="fa fa-undo"></i> ' + dt.i18n('buttons.reset', 'Reset');
         },
 
         action: function (e, dt, button, config) {
@@ -77,7 +77,7 @@
         className: 'buttons-reload',
 
         text: function (dt) {
-            return dt.i18n('buttons.reload', 'Reload');
+            return '<i class="fa fa-refresh"></i> ' + dt.i18n('buttons.reload', 'Reload');
         },
 
         action: function (e, dt, button, config) {
@@ -89,13 +89,11 @@
         className: 'buttons-create',
 
         text: function (dt) {
-            return dt.i18n('buttons.create', 'Create');
+            return '<i class="fa fa-plus"></i> ' + dt.i18n('buttons.create', 'Create');
         },
 
         action: function (e, dt, button, config) {
             window.location = window.location.href.replace(/\/+$/, "") + '/create';
         }
     };
-
-
 })(jQuery, jQuery.fn.dataTable);
