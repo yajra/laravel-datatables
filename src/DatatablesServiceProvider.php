@@ -36,6 +36,8 @@ class DatatablesServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->register(\Collective\Html\HtmlServiceProvider::clas);
+
         $this->app['datatables'] = $this->app->share(
             function ($app) {
                 $request = $app->make(Request::class);
