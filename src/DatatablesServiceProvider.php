@@ -2,7 +2,9 @@
 
 namespace Yajra\Datatables;
 
+use Collective\Html\HtmlServiceProvider;
 use Illuminate\Support\ServiceProvider;
+use Maatwebsite\Excel\ExcelServiceProvider;
 use Yajra\Datatables\Generators\DataTablesMakeCommand;
 use Yajra\Datatables\Generators\DataTablesScopeCommand;
 
@@ -36,7 +38,8 @@ class DatatablesServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->register(\Collective\Html\HtmlServiceProvider::clas);
+        $this->app->register(HtmlServiceProvider::class);
+        $this->app->register(ExcelServiceProvider::class);
 
         $this->app['datatables'] = $this->app->share(
             function ($app) {
