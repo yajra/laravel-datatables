@@ -68,7 +68,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      */
     public function render($view, $data = [], $mergeData = [])
     {
-        if ($this->datatables->getRequest()->ajax()) {
+        if ($this->request()->ajax() &&  $this->request()->wantsJson()) {
             return $this->ajax();
         }
 
