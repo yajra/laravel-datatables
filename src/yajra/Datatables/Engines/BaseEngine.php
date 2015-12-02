@@ -325,7 +325,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function getQueryBuilder($instance = null)
     {
-        if ( ! $instance) {
+        if (! $instance) {
             $instance = $this->query;
         }
 
@@ -579,7 +579,7 @@ abstract class BaseEngine implements DataTableEngine
         $this->totalRecords = $this->count();
 
         if ($this->totalRecords) {
-            $this->orderRecords( ! $orderFirst);
+            $this->orderRecords(! $orderFirst);
             $this->filterRecords();
             $this->orderRecords($orderFirst);
             $this->paginate();
@@ -603,7 +603,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function orderRecords($skip)
     {
-        if ( ! $skip) {
+        if (! $skip) {
             $this->ordering();
         }
     }
