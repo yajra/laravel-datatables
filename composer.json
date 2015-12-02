@@ -10,14 +10,14 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
-        "illuminate/support": "~5.1",
-        "illuminate/database": "~5.1",
-        "illuminate/view": "~5.1",
-        "illuminate/http": "~5.1",
-        "illuminate/filesystem": "~5.1",
+        "php": ">=5.5.9",
+        "illuminate/support": "~5.0",
+        "illuminate/database": "~5.0",
+        "illuminate/view": "~5.0",
+        "illuminate/http": "~5.0",
+        "illuminate/filesystem": "~5.0",
         "league/fractal": "~0.12",
-        "laravelcollective/html": "~5.1",
+        "laravelcollective/html": "~5.0",
         "maatwebsite/excel": "^2.0",
         "dompdf/dompdf": "^0.6.1"
     },
