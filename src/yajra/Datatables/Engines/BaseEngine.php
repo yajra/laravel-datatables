@@ -258,7 +258,8 @@ abstract class BaseEngine implements DataTableEngine
         $matches = explode(' as ', Str::lower($str));
 
         if ( ! empty($matches)) {
-            return array_pop($matches);
+            return array_shift($matches);
+//            return array_pop($matches);
         } elseif (strpos($str, '.')) {
             $array = explode('.', $str);
 
