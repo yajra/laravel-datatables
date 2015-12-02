@@ -158,7 +158,7 @@ class Request extends IlluminateRequest
      */
     public function columnName($i)
     {
-        return $this->get('columns')[$i]['name'];
+        return ($columnName = $this->get('columns')[$i]['name']) != '' ? $columnName : $this->get('columns')[$i]['data'];
     }
 
     /**
