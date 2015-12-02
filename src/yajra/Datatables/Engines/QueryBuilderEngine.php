@@ -104,7 +104,6 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
                             $this->getQueryBuilder($query), $method, $parameters, $columnName, $keyword
                         );
                     } else {
-                        //$columnName = $this->prefixColumn($columnName);
                         $this->compileGlobalSearch($this->getQueryBuilder($query), $columnName, $keyword);
                     }
 
@@ -254,7 +253,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
                  * If we perform a select("*"), the ORDER BY clause will look like this:
                  * ORDER BY * ASC
                  * which causes a query exception
-                 * The temporary fix is modify `*` column to `id` column 
+                 * The temporary fix is modify `*` column to `id` column
                  */
                 if ($column === '*') $column = 'id';
                 $this->getQueryBuilder()->orderBy($column, $orderable['direction']);

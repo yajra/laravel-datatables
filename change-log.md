@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v5.12.2
+    - Fix double prefix when using join queries. Fix #272, #273
+
 ###v5.12.1
     - Fix support for PHP5.4.
 
@@ -15,12 +18,12 @@
     - Added support for Fractal Serializer.
     - Added config for default serializer.
     - Note: Should be used along with setTransformer method.
-    - Usage: 
+    - Usage:
         return Datatables::of($model)
             ->setTransformer(ModelTransformer::class)
             ->setSerializer(ModelSerializer::class)
             ->make(true);
-    
+
 ###v5.11.14
     - Sort by a multi-line 'select as' query. PR #245
 
