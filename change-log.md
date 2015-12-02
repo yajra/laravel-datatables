@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v5.12.3
+    - Remove checking of columns - name index and let setupColumnName method to identify the proper column name.
+
 ###v5.12.2
     - Fix double prefix when using join queries. Fix #272, #273
 
