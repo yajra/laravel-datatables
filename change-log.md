@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v5.12.4
+    - Fix searching when aliasing a column. Fix #274.
+
 ###v5.12.3
     - Remove checking of columns - name index and let setupColumnName method to identify the proper column name.
 

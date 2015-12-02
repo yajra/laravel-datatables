@@ -221,14 +221,14 @@ abstract class BaseEngine implements DataTableEngine
      * Setup column name to be use for filtering.
      *
      * @param integer $i
+     * @param bool $wantsAlias
      * @return string
      */
-    public function setupColumnName($i)
+    public function setupColumnName($i, $wantsAlias = false)
     {
         $column = $this->getColumnName($i);
-
         if (Str::contains(Str::upper($column), ' AS ')) {
-            $column = $this->extractColumnName($column);
+            $column = $this->extractColumnName($column, $wantsAlias);
         }
 
         return $column;
@@ -251,14 +251,19 @@ abstract class BaseEngine implements DataTableEngine
      * Get column name from string.
      *
      * @param string $str
+     * @param bool $wantsAlias
      * @return string
      */
-    public function extractColumnName($str)
+    public function extractColumnName($str, $wantsAlias)
     {
         $matches = explode(' as ', Str::lower($str));
 
-        if ( ! empty($matches)) {
-            return array_pop($matches);
+        if (! empty($matches)) {
+            if ($wantsAlias) {
+                return array_pop($matches);
+            } else {
+                return array_shift($matches);
+            }
         } elseif (strpos($str, '.')) {
             $array = explode('.', $str);
 
@@ -320,7 +325,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function getQueryBuilder($instance = null)
     {
-        if ( ! $instance) {
+        if (! $instance) {
             $instance = $this->query;
         }
 
@@ -574,7 +579,7 @@ abstract class BaseEngine implements DataTableEngine
         $this->totalRecords = $this->count();
 
         if ($this->totalRecords) {
-            $this->orderRecords( ! $orderFirst);
+            $this->orderRecords(! $orderFirst);
             $this->filterRecords();
             $this->orderRecords($orderFirst);
             $this->paginate();
@@ -598,7 +603,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function orderRecords($skip)
     {
-        if ( ! $skip) {
+        if (! $skip) {
             $this->ordering();
         }
     }
