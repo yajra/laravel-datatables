@@ -128,7 +128,7 @@ class Request extends IlluminateRequest
     {
         $columns = $this->get('columns');
         if ($column_search) {
-            return $columns[$i]['searchable'] == 'true' && $columns[$i]['search']['value'] != '' && ! empty($columns[$i]['name']);
+            return $columns[$i]['searchable'] == 'true' && $columns[$i]['search']['value'] != '';
         }
 
         return $columns[$i]['searchable'] == 'true';
