@@ -104,7 +104,6 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
                             $this->getQueryBuilder($query), $method, $parameters, $columnName, $keyword
                         );
                     } else {
-                        $columnName = $this->prefixColumn($columnName);
                         $this->compileGlobalSearch($this->getQueryBuilder($query), $columnName, $keyword);
                     }
 
