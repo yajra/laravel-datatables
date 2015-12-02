@@ -3,12 +3,13 @@
 namespace DummyNamespace;
 
 use App\User;
-use yajra\Datatables\Services\DataTable;
+use Yajra\Datatables\Services\DataTable;
 
 class DummyClass extends DataTable
 {
-    // protected $printPreview = 'path-to-print-preview-view';
+    // protected $printPreview  = 'path-to-print-preview-view';
     // protected $exportColumns = ['id', 'name'];
+    // protected $printColumns  = '*';
 
     /**
      * Display ajax response.
@@ -37,7 +38,7 @@ class DummyClass extends DataTable
     /**
      * Optional method if you want to use html builder.
      *
-     * @return \yajra\Datatables\Html\Builder
+     * @return \Yajra\Datatables\Html\Builder
      */
     public function html()
     {
