@@ -39,7 +39,7 @@ This package is created to handle [server-side](https://www.datatables.net/manua
         - Built-in support for exporting to CSV, EXCEL and PDF using [Laravel-Excel](https://github.com/Maatwebsite/Laravel-Excel).
         - Built-in printer friendly view or create your own by overriding `printPreview()` method.
 
-## Laravel 4.2 & DataTables v1.9.x Users 
+## Laravel 4.2 & DataTables v1.9.x Users
 Most of the latest updates/features are not available on these versions. Please check [L4 Branch](https://github.com/yajra/laravel-datatables/tree/L4) and [L5 DT1.9](https://github.com/yajra/laravel-datatables/tree/L5-DT1.9) for old documentations of its features.
 
 ## Buy me a beer
@@ -60,7 +60,7 @@ Most of the latest updates/features are not available on these versions. Please 
 
 #### Facade
 **Laravel 4**
-`'Datatables'      => 'Yajra\Datatables\Facades\Datatables',`
+`'Datatables'      => 'yajra\Datatables\Facades\Datatables',`
 
 **Laravel 5**
 `'Datatables'      => 'Yajra\Datatables\Datatables',`
