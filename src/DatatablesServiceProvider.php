@@ -94,9 +94,6 @@ class DatatablesServiceProvider extends ServiceProvider
     {
         $loader = \Illuminate\Foundation\AliasLoader::getInstance();
         $loader->alias('Datatables', \Yajra\Datatables\Facades\Datatables::class);
-        $loader->alias('Form', \Collective\Html\FormFacade::class);
-        $loader->alias('HTML', \Collective\Html\HtmlFacade::class);
-        $loader->alias('Excel', \Maatwebsite\Excel\Facades\Excel::class);
     }
 
     /**
