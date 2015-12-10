@@ -6,6 +6,7 @@ use Collective\Html\FormBuilder;
 use Collective\Html\HtmlBuilder;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -114,7 +115,7 @@ class Builder
 
         $parameters = $this->parameterize($args);
 
-        return sprintf('(function(window,$){window.LaravelDataTables=window.LaravelDataTables||{};window.LaravelDataTables["%s"]=$("#%s").DataTable(%s);})(window,jQuery);', $this->tableAttributes['id'], $this->tableAttributes['id'], $parameters);
+        return sprintf(Config::get('datatables.script_template'), $this->tableAttributes['id'], $parameters);
     }
 
     /**
