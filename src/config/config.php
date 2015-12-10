@@ -11,5 +11,5 @@ return [
         'serializer' => 'League\Fractal\Serializer\DataArraySerializer',
     ],
 
-    'script_template' => '(function(window,$){window.LaravelDataTables=window.LaravelDataTables||{};window.LaravelDataTables["%s"]=$("#%s").DataTable(%s);})(window,jQuery);'
+    'script_template' => '(function(window,$){window.LaravelDataTables=window.LaravelDataTables||{};window.LaravelDataTables["%1$s"]=$("#%1$s").DataTable(%2$s);})(window,jQuery);'
 ];

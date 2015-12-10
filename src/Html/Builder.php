@@ -115,7 +115,7 @@ class Builder
 
         $parameters = $this->parameterize($args);
 
-        return sprintf(Config::get('datatables.script_template'), $this->tableAttributes['id'], $this->tableAttributes['id'], $parameters);
+        return sprintf(Config::get('datatables.script_template'), $this->tableAttributes['id'], $parameters);
     }
 
     /**
