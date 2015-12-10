@@ -6,6 +6,7 @@ use Collective\Html\FormBuilder;
 use Collective\Html\HtmlBuilder;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
