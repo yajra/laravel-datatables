@@ -43,31 +43,35 @@ class Helper
      * Determines if content is callable or blade string, processes and returns.
      *
      * @param string|callable $content Pre-processed content
-     * @param mixed $data data to use with blade template
+     * @param array $data data to use with blade template
      * @param mixed $param parameter to call with callable
      * @return string Processed content
      */
-    public static function compileContent($content, $data = null, $param = null)
+    public static function compileContent($content, array $data, $param)
     {
         if (is_string($content)) {
-            return static::compileBlade($content, $data);
+            return static::compileBlade($content, static::getMixedValue($data, $param));
         } elseif (is_callable($content)) {
             return $content($param);
-        } else {
-            return $content;
         }
+
+        return $content;
     }
 
     /**
      * Parses and compiles strings by using Blade Template System.
      *
      * @param string $str
-     * @param array  $data
+     * @param array $data
      * @return string
      * @throws \Exception
      */
     public static function compileBlade($str, $data = [])
     {
+        if (view()->exists($str)) {
+            return view($str, $data)->render();
+        }
+
         $empty_filesystem_instance = new Filesystem();
         $blade                     = new BladeCompiler($empty_filesystem_instance, 'datatables');
         $parsed_string             = $blade->compileString($str);
@@ -85,6 +89,39 @@ class Helper
         ob_end_clean();
 
         return $str;
+    }
+
+    /**
+     * @param  array $data
+     * @param  mixed $param
+     * @return array
+     */
+    public static function getMixedValue(array $data, $param)
+    {
+        $param = self::castToArray($param);
+
+        foreach ($data as $key => $value) {
+            if (isset($param[$key])) {
+                $data[$key] = $param[$key];
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param $param
+     * @return array
+     */
+    public static function castToArray($param)
+    {
+        if ($param instanceof \stdClass) {
+            $param = (array) $param;
+
+            return $param;
+        }
+
+        return $param;
     }
 
     /**
@@ -161,10 +198,8 @@ class Helper
     {
         $data = $row instanceof Arrayable ? $row->toArray() : (array) $row;
         foreach (array_keys($data) as $key) {
-            if (is_object($row)) {
-                $data[$key] = $row->$key;
-            } else {
-                $data[$key] = $row[$key];
+            if (is_object($data[$key]) || is_array($data[$key])) {
+                $data[$key] = self::convertToArray($data[$key]);
             }
         }
 
@@ -202,5 +237,50 @@ class Helper
 
         return $row;
     }
-}
 
+    /**
+     * Build parameters depending on # of arguments passed.
+     *
+     * @param array $args
+     * @return array
+     */
+    public static function buildParameters(array $args)
+    {
+        $parameters = [];
+
+        if (count($args) > 2) {
+            $parameters[] = $args[0];
+            foreach ($args[1] as $param) {
+                $parameters[] = $param;
+            }
+        } else {
+            foreach ($args[0] as $param) {
+                $parameters[] = $param;
+            }
+        }
+
+        return $parameters;
+    }
+
+    /**
+     * Replace all pattern occurrences with keyword
+     *
+     * @param array $subject
+     * @param string $keyword
+     * @param string $pattern
+     * @return array
+     */
+    public static function replacePatternWithKeyword(array $subject, $keyword, $pattern = '$1')
+    {
+        $parameters = [];
+        foreach ($subject as $param) {
+            if (is_array($param)) {
+                $parameters[] = self::replacePatternWithKeyword($param, $keyword, $pattern);
+            } else {
+                $parameters[] = str_replace($pattern, $keyword, $param);
+            }
+        }
+
+        return $parameters;
+    }
+}

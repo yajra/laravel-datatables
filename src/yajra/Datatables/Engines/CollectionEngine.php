@@ -12,10 +12,12 @@ namespace yajra\Datatables\Engines;
 
 use Closure;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use yajra\Datatables\Contracts\DataTableEngine;
 use yajra\Datatables\Request;
+use yajra\Datatables\Helper;
 
 class CollectionEngine extends BaseEngine implements DataTableEngine
 {
@@ -43,7 +45,7 @@ class CollectionEngine extends BaseEngine implements DataTableEngine
         $this->request             = $request;
         $this->collection          = $collection;
         $this->original_collection = $collection;
-        $this->columns             = array_keys($this->serialize((array) $collection->first()));
+        $this->columns             = array_keys($this->serialize($collection->first()));
     }
 
     /**
@@ -54,7 +56,7 @@ class CollectionEngine extends BaseEngine implements DataTableEngine
      */
     protected function serialize($collection)
     {
-        return $collection instanceof Arrayable ? $collection->toArray() : $collection;
+        return $collection instanceof Arrayable ? $collection->toArray() : (array) $collection;
     }
 
     /**
@@ -95,7 +97,9 @@ class CollectionEngine extends BaseEngine implements DataTableEngine
             $column           = $this->getColumnName($orderable['column']);
             $this->collection = $this->collection->sortBy(
                 function ($row) use ($column) {
-                    return $row[$column];
+                    $data = $this->serialize($row);
+
+                    return Arr::get($data, $column);
                 }
             );
 
@@ -120,15 +124,14 @@ class CollectionEngine extends BaseEngine implements DataTableEngine
                 $keyword = $this->request->keyword();
                 foreach ($this->request->searchableColumnIndex() as $index) {
                     $column = $this->getColumnName($index);
-
-                    if ( ! array_key_exists($column, $data)) {
+                    if ( ! $value = Arr::get($data, $column)) {
                         continue;
                     }
 
                     if ($this->isCaseInsensitive()) {
-                        $found[] = Str::contains(Str::lower($data[$column]), Str::lower($keyword));
+                        $found[] = Str::contains(Str::lower($value), Str::lower($keyword));
                     } else {
-                        $found[] = Str::contains($data[$column], $keyword);
+                        $found[] = Str::contains($value, $keyword);
                     }
                 }
 

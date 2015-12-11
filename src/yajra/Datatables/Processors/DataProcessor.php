@@ -2,7 +2,6 @@
 
 namespace yajra\Datatables\Processors;
 
-use Illuminate\Support\Arr;
 use yajra\Datatables\Helper;
 
 /**
@@ -14,9 +13,11 @@ class DataProcessor
 {
 
     /**
-     * @var \yajra\Datatables\Engines\BaseEngine
+     * Columns to escape value.
+     *
+     * @var array
      */
-    protected $engine;
+    private $escapeColumns = [];
 
     /**
      * Processed data output
@@ -28,17 +29,17 @@ class DataProcessor
     /**
      * @var array
      */
-    private $appendColumns;
+    private $appendColumns = [];
 
     /**
      * @var array
      */
-    private $editColumns;
+    private $editColumns = [];
 
     /**
      * @var array
      */
-    private $excessColumns;
+    private $excessColumns = [];
 
     /**
      * @var mixed
@@ -61,6 +62,7 @@ class DataProcessor
         $this->appendColumns = $columnDef['append'];
         $this->editColumns   = $columnDef['edit'];
         $this->excessColumns = $columnDef['excess'];
+        $this->escapeColumns = $columnDef['escape'];
         $this->templates     = $templates;
     }
 
@@ -78,15 +80,12 @@ class DataProcessor
             $value = $this->addColumns($data, $row);
             $value = $this->editColumns($value, $row);
             $value = $this->setupRowVariables($value, $row);
-            if ( ! $object) {
-                $value = Arr::flatten($this->removeExcessColumns($value));
-            } else {
-                $value = $this->removeExcessColumns($value);
-            }
-            $this->output[] = $value;
+            $value = $this->removeExcessColumns($value);
+
+            $this->output[] = $object ? $value : $this->flatten($value);
         }
 
-        return $this->output;
+        return $this->escapeColumns($this->output);
     }
 
     /**
@@ -157,4 +156,68 @@ class DataProcessor
         return $data;
     }
 
+    /**
+     * Flatten array with exceptions.
+     *
+     * @param array $array
+     * @return array
+     */
+    public function flatten(array $array)
+    {
+        $return     = [];
+        $exceptions = ['DT_RowId', 'DT_RowClass', 'DT_RowData', 'DT_RowAttr'];
+
+        foreach ($array as $key => $value) {
+            if (in_array($key, $exceptions)) {
+                $return[$key] = $value;
+            } else {
+                $return[] = $value;
+            }
+        }
+
+        return $return;
+    }
+
+    /**
+     * Escape column values as declared.
+     *
+     * @param array $output
+     * @return array
+     */
+    protected function escapeColumns(array $output)
+    {
+        return array_map(function ($row) {
+            if ($this->escapeColumns == '*') {
+                $row = $this->escapeRow($row, $this->escapeColumns);
+            } else {
+                foreach ($this->escapeColumns as $key) {
+                    if (array_get($row, $key)) {
+                        array_set($row, $key, e(array_get($row, $key)));
+                    }
+                }
+            }
+
+            return $row;
+        }, $output);
+    }
+
+    /**
+     * Escape all values of row.
+     *
+     * @param array $row
+     * @param string|array $escapeColumns
+     * @return array
+     */
+    protected function escapeRow(array $row, $escapeColumns)
+    {
+        foreach ($row as $key => $value) {
+            if (is_array($value)) {
+                $row[$key] = $this->escapeRow($value, $escapeColumns);
+            } else {
+                $row[$key] = e($value);
+            }
+        }
+
+        return $row;
+    }
 }

@@ -19,21 +19,31 @@ use yajra\Datatables\Request;
 
 class QueryBuilderEngine extends BaseEngine implements DataTableEngine
 {
-
     /**
-     * @param Builder $builder
+     * @param \Illuminate\Database\Query\Builder $builder
      * @param \yajra\Datatables\Request $request
      */
     public function __construct(Builder $builder, Request $request)
     {
-        $this->request    = $request;
-        $this->query_type = 'builder';
-        $this->query      = $builder;
-        $this->columns    = $this->query->columns;
-        $this->connection = $this->query->getConnection();
-        $this->prefix     = $this->getQueryBuilder()->getGrammar()->getTablePrefix();
-        $this->database   = $this->connection->getDriverName();
+        $this->query = $builder;
+        $this->init($request, $builder);
+    }
 
+    /**
+     * Initialize attributes.
+     *
+     * @param  \yajra\Datatables\Request $request
+     * @param  \Illuminate\Database\Query\Builder $builder
+     * @param  string $type
+     */
+    protected function init($request, $builder, $type = 'builder')
+    {
+        $this->request    = $request;
+        $this->query_type = $type;
+        $this->columns    = $builder->columns;
+        $this->connection = $builder->getConnection();
+        $this->prefix     = $this->connection->getTablePrefix();
+        $this->database   = $this->connection->getDriverName();
         if ($this->isDebugging()) {
             $this->connection->enableQueryLog();
         }
@@ -65,15 +75,15 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
     public function count()
     {
         $myQuery = clone $this->query;
-        // if its a normal query ( no union and having word ) replace the select with static text to improve performance
-        if ( ! Str::contains(Str::lower($myQuery->toSql()), 'union')
-            && ! Str::contains(Str::lower($myQuery->toSql()), 'having')
-        ) {
-            $myQuery->select($this->connection->raw("'1' as row_count"));
+        // if its a normal query ( no union, having and distinct word )
+        // replace the select with static text to improve performance
+        if ( ! Str::contains(Str::lower($myQuery->toSql()), ['union', 'having', 'distinct'])) {
+            $row_count = $this->connection->getQueryGrammar()->wrap('row_count');
+            $myQuery->select($this->connection->raw("'1' as {$row_count}"));
         }
 
         return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
-            ->setBindings($myQuery->getBindings())->count();
+                                ->setBindings($myQuery->getBindings())->count();
     }
 
     /**
@@ -85,14 +95,16 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
             function ($query) {
                 $keyword = $this->setupKeyword($this->request->keyword());
                 foreach ($this->request->searchableColumnIndex() as $index) {
-                    $column = $this->setupColumnName($index);
+                    $columnName = $this->setupColumnName($index);
 
-                    if (isset($this->columnDef['filter'][$column])) {
-                        $method     = Helper::getOrMethod($this->columnDef['filter'][$column]['method']);
-                        $parameters = $this->columnDef['filter'][$column]['parameters'];
-                        $this->compileFilterColumn($method, $parameters, $column);
+                    if (isset($this->columnDef['filter'][$columnName])) {
+                        $method     = Helper::getOrMethod($this->columnDef['filter'][$columnName]['method']);
+                        $parameters = $this->columnDef['filter'][$columnName]['parameters'];
+                        $this->compileColumnQuery(
+                            $this->getQueryBuilder($query), $method, $parameters, $columnName, $keyword
+                        );
                     } else {
-                        $this->compileGlobalSearch($query, $column, $keyword);
+                        $this->compileGlobalSearch($this->getQueryBuilder($query), $columnName, $keyword);
                     }
 
                     $this->isFilterApplied = true;
@@ -104,31 +116,28 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
     /**
      * Perform filter column on selected field.
      *
+     * @param mixed $query
      * @param string $method
      * @param mixed $parameters
      * @param string $column
+     * @param string $keyword
      */
-    protected function compileFilterColumn($method, $parameters, $column)
+    protected function compileColumnQuery($query, $method, $parameters, $column, $keyword)
     {
-        if (method_exists($this->getQueryBuilder(), $method)
-            && count($parameters) <= with(
-                new \ReflectionMethod(
-                    $this->getQueryBuilder(),
-                    $method
-                )
-            )->getNumberOfParameters()
+        if (method_exists($query, $method)
+            && count($parameters) <= with(new \ReflectionMethod($query, $method))->getNumberOfParameters()
         ) {
             if (Str::contains(Str::lower($method), 'raw')
                 || Str::contains(Str::lower($method), 'exists')
             ) {
                 call_user_func_array(
-                    [$this->getQueryBuilder(), $method],
-                    $this->parameterize($parameters)
+                    [$query, $method],
+                    $this->parameterize($parameters, $keyword)
                 );
             } else {
                 call_user_func_array(
-                    [$this->getQueryBuilder(), $method],
-                    $this->parameterize($column, $parameters)
+                    [$query, $method],
+                    $this->parameterize($column, $parameters, $keyword)
                 );
             }
         }
@@ -142,18 +151,9 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
     protected function parameterize()
     {
         $args       = func_get_args();
-        $parameters = [];
-
-        if (count($args) > 1) {
-            $parameters[] = $args[0];
-            foreach ($args[1] as $param) {
-                $parameters[] = $param;
-            }
-        } else {
-            foreach ($args[0] as $param) {
-                $parameters[] = $param;
-            }
-        }
+        $keyword    = count($args) > 2 ? $args[2] : $args[1];
+        $parameters = Helper::buildParameters($args);
+        $parameters = Helper::replacePatternWithKeyword($parameters, $keyword, '$1');
 
         return $parameters;
     }
@@ -185,7 +185,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
      */
     public function castColumn($column)
     {
-        $column = Helper::wrapDatabaseValue($this->database, $column);
+        $column = $this->connection->getQueryGrammar()->wrap($column);
         if ($this->database === 'pgsql') {
             $column = 'CAST(' . $column . ' as TEXT)';
         }
@@ -201,20 +201,32 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
         $columns = $this->request->get('columns');
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($this->request->isColumnSearchable($i)) {
-                $column  = $this->getColumnName($i);
-                $keyword = $this->setupKeyword($this->request->columnKeyword($i));
+                $column = $this->setupColumnName($i);
+                if ($this->request->isRegex($i)) {
+                    $keyword = $this->request->columnKeyword($i);
+                } else {
+                    $keyword = $this->setupKeyword($this->request->columnKeyword($i));
+                }
 
                 if (isset($this->columnDef['filter'][$column])) {
                     $method     = $this->columnDef['filter'][$column]['method'];
                     $parameters = $this->columnDef['filter'][$column]['parameters'];
-                    $this->compileFilterColumn($method, $parameters, $column);
+                    $this->compileColumnQuery($this->getQueryBuilder(), $method, $parameters, $column, $keyword);
                 } else {
                     $column = $this->castColumn($column);
                     if ($this->isCaseInsensitive()) {
-                        $this->query->whereRaw('LOWER(' . $column . ') LIKE ?', [Str::lower($keyword)]);
+                        if ($this->request->isRegex($i)) {
+                            $this->query->whereRaw('LOWER(' . $column . ') REGEXP ?', [Str::lower($keyword)]);
+                        } else {
+                            $this->query->whereRaw('LOWER(' . $column . ') LIKE ?', [Str::lower($keyword)]);
+                        }
                     } else {
                         $col = strstr($column, '(') ? $this->connection->raw($column) : $column;
-                        $this->query->whereRaw($col . ' LIKE ?', [$keyword]);
+                        if ($this->request->isRegex($i)) {
+                            $this->query->whereRaw($col . ' REGEXP ?', [$keyword]);
+                        } else {
+                            $this->query->whereRaw($col . ' LIKE ?', [$keyword]);
+                        }
                     }
                 }
 
@@ -229,8 +241,23 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
     public function ordering()
     {
         foreach ($this->request->orderableColumns() as $orderable) {
-            $column = $this->getColumnName($orderable['column']);
-            $this->query->orderBy($column, $orderable['direction']);
+            $column = $this->setupColumnName($orderable['column'], true);
+            if (isset($this->columnDef['order'][$column])) {
+                $method     = $this->columnDef['order'][$column]['method'];
+                $parameters = $this->columnDef['order'][$column]['parameters'];
+                $this->compileColumnQuery(
+                    $this->getQueryBuilder(), $method, $parameters, $column, $orderable['direction']
+                );
+            } else {
+                /**
+                 * If we perform a select("*"), the ORDER BY clause will look like this:
+                 * ORDER BY * ASC
+                 * which causes a query exception
+                 * The temporary fix is modify `*` column to `id` column
+                 */
+                if ($column === '*') $column = 'id';
+                $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
+            }
         }
     }
 
@@ -240,7 +267,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
     public function paging()
     {
         $this->query->skip($this->request['start'])
-            ->take((int) $this->request['length'] > 0 ? $this->request['length'] : 10);
+                    ->take((int) $this->request['length'] > 0 ? $this->request['length'] : 10);
     }
 
     /**

@@ -19,13 +19,20 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 - Works with **ALL the DATABASE** supported by Laravel
 - Works with **Oracle Database** using [Laravel-OCI8](https://github.com/yajra/laravel-oci8) package
 - Works with [DataTables](http://datatables.net) v1.10++.
-	- **Note:** DT Legacy code is not supported on v5.x
+    - **Note:** DT Legacy code is not supported on v5.x
 - Works with [DataTables](http://datatables.net) v1.9 and v1.10 legacy code.
-	- **Note:** Use [v4.x](https://github.com/yajra/laravel-datatables-oracle/tree/v4.3.2) for Laravel 5 and [v3.x](https://github.com/yajra/laravel-datatables-oracle/tree/L4) for Laravel 4
+    - **Note:** Use [v4.x](https://github.com/yajra/laravel-datatables-oracle/tree/v4.3.2) for Laravel 5 and [v3.x](https://github.com/yajra/laravel-datatables-oracle/tree/L4) for Laravel 4
+- Extended column filtering via [`filterColumn`](http://yajra.github.io/laravel-datatables/api/source-class-yajra.Datatables.Engines.BaseEngine.html#489-503) API.
+- Extended column ordering via [`orderColumn`](http://yajra.github.io/laravel-datatables/api/source-class-yajra.Datatables.Engines.BaseEngine.html#505-519) API.
 - Extended Query Builder functionality allowing you to filter using Datatables class directly.
-- Decorate your data output using [`league\fractal`](https://github.com/thephpleague/fractal) Transformer.
+- Decorate your data output using [`league\fractal`](https://github.com/thephpleague/fractal) Transformer with Serializer support.
 - Works with Laravel Dependency Injection and IoC Container.
 - Provides a [DataTable Html Builder](http://datatables.yajrabox.com/html) to help you use the package with less code.
+- Provides XSS filtering function to optionally escape all or specified column values using `escapeColumns('*'\['column'])` method.
+- Provides Query Logging when application is in debug state. **Important: Make sure that debug is set to false when your code is in production**
+
+## Laravel 4.2 & DataTables v1.9.x Users 
+Most of the latest updates/features are not available on these versions. Please check [L4 Branch](https://github.com/yajra/laravel-datatables/tree/L4) and [L5 DT1.9](https://github.com/yajra/laravel-datatables/tree/L5-DT1.9) for old documentations of its features.
 
 ## Buy me a beer
 <a href='https://pledgie.com/campaigns/29515'><img alt='Click here to lend your support to: Laravel Datatables and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/29515.png?skin_name=chrome' border='0' ></a>
@@ -45,7 +52,7 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 
 #### Facade
 **Laravel 4**
-`'Datatables'      => 'yajra\Datatables\Datatables',`
+`'Datatables'      => 'yajra\Datatables\Facades\Datatables',`
 
 **Laravel 5**
 `'Datatables'      => 'yajra\Datatables\Datatables',`
@@ -54,7 +61,7 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 `'Datatables'      => yajra\Datatables\Datatables::class,`
 
 #### Configuration
-**Laravel 5:** `$ php artisan vendor:publish`
+**Laravel 5:** `$ php artisan vendor:publish --provider="yajra\Datatables\DatatablesServiceProvider"`
 
 **Laravel 4:** `$ php artisan config:publish yajra/laravel-datatables-oracle`
 
@@ -64,3 +71,8 @@ And that's it! Start building out some awesome DataTables!
 ## License
 
 Licensed under the [MIT License](https://github.com/yajra/laravel-datatables/blob/master/LICENSE).
+
+## Credits
+
+- This project is used to be a fork from [bllim/laravel4-datatables-package](https://github.com/bllim/laravel4-datatables-package).
+- Credits to all the contributors of this package

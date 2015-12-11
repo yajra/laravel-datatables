@@ -6,6 +6,8 @@ use Mockery as m;
 use yajra\Datatables\Datatables;
 use yajra\Datatables\Request;
 
+require_once 'helper.php';
+
 class TestDatatablesQueryBuilderEngine extends PHPUnit_Framework_TestCase
 {
     public function setUp()
@@ -21,6 +23,21 @@ class TestDatatablesQueryBuilderEngine extends PHPUnit_Framework_TestCase
     public function tearDown()
     {
         m::close();
+    }
+
+    public function test_datatables_make_with_data_using_of_method()
+    {
+        $builder = $this->setupBuilder();
+        // set Input variables
+        $this->setupInputVariables();
+
+        $response = Datatables::of($builder)->make();
+
+        $actual   = $response->getContent();
+        $expected = '{"draw":1,"recordsTotal":2,"recordsFiltered":2,"data":[[1,"foo"],[2,"bar"]]}';
+
+        $this->assertInstanceOf('Illuminate\Http\JsonResponse', $response);
+        $this->assertEquals($expected, $actual);
     }
 
     public function test_datatables_make_with_data()
@@ -40,6 +57,23 @@ class TestDatatablesQueryBuilderEngine extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    public function test_datatables_make_with_data_using_alias()
+    {
+        $builder = $this->setupBuilder();
+        // set Input variables
+        $this->setupInputVariables();
+
+        $datatables = new Datatables(Request::capture());
+
+        $response = $datatables->queryBuilder($builder)->make();
+
+        $actual   = $response->getContent();
+        $expected = '{"draw":1,"recordsTotal":2,"recordsFiltered":2,"data":[[1,"foo"],[2,"bar"]]}';
+
+        $this->assertInstanceOf('Illuminate\Http\JsonResponse', $response);
+        $this->assertEquals($expected, $actual);
+    }
+
     protected function setupBuilder($showAllRecords = false)
     {
         Config::shouldReceive('get');
@@ -51,10 +85,10 @@ class TestDatatablesQueryBuilderEngine extends PHPUnit_Framework_TestCase
             ['id' => 2, 'name' => 'bar'],
         ];
         $builder = m::mock('Illuminate\Database\Query\Builder');
-        $builder->shouldReceive('getGrammar')->once()->andReturn($builder);
-        $builder->shouldReceive('getTablePrefix')->once()->andReturn($builder);
         $builder->shouldReceive('getConnection')->andReturn(m::mock('Illuminate\Database\Connection'));
-        $builder->getConnection()->shouldReceive('getDriverName')->once()->andReturn('dbdriver');
+        $connection = $builder->getConnection();
+        $connection->shouldReceive('getDriverName')->once()->andReturn('dbdriver');
+        $connection->shouldReceive('getTablePrefix')->once()->andReturn('');
 
         // setup builder
         $builder->shouldReceive('select')->once()->with(['id', 'name'])->andReturn($builder);
@@ -63,11 +97,13 @@ class TestDatatablesQueryBuilderEngine extends PHPUnit_Framework_TestCase
         $builder->select(['id', 'name'])->from('users');
 
         // count total records
-        $builder->shouldReceive('toSql')->times(2)->andReturn('select id, name from users');
-        $builder->shouldReceive('select')->once()->andReturn($builder);
-        $builder->getConnection()->shouldReceive('raw')->once()->andReturn('select \'1\' as row_count');
-        $builder->getConnection()->shouldReceive('table')->once()->andReturn($builder);
-        $builder->getConnection()->shouldReceive('raw')->andReturn('(select id, name from users) count_row_table');
+        $builder->shouldReceive('toSql')->times(1)->andReturn('select id, name from users');
+        $connection->shouldReceive('getQueryGrammar')->andReturn(m::mock('Illuminate\Database\Grammar'));
+        $connection->getQueryGrammar()->shouldReceive('wrap')->andReturn('row_count');
+        $builder->shouldReceive('select')->once()->andReturn('select \'1\' as row_count');
+        $connection->shouldReceive('raw')->once()->andReturn('select \'1\' as row_count');
+        $connection->shouldReceive('table')->once()->andReturn($builder);
+        $connection->shouldReceive('raw')->andReturn('(select id, name from users) count_row_table');
         $builder->shouldReceive('toSql')->once()->andReturn('select id, name from users');
         $builder->shouldReceive('getBindings')->once()->andReturn([]);
         $builder->shouldReceive('setBindings')->once()->with([])->andReturn($builder);

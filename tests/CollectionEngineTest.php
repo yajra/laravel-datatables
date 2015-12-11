@@ -6,6 +6,8 @@ use Mockery as m;
 use yajra\Datatables\Datatables;
 use yajra\Datatables\Request;
 
+require_once 'helper.php';
+
 class TestDatatablesCollectionEngine extends PHPUnit_Framework_TestCase
 {
     public function setUp()
@@ -21,6 +23,21 @@ class TestDatatablesCollectionEngine extends PHPUnit_Framework_TestCase
     public function tearDown()
     {
         m::close();
+    }
+
+    public function test_datatables_make_with_data_using_of()
+    {
+        $builder = $this->setupBuilder();
+        // set Input variables
+        $this->setupInputVariables();
+
+        $response = Datatables::of($builder)->make();
+
+        $actual   = $response->getContent();
+        $expected = '{"draw":1,"recordsTotal":2,"recordsFiltered":2,"data":[[1,"foo"],[2,"bar"]]}';
+
+        $this->assertInstanceOf('Illuminate\Http\JsonResponse', $response);
+        $this->assertEquals($expected, $actual);
     }
 
     public function test_datatables_make_with_data()
