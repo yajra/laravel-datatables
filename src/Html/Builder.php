@@ -313,10 +313,15 @@ class Builder
     }
 
     /**
+     * Set custom javascript template.
+     *
      * @param string $template
+     * @return $this
      */
     public function setTemplate($template)
     {
         $this->template = $template;
+
+        return $this;
     }
 }
