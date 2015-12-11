@@ -67,15 +67,11 @@ class DatatablesServiceProvider extends ServiceProvider
     {
         $this->registerRequiredProviders();
 
+        $this->app->singleton('datatables', function ($app) {
+            return new Datatables($app->make(Request::class));
+        });
+
         $this->registerAliases();
-
-        $this->app['datatables'] = $this->app->share(
-            function ($app) {
-                $request = $app->make(Request::class);
-
-                return new Datatables($request);
-            }
-        );
     }
 
     /**
@@ -93,7 +89,7 @@ class DatatablesServiceProvider extends ServiceProvider
     private function registerAliases()
     {
         $loader = \Illuminate\Foundation\AliasLoader::getInstance();
-        $loader->alias('Datatables', \Yajra\Datatables\Facades\Datatables::class);
+        $loader->alias('Datatables', \Yajra\Datatables\Datatables::class);
     }
 
     /**

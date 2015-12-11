@@ -62,11 +62,8 @@ Most of the latest updates/features are not available on these versions. Please 
 **Laravel 4**
 `'Datatables'      => 'yajra\Datatables\Facades\Datatables',`
 
-**Laravel 5**
-`'Datatables'      => 'Yajra\Datatables\Datatables',`
-
-**Laravel 5.1**
-`'Datatables'      => Yajra\Datatables\Datatables::class,`
+**Laravel 5++**
+`Datatables` facade are automatically registered as an alias for `Yajra\Datatables\Datatables` class. 
 
 #### Configuration
 **Laravel 5:** `$ php artisan vendor:publish --tag=datatables`
