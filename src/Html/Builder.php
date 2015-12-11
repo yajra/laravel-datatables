@@ -58,6 +58,11 @@ class Builder
     protected $tableAttributes = ['class' => 'table', 'id' => 'dataTableBuilder'];
 
     /**
+     * @var string
+     */
+    protected $template = '';
+
+    /**
      * @var array
      */
     protected $attributes = [];
@@ -114,7 +119,10 @@ class Builder
 
         $parameters = $this->parameterize($args);
 
-        return sprintf('(function(window,$){window.LaravelDataTables=window.LaravelDataTables||{};window.LaravelDataTables["%s"]=$("#%s").DataTable(%s);})(window,jQuery);', $this->tableAttributes['id'], $this->tableAttributes['id'], $parameters);
+        return sprintf(
+            $this->template(),
+            $this->tableAttributes['id'], $parameters
+        );
     }
 
     /**
@@ -126,6 +134,18 @@ class Builder
     public function parameterize($attributes = [])
     {
         return json_encode(new Parameters($attributes));
+    }
+
+    /**
+     * Get javascript template to use.
+     *
+     * @return string
+     */
+    protected function template()
+    {
+        return $this->view->make(
+            $this->template ?: $this->config->get('datatables.script_template', 'datatables::script')
+        )->render();
     }
 
     /**
@@ -290,5 +310,13 @@ class Builder
         $this->attributes = array_merge($this->attributes, $attributes);
 
         return $this;
+    }
+
+    /**
+     * @param string $template
+     */
+    public function setTemplate($template)
+    {
+        $this->template = $template;
     }
 }
