@@ -129,11 +129,18 @@ class Builder
      * Generate datatable js parameters.
      *
      * @param  array $attributes
+     *
      * @return string
      */
     public function parameterize($attributes = [])
     {
-        return json_encode(new Parameters($attributes));
+        $json = json_encode(new Parameters($attributes));
+
+        if(strpos($json, 'function')) {
+            $json = preg_replace('/(")(function\s?\(.*\)\s?\{.*?\})(")/i', '\\2', $json);
+        }
+
+        return $json;
     }
 
     /**
