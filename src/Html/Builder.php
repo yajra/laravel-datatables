@@ -271,6 +271,7 @@ class Builder
                 'data'           => 'action',
                 'name'           => 'action',
                 'title'          => 'Action',
+                'render'         => null,
                 'orderable'      => false,
                 'searchable'     => false,
             ], $attributes

@@ -30,4 +30,26 @@ class Column extends Fluent
 
         parent::__construct($attributes);
     }
+
+    /**
+     * Parse Render
+     *
+     * @param $value
+     *
+     * @return string
+     */
+    public function parseRender($value)
+    {
+        $function_start = "function (data, type, row) { ";
+        $function_end   = " }";
+
+        $return_start = "return ";
+        $return_end = ';';
+
+        $value = value($value);
+
+        $return = $return_start . (starts_with($value, "'") ? $value : "'" . $value . "'") . $return_end;
+
+        return $function_start . $return . $function_end;
+    }
 }
