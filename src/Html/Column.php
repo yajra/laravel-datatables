@@ -20,6 +20,14 @@ class Column extends Fluent
         $attributes['orderable']  = isset($attributes['orderable']) ? $attributes['orderable'] : true;
         $attributes['searchable'] = isset($attributes['searchable']) ? $attributes['searchable'] : true;
 
+        // Allow methods override attribute value
+        foreach($attributes as $attribute => $value) {
+            $method = 'parse' . ucfirst(strtolower($attribute));
+            if(method_exists($this, $method)) {
+                $attributes[$attribute] = $this->$method($value);
+            }
+        }
+
         parent::__construct($attributes);
     }
 }
