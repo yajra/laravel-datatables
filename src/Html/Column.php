@@ -49,6 +49,8 @@ class Column extends Fluent
             $value = view($value)->render();
         }
 
+        $value = preg_replace("/\r|\n/", '', $value);
+
         return $value ?: null;
     }
 }
