@@ -40,19 +40,15 @@ class Column extends Fluent
      */
     public function parseRender($value)
     {
-        if(!$value)
-            return null;
+        $value = $value ?: 'datatables::action';
+        $value = $value ?: $this->config->get('datatables.render_template', 'datatables::action');
 
-        $function_start = "function (data, type, row) { ";
-        $function_end   = " }";
+        if(is_callable($value)) {
+            $value = value($value);
+        } else {
+            $value = view($value)->render();
+        }
 
-        $return_start = "return ";
-        $return_end = ';';
-
-        $value = value($value);
-
-        $return = $return_start . (starts_with($value, "'") ? $value : "'" . $value . "'") . $return_end;
-
-        return $function_start . $return . $function_end;
+        return $value ?: null;
     }
 }
