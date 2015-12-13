@@ -40,6 +40,9 @@ class Column extends Fluent
      */
     public function parseRender($value)
     {
+        if(!$value)
+            return null;
+
         $function_start = "function (data, type, row) { ";
         $function_end   = " }";
 
