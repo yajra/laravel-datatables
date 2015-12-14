@@ -134,11 +134,23 @@ class Builder
      */
     public function parameterize($attributes = [])
     {
-        $json = json_encode(new Parameters($attributes));
+        $parameters = (new Parameters($attributes))->toArray();
+        $column_functions = [];
 
-        if(strpos($json, 'function')) {
-            $json = preg_replace('/(")(function\s?\(.*\)\s?\{.*?\})(")/i', '\\2', $json);
+        foreach($parameters['columns'] as $i => $column) {
+            if(isset($column['render'])) {
+                $column_functions[$i] = $column['render'];
+                $parameters['columns'][$i]['render'] = "#column_function.{$i}#";
+            }
         }
+
+        $json = json_encode($parameters);
+
+        foreach($column_functions as $i => $function) {
+            $json = str_replace("\"#column_function.{$i}#\"", $function, $json);
+        }
+
+
 
         return $json;
     }
