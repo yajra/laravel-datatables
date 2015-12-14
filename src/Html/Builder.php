@@ -150,8 +150,6 @@ class Builder
             $json = str_replace("\"#column_function.{$i}#\"", $function, $json);
         }
 
-
-
         return $json;
     }
 
