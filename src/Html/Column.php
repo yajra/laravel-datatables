@@ -40,7 +40,6 @@ class Column extends Fluent
      */
     public function parseRender($value)
     {
-        $value = $value ?: 'datatables::action';
         $value = $value ?: $this->config->get('datatables.render_template', 'datatables::action');
 
         if(is_callable($value)) {
