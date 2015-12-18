@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
+use League\Fractal\Serializer\DataArraySerializer;
 use Yajra\Datatables\Contracts\DataTableEngineContract;
 use Yajra\Datatables\Helper;
 use Yajra\Datatables\Processors\DataProcessor;
@@ -694,7 +695,7 @@ abstract class BaseEngine implements DataTableEngineContract
                 $fractal->parseIncludes($this->request->get('include'));
             }
 
-            $serializer = $this->serializer ?: Config::get('datatables.fractal.serializer', 'League\Fractal\Serializer\DataArraySerializer');
+            $serializer = $this->serializer ?: Config::get('datatables.fractal.serializer', DataArraySerializer::class);
             $fractal->setSerializer(new $serializer);
 
             //Get transformer reflection
