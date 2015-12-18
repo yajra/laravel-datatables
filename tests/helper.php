@@ -16,6 +16,10 @@ function app($instance)
                 m::mock('Illuminate\Routing\UrlGenerator'),
                 m::mock('Collective\Html\FormBuilder')
             );
+        case 'view':
+            return m::mock('Illuminate\Contracts\View\Factory', function($mock) {
+                $mock->shouldReceive('exists')->andReturn(false);
+            });
     }
 
     return new Datatables(Request::capture());
