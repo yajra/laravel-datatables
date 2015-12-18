@@ -20,6 +20,36 @@ class Column extends Fluent
         $attributes['orderable']  = isset($attributes['orderable']) ? $attributes['orderable'] : true;
         $attributes['searchable'] = isset($attributes['searchable']) ? $attributes['searchable'] : true;
 
+        // Allow methods override attribute value
+        foreach($attributes as $attribute => $value) {
+            $method = 'parse' . ucfirst(strtolower($attribute));
+            if(method_exists($this, $method)) {
+                $attributes[$attribute] = $this->$method($value);
+            }
+        }
+
         parent::__construct($attributes);
+    }
+
+    /**
+     * Parse Render
+     *
+     * @param $value
+     *
+     * @return string
+     */
+    public function parseRender($value)
+    {
+        $value = $value ?: $this->config->get('datatables.render_template', 'datatables::action');
+
+        if(is_callable($value)) {
+            $value = value($value);
+        } else {
+            $value = view($value)->render();
+        }
+
+        $value = preg_replace("/\r|\n/", ' ', $value);
+
+        return $value ?: null;
     }
 }
