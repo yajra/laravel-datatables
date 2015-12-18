@@ -22,8 +22,8 @@
         - [Laravel Excel](https://github.com/Maatwebsite/Laravel-Excel)
         - [Laravel Collective HTML & Forms](https://github.com/LaravelCollective/html)
     - Automatic registration of Datatables facade.
-    - HTML Builder with javascript from template.
-    - HTML Builder column render now accepts a string, view or closure.
+    - HTML Builder with javascript from template. #298 - Credits to @vladkucherov.
+    - HTML Builder column render now accepts a string, view or closure. #300 - Credits to @vladkucherov
     - Add resource on json response by using `->with('key', 'value')` method. #277
 
 ###v5.12.5
