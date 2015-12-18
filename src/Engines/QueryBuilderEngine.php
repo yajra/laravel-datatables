@@ -252,7 +252,10 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
     public function ordering()
     {
         foreach ($this->request->orderableColumns() as $orderable) {
-            $column = $this->setupColumnName($orderable['column'], true);
+            $r_column = $this->request->input('columns')[$orderable['column']];
+            $column   = $r_column['name'];
+            $column   = $column ? $column : $r_column['data'];
+            //$column = $this->setupColumnName($orderable['column'], true);
             if (isset($this->columnDef['order'][$column])) {
                 $method     = $this->columnDef['order'][$column]['method'];
                 $parameters = $this->columnDef['order'][$column]['parameters'];
