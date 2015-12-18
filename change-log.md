@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v5.12.5
+    - Get order column name from the request. Fix #307.
+
 ###v5.12.4
     - Fix searching when aliasing a column. Fix #274.
 
