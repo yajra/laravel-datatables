@@ -167,6 +167,13 @@ abstract class BaseEngine implements DataTableEngineContract
     protected $serializer;
 
     /**
+     * Array of data to append on json response.
+     *
+     * @var array
+     */
+    private $appends;
+
+    /**
      * Setup search keyword.
      *
      * @param  string $value
@@ -675,11 +682,11 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function render($object = false)
     {
-        $output = [
-            'draw'            => (int) $this->request['draw'],
-            'recordsTotal'    => $this->totalRecords,
-            'recordsFiltered' => $this->filteredRecords,
-        ];
+        $output = $this->appends + [
+                'draw'            => (int) $this->request['draw'],
+                'recordsTotal'    => $this->totalRecords,
+                'recordsFiltered' => $this->filteredRecords,
+            ];
 
         if (isset($this->transformer)) {
             $fractal = new Manager();
@@ -799,5 +806,25 @@ abstract class BaseEngine implements DataTableEngineContract
     public function isCaseInsensitive()
     {
         return Config::get('datatables.search.case_insensitive', false);
+    }
+
+    /**
+     * Append data on json response.
+     *
+     * @param mixed $key
+     * @param mixed $value
+     * @return $this
+     */
+    public function with($key, $value = '')
+    {
+        if (is_array($key)) {
+            $this->appends = $key;
+        } elseif (is_callable($value)) {
+            $this->appends[$key] = value($value);
+        } else {
+            $this->appends[$key] = value($value);
+        }
+
+        return $this;
     }
 }
