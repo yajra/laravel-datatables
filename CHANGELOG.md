@@ -8,6 +8,23 @@
 
 ##Change Log
 
+###v6.0.0 - DataTable Service implementation.
+    - Provides DataTable Service.
+    - Provides artisan command for creating a service. php artisan datatables:make UsersDataTable
+    - Provides artisan command for creating a DataTable scope. php artisan datatables:scope ActiveUserScope
+    - Provides built-in support for server-side buttons. (Formerly TableTools).
+    - Available buttons are csv, excel, pdf, print.
+    - Built-in support for exporting to CSV, EXCEL and PDF using Laravel-Excel.
+    - Built-in printer friendly view or create your own by overriding printPreview() method.
+    - Change of namespace from yajra\Datatables to Yajra\Datatables.
+    - Deprecated of() method when using DataTable service.
+    - Automatic registration of required 3rd party providers.
+        - [Laravel Excel](https://github.com/Maatwebsite/Laravel-Excel)
+        - [Laravel Collective HTML & Forms](https://github.com/LaravelCollective/html)
+    - Automatic registration of Datatables facade.
+    - HTML Builder with javascripts from template.
+    - HTML Builder column render now accepts a string, view or closure.
+
 ###v5.12.5
     - Get order column name from the request. Fix #307.
 
