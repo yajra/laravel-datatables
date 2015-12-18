@@ -11,17 +11,19 @@ class HtmlBuilderTest extends PHPUnit_Framework_TestCase
 {
     public function test_generate_table_html()
     {
-        $builder    = app(Builder::class);
+        $builder = app(Builder::class);
         $builder->html->shouldReceive('attributes')->times(2)->andReturn('id="foo"');
-        $builder->form->shouldReceive('checkbox')->once()->andReturn('<input type="checkbox "id"="dataTablesCheckbox"/>');
+        $builder->form->shouldReceive('checkbox')
+                      ->once()
+                      ->andReturn('<input type="checkbox "id"="dataTablesCheckbox"/>');
 
         $builder->addCheckbox(['id' => 'foo'])
-            ->columns(['foo', 'bar' => ['data' => 'foo']])
-            ->addColumn(['name'      => 'id', 'data' => 'id', 'title' => 'Id'])
-            ->add(new Column(['name' => 'a', 'data' => 'a', 'title' => 'A']))
-            ->addAction(['title'     => 'Options'])
-            ->ajax('ajax-url')
-            ->parameters(['bFilter' => false]);
+                ->columns(['foo', 'bar' => ['data' => 'foo']])
+                ->addColumn(['name' => 'id', 'data' => 'id', 'title' => 'Id'])
+                ->add(new Column(['name' => 'a', 'data' => 'a', 'title' => 'A']))
+                ->addAction(['title' => 'Options'])
+                ->ajax('ajax-url')
+                ->parameters(['bFilter' => false]);
         $table = $builder->table(['id' => 'foo']);
         $this->assertEquals('<table id="foo"></table>', $table);
 

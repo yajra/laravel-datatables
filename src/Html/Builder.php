@@ -129,24 +129,23 @@ class Builder
      * Generate datatable js parameters.
      *
      * @param  array $attributes
-     *
      * @return string
      */
     public function parameterize($attributes = [])
     {
-        $parameters = (new Parameters($attributes))->toArray();
+        $parameters       = (new Parameters($attributes))->toArray();
         $column_functions = [];
 
-        foreach($parameters['columns'] as $i => $column) {
-            if(isset($column['render'])) {
-                $column_functions[$i] = $column['render'];
+        foreach ($parameters['columns'] as $i => $column) {
+            if (isset($column['render'])) {
+                $column_functions[$i]                = $column['render'];
                 $parameters['columns'][$i]['render'] = "#column_function.{$i}#";
             }
         }
 
         $json = json_encode($parameters);
 
-        foreach($column_functions as $i => $function) {
+        foreach ($column_functions as $i => $function) {
             $json = str_replace("\"#column_function.{$i}#\"", $function, $json);
         }
 
