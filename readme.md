@@ -70,8 +70,14 @@ Most of the latest updates/features are not available on these versions. Please 
 
 **Laravel 4:** `$ php artisan config:publish yajra/laravel-datatables-oracle`
 
-
 And that's it! Start building out some awesome DataTables!
+
+## Upgrading from v5.x to v6.x
+  - Change all occurrences of `yajra\Datatables` to `Yajra\Datatables`. (Use Sublime's find and replace all for faster update). 
+  - Remove `Datatables` facade registration.
+  - Temporarily comment out `Yajra\Datatables\DatatablesServiceProvider`.
+  - Update package version on your composer.json and use `yajra/laravel-datatables-oracle: ~6.0`
+  - Uncomment the provider `Yajra\Datatables\DatatablesServiceProvider`. 
 
 ## Contributing
 
