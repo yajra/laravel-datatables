@@ -12,5 +12,4 @@ return [
     ],
 
     'script_template' => 'datatables::script',
-    'render_template' => 'datatables::render'
 ];
