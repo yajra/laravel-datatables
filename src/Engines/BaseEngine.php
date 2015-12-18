@@ -172,7 +172,7 @@ abstract class BaseEngine implements DataTableEngineContract
      *
      * @var array
      */
-    private $appends;
+    private $appends = [];
 
     /**
      * Setup search keyword.
@@ -683,11 +683,11 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function render($object = false)
     {
-        $output = $this->appends + [
-                'draw'            => (int) $this->request['draw'],
-                'recordsTotal'    => $this->totalRecords,
-                'recordsFiltered' => $this->filteredRecords,
-            ];
+        $output = array_merge([
+            'draw'            => (int) $this->request['draw'],
+            'recordsTotal'    => $this->totalRecords,
+            'recordsFiltered' => $this->filteredRecords,
+        ], $this->appends);
 
         if (isset($this->transformer)) {
             $fractal = new Manager();
