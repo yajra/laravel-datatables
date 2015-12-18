@@ -21,9 +21,9 @@ class Column extends Fluent
         $attributes['searchable'] = isset($attributes['searchable']) ? $attributes['searchable'] : true;
 
         // Allow methods override attribute value
-        foreach($attributes as $attribute => $value) {
+        foreach ($attributes as $attribute => $value) {
             $method = 'parse' . ucfirst(strtolower($attribute));
-            if(method_exists($this, $method)) {
+            if (method_exists($this, $method)) {
                 $attributes[$attribute] = $this->$method($value);
             }
         }
@@ -32,24 +32,32 @@ class Column extends Fluent
     }
 
     /**
-     * Parse Render
+     * Parse render attribute.
      *
-     * @param $value
-     *
-     * @return string
+     * @param \Closure|string $value
+     * @return string|null
      */
     public function parseRender($value)
     {
-        $value = $value ?: $this->config->get('datatables.render_template', 'datatables::action');
+        $view = app('view');
 
-        if(is_callable($value)) {
-            $value = value($value);
-        } else {
-            $value = view($value)->render();
+        if (is_callable($value)) {
+            return value($value);
+        } elseif ($view->exists($value)) {
+            return $view->make($value)->render();
         }
 
-        $value = preg_replace("/\r|\n/", ' ', $value);
+        return $value ? $this->parseRenderAsString($value) : null;
+    }
 
-        return $value ?: null;
+    /**
+     * Display render value as is.
+     *
+     * @param string $value
+     * @return string
+     */
+    private function parseRenderAsString($value)
+    {
+        return "function(data,type,full,meta){return $value;}";
     }
 }
