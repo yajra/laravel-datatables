@@ -14,6 +14,7 @@ This package is created to handle [server-side](https://www.datatables.net/manua
     - **Eloquent ORM**
     - **Fluent Query Builder**
     - **Collection** [available on v5.x and later]
+- [DataTable Service Implementation (v6.x)](https://github.com/yajra/laravel-datatables/blob/6.0/CHANGELOG.md). 
 - Adding or editing content of columns and removing columns
 - Templating new or current columns via Blade Template Engine or by using Closure
 - Works with **ALL the DATABASE** supported by Laravel
@@ -30,18 +31,10 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 - Provides a [DataTable Html Builder](http://datatables.yajrabox.com/html) to help you use the package with less code.
 - Provides XSS filtering function to optionally escape all or specified column values using `escapeColumns('*'\['column'])` method.
 - Provides Query Logging when application is in debug state. **Important: Make sure that debug is set to false when your code is in production**
-- DataTable as a Service implementation.
-    - Provides DataTable Service.
-    - Provides artisan command for creating a service. `php artisan datatables:make UsersDataTable`
-    - Provides artisan command for creating a DataTable scope. `php artisan datatables:scope ActiveUserScope`
-    - Provides built-in support for server-side buttons. (Formerly TableTools).
-        - Available buttons are `csv, excel, pdf, print`.
-        - Built-in support for exporting to CSV, EXCEL and PDF using [Laravel-Excel](https://github.com/Maatwebsite/Laravel-Excel).
-        - Built-in printer friendly view or create your own by overriding `printPreview()` method.
-
+    
 ## Requirements:
-    - PHP 5.5.9 or later.
-    - Laravel 5.0 and later.
+- PHP 5.5.9 or later.
+- Laravel 5.0 or later.
 
 ## Laravel 4.2 & DataTables v1.9.x Users
 Most of the latest updates/features are not available on these versions. Please check [L4 Branch](https://github.com/yajra/laravel-datatables/tree/L4) and [L5 DT1.9](https://github.com/yajra/laravel-datatables/tree/L5-DT1.9) for old documentations of its features.
