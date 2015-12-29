@@ -26,6 +26,9 @@
         "phpunit/phpunit": "~4.0"
     },
     "autoload": {
+        "files": [
+          "src/fallback.php"
+        ],
         "psr-4": {
             "Yajra\\Datatables\\": "src/"
         }

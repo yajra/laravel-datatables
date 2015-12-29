@@ -8,6 +8,10 @@
 
 ##Change Log
 
+###v6.1.0
+    - Add support for Lumen.
+    - Fixes #317, #318.
+
 ###v6.0.0 - DataTable Service implementation.
     - Provides DataTable Service.
     - Provides artisan command for creating a service. php artisan datatables:make UsersDataTable

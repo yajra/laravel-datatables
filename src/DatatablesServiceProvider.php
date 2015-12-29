@@ -88,8 +88,10 @@ class DatatablesServiceProvider extends ServiceProvider
      */
     private function registerAliases()
     {
-        $loader = \Illuminate\Foundation\AliasLoader::getInstance();
-        $loader->alias('Datatables', \Yajra\Datatables\Datatables::class);
+        if (class_exists('Illuminate\Foundation\AliasLoader')) {
+            $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+            $loader->alias('Datatables', \Yajra\Datatables\Datatables::class);
+        }
     }
 
     /**
