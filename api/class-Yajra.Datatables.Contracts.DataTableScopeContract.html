@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>Class Yajra\Datatables\Html\Column</title>
+	<title>Interface Yajra\Datatables\Contracts\DataTableScopeContract</title>
 
 	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
 
@@ -35,7 +35,7 @@
 					</a>
 
 						<ul>
-				<li>
+				<li class="active">
 					<a href="namespace-Yajra.Datatables.Contracts.html">
 						Contracts					</a>
 
@@ -50,7 +50,7 @@
 						Generators					</a>
 
 						</li>
-				<li class="active">
+				<li>
 					<a href="namespace-Yajra.Datatables.Html.html">
 						Html					</a>
 
@@ -73,13 +73,14 @@
 
 
 		<div id="elements">
-			<h3>Classes</h3>
-			<ul>
-				<li><a href="class-Yajra.Datatables.Html.Builder.html">Builder</a></li>
-				<li class="active"><a href="class-Yajra.Datatables.Html.Column.html">Column</a></li>
-				<li><a href="class-Yajra.Datatables.Html.Parameters.html">Parameters</a></li>
-			</ul>
 
+			<h3>Interfaces</h3>
+			<ul>
+				<li><a href="class-Yajra.Datatables.Contracts.DataTableButtonsContract.html">DataTableButtonsContract</a></li>
+				<li><a href="class-Yajra.Datatables.Contracts.DataTableContract.html">DataTableContract</a></li>
+				<li><a href="class-Yajra.Datatables.Contracts.DataTableEngineContract.html">DataTableEngineContract</a></li>
+				<li class="active"><a href="class-Yajra.Datatables.Contracts.DataTableScopeContract.html">DataTableScopeContract</a></li>
+			</ul>
 
 
 
@@ -104,7 +105,7 @@
 				<a href="index.html" title="Overview"><span>Overview</span></a>
 			</li>
 			<li>
-				<a href="namespace-Yajra.Datatables.Html.html" title="Summary of Yajra\Datatables\Html"><span>Namespace</span></a>
+				<a href="namespace-Yajra.Datatables.Contracts.html" title="Summary of Yajra\Datatables\Contracts"><span>Namespace</span></a>
 			</li>
 			<li class="active">
 <span>Class</span>			</li>
@@ -116,26 +117,10 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class Column</h1>
+	<h1>Interface DataTableScopeContract</h1>
 
 
-	<div class="description">
-	<p>Class Column</p>
-	</div>
 
-	<dl class="tree">
-		<dd style="padding-left:0px">
-Illuminate\Support\Fluent
-			
-			
-		</dd>
-		<dd style="padding-left:30px">
-			<img src="resources/inherit.png" alt="Extended by">
-<b><span>Yajra\Datatables\Html\Column</span></b>			
-			
-			
-		</dd>
-	</dl>
 
 
 
@@ -147,12 +132,10 @@ Illuminate\Support\Fluent
 	<div class="info">
 		
 		
-		<b>Namespace:</b> <a href="namespace-Yajra.html">Yajra</a>\<a href="namespace-Yajra.Datatables.html">Datatables</a>\<a href="namespace-Yajra.Datatables.Html.html">Html</a><br>
-		<b>Package:</b> Yajra\Datatables\Html<br>
+		<b>Namespace:</b> <a href="namespace-Yajra.html">Yajra</a>\<a href="namespace-Yajra.Datatables.html">Datatables</a>\<a href="namespace-Yajra.Datatables.Contracts.html">Contracts</a><br>
+		
 
-				<b>See:</b>
-				https://datatables.net/reference/option/ for possible columns option<br>
-			<b>Located at</b> <a href="source-class-Yajra.Datatables.Html.Column.html#7-63" title="Go to source code">Html/Column.php</a>
+			<b>Located at</b> <a href="source-class-Yajra.Datatables.Contracts.DataTableScopeContract.html#5-14" title="Go to source code">Contracts/DataTableScopeContract.php</a>
 		<br>
 	</div>
 
@@ -160,72 +143,37 @@ Illuminate\Support\Fluent
 
 	<table class="summary methods" id="methods">
 	<caption>Methods summary</caption>
-	<tr data-order="__construct" id="___construct">
+	<tr data-order="apply" id="_apply">
 
 		<td class="attributes"><code>
 			 public 
 
-			
+			mixed
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-Yajra.Datatables.Html.Column.html#15-32" title="Go to source code">__construct</a>( <span>array <var>$attributes</var> = []</span> )</code>
+		<a class="anchor" href="#_apply">#</a>
+		<code><a href="source-class-Yajra.Datatables.Contracts.DataTableScopeContract.html#7-13" title="Go to source code">apply</a>( <span>Illuminate\Database\Query\Builder|Illuminate\Database\Eloquent\Builder <var>$query</var></span> )</code>
 
 		<div class="description short">
-			
+			<p>Apply a query scope.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			
+			<p>Apply a query scope.</p>
 
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$attributes</var></dt>
-					<dd></dd>
-				</dl></div>
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="parseRender" id="_parseRender">
-
-		<td class="attributes"><code>
-			 public 
-
-			string|null
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_parseRender">#</a>
-		<code><a href="source-class-Yajra.Datatables.Html.Column.html#34-51" title="Go to source code">parseRender</a>( <span>Closure|string <var>$value</var></span> )</code>
-
-		<div class="description short">
-			<p>Parse render attribute.</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Parse render attribute.</p>
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$value</var></dt>
+					<dt><var>$query</var></dt>
 					<dd></dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					string|null
+					mixed
 				</div>
 
 

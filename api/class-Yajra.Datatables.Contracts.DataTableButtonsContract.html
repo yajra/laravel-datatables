@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>Class Yajra\Datatables\DatatablesServiceProvider</title>
+	<title>Interface Yajra\Datatables\Contracts\DataTableButtonsContract</title>
 
 	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
 
@@ -35,7 +35,7 @@
 					</a>
 
 						<ul>
-				<li>
+				<li class="active">
 					<a href="namespace-Yajra.Datatables.Contracts.html">
 						Contracts					</a>
 
@@ -73,14 +73,14 @@
 
 
 		<div id="elements">
-			<h3>Classes</h3>
-			<ul>
-				<li><a href="class-Yajra.Datatables.Datatables.html">Datatables</a></li>
-				<li class="active"><a href="class-Yajra.Datatables.DatatablesServiceProvider.html">DatatablesServiceProvider</a></li>
-				<li><a href="class-Yajra.Datatables.Helper.html">Helper</a></li>
-				<li><a href="class-Yajra.Datatables.Request.html">Request</a></li>
-			</ul>
 
+			<h3>Interfaces</h3>
+			<ul>
+				<li class="active"><a href="class-Yajra.Datatables.Contracts.DataTableButtonsContract.html">DataTableButtonsContract</a></li>
+				<li><a href="class-Yajra.Datatables.Contracts.DataTableContract.html">DataTableContract</a></li>
+				<li><a href="class-Yajra.Datatables.Contracts.DataTableEngineContract.html">DataTableEngineContract</a></li>
+				<li><a href="class-Yajra.Datatables.Contracts.DataTableScopeContract.html">DataTableScopeContract</a></li>
+			</ul>
 
 
 
@@ -105,7 +105,7 @@
 				<a href="index.html" title="Overview"><span>Overview</span></a>
 			</li>
 			<li>
-				<a href="namespace-Yajra.Datatables.html" title="Summary of Yajra\Datatables"><span>Namespace</span></a>
+				<a href="namespace-Yajra.Datatables.Contracts.html" title="Summary of Yajra\Datatables\Contracts"><span>Namespace</span></a>
 			</li>
 			<li class="active">
 <span>Class</span>			</li>
@@ -117,27 +117,18 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class DatatablesServiceProvider</h1>
-
-
-
-	<dl class="tree">
-		<dd style="padding-left:0px">
-Illuminate\Support\ServiceProvider
-			
-			
-		</dd>
-		<dd style="padding-left:30px">
-			<img src="resources/inherit.png" alt="Extended by">
-<b><span>Yajra\Datatables\DatatablesServiceProvider</span></b>			
-			
-			
-		</dd>
-	</dl>
+	<h1>Interface DataTableButtonsContract</h1>
 
 
 
 
+
+
+
+	<div>
+		<h4>Direct known implementers</h4>
+			<a href="class-Yajra.Datatables.Services.DataTable.html">Yajra\Datatables\Services\DataTable</a>
+	</div>
 
 
 
@@ -145,10 +136,10 @@ Illuminate\Support\ServiceProvider
 	<div class="info">
 		
 		
-		<b>Namespace:</b> <a href="namespace-Yajra.html">Yajra</a>\<a href="namespace-Yajra.Datatables.html">Datatables</a><br>
+		<b>Namespace:</b> <a href="namespace-Yajra.html">Yajra</a>\<a href="namespace-Yajra.Datatables.html">Datatables</a>\<a href="namespace-Yajra.Datatables.Contracts.html">Contracts</a><br>
 		
 
-			<b>Located at</b> <a href="source-class-Yajra.Datatables.DatatablesServiceProvider.html#11-106" title="Go to source code">DatatablesServiceProvider.php</a>
+			<b>Located at</b> <a href="source-class-Yajra.Datatables.Contracts.DataTableButtonsContract.html#5-34" title="Go to source code">Contracts/DataTableButtonsContract.php</a>
 		<br>
 	</div>
 
@@ -156,92 +147,134 @@ Illuminate\Support\ServiceProvider
 
 	<table class="summary methods" id="methods">
 	<caption>Methods summary</caption>
-	<tr data-order="boot" id="_boot">
+	<tr data-order="excel" id="_excel">
 
 		<td class="attributes"><code>
 			 public 
 
-			
+			mixed
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_boot">#</a>
-		<code><a href="source-class-Yajra.Datatables.DatatablesServiceProvider.html#20-32" title="Go to source code">boot</a>( )</code>
+		<a class="anchor" href="#_excel">#</a>
+		<code><a href="source-class-Yajra.Datatables.Contracts.DataTableButtonsContract.html#7-12" title="Go to source code">excel</a>( )</code>
 
 		<div class="description short">
-			<p>Bootstrap the application events.</p>
+			<p>Export to excel file.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Bootstrap the application events.</p>
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="register" id="_register">
-
-		<td class="attributes"><code>
-			 public 
-
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_register">#</a>
-		<code><a href="source-class-Yajra.Datatables.DatatablesServiceProvider.html#61-75" title="Go to source code">register</a>( )</code>
-
-		<div class="description short">
-			<p>Register the service provider.</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Register the service provider.</p>
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="provides" id="_provides">
-
-		<td class="attributes"><code>
-			 public 
-
-			string[]
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_provides">#</a>
-		<code><a href="source-class-Yajra.Datatables.DatatablesServiceProvider.html#97-105" title="Go to source code">provides</a>( )</code>
-
-		<div class="description short">
-			<p>Get the services provided by the provider.</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Get the services provided by the provider.</p>
+			<p>Export to excel file.</p>
 
 
 
 				<h4>Returns</h4>
 				<div class="list">
-					string[]
+					mixed
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="csv" id="_csv">
+
+		<td class="attributes"><code>
+			 public 
+
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_csv">#</a>
+		<code><a href="source-class-Yajra.Datatables.Contracts.DataTableButtonsContract.html#14-19" title="Go to source code">csv</a>( )</code>
+
+		<div class="description short">
+			<p>Export to CSV file.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Export to CSV file.</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					mixed
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="pdf" id="_pdf">
+
+		<td class="attributes"><code>
+			 public 
+
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_pdf">#</a>
+		<code><a href="source-class-Yajra.Datatables.Contracts.DataTableButtonsContract.html#21-26" title="Go to source code">pdf</a>( )</code>
+
+		<div class="description short">
+			<p>Export to PDF file.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Export to PDF file.</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					mixed
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="printPreview" id="_printPreview">
+
+		<td class="attributes"><code>
+			 public 
+
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_printPreview">#</a>
+		<code><a href="source-class-Yajra.Datatables.Contracts.DataTableButtonsContract.html#28-33" title="Go to source code">printPreview</a>( )</code>
+
+		<div class="description short">
+			<p>Display printer friendly view.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Display printer friendly view.</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					mixed
 				</div>
 
 
@@ -263,34 +296,6 @@ Illuminate\Support\ServiceProvider
 
 
 
-	<table class="summary properties" id="properties">
-	<caption>Properties summary</caption>
-	<tr data-order="defer" id="$defer">
-		<td class="attributes"><code>
-			protected  
-			boolean
-		</code></td>
-
-		<td class="name">
-				<a href="source-class-Yajra.Datatables.DatatablesServiceProvider.html#13-18" title="Go to source code"><var>$defer</var></a>
-
-			<div class="description short">
-				<p>Indicates if loading of the provider is deferred.</p>
-			</div>
-
-			<div class="description detailed hidden">
-				<p>Indicates if loading of the provider is deferred.</p>
-
-			</div>
-		</td>
-		<td class="value">
-			<div>
-				<a href="#$defer" class="anchor">#</a>
-				<code><span class="php-keyword1">false</span></code>
-			</div>
-		</td>
-	</tr>
-	</table>
 
 
 
