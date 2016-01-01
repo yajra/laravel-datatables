@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v6.1.1
+    - Fix ordering when using basic array response. Fix #322.
+
 ###v6.1.0
     - Add support for Lumen.
     - Fixes #317, #318.
