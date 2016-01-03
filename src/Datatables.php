@@ -11,11 +11,13 @@ namespace Yajra\Datatables;
  * @author   Arjay Angeles <aqangeles@gmail.com>
  */
 
+use Jenssegers\Mongodb\Model as Moloquent;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use Yajra\Datatables\Engines\CollectionEngine;
 use Yajra\Datatables\Engines\EloquentEngine;
 use Yajra\Datatables\Engines\QueryBuilderEngine;
+use Yajra\Datatables\Engines\MoloquentEngine;
 
 /**
  * Class Datatables
@@ -62,10 +64,19 @@ class Datatables
         $datatables          = app('datatables');
         $datatables->builder = $builder;
 
-        if ($builder instanceof QueryBuilder) {
-            $ins = $datatables->usingQueryBuilder($builder);
-        } else {
-            $ins = $builder instanceof Collection ? $datatables->usingCollection($builder) : $datatables->usingEloquent($builder);
+        switch (true) {
+            case $builder instanceof QueryBuilder:
+                $ins = $datatables->usingQueryBuilder($builder);
+                break;
+            case $builder instanceof Moloquent:
+                $ins = $datatables->usingMoloquent($builder);
+                break;
+            case $builder instanceof Collection:
+                $ins = $datatables->usingCollection($builder);
+                break;
+            default:
+                $ins = $datatables->usingEloquent($builder);
+                break;
         }
 
         return $ins;
@@ -120,6 +131,17 @@ class Datatables
     public function usingEloquent($builder)
     {
         return new EloquentEngine($builder, $this->request);
+    }
+    
+    /**
+     * Datatables using Moloquent
+     * 
+     * @param mixed $builder
+     * @return \Yajra\Datatables\Engines\MoloquentEngine
+     */
+    public function usingMoloquent($builder)
+    {
+        return new MoloquentEngine($builder, $this->request);
     }
 
     /**
