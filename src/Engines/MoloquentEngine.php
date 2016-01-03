@@ -1,6 +1,6 @@
 <?php
 
-namespace yajra\Datatables\Engines;
+namespace Yajra\Datatables\Engines;
 
 /**
  * Laravel Datatables Moloquent Engine
@@ -11,8 +11,8 @@ namespace yajra\Datatables\Engines;
  */
 
 use Jenssegers\Mongodb\Eloquent\Builder;
-use yajra\Datatables\Contracts\DataTableEngine;
-use yajra\Datatables\Request;
+use Yajra\Datatables\Contracts\DataTableEngine;
+use Yajra\Datatables\Request;
 
 class MoloquentEngine extends QueryBuilderEngine implements DataTableEngine
 {
