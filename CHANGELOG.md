@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v6.1.2
+    - Fix possible conflict with Laravel helpers.php file autoloading. Fix #330.
+
 ###v6.1.1
     - Fix ordering when using basic array response. Fix #322.
 
