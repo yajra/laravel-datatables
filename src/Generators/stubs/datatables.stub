@@ -7,7 +7,7 @@ use Yajra\Datatables\Services\DataTable;
 
 class DummyClass extends DataTable
 {
-    // protected $printPreview  = 'path-to-print-preview-view';
+    // protected $printPreview  = 'path.to.print.preview.view';
     // protected $exportColumns = ['id', 'name'];
     // protected $printColumns  = '*';
 
@@ -19,7 +19,8 @@ class DummyClass extends DataTable
     public function ajax()
     {
         return $this->datatables
-            ->of($this->query())
+            ->eloquent($this->query())
+            ->addColumn('action', 'path.to.action.view')
             ->make(true);
     }
 
@@ -30,7 +31,7 @@ class DummyClass extends DataTable
      */
     public function query()
     {
-        $users = User::select();
+        $users = User::query();
 
         return $this->applyScopes($users);
     }
@@ -45,10 +46,28 @@ class DummyClass extends DataTable
         return $this->builder()
             ->columns([
                 'id',
+                // add columns to display
+                'created_at',
+                'updated_at',
             ])
+            ->addAction(['width' => '50px'])
             ->ajax('')
             ->parameters([
-                'buttons' => ['csv', 'excel', 'pdf', 'print'],
+                'buttons' => [
+                    'create',
+                    [
+                        'extend'  => 'collection',
+                        'text'    => '<i class="fa fa-download"></i> Export',
+                        'buttons' => [
+                            'csv',
+                            'excel',
+                            'pdf',
+                        ],
+                    ],
+                    'print',
+                    'reset',
+                    'reload',
+                ],
             ]);
     }
 }
