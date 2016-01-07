@@ -9,7 +9,8 @@
 ##Change Log
 
 ###v6.1.2
-    - Fix possible conflict with Laravel helpers.php file autoloading. Fix #330.
+    - Fix possible conflict with Laravel helpers.php file auto-loading. Fix #330.
+    - Update dataTable service class stub. 
 
 ###v6.1.1
     - Fix ordering when using basic array response. Fix #322.
