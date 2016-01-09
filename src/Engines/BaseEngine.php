@@ -584,7 +584,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function make($mDataSupport = false, $orderFirst = false)
     {
-        $this->totalRecords = $this->count();
+        $this->totalRecords = $this->totalCount();
 
         if ($this->totalRecords) {
             $this->orderRecords(! $orderFirst);
@@ -602,6 +602,13 @@ abstract class BaseEngine implements DataTableEngineContract
      * @return integer
      */
     abstract public function count();
+
+    /**
+     * Count total items
+     *
+     * @return integer
+     */
+    abstract public function totalCount();
 
     /**
      * Sort records.
