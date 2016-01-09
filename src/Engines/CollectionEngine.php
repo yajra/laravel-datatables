@@ -86,6 +86,14 @@ class CollectionEngine extends BaseEngine implements DataTableEngineContract
     {
         return $this->collection->count();
     }
+    
+    /**
+     * @inheritdoc
+     */
+    public function totalCount()
+    {
+        return $this->count();
+    }
 
     /**
      * @inheritdoc
