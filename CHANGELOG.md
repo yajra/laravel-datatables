@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v6.1.3
+    - Fix logical bug with totalRecords and filteredRecords. Fix #333
+
 ###v6.1.2
     - Fix possible conflict with Laravel helpers.php file auto-loading. Fix #330.
     - Update dataTable service class stub. 
