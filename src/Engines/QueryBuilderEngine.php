@@ -87,9 +87,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
     }
     
     /**
-     * Counts total.
-     *
-     * @return int
+     * @inheritdoc
      */
     public function totalCount()
     {
