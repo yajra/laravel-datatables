@@ -85,6 +85,16 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
         return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
                                 ->setBindings($myQuery->getBindings())->count();
     }
+    
+    /**
+     * Counts total.
+     *
+     * @return int
+     */
+    public function totalCount()
+    {
+        return $this->count();
+    }
 
     /**
      * @inheritdoc
