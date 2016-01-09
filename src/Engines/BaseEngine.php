@@ -597,14 +597,7 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Count results.
-     *
-     * @return integer
-     */
-    abstract public function count();
-
-    /**
-     * Count total items
+     * Count total items.
      *
      * @return integer
      */
@@ -662,6 +655,13 @@ abstract class BaseEngine implements DataTableEngineContract
      * @return void
      */
     abstract public function columnSearch();
+
+    /**
+     * Count results.
+     *
+     * @return integer
+     */
+    abstract public function count();
 
     /**
      * Apply pagination.

@@ -68,6 +68,14 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
     }
 
     /**
+     * @inheritdoc
+     */
+    public function totalCount()
+    {
+        return $this->count();
+    }
+
+    /**
      * Counts current query.
      *
      * @return int
@@ -84,14 +92,6 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
 
         return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
                                 ->setBindings($myQuery->getBindings())->count();
-    }
-    
-    /**
-     * @inheritdoc
-     */
-    public function totalCount()
-    {
-        return $this->count();
     }
 
     /**

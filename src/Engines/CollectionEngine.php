@@ -17,7 +17,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Yajra\Datatables\Contracts\DataTableEngineContract;
 use Yajra\Datatables\Request;
-use Yajra\Datatables\Helper;
 
 class CollectionEngine extends BaseEngine implements DataTableEngineContract
 {
@@ -78,6 +77,13 @@ class CollectionEngine extends BaseEngine implements DataTableEngineContract
         return $output;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function totalCount()
+    {
+        return $this->count();
+    }
 
     /**
      * @inheritdoc
@@ -85,14 +91,6 @@ class CollectionEngine extends BaseEngine implements DataTableEngineContract
     public function count()
     {
         return $this->collection->count();
-    }
-    
-    /**
-     * @inheritdoc
-     */
-    public function totalCount()
-    {
-        return $this->count();
     }
 
     /**
@@ -124,9 +122,9 @@ class CollectionEngine extends BaseEngine implements DataTableEngineContract
         $columns          = $this->request['columns'];
         $this->collection = $this->collection->filter(
             function ($row) use ($columns) {
-                $data  = $this->serialize($row);
+                $data                  = $this->serialize($row);
                 $this->isFilterApplied = true;
-                $found = [];
+                $found                 = [];
 
                 $keyword = $this->request->keyword();
                 foreach ($this->request->searchableColumnIndex() as $index) {
