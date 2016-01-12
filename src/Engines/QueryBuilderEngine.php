@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 use Yajra\Datatables\Contracts\DataTableEngineContract;
 use Yajra\Datatables\Helper;
 use Yajra\Datatables\Request;
+use Illuminate\Support\Facades\DB;
 
 class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
 {
@@ -277,7 +278,10 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
                 if ($column === '*') {
                     $column = 'id';
                 }
-                $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
+                if ($column === '0') {
+                    $column = '1';
+                }
+                $this->getQueryBuilder()->orderBy(DB::raw($column), $orderable['direction']);
             }
         }
     }
