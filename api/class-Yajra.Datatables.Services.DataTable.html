@@ -143,7 +143,7 @@
 		<b>Namespace:</b> <a href="namespace-Yajra.html">Yajra</a>\<a href="namespace-Yajra.Datatables.html">Datatables</a>\<a href="namespace-Yajra.Datatables.Services.html">Services</a><br>
 		
 
-			<b>Located at</b> <a href="source-class-Yajra.Datatables.Services.DataTable.html#11-268" title="Go to source code">Services/DataTable.php</a>
+			<b>Located at</b> <a href="source-class-Yajra.Datatables.Services.DataTable.html#14-372" title="Go to source code">Services/DataTable.php</a>
 		<br>
 	</div>
 
@@ -163,7 +163,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#51-59" title="Go to source code">__construct</a>( <span><code><a href="class-Yajra.Datatables.Datatables.html">Yajra\Datatables\Datatables</a></code> <var>$datatables</var></span>, <span>Illuminate\Contracts\View\Factory <var>$viewFactory</var></span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#54-62" title="Go to source code">__construct</a>( <span><code><a href="class-Yajra.Datatables.Datatables.html">Yajra\Datatables\Datatables</a></code> <var>$datatables</var></span>, <span>Illuminate\Contracts\View\Factory <var>$viewFactory</var></span> )</code>
 
 		<div class="description short">
 			
@@ -200,7 +200,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_render">#</a>
-		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#61-91" title="Go to source code">render</a>( <span> <var>$view</var></span>, <span>array <var>$data</var> = []</span>, <span>array <var>$mergeData</var> = []</span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#64-94" title="Go to source code">render</a>( <span> <var>$view</var></span>, <span>array <var>$data</var> = []</span>, <span>array <var>$mergeData</var> = []</span> )</code>
 
 		<div class="description short">
 			<p>Render view.</p>
@@ -233,6 +233,42 @@
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="request" id="_request">
+
+		<td class="attributes"><code>
+			 public 
+
+			<code><a href="class-Yajra.Datatables.Request.html">Yajra\Datatables\Request</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_request">#</a>
+		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#96-104" title="Go to source code">request</a>( )</code>
+
+		<div class="description short">
+			<p>Get Datatables Request instance.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get Datatables Request instance.</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-Yajra.Datatables.Request.html">Yajra\Datatables\Request</a></code>
+				</div>
+
+
+
+
+				<h4>Implementation of</h4>
+				<div class="list"><code><a href="class-Yajra.Datatables.Contracts.DataTableContract.html#_request">Yajra\Datatables\Contracts\DataTableContract::request()</a></code></div>
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="excel" id="_excel">
 
 		<td class="attributes"><code>
@@ -245,7 +281,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_excel">#</a>
-		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#93-101" title="Go to source code">excel</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#106-114" title="Go to source code">excel</a>( )</code>
 
 		<div class="description short">
 			<p>Export results to Excel file.</p>
@@ -281,7 +317,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_buildExcelFile">#</a>
-		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#103-115" title="Go to source code">buildExcelFile</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#116-128" title="Go to source code">buildExcelFile</a>( )</code>
 
 		<div class="description short">
 			<p>Build excel file and prepare for export.</p>
@@ -315,7 +351,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_filename">#</a>
-		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#117-125" title="Go to source code">filename</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#130-138" title="Go to source code">filename</a>( )</code>
 
 		<div class="description short">
 			<p>Get filename for export.</p>
@@ -349,41 +385,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getDataForExport">#</a>
-		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#127-143" title="Go to source code">getDataForExport</a>( )</code>
-
-		<div class="description short">
-			<p>Get mapped columns versus final decorated output.</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Get mapped columns versus final decorated output.</p>
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					array
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="getDataForPrint" id="_getDataForPrint">
-
-		<td class="attributes"><code>
-			 protected 
-
-			array
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_getDataForPrint">#</a>
-		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#145-161" title="Go to source code">getDataForPrint</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#140-156" title="Go to source code">getDataForExport</a>( )</code>
 
 		<div class="description short">
 			<p>Get mapped columns versus final decorated output.</p>
@@ -417,7 +419,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getAjaxResponseData">#</a>
-		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#163-176" title="Go to source code">getAjaxResponseData</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#158-171" title="Go to source code">getAjaxResponseData</a>( )</code>
 
 		<div class="description short">
 			<p>Get decorated data as defined in datatables ajax response.</p>
@@ -439,6 +441,153 @@
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="getColumnsFromBuilder" id="_getColumnsFromBuilder">
+
+		<td class="attributes"><code>
+			 protected 
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getColumnsFromBuilder">#</a>
+		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#183-191" title="Go to source code">getColumnsFromBuilder</a>( )</code>
+
+		<div class="description short">
+			<p>Get columns definition from html builder.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get columns definition from html builder.</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					array
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="html" id="_html">
+
+		<td class="attributes"><code>
+			 public 
+
+			<code><a href="class-Yajra.Datatables.Html.Builder.html">Yajra\Datatables\Html\Builder</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_html">#</a>
+		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#193-201" title="Go to source code">html</a>( )</code>
+
+		<div class="description short">
+			<p>Optional method if you want to use html builder.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Optional method if you want to use html builder.</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-Yajra.Datatables.Html.Builder.html">Yajra\Datatables\Html\Builder</a></code>
+				</div>
+
+
+
+
+				<h4>Implementation of</h4>
+				<div class="list"><code><a href="class-Yajra.Datatables.Contracts.DataTableContract.html#_html">Yajra\Datatables\Contracts\DataTableContract::html()</a></code></div>
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="builder" id="_builder">
+
+		<td class="attributes"><code>
+			 public 
+
+			<code><a href="class-Yajra.Datatables.Html.Builder.html">Yajra\Datatables\Html\Builder</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_builder">#</a>
+		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#203-211" title="Go to source code">builder</a>( )</code>
+
+		<div class="description short">
+			<p>Get Datatables Html Builder instance.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get Datatables Html Builder instance.</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-Yajra.Datatables.Html.Builder.html">Yajra\Datatables\Html\Builder</a></code>
+				</div>
+
+
+
+
+				<h4>Implementation of</h4>
+				<div class="list"><code><a href="class-Yajra.Datatables.Contracts.DataTableContract.html#_builder">Yajra\Datatables\Contracts\DataTableContract::builder()</a></code></div>
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="buildExportColumn" id="_buildExportColumn">
+
+		<td class="attributes"><code>
+			 protected 
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_buildExportColumn">#</a>
+		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#213-232" title="Go to source code">buildExportColumn</a>( <span>array <var>$row</var></span>, <span>array <var>$columns</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$row</var></dt>
+					<dd></dd>
+					<dt><var>$columns</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					array
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="csv" id="_csv">
 
 		<td class="attributes"><code>
@@ -451,7 +600,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_csv">#</a>
-		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#178-186" title="Go to source code">csv</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#234-242" title="Go to source code">csv</a>( )</code>
 
 		<div class="description short">
 			<p>Export results to CSV file.</p>
@@ -487,7 +636,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_pdf">#</a>
-		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#188-196" title="Go to source code">pdf</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#244-252" title="Go to source code">pdf</a>( )</code>
 
 		<div class="description short">
 			<p>Export results to PDF file.</p>
@@ -523,7 +672,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_printPreview">#</a>
-		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#198-209" title="Go to source code">printPreview</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#254-265" title="Go to source code">printPreview</a>( )</code>
 
 		<div class="description short">
 			<p>Display printable view of datatables.</p>
@@ -547,111 +696,112 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="html" id="_html">
+	<tr data-order="getDataForPrint" id="_getDataForPrint">
 
 		<td class="attributes"><code>
-			 public 
+			 protected 
 
-			mixed
+			array
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_html">#</a>
-		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#211-219" title="Go to source code">html</a>( )</code>
+		<a class="anchor" href="#_getDataForPrint">#</a>
+		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#267-283" title="Go to source code">getDataForPrint</a>( )</code>
 
 		<div class="description short">
-			<p>Optional method if you want to use html builder.</p>
+			<p>Get mapped columns versus final decorated output.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Optional method if you want to use html builder.</p>
+			<p>Get mapped columns versus final decorated output.</p>
 
 
 
 				<h4>Returns</h4>
 				<div class="list">
-					mixed
+					array
 				</div>
 
 
 
 
-				<h4>Implementation of</h4>
-				<div class="list"><code><a href="class-Yajra.Datatables.Contracts.DataTableContract.html#_html">Yajra\Datatables\Contracts\DataTableContract::html()</a></code></div>
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="builder" id="_builder">
+	<tr data-order="printColumns" id="_printColumns">
 
 		<td class="attributes"><code>
-			 public 
+			 protected 
 
-			<code><a href="class-Yajra.Datatables.Html.Builder.html">Yajra\Datatables\Html\Builder</a></code>
+			array|string
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_builder">#</a>
-		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#221-229" title="Go to source code">builder</a>( )</code>
+		<a class="anchor" href="#_printColumns">#</a>
+		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#285-293" title="Go to source code">printColumns</a>( )</code>
 
 		<div class="description short">
-			<p>Get Datatables Html Builder instance.</p>
+			<p>Get printable columns.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Get Datatables Html Builder instance.</p>
+			<p>Get printable columns.</p>
 
 
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code><a href="class-Yajra.Datatables.Html.Builder.html">Yajra\Datatables\Html\Builder</a></code>
+					array|string
 				</div>
 
 
 
 
-				<h4>Implementation of</h4>
-				<div class="list"><code><a href="class-Yajra.Datatables.Contracts.DataTableContract.html#_builder">Yajra\Datatables\Contracts\DataTableContract::builder()</a></code></div>
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="request" id="_request">
+	<tr data-order="buildPrintColumn" id="_buildPrintColumn">
 
 		<td class="attributes"><code>
-			 public 
+			 protected 
 
-			<code><a href="class-Yajra.Datatables.Request.html">Yajra\Datatables\Request</a></code>
+			array
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_request">#</a>
-		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#231-239" title="Go to source code">request</a>( )</code>
+		<a class="anchor" href="#_buildPrintColumn">#</a>
+		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#295-316" title="Go to source code">buildPrintColumn</a>( <span>array <var>$row</var></span>, <span>array <var>$columns</var></span> )</code>
 
 		<div class="description short">
-			<p>Get Datatables Request instance.</p>
+			<p>Build printable column.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Get Datatables Request instance.</p>
+			<p>Build printable column.</p>
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$row</var></dt>
+					<dd></dd>
+					<dt><var>$columns</var></dt>
+					<dd></dd>
+				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code><a href="class-Yajra.Datatables.Request.html">Yajra\Datatables\Request</a></code>
+					array
 				</div>
 
 
 
 
-				<h4>Implementation of</h4>
-				<div class="list"><code><a href="class-Yajra.Datatables.Contracts.DataTableContract.html#_request">Yajra\Datatables\Contracts\DataTableContract::request()</a></code></div>
 		</div>
 		</div></td>
 	</tr>
@@ -667,7 +817,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_addScope">#</a>
-		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#241-252" title="Go to source code">addScope</a>( <span><code><a href="class-Yajra.Datatables.Contracts.DataTableScopeContract.html">Yajra\Datatables\Contracts\DataTableScopeContract</a></code> <var>$scope</var></span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#318-329" title="Go to source code">addScope</a>( <span><code><a href="class-Yajra.Datatables.Contracts.DataTableScopeContract.html">Yajra\Datatables\Contracts\DataTableScopeContract</a></code> <var>$scope</var></span> )</code>
 
 		<div class="description short">
 			<p>Add basic array query scopes.</p>
@@ -697,7 +847,7 @@
 	<tr data-order="applyScopes" id="_applyScopes">
 
 		<td class="attributes"><code>
-			 public 
+			 protected 
 
 			mixed
 			
@@ -706,7 +856,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_applyScopes">#</a>
-		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#254-267" title="Go to source code">applyScopes</a>( <span>Illuminate\Database\Query\Builder|Illuminate\Database\Eloquent\Builder <var>$query</var></span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#331-344" title="Go to source code">applyScopes</a>( <span>Illuminate\Database\Query\Builder|Illuminate\Database\Eloquent\Builder <var>$query</var></span> )</code>
 
 		<div class="description short">
 			<p>Apply query scopes.</p>
@@ -725,6 +875,40 @@
 				<h4>Returns</h4>
 				<div class="list">
 					mixed
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getBuilderParameters" id="_getBuilderParameters">
+
+		<td class="attributes"><code>
+			 protected 
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getBuilderParameters">#</a>
+		<code><a href="source-class-Yajra.Datatables.Services.DataTable.html#346-371" title="Go to source code">getBuilderParameters</a>( )</code>
+
+		<div class="description short">
+			<p>Get default builder parameters.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get default builder parameters.</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					array
 				</div>
 
 
@@ -764,7 +948,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Yajra.Datatables.Services.DataTable.html#13-16" title="Go to source code"><var>$datatables</var></a>
+				<a href="source-class-Yajra.Datatables.Services.DataTable.html#16-19" title="Go to source code"><var>$datatables</var></a>
 
 			<div class="description short">
 				
@@ -789,7 +973,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Yajra.Datatables.Services.DataTable.html#18-21" title="Go to source code"><var>$viewFactory</var></a>
+				<a href="source-class-Yajra.Datatables.Services.DataTable.html#21-24" title="Go to source code"><var>$viewFactory</var></a>
 
 			<div class="description short">
 				
@@ -814,7 +998,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Yajra.Datatables.Services.DataTable.html#23-28" title="Go to source code"><var>$printPreview</var></a>
+				<a href="source-class-Yajra.Datatables.Services.DataTable.html#26-31" title="Go to source code"><var>$printPreview</var></a>
 
 			<div class="description short">
 				<p>Datatables print preview view.</p>
@@ -839,7 +1023,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Yajra.Datatables.Services.DataTable.html#30-35" title="Go to source code"><var>$exportColumns</var></a>
+				<a href="source-class-Yajra.Datatables.Services.DataTable.html#33-38" title="Go to source code"><var>$exportColumns</var></a>
 
 			<div class="description short">
 				<p>List of columns to be exported.</p>
@@ -864,7 +1048,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Yajra.Datatables.Services.DataTable.html#37-42" title="Go to source code"><var>$printColumns</var></a>
+				<a href="source-class-Yajra.Datatables.Services.DataTable.html#40-45" title="Go to source code"><var>$printColumns</var></a>
 
 			<div class="description short">
 				<p>List of columns to be printed.</p>
@@ -885,11 +1069,11 @@
 	<tr data-order="scopes" id="$scopes">
 		<td class="attributes"><code>
 			protected  
-			array
+			<code><a href="class-Yajra.Datatables.Contracts.DataTableScopeContract.html">Yajra\Datatables\Contracts\DataTableScopeContract</a>[]</code>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Yajra.Datatables.Services.DataTable.html#44-49" title="Go to source code"><var>$scopes</var></a>
+				<a href="source-class-Yajra.Datatables.Services.DataTable.html#47-52" title="Go to source code"><var>$scopes</var></a>
 
 			<div class="description short">
 				<p>Query scopes.</p>

@@ -153,7 +153,7 @@
 		<b>Namespace:</b> <a href="namespace-Yajra.html">Yajra</a>\<a href="namespace-Yajra.Datatables.html">Datatables</a>\<a href="namespace-Yajra.Datatables.Engines.html">Engines</a><br>
 		
 
-			<b>Located at</b> <a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#23-831" title="Go to source code">Engines/BaseEngine.php</a>
+			<b>Located at</b> <a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#23-838" title="Go to source code">Engines/BaseEngine.php</a>
 		<br>
 	</div>
 
@@ -1191,7 +1191,7 @@ result: <tr attr1="attr1" attr2="attr2">.</p>
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="count" id="_count">
+	<tr data-order="totalCount" id="_totalCount">
 
 		<td class="attributes"><code>
 			abstract public 
@@ -1202,15 +1202,15 @@ result: <tr attr1="attr1" attr2="attr2">.</p>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_count">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#599-604" title="Go to source code">count</a>( )</code>
+		<a class="anchor" href="#_totalCount">#</a>
+		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#599-604" title="Go to source code">totalCount</a>( )</code>
 
 		<div class="description short">
-			<p>Count results.</p>
+			<p>Count total items.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Count results.</p>
+			<p>Count total items.</p>
 
 
 
@@ -1222,8 +1222,6 @@ result: <tr attr1="attr1" attr2="attr2">.</p>
 
 
 
-				<h4>Implementation of</h4>
-				<div class="list"><code><a href="class-Yajra.Datatables.Contracts.DataTableEngineContract.html#_count">Yajra\Datatables\Contracts\DataTableEngineContract::count()</a></code></div>
 		</div>
 		</div></td>
 	</tr>
@@ -1388,6 +1386,42 @@ result: <tr attr1="attr1" attr2="attr2">.</p>
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="count" id="_count">
+
+		<td class="attributes"><code>
+			abstract public 
+
+			integer
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_count">#</a>
+		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#659-664" title="Go to source code">count</a>( )</code>
+
+		<div class="description short">
+			<p>Count results.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Count results.</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					integer
+				</div>
+
+
+
+
+				<h4>Implementation of</h4>
+				<div class="list"><code><a href="class-Yajra.Datatables.Contracts.DataTableEngineContract.html#_count">Yajra\Datatables\Contracts\DataTableEngineContract::count()</a></code></div>
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="paginate" id="_paginate">
 
 		<td class="attributes"><code>
@@ -1400,7 +1434,7 @@ result: <tr attr1="attr1" attr2="attr2">.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_paginate">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#659-669" title="Go to source code">paginate</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#666-676" title="Go to source code">paginate</a>( )</code>
 
 		<div class="description short">
 			<p>Apply pagination.</p>
@@ -1430,7 +1464,7 @@ result: <tr attr1="attr1" attr2="attr2">.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_paging">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#671-676" title="Go to source code">paging</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#678-683" title="Go to source code">paging</a>( )</code>
 
 		<div class="description short">
 			<p>Perform pagination</p>
@@ -1462,7 +1496,7 @@ result: <tr attr1="attr1" attr2="attr2">.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_render">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#678-728" title="Go to source code">render</a>( <span>boolean <var>$object</var> = <span class="php-keyword1">false</span></span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#685-735" title="Go to source code">render</a>( <span>boolean <var>$object</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			<p>Render json response.</p>
@@ -1501,7 +1535,7 @@ result: <tr attr1="attr1" attr2="attr2">.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_results">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#730-735" title="Go to source code">results</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#737-742" title="Go to source code">results</a>( )</code>
 
 		<div class="description short">
 			<p>Get results</p>
@@ -1537,7 +1571,7 @@ result: <tr attr1="attr1" attr2="attr2">.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_isDebugging">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#754-762" title="Go to source code">isDebugging</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#761-769" title="Go to source code">isDebugging</a>( )</code>
 
 		<div class="description short">
 			<p>Check if app is in debug mode.</p>
@@ -1571,7 +1605,7 @@ result: <tr attr1="attr1" attr2="attr2">.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_showDebugger">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#764-776" title="Go to source code">showDebugger</a>( <span>array <var>$output</var></span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#771-783" title="Go to source code">showDebugger</a>( <span>array <var>$output</var></span> )</code>
 
 		<div class="description short">
 			<p>Append debug parameters on output.</p>
@@ -1610,7 +1644,7 @@ result: <tr attr1="attr1" attr2="attr2">.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_filter">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#778-785" title="Go to source code">filter</a>( <span>Closure <var>$callback</var></span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#785-792" title="Go to source code">filter</a>( <span>Closure <var>$callback</var></span> )</code>
 
 		<div class="description short">
 			<p>Set auto filter off and run your own filter.
@@ -1653,7 +1687,7 @@ Overrides global search</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_overrideGlobalSearch">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#787-800" title="Go to source code">overrideGlobalSearch</a>( <span>Closure <var>$callback</var></span>, <span>mixed <var>$parameters</var></span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#794-807" title="Go to source code">overrideGlobalSearch</a>( <span>Closure <var>$callback</var></span>, <span>mixed <var>$parameters</var></span> )</code>
 
 		<div class="description short">
 			<p>Update flags to disable global search</p>
@@ -1690,7 +1724,7 @@ Overrides global search</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_isCaseInsensitive">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#802-810" title="Go to source code">isCaseInsensitive</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#809-817" title="Go to source code">isCaseInsensitive</a>( )</code>
 
 		<div class="description short">
 			<p>Get config is case insensitive status.</p>
@@ -1724,7 +1758,7 @@ Overrides global search</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_with">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#812-830" title="Go to source code">with</a>( <span>mixed <var>$key</var></span>, <span>mixed <var>$value</var> = <span class="php-quote">''</span></span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#819-837" title="Go to source code">with</a>( <span>mixed <var>$key</var></span>, <span>mixed <var>$value</var> = <span class="php-quote">''</span></span> )</code>
 
 		<div class="description short">
 			<p>Append data on json response.</p>
