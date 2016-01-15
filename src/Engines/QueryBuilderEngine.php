@@ -279,7 +279,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
                  * The temporary fix is modify `*` column to `id` column
                  */
                 if ($column === '*') {
-                    $column = 'id';
+                    $column = $this->columns[0];
                 }
                 $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
             }
