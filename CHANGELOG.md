@@ -8,6 +8,12 @@
 
 ##Change Log
 
+###v6.2.1
+    - Fix data when exporting with html tags.
+    - Add filename method in stub.
+    - Fix some doc blocks.
+    - Scrutinizer refactoring.
+
 ###v6.2.0
     - Enhance printing function to match what is displayed in UI.
     - Enhance export function to match what is displayed in UI.
