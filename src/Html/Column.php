@@ -41,6 +41,7 @@ class Column extends Fluent
      */
     public function parseRender($value)
     {
+        /** @var \Illuminate\Contracts\View\Factory $view */
         $view = app('view');
 
         if (is_callable($value)) {
@@ -55,7 +56,7 @@ class Column extends Fluent
     /**
      * Display render value as is.
      *
-     * @param string $value
+     * @param mixed $value
      * @return string
      */
     private function parseRenderAsString($value)
