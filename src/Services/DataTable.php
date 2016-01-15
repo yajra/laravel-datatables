@@ -346,31 +346,6 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     }
 
     /**
-     * @param array $row
-     * @param $type
-     * @param $column
-     * @param $results
-     * @return mixed
-     */
-    protected function getRowColumnData(array $row, $type, $column, $results)
-    {
-        if ($column[$type]) {
-            $data = array_get($row, $column['data']);
-            if ($type == 'exportable') {
-                $results[$column['title']] = strip_tags($data);
-
-                return $results;
-            } else {
-                $results[$column['title']] = $data;
-
-                return $results;
-            }
-        }
-
-        return $results;
-    }
-
-    /**
      * Apply query scopes.
      *
      * @param \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder $query
