@@ -232,11 +232,11 @@
 </span><span id="90" class="l"><a href="#90"> 90: </a>    <span class="php-comment">/**
 </span></span><span id="91" class="l"><a href="#91"> 91: </a><span class="php-comment">     * Process add columns.
 </span></span><span id="92" class="l"><a href="#92"> 92: </a><span class="php-comment">     *
-</span></span><span id="93" class="l"><a href="#93"> 93: </a><span class="php-comment">     * @param array $data
+</span></span><span id="93" class="l"><a href="#93"> 93: </a><span class="php-comment">     * @param mixed $data
 </span></span><span id="94" class="l"><a href="#94"> 94: </a><span class="php-comment">     * @param mixed $row
 </span></span><span id="95" class="l"><a href="#95"> 95: </a><span class="php-comment">     * @return array
 </span></span><span id="96" class="l"><a href="#96"> 96: </a><span class="php-comment">     */</span>
-</span><span id="97" class="l"><a href="#97"> 97: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> addColumns(<span class="php-keyword1">array</span> <span class="php-var">$data</span>, <span class="php-var">$row</span>)
+</span><span id="97" class="l"><a href="#97"> 97: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> addColumns(<span class="php-var">$data</span>, <span class="php-var">$row</span>)
 </span><span id="98" class="l"><a href="#98"> 98: </a>    {
 </span><span id="99" class="l"><a href="#99"> 99: </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$this</span>-&gt;appendColumns <span class="php-keyword1">as</span> <span class="php-var">$key</span> =&gt; <span class="php-var">$value</span>) {
 </span><span id="100" class="l"><a href="#100">100: </a>            <span class="php-var">$value</span>[<span class="php-quote">'content'</span>] = Helper::compileContent(<span class="php-var">$value</span>[<span class="php-quote">'content'</span>], <span class="php-var">$data</span>, <span class="php-var">$row</span>);
@@ -249,11 +249,11 @@
 </span><span id="107" class="l"><a href="#107">107: </a>    <span class="php-comment">/**
 </span></span><span id="108" class="l"><a href="#108">108: </a><span class="php-comment">     * Process edit columns.
 </span></span><span id="109" class="l"><a href="#109">109: </a><span class="php-comment">     *
-</span></span><span id="110" class="l"><a href="#110">110: </a><span class="php-comment">     * @param array $data
+</span></span><span id="110" class="l"><a href="#110">110: </a><span class="php-comment">     * @param mixed $data
 </span></span><span id="111" class="l"><a href="#111">111: </a><span class="php-comment">     * @param mixed $row
 </span></span><span id="112" class="l"><a href="#112">112: </a><span class="php-comment">     * @return array
 </span></span><span id="113" class="l"><a href="#113">113: </a><span class="php-comment">     */</span>
-</span><span id="114" class="l"><a href="#114">114: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> editColumns(<span class="php-keyword1">array</span> <span class="php-var">$data</span>, <span class="php-var">$row</span>)
+</span><span id="114" class="l"><a href="#114">114: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> editColumns(<span class="php-var">$data</span>, <span class="php-var">$row</span>)
 </span><span id="115" class="l"><a href="#115">115: </a>    {
 </span><span id="116" class="l"><a href="#116">116: </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$this</span>-&gt;editColumns <span class="php-keyword1">as</span> <span class="php-var">$key</span> =&gt; <span class="php-var">$value</span>) {
 </span><span id="117" class="l"><a href="#117">117: </a>            <span class="php-var">$value</span>[<span class="php-quote">'content'</span>]     = Helper::compileContent(<span class="php-var">$value</span>[<span class="php-quote">'content'</span>], <span class="php-var">$data</span>, <span class="php-var">$row</span>);
