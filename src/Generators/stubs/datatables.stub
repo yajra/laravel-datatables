@@ -8,7 +8,6 @@ use Yajra\Datatables\Services\DataTable;
 class PoliciesDataTable extends DataTable
 {
     // protected $printPreview  = 'path.to.print.preview.view';
-    // protected $printColumns  = '*';
 
     /**
      * Display ajax response.

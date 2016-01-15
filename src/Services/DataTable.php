@@ -220,7 +220,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
         $results = [];
         foreach ($columns as $column) {
             if ($column instanceof Column) {
-                if (! isset($column['exportable']) || $column['exportable']) {
+                if ($column['exportable']) {
                     $results[$column['title']] = strip_tags(array_get($row, $column['name']));
                 }
             } else {
@@ -274,12 +274,45 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
         $decoratedData = $this->getAjaxResponseData();
 
         return array_map(function ($row) {
-            if (is_array($this->printColumns)) {
-                return array_only($row, $this->printColumns);
+            if ($columns = $this->printColumns()) {
+                return $this->buildPrintColumn($row, $columns);
             }
 
             return $row;
         }, $decoratedData);
+    }
+
+    /**
+     * Get printable columns.
+     *
+     * @return array|string
+     */
+    protected function printColumns()
+    {
+        return is_array($this->printColumns) ? $this->printColumns : $this->getColumnsFromBuilder();
+    }
+
+    /**
+     * Build printable column.
+     *
+     * @param array $row
+     * @param array|Column[] $columns
+     * @return array
+     */
+    protected function buildPrintColumn(array $row, array $columns)
+    {
+        $results = [];
+        foreach ($columns as $column) {
+            if ($column instanceof Column) {
+                if ($column['printable']) {
+                    $results[$column['title']] = array_get($row, $column['name']);
+                }
+            } else {
+                $results[] = array_get($row, $column);
+            }
+        }
+
+        return $results;
     }
 
     /**
