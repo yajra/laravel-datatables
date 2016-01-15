@@ -36,7 +36,7 @@ class Column extends Fluent
     /**
      * Parse render attribute.
      *
-     * @param \Closure|string $value
+     * @param mixed $value
      * @return string|null
      */
     public function parseRender($value)
