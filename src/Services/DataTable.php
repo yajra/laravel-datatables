@@ -144,15 +144,13 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      */
     protected function getDataForExport()
     {
-        $decoratedData = $this->getAjaxResponseData();
-
         return array_map(function ($row) {
             if ($columns = $this->exportColumns()) {
                 return $this->buildExportColumn($row, $columns);
             }
 
             return $row;
-        }, $decoratedData);
+        }, $this->getAjaxResponseData());
     }
 
     /**
@@ -299,15 +297,13 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      */
     protected function getDataForPrint()
     {
-        $decoratedData = $this->getAjaxResponseData();
-
         return array_map(function ($row) {
             if ($columns = $this->printColumns()) {
                 return $this->buildPrintColumn($row, $columns);
             }
 
             return $row;
-        }, $decoratedData);
+        }, $this->getAjaxResponseData());
     }
 
     /**
