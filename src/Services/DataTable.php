@@ -3,13 +3,13 @@
 namespace Yajra\Datatables\Services;
 
 use Illuminate\Contracts\View\Factory;
-use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
 use Maatwebsite\Excel\Writers\LaravelExcelWriter;
 use Yajra\Datatables\Contracts\DataTableButtonsContract;
 use Yajra\Datatables\Contracts\DataTableContract;
 use Yajra\Datatables\Contracts\DataTableScopeContract;
 use Yajra\Datatables\Datatables;
+use Yajra\Datatables\Transformers\DataTransformer;
 
 abstract class DataTable implements DataTableContract, DataTableButtonsContract
 {
@@ -146,26 +146,11 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     {
         return array_map(function ($row) {
             if ($columns = $this->exportColumns()) {
-                return $this->buildExportColumn($row, $columns);
+                return (new DataTransformer())->transform($row, $columns, 'exportable');
             }
 
             return $row;
         }, $this->getAjaxResponseData());
-    }
-
-    /**
-     * Get decorated data as defined in datatables ajax response.
-     *
-     * @return mixed
-     */
-    protected function getAjaxResponseData()
-    {
-        $this->datatables->getRequest()->merge(['length' => -1]);
-
-        $response = $this->ajax();
-        $data     = $response->getData(true);
-
-        return $data['data'];
     }
 
     /**
@@ -209,52 +194,18 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     }
 
     /**
-     * @param array $row
-     * @param array|\Illuminate\Support\Collection $columns
-     * @return array
-     */
-    protected function buildExportColumn(array $row, $columns)
-    {
-        return $this->buildColumn($row, $columns, 'exportable');
-    }
-
-    /**
-     * Build printable and exportable column.
+     * Get decorated data as defined in datatables ajax response.
      *
-     * @param array $row
-     * @param array|\Illuminate\Support\Collection $columns
-     * @param string $type
-     * @return array
+     * @return mixed
      */
-    protected function buildColumn(array $row, $columns, $type)
+    protected function getAjaxResponseData()
     {
-        if ($columns instanceof Collection) {
-            return $this->buildColumnByCollection($row, $columns, $type);
-        }
+        $this->datatables->getRequest()->merge(['length' => -1]);
 
-        return array_only($row, $columns);
-    }
+        $response = $this->ajax();
+        $data     = $response->getData(true);
 
-    /**
-     * Build column from collection.
-     *
-     * @param array $row
-     * @param \Illuminate\Support\Collection $columns
-     * @param string $type
-     * @return array
-     */
-    protected function buildColumnByCollection(array  $row, Collection $columns, $type)
-    {
-        $results = [];
-        foreach ($columns->all() as $column) {
-            if ($column[$type]) {
-                $data = array_get($row, $column['data']);
-
-                $results[$column['title']] = $type == 'exportable' ? strip_tags($data) : $data;
-            }
-        }
-
-        return $results;
+        return $data['data'];
     }
 
     /**
@@ -299,7 +250,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     {
         return array_map(function ($row) {
             if ($columns = $this->printColumns()) {
-                return $this->buildPrintColumn($row, $columns);
+                return (new DataTransformer())->transform($row, $columns, 'printable');
             }
 
             return $row;
@@ -314,18 +265,6 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     protected function printColumns()
     {
         return is_array($this->printColumns) ? $this->printColumns : $this->getColumnsFromBuilder();
-    }
-
-    /**
-     * Build printable column.
-     *
-     * @param array $row
-     * @param array|\Illuminate\Support\Collection $columns
-     * @return array
-     */
-    protected function buildPrintColumn(array $row, $columns)
-    {
-        return $this->buildColumn($row, $columns, 'printable');
     }
 
     /**
