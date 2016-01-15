@@ -289,7 +289,7 @@ class Builder
                 'orderable'      => false,
                 'searchable'     => false,
                 'exportable'     => false,
-                'printable'      => false,
+                'printable'      => true,
             ], $attributes
         );
         $this->collection->push(new Column($attributes));
