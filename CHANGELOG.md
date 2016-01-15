@@ -8,6 +8,14 @@
 
 ##Change Log
 
+###v6.2.0
+    - Enhance printing function to match what is displayed in UI.
+    - Enhance export function to match what is displayed in UI.
+    - Enhance datatables service stub.
+    - Address issue #310.
+    - Add option to set column as exportable and/or printable.
+    - Action and checkbox column is not exportable but printable by default.
+
 ###v6.1.3
     - Fix logical bug with totalRecords and filteredRecords. Fix #333
 
