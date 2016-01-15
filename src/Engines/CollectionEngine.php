@@ -99,7 +99,9 @@ class CollectionEngine extends BaseEngine implements DataTableEngineContract
     public function ordering()
     {
         if ($this->orderCallback) {
-            return call_user_func($this->orderCallback, $this);
+            call_user_func($this->orderCallback, $this);
+
+            return;
         }
 
         foreach ($this->request->orderableColumns() as $orderable) {
