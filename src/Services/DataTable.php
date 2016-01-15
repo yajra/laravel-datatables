@@ -221,7 +221,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
         foreach ($columns as $column) {
             if ($column instanceof Column) {
                 if ($column['exportable']) {
-                    $results[$column['title']] = strip_tags(array_get($row, $column['name']));
+                    $results[$column['title']] = strip_tags(array_get($row, $column['data']));
                 }
             } else {
                 $results[] = array_get($row, $column);

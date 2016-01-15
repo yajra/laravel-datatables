@@ -62,4 +62,14 @@ class PoliciesDataTable extends DataTable
             'updated_at',
         ];
     }
+
+    /**
+     * Get filename for export.
+     *
+     * @return string
+     */
+    protected function filename()
+    {
+        return 'users';
+    }
 }
