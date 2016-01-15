@@ -3,13 +3,13 @@
 namespace Yajra\Datatables\Services;
 
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
 use Maatwebsite\Excel\Writers\LaravelExcelWriter;
 use Yajra\Datatables\Contracts\DataTableButtonsContract;
 use Yajra\Datatables\Contracts\DataTableContract;
 use Yajra\Datatables\Contracts\DataTableScopeContract;
 use Yajra\Datatables\Datatables;
-use Yajra\Datatables\Html\Column;
 
 abstract class DataTable implements DataTableContract, DataTableButtonsContract
 {
@@ -187,7 +187,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      */
     protected function getColumnsFromBuilder()
     {
-        return $this->html()->getColumns()->all();
+        return $this->html()->getColumns();
     }
 
     /**
@@ -212,19 +212,47 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
 
     /**
      * @param array $row
-     * @param array|Column[] $columns
+     * @param array|\Illuminate\Support\Collection $columns
      * @return array
      */
-    protected function buildExportColumn(array $row, array $columns)
+    protected function buildExportColumn(array $row, $columns)
+    {
+        return $this->buildColumn($row, $columns, 'exportable');
+    }
+
+    /**
+     * Build printable and exportable column.
+     *
+     * @param array $row
+     * @param array|\Illuminate\Support\Collection $columns
+     * @param string $type
+     * @return array
+     */
+    protected function buildColumn(array $row, $columns, $type)
+    {
+        if ($columns instanceof Collection) {
+            return $this->buildColumnByCollection($row, $columns, $type);
+        }
+
+        return array_only($row, $columns);
+    }
+
+    /**
+     * Build column from collection.
+     *
+     * @param array $row
+     * @param \Illuminate\Support\Collection $columns
+     * @param string $type
+     * @return array
+     */
+    protected function buildColumnByCollection(array  $row, Collection $columns, $type)
     {
         $results = [];
-        foreach ($columns as $column) {
-            if ($column instanceof Column) {
-                if ($column['exportable']) {
-                    $results[$column['title']] = strip_tags(array_get($row, $column['data']));
-                }
-            } else {
-                $results[] = array_get($row, $column);
+        foreach ($columns->all() as $column) {
+            if ($column[$type]) {
+                $data = array_get($row, $column['data']);
+
+                $results[$column['title']] = $type == 'exportable' ? strip_tags($data) : $data;
             }
         }
 
@@ -296,23 +324,12 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      * Build printable column.
      *
      * @param array $row
-     * @param array|Column[] $columns
+     * @param array|\Illuminate\Support\Collection $columns
      * @return array
      */
-    protected function buildPrintColumn(array $row, array $columns)
+    protected function buildPrintColumn(array $row, $columns)
     {
-        $results = [];
-        foreach ($columns as $column) {
-            if ($column instanceof Column) {
-                if ($column['printable']) {
-                    $results[$column['title']] = array_get($row, $column['name']);
-                }
-            } else {
-                $results[] = array_get($row, $column);
-            }
-        }
-
-        return $results;
+        return $this->buildColumn($row, $columns, 'printable');
     }
 
     /**
@@ -326,6 +343,31 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
         $this->scopes[] = $scope;
 
         return $this;
+    }
+
+    /**
+     * @param array $row
+     * @param $type
+     * @param $column
+     * @param $results
+     * @return mixed
+     */
+    protected function getRowColumnData(array $row, $type, $column, $results)
+    {
+        if ($column[$type]) {
+            $data = array_get($row, $column['data']);
+            if ($type == 'exportable') {
+                $results[$column['title']] = strip_tags($data);
+
+                return $results;
+            } else {
+                $results[$column['title']] = $data;
+
+                return $results;
+            }
+        }
+
+        return $results;
     }
 
     /**
