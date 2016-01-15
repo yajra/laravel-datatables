@@ -90,11 +90,11 @@ class DataProcessor
     /**
      * Process add columns.
      *
-     * @param array $data
+     * @param mixed $data
      * @param mixed $row
      * @return array
      */
-    protected function addColumns(array $data, $row)
+    protected function addColumns($data, $row)
     {
         foreach ($this->appendColumns as $key => $value) {
             $value['content'] = Helper::compileContent($value['content'], $data, $row);
@@ -107,11 +107,11 @@ class DataProcessor
     /**
      * Process edit columns.
      *
-     * @param array $data
+     * @param mixed $data
      * @param mixed $row
      * @return array
      */
-    protected function editColumns(array $data, $row)
+    protected function editColumns($data, $row)
     {
         foreach ($this->editColumns as $key => $value) {
             $value['content']     = Helper::compileContent($value['content'], $data, $row);
