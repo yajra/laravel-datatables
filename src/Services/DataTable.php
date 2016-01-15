@@ -144,13 +144,9 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      */
     protected function getDataForExport()
     {
-        return array_map(function ($row) {
-            if ($columns = $this->exportColumns()) {
-                return (new DataTransformer())->transform($row, $columns, 'exportable');
-            }
+        $columns = $this->exportColumns();
 
-            return $row;
-        }, $this->getAjaxResponseData());
+        return $this->mapResponseToColumns($columns, 'exportable');
     }
 
     /**
@@ -191,6 +187,24 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     public function builder()
     {
         return $this->datatables->getHtmlBuilder();
+    }
+
+    /**
+     * Map ajax response to columns definition.
+     *
+     * @param mixed $columns
+     * @param string $type
+     * @return array
+     */
+    protected function mapResponseToColumns($columns, $type)
+    {
+        return array_map(function ($row) use ($columns, $type) {
+            if ($columns) {
+                return (new DataTransformer())->transform($row, $columns, $type);
+            }
+
+            return $row;
+        }, $this->getAjaxResponseData());
     }
 
     /**
@@ -248,13 +262,9 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      */
     protected function getDataForPrint()
     {
-        return array_map(function ($row) {
-            if ($columns = $this->printColumns()) {
-                return (new DataTransformer())->transform($row, $columns, 'printable');
-            }
+        $columns = $this->printColumns();
 
-            return $row;
-        }, $this->getAjaxResponseData());
+        return $this->mapResponseToColumns($columns, 'printable');
     }
 
     /**
