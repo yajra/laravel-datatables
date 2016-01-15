@@ -262,7 +262,7 @@ class Builder
                 'orderable'      => false,
                 'searchable'     => false,
                 'exportable'     => false,
-                'printable'      => false,
+                'printable'      => true,
                 'width'          => '10px',
             ], $attributes
         );
