@@ -185,7 +185,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      *
      * @return array
      */
-    private function getColumnsFromBuilder()
+    protected function getColumnsFromBuilder()
     {
         return $this->html()->getColumns()->all();
     }
@@ -334,7 +334,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      * @param \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder $query
      * @return mixed
      */
-    public function applyScopes($query)
+    protected function applyScopes($query)
     {
         foreach ($this->scopes as $scope) {
             $scope->apply($query);
