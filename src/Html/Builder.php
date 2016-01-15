@@ -137,6 +137,9 @@ class Builder
         $column_functions = [];
 
         foreach ($parameters['columns'] as $i => $column) {
+            unset($parameters['columns'][$i]['exportable']);
+            unset($parameters['columns'][$i]['printable']);
+
             if (isset($column['render'])) {
                 $column_functions[$i]                = $column['render'];
                 $parameters['columns'][$i]['render'] = "#column_function.{$i}#";
@@ -258,6 +261,8 @@ class Builder
                 'name'           => 'checkbox',
                 'orderable'      => false,
                 'searchable'     => false,
+                'exportable'     => false,
+                'printable'      => false,
                 'width'          => '10px',
             ], $attributes
         );
@@ -283,6 +288,8 @@ class Builder
                 'render'         => null,
                 'orderable'      => false,
                 'searchable'     => false,
+                'exportable'     => false,
+                'printable'      => false,
             ], $attributes
         );
         $this->collection->push(new Column($attributes));
@@ -340,5 +347,15 @@ class Builder
         $this->template = $template;
 
         return $this;
+    }
+
+    /**
+     * Get collection of columns.
+     *
+     * @return Collection
+     */
+    public function getColumns()
+    {
+        return $this->collection;
     }
 }

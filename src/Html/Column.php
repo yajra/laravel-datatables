@@ -19,6 +19,8 @@ class Column extends Fluent
     {
         $attributes['orderable']  = isset($attributes['orderable']) ? $attributes['orderable'] : true;
         $attributes['searchable'] = isset($attributes['searchable']) ? $attributes['searchable'] : true;
+        $attributes['exportable'] = isset($attributes['exportable']) ? $attributes['exportable'] : true;
+        $attributes['printable']  = isset($attributes['printable']) ? $attributes['printable'] : true;
 
         // Allow methods override attribute value
         foreach ($attributes as $attribute => $value) {

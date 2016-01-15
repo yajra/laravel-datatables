@@ -3,10 +3,13 @@
 namespace Yajra\Datatables\Services;
 
 use Illuminate\Contracts\View\Factory;
+use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
+use Maatwebsite\Excel\Writers\LaravelExcelWriter;
 use Yajra\Datatables\Contracts\DataTableButtonsContract;
 use Yajra\Datatables\Contracts\DataTableContract;
 use Yajra\Datatables\Contracts\DataTableScopeContract;
 use Yajra\Datatables\Datatables;
+use Yajra\Datatables\Html\Column;
 
 abstract class DataTable implements DataTableContract, DataTableButtonsContract
 {
@@ -44,7 +47,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     /**
      * Query scopes.
      *
-     * @var array
+     * @var \Yajra\Datatables\Contracts\DataTableScopeContract[]
      */
     protected $scopes = [];
 
@@ -68,7 +71,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      */
     public function render($view, $data = [], $mergeData = [])
     {
-        if ($this->request()->ajax() &&  $this->request()->wantsJson()) {
+        if ($this->request()->ajax() && $this->request()->wantsJson()) {
             return $this->ajax();
         }
 
@@ -91,6 +94,16 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     }
 
     /**
+     * Get Datatables Request instance.
+     *
+     * @return \Yajra\Datatables\Request
+     */
+    public function request()
+    {
+        return $this->datatables->getRequest();
+    }
+
+    /**
      * Export results to Excel file.
      *
      * @return mixed
@@ -107,8 +120,8 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      */
     protected function buildExcelFile()
     {
-        return app('excel')->create($this->filename(), function ($excel) {
-            $excel->sheet('exported-data', function ($sheet) {
+        return app('excel')->create($this->filename(), function (LaravelExcelWriter $excel) {
+            $excel->sheet('exported-data', function (LaravelExcelWorksheet $sheet) {
                 $sheet->fromArray($this->getDataForExport());
             });
         });
@@ -134,26 +147,8 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
         $decoratedData = $this->getAjaxResponseData();
 
         return array_map(function ($row) {
-            if (is_array($this->exportColumns)) {
-                return array_only($row, $this->exportColumns);
-            }
-
-            return $row;
-        }, $decoratedData);
-    }
-
-    /**
-     * Get mapped columns versus final decorated output.
-     *
-     * @return array
-     */
-    protected function getDataForPrint()
-    {
-        $decoratedData = $this->getAjaxResponseData();
-
-        return array_map(function ($row) {
-            if (is_array($this->printColumns)) {
-                return array_only($row, $this->printColumns);
+            if ($columns = $this->exportColumns()) {
+                return $this->buildExportColumn($row, $columns);
             }
 
             return $row;
@@ -173,6 +168,67 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
         $data     = $response->getData(true);
 
         return $data['data'];
+    }
+
+    /**
+     * Get export columns definition.
+     *
+     * @return array|string
+     */
+    private function exportColumns()
+    {
+        return is_array($this->exportColumns) ? $this->exportColumns : $this->getColumnsFromBuilder();
+    }
+
+    /**
+     * Get columns definition from html builder.
+     *
+     * @return array
+     */
+    private function getColumnsFromBuilder()
+    {
+        return $this->html()->getColumns()->all();
+    }
+
+    /**
+     * Optional method if you want to use html builder.
+     *
+     * @return \Yajra\Datatables\Html\Builder
+     */
+    public function html()
+    {
+        return $this->builder();
+    }
+
+    /**
+     * Get Datatables Html Builder instance.
+     *
+     * @return \Yajra\Datatables\Html\Builder
+     */
+    public function builder()
+    {
+        return $this->datatables->getHtmlBuilder();
+    }
+
+    /**
+     * @param array $row
+     * @param array|Column[] $columns
+     * @return array
+     */
+    protected function buildExportColumn(array $row, array $columns)
+    {
+        $results = [];
+        foreach ($columns as $column) {
+            if ($column instanceof Column) {
+                if (! isset($column['exportable']) || $column['exportable']) {
+                    $results[$column['title']] = strip_tags(array_get($row, $column['name']));
+                }
+            } else {
+                $results[] = array_get($row, $column);
+            }
+        }
+
+        return $results;
     }
 
     /**
@@ -209,33 +265,21 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     }
 
     /**
-     * Optional method if you want to use html builder.
+     * Get mapped columns versus final decorated output.
      *
-     * @return mixed
+     * @return array
      */
-    public function html()
+    protected function getDataForPrint()
     {
-        return $this->builder();
-    }
+        $decoratedData = $this->getAjaxResponseData();
 
-    /**
-     * Get Datatables Html Builder instance.
-     *
-     * @return \Yajra\Datatables\Html\Builder
-     */
-    public function builder()
-    {
-        return $this->datatables->getHtmlBuilder();
-    }
+        return array_map(function ($row) {
+            if (is_array($this->printColumns)) {
+                return array_only($row, $this->printColumns);
+            }
 
-    /**
-     * Get Datatables Request instance.
-     *
-     * @return \Yajra\Datatables\Request
-     */
-    public function request()
-    {
-        return $this->datatables->getRequest();
+            return $row;
+        }, $decoratedData);
     }
 
     /**
@@ -264,5 +308,32 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
         }
 
         return $query;
+    }
+
+    /**
+     * Get default builder parameters.
+     *
+     * @return array
+     */
+    protected function getBuilderParameters()
+    {
+        return [
+            'order'   => [[0, 'desc']],
+            'buttons' => [
+                'create',
+                [
+                    'extend'  => 'collection',
+                    'text'    => '<i class="fa fa-download"></i> Export',
+                    'buttons' => [
+                        'csv',
+                        'excel',
+                        'pdf',
+                    ],
+                ],
+                'print',
+                'reset',
+                'reload',
+            ],
+        ];
     }
 }

@@ -1,14 +1,13 @@
 <?php
 
-namespace DummyNamespace;
+namespace LOD\DataTables;
 
 use App\User;
 use Yajra\Datatables\Services\DataTable;
 
-class DummyClass extends DataTable
+class PoliciesDataTable extends DataTable
 {
     // protected $printPreview  = 'path.to.print.preview.view';
-    // protected $exportColumns = ['id', 'name'];
     // protected $printColumns  = '*';
 
     /**
@@ -44,30 +43,24 @@ class DummyClass extends DataTable
     public function html()
     {
         return $this->builder()
-            ->columns([
-                'id',
-                // add columns to display
-                'created_at',
-                'updated_at',
-            ])
-            ->addAction(['width' => '50px'])
-            ->ajax('')
-            ->parameters([
-                'buttons' => [
-                    'create',
-                    [
-                        'extend'  => 'collection',
-                        'text'    => '<i class="fa fa-download"></i> Export',
-                        'buttons' => [
-                            'csv',
-                            'excel',
-                            'pdf',
-                        ],
-                    ],
-                    'print',
-                    'reset',
-                    'reload',
-                ],
-            ]);
+                    ->columns($this->getColumns())
+                    ->ajax('')
+                    ->addAction(['width' => '80px'])
+                    ->parameters($this->getBuilderParameters());
+    }
+
+    /**
+     * Get columns.
+     *
+     * @return array
+     */
+    private function getColumns()
+    {
+        return [
+            'id',
+            // add your columns
+            'created_at',
+            'updated_at',
+        ];
     }
 }
