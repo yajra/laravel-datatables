@@ -12,6 +12,8 @@ use Illuminate\Support\Collection;
 class DataTransformer
 {
     /**
+     * Transform row data by columns definition.
+     *
      * @param array $row
      * @param mixed $columns
      * @param string $type

@@ -8,6 +8,11 @@
 
 ##Change Log
 
+###v6.2.2
+    - Extract data transformation task to own class.
+    - Refactor duplicate response mapping code.
+    - Increase scrutinizer score.
+
 ###v6.2.1
     - Fix data when exporting with html tags.
     - Add filename method in stub.
