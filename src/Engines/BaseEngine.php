@@ -168,6 +168,13 @@ abstract class BaseEngine implements DataTableEngineContract
     protected $serializer;
 
     /**
+     * Custom ordering callback.
+     *
+     * @var \Closure
+     */
+    protected $orderCallback;
+
+    /**
      * Array of data to append on json response.
      *
      * @var array
@@ -832,6 +839,19 @@ abstract class BaseEngine implements DataTableEngineContract
         } else {
             $this->appends[$key] = value($value);
         }
+
+        return $this;
+    }
+
+    /**
+     * Override default collection ordering.
+     *
+     * @param \Closure $closure
+     * @return CollectionEngine
+     */
+    public function order(\Closure $closure)
+    {
+        $this->orderCallback = $closure;
 
         return $this;
     }
