@@ -8,6 +8,11 @@
 
 ##Change Log
 
+###v6.2.3
+    - Add setter/getter for filename.
+    - Add html_entity_decode when exporting file.
+    - Decode column title when exporting.
+
 ###v6.2.2
     - Extract data transformation task to own class.
     - Refactor duplicate response mapping code.
