@@ -41,9 +41,14 @@ class DataTransformer
         $results = [];
         foreach ($columns->all() as $column) {
             if ($column[$type]) {
-                $data = array_get($row, $column['data']);
+                $title = $column['title'];
+                $data  = array_get($row, $column['data']);
+                if ($type == 'exportable') {
+                    $data  = e(strip_tags($data));
+                    $title = e(strip_tags($title));
+                }
 
-                $results[$column['title']] = $type == 'exportable' ? e(strip_tags($data)) : $data;
+                $results[$title] = $data;
             }
         }
 
