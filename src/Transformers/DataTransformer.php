@@ -44,8 +44,8 @@ class DataTransformer
                 $title = $column['title'];
                 $data  = array_get($row, $column['data']);
                 if ($type == 'exportable') {
-                    $data  = e(strip_tags($data));
-                    $title = e(strip_tags($title));
+                    $data  = html_entity_decode(strip_tags($data), ENT_QUOTES, 'UTF-8');
+                    $title = html_entity_decode(strip_tags($title), ENT_QUOTES, 'UTF-8');
                 }
 
                 $results[$title] = $data;
