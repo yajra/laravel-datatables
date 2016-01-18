@@ -14,9 +14,9 @@ This package is created to handle [server-side](https://www.datatables.net/manua
     - **Eloquent ORM**
     - **Fluent Query Builder**
     - **Collection** [available on v5.x and later]
-- [DataTable Service Implementation (v6.x)](https://github.com/yajra/laravel-datatables/blob/6.0/CHANGELOG.md). 
+- [DataTable Service Implementation (v6.x)](https://github.com/yajra/laravel-datatables/blob/6.0/CHANGELOG.md#v600---datatable-service-implementation). 
 - Adding or editing content of columns and removing columns
-- Templating new or current columns via Blade Template Engine or by using Closure
+- Modify column values via Blade Template Engine or by using Closure
 - Works with **ALL the DATABASE** supported by Laravel
 - Works with **Oracle Database** using [Laravel-OCI8](https://github.com/yajra/laravel-oci8) package
 - Works with [DataTables](http://datatables.net) v1.10++.
@@ -31,10 +31,16 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 - Provides a [DataTable Html Builder](http://datatables.yajrabox.com/html) to help you use the package with less code.
 - Provides XSS filtering function to optionally escape all or specified column values using `escapeColumns('*'\['column'])` method.
 - Provides Query Logging when application is in debug state. **Important: Make sure that debug is set to false when your code is in production**
+- Easily attach a resource on json response via `->with()`
+- Built-in support for exporting to CSV, EXCEL and PDF using [Laravel-Excel](https://github.com/Maatwebsite/Laravel-Excel).
+- Built-in printer friendly view or create your own by overriding `printPreview()` method.
+- Provides an artisan command for generating a DataTable service and scope.
+- See [change logs](https://github.com/yajra/laravel-datatables/blob/6.0/CHANGELOG.md) for more details.
     
 ## Requirements:
 - PHP 5.5.9 or later.
 - Laravel 5.0 or later.
+- [DataTables jQuery Plugin](http://datatables.net/) v1.10.x
 
 ## Laravel 4.2 & DataTables v1.9.x Users
 Most of the latest updates/features are not available on these versions. Please check [L4 Branch](https://github.com/yajra/laravel-datatables/tree/L4) and [L5 DT1.9](https://github.com/yajra/laravel-datatables/tree/L5-DT1.9) for old documentations of its features.
@@ -48,24 +54,16 @@ Most of the latest updates/features are not available on these versions. Please 
 - [Demo Application](http://datatables.yajrabox.com) is available for artisan's reference.
 
 ## Quick Installation
-**Laravel 5:** `composer require yajra/laravel-datatables-oracle:~6.0`
-
-**Laravel 4:** `composer require yajra/laravel-datatables-oracle:~3.0`
+`composer require yajra/laravel-datatables-oracle:~6.0`
 
 #### Service Provider
 `Yajra\Datatables\DatatablesServiceProvider`
 
 #### Facade
-**Laravel 4**
-`'Datatables'      => 'yajra\Datatables\Facades\Datatables',`
-
-**Laravel 5++**
 `Datatables` facade are automatically registered as an alias for `Yajra\Datatables\Datatables` class. 
 
 #### Configuration
-**Laravel 5:** `$ php artisan vendor:publish --tag=datatables`
-
-**Laravel 4:** `$ php artisan config:publish yajra/laravel-datatables-oracle`
+`$ php artisan vendor:publish --tag=datatables`
 
 And that's it! Start building out some awesome DataTables!
 
@@ -92,4 +90,3 @@ If you discover any security related issues, please email [aqangeles@gmail.com](
 ## License
 
 The MIT License (MIT). Please see [License File](https://github.com/yajra/laravel-datatables/blob/master/LICENSE.md) for more information.
-
