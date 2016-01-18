@@ -52,6 +52,13 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     protected $scopes = [];
 
     /**
+     * Export filename.
+     *
+     * @var string
+     */
+    protected $filename = '';
+
+    /**
      * @param \Yajra\Datatables\Datatables $datatables
      * @param \Illuminate\Contracts\View\Factory $viewFactory
      */
@@ -120,7 +127,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      */
     protected function buildExcelFile()
     {
-        return app('excel')->create($this->filename(), function (LaravelExcelWriter $excel) {
+        return app('excel')->create($this->getFilename(), function (LaravelExcelWriter $excel) {
             $excel->sheet('exported-data', function (LaravelExcelWorksheet $sheet) {
                 $sheet->fromArray($this->getDataForExport());
             });
@@ -286,6 +293,29 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     public function addScope(DataTableScopeContract $scope)
     {
         $this->scopes[] = $scope;
+
+        return $this;
+    }
+
+    /**
+     * Get export filename.
+     *
+     * @return string
+     */
+    public function getFilename()
+    {
+        return $this->filename ?: $this->filename();
+    }
+
+    /**
+     * Set export filename.
+     *
+     * @param string $filename
+     * @return DataTable
+     */
+    public function setFilename($filename)
+    {
+        $this->filename = $filename;
 
         return $this;
     }
