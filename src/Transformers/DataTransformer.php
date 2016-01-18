@@ -44,8 +44,8 @@ class DataTransformer
                 $title = $column['title'];
                 $data  = array_get($row, $column['data']);
                 if ($type == 'exportable') {
-                    $data  = html_entity_decode(strip_tags($data), ENT_QUOTES, 'UTF-8');
-                    $title = html_entity_decode(strip_tags($title), ENT_QUOTES, 'UTF-8');
+                    $data  = $this->decodeContent($data);
+                    $title = $this->decodeContent($title);
                 }
 
                 $results[$title] = $data;
@@ -53,5 +53,18 @@ class DataTransformer
         }
 
         return $results;
+    }
+
+    /**
+     * Decode content to a readable text value.
+     *
+     * @param string $data
+     * @return string
+     */
+    protected function decodeContent($data)
+    {
+        $decoded = html_entity_decode(strip_tags($data), ENT_QUOTES, 'UTF-8');
+
+        return str_replace("\xc2\xa0", ' ', $decoded);
     }
 }
