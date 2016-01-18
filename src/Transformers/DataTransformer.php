@@ -43,7 +43,7 @@ class DataTransformer
             if ($column[$type]) {
                 $data = array_get($row, $column['data']);
 
-                $results[$column['title']] = $type == 'exportable' ? strip_tags($data) : $data;
+                $results[$column['title']] = $type == 'exportable' ? e(strip_tags($data)) : $data;
             }
         }
 
