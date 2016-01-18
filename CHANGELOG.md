@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v6.2.4
+    - Add git attributes.
+
 ###v6.2.3
     - Add setter/getter for filename.
     - Add html_entity_decode when exporting file.
