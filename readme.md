@@ -30,8 +30,9 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 - Works with Laravel Dependency Injection and IoC Container.
 - Provides a [DataTable Html Builder](http://datatables.yajrabox.com/html) to help you use the package with less code.
 - Provides XSS filtering function to optionally escape all or specified column values using `escapeColumns('*'\['column'])` method.
-- Provides Query Logging when application is in debug state. **Important: Make sure that debug is set to false when your code is in production**
-- Easily attach a resource on json response via `->with()`
+- Provides Query Logging when application is in debug state. 
+    **Important: Make sure that debug is set to false when your code is in production**
+- Easily attach a resource on json response via `->with()` method.
 - Built-in support for exporting to CSV, EXCEL and PDF using [Laravel-Excel](https://github.com/Maatwebsite/Laravel-Excel).
 - Built-in printer friendly view or create your own by overriding `printPreview()` method.
 - Provides an artisan command for generating a DataTable service and scope.
@@ -57,12 +58,12 @@ Most of the latest updates/features are not available on these versions. Please 
 `composer require yajra/laravel-datatables-oracle:~6.0`
 
 #### Service Provider
-`Yajra\Datatables\DatatablesServiceProvider`
+`Yajra\Datatables\DatatablesServiceProvider::class`
 
 #### Facade
 `Datatables` facade are automatically registered as an alias for `Yajra\Datatables\Datatables` class. 
 
-#### Configuration
+#### Configuration and Assets
 `$ php artisan vendor:publish --tag=datatables`
 
 And that's it! Start building out some awesome DataTables!
