@@ -8,6 +8,12 @@
 
 ##Change Log
 
+###v6.3.0
+    - Add option to override default ordering via `->order(\Closure $callback)` method.
+    - Add editor config.
+    - Add some new features docs.
+    - Remove Laravel 4.2 documentation on 6.0 branch.
+
 ###v6.2.4
     - Add git attributes.
 
