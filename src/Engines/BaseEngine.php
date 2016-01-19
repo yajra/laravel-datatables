@@ -844,10 +844,10 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Override default collection ordering.
+     * Override default ordering method with a closure callback.
      *
      * @param \Closure $closure
-     * @return CollectionEngine
+     * @return $this
      */
     public function order(\Closure $closure)
     {
