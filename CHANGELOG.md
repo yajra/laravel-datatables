@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v6.3.1
+    - Fix artisan datatables:make service stub.
+
 ###v6.3.0
     - Add option to override default ordering via `->order(\Closure $callback)` method.
     - Add editor config.
