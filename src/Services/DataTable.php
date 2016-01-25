@@ -3,10 +3,13 @@
 namespace Yajra\Datatables\Services;
 
 use Illuminate\Contracts\View\Factory;
+use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
+use Maatwebsite\Excel\Writers\LaravelExcelWriter;
 use Yajra\Datatables\Contracts\DataTableButtonsContract;
 use Yajra\Datatables\Contracts\DataTableContract;
 use Yajra\Datatables\Contracts\DataTableScopeContract;
 use Yajra\Datatables\Datatables;
+use Yajra\Datatables\Transformers\DataTransformer;
 
 abstract class DataTable implements DataTableContract, DataTableButtonsContract
 {
@@ -44,9 +47,16 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     /**
      * Query scopes.
      *
-     * @var array
+     * @var \Yajra\Datatables\Contracts\DataTableScopeContract[]
      */
     protected $scopes = [];
+
+    /**
+     * Export filename.
+     *
+     * @var string
+     */
+    protected $filename = '';
 
     /**
      * @param \Yajra\Datatables\Datatables $datatables
@@ -68,7 +78,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      */
     public function render($view, $data = [], $mergeData = [])
     {
-        if ($this->request()->ajax() &&  $this->request()->wantsJson()) {
+        if ($this->request()->ajax() && $this->request()->wantsJson()) {
             return $this->ajax();
         }
 
@@ -91,6 +101,16 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     }
 
     /**
+     * Get Datatables Request instance.
+     *
+     * @return \Yajra\Datatables\Request
+     */
+    public function request()
+    {
+        return $this->datatables->getRequest();
+    }
+
+    /**
      * Export results to Excel file.
      *
      * @return mixed
@@ -107,8 +127,8 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      */
     protected function buildExcelFile()
     {
-        return app('excel')->create($this->filename(), function ($excel) {
-            $excel->sheet('exported-data', function ($sheet) {
+        return app('excel')->create($this->getFilename(), function (LaravelExcelWriter $excel) {
+            $excel->sheet('exported-data', function (LaravelExcelWorksheet $sheet) {
                 $sheet->fromArray($this->getDataForExport());
             });
         });
@@ -131,33 +151,67 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      */
     protected function getDataForExport()
     {
-        $decoratedData = $this->getAjaxResponseData();
+        $columns = $this->exportColumns();
 
-        return array_map(function ($row) {
-            if (is_array($this->exportColumns)) {
-                return array_only($row, $this->exportColumns);
-            }
-
-            return $row;
-        }, $decoratedData);
+        return $this->mapResponseToColumns($columns, 'exportable');
     }
 
     /**
-     * Get mapped columns versus final decorated output.
+     * Get export columns definition.
+     *
+     * @return array|string
+     */
+    private function exportColumns()
+    {
+        return is_array($this->exportColumns) ? $this->exportColumns : $this->getColumnsFromBuilder();
+    }
+
+    /**
+     * Get columns definition from html builder.
      *
      * @return array
      */
-    protected function getDataForPrint()
+    protected function getColumnsFromBuilder()
     {
-        $decoratedData = $this->getAjaxResponseData();
+        return $this->html()->getColumns();
+    }
 
-        return array_map(function ($row) {
-            if (is_array($this->printColumns)) {
-                return array_only($row, $this->printColumns);
+    /**
+     * Optional method if you want to use html builder.
+     *
+     * @return \Yajra\Datatables\Html\Builder
+     */
+    public function html()
+    {
+        return $this->builder();
+    }
+
+    /**
+     * Get Datatables Html Builder instance.
+     *
+     * @return \Yajra\Datatables\Html\Builder
+     */
+    public function builder()
+    {
+        return $this->datatables->getHtmlBuilder();
+    }
+
+    /**
+     * Map ajax response to columns definition.
+     *
+     * @param mixed $columns
+     * @param string $type
+     * @return array
+     */
+    protected function mapResponseToColumns($columns, $type)
+    {
+        return array_map(function ($row) use ($columns, $type) {
+            if ($columns) {
+                return (new DataTransformer())->transform($row, $columns, $type);
             }
 
             return $row;
-        }, $decoratedData);
+        }, $this->getAjaxResponseData());
     }
 
     /**
@@ -209,33 +263,25 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     }
 
     /**
-     * Optional method if you want to use html builder.
+     * Get mapped columns versus final decorated output.
      *
-     * @return mixed
+     * @return array
      */
-    public function html()
+    protected function getDataForPrint()
     {
-        return $this->builder();
+        $columns = $this->printColumns();
+
+        return $this->mapResponseToColumns($columns, 'printable');
     }
 
     /**
-     * Get Datatables Html Builder instance.
+     * Get printable columns.
      *
-     * @return \Yajra\Datatables\Html\Builder
+     * @return array|string
      */
-    public function builder()
+    protected function printColumns()
     {
-        return $this->datatables->getHtmlBuilder();
-    }
-
-    /**
-     * Get Datatables Request instance.
-     *
-     * @return \Yajra\Datatables\Request
-     */
-    public function request()
-    {
-        return $this->datatables->getRequest();
+        return is_array($this->printColumns) ? $this->printColumns : $this->getColumnsFromBuilder();
     }
 
     /**
@@ -252,17 +298,67 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     }
 
     /**
+     * Get export filename.
+     *
+     * @return string
+     */
+    public function getFilename()
+    {
+        return $this->filename ?: $this->filename();
+    }
+
+    /**
+     * Set export filename.
+     *
+     * @param string $filename
+     * @return DataTable
+     */
+    public function setFilename($filename)
+    {
+        $this->filename = $filename;
+
+        return $this;
+    }
+
+    /**
      * Apply query scopes.
      *
      * @param \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder $query
      * @return mixed
      */
-    public function applyScopes($query)
+    protected function applyScopes($query)
     {
         foreach ($this->scopes as $scope) {
             $scope->apply($query);
         }
 
         return $query;
+    }
+
+    /**
+     * Get default builder parameters.
+     *
+     * @return array
+     */
+    protected function getBuilderParameters()
+    {
+        return [
+            'order'   => [[0, 'desc']],
+            'buttons' => [
+                'create',
+                [
+                    'extend'  => 'collection',
+                    'text'    => '<i class="fa fa-download"></i> Export',
+                    'buttons' => [
+                        'csv',
+                        'excel',
+                        'pdf',
+                    ],
+                ],
+                'print',
+                'reset',
+                'reload',
+            ],
+        ];
     }
 }

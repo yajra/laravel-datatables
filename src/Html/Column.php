@@ -19,6 +19,8 @@ class Column extends Fluent
     {
         $attributes['orderable']  = isset($attributes['orderable']) ? $attributes['orderable'] : true;
         $attributes['searchable'] = isset($attributes['searchable']) ? $attributes['searchable'] : true;
+        $attributes['exportable'] = isset($attributes['exportable']) ? $attributes['exportable'] : true;
+        $attributes['printable']  = isset($attributes['printable']) ? $attributes['printable'] : true;
 
         // Allow methods override attribute value
         foreach ($attributes as $attribute => $value) {
@@ -34,11 +36,12 @@ class Column extends Fluent
     /**
      * Parse render attribute.
      *
-     * @param \Closure|string $value
+     * @param mixed $value
      * @return string|null
      */
     public function parseRender($value)
     {
+        /** @var \Illuminate\Contracts\View\Factory $view */
         $view = app('view');
 
         if (is_callable($value)) {
@@ -53,7 +56,7 @@ class Column extends Fluent
     /**
      * Display render value as is.
      *
-     * @param string $value
+     * @param mixed $value
      * @return string
      */
     private function parseRenderAsString($value)

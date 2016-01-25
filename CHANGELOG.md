@@ -8,6 +8,42 @@
 
 ##Change Log
 
+###v6.3.1
+    - Fix artisan datatables:make service stub.
+
+###v6.3.0
+    - Add option to override default ordering via `->order(\Closure $callback)` method.
+    - Add editor config.
+    - Add some new features docs.
+    - Remove Laravel 4.2 documentation on 6.0 branch.
+
+###v6.2.4
+    - Add git attributes.
+
+###v6.2.3
+    - Add setter/getter for filename.
+    - Add html_entity_decode when exporting file.
+    - Decode column title when exporting.
+
+###v6.2.2
+    - Extract data transformation task to own class.
+    - Refactor duplicate response mapping code.
+    - Increase scrutinizer score.
+
+###v6.2.1
+    - Fix data when exporting with html tags.
+    - Add filename method in stub.
+    - Fix some doc blocks.
+    - Scrutinizer refactoring.
+
+###v6.2.0
+    - Enhance printing function to match what is displayed in UI.
+    - Enhance export function to match what is displayed in UI.
+    - Enhance datatables service stub.
+    - Address issue #310.
+    - Add option to set column as exportable and/or printable.
+    - Action and checkbox column is not exportable but printable by default.
+
 ###v6.1.3
     - Fix logical bug with totalRecords and filteredRecords. Fix #333
 
