@@ -1,6 +1,6 @@
 <?php
 
-namespace Yajra\Datatables;
+namespace Rafaelqm\Datatables;
 
 use DateTime;
 use Illuminate\Contracts\Support\Arrayable;

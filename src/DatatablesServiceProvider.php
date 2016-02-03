@@ -1,12 +1,12 @@
 <?php
 
-namespace Yajra\Datatables;
+namespace Rafaelqm\Datatables;
 
 use Collective\Html\HtmlServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use Maatwebsite\Excel\ExcelServiceProvider;
-use Yajra\Datatables\Generators\DataTablesMakeCommand;
-use Yajra\Datatables\Generators\DataTablesScopeCommand;
+use Rafaelqm\Datatables\Generators\DataTablesMakeCommand;
+use Rafaelqm\Datatables\Generators\DataTablesScopeCommand;
 
 class DatatablesServiceProvider extends ServiceProvider
 {
@@ -104,7 +104,7 @@ class DatatablesServiceProvider extends ServiceProvider
     {
         if (class_exists('Illuminate\Foundation\AliasLoader')) {
             $loader = \Illuminate\Foundation\AliasLoader::getInstance();
-            $loader->alias('Datatables', \Yajra\Datatables\Datatables::class);
+            $loader->alias('Datatables', \Rafaelqm\Datatables\Datatables::class);
         }
     }
 

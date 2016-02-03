@@ -1,5 +1,5 @@
 {
-    "name": "yajra/laravel-datatables-oracle",
+    "name": "rafaelqm/laravel-datatables",
     "description": "jQuery DataTables API for Laravel 4|5",
     "keywords" : ["laravel4","laravel5","laravel","datatables","datatable","datatables jquery plugin"],
     "license": "MIT",
@@ -27,7 +27,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Yajra\\Datatables\\": "src/"
+            "Rafaelqm\\Datatables\\": "src/"
         }
     },
     "minimum-stability": "stable"

@@ -1,6 +1,6 @@
 <?php
 
-namespace Yajra\Datatables\Engines;
+namespace Rafaelqm\Datatables\Engines;
 
 /**
  * Laravel Datatables Query Builder Engine
@@ -13,15 +13,16 @@ namespace Yajra\Datatables\Engines;
 use Closure;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Str;
-use Yajra\Datatables\Contracts\DataTableEngineContract;
-use Yajra\Datatables\Helper;
-use Yajra\Datatables\Request;
+use Rafaelqm\Datatables\Contracts\DataTableEngineContract;
+use Rafaelqm\Datatables\Helper;
+use Rafaelqm\Datatables\Request;
+use Illuminate\Support\Facades\DB;
 
 class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
 {
     /**
      * @param \Illuminate\Database\Query\Builder $builder
-     * @param \Yajra\Datatables\Request $request
+     * @param \Rafaelqm\Datatables\Request $request
      */
     public function __construct(Builder $builder, Request $request)
     {
@@ -32,7 +33,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
     /**
      * Initialize attributes.
      *
-     * @param  \Yajra\Datatables\Request $request
+     * @param  \Rafaelqm\Datatables\Request $request
      * @param  \Illuminate\Database\Query\Builder $builder
      * @param  string $type
      */
@@ -85,7 +86,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
         $myQuery = clone $this->query;
         // if its a normal query ( no union, having and distinct word )
         // replace the select with static text to improve performance
-        if (! Str::contains(Str::lower($myQuery->toSql()), ['union', 'having', 'distinct'])) {
+        if (! Str::contains(Str::lower($myQuery->toSql()), ['union', 'having', 'distinct', 'group by'])) {
             $row_count = $this->connection->getQueryGrammar()->wrap('row_count');
             $myQuery->select($this->connection->raw("'1' as {$row_count}"));
         }
@@ -283,7 +284,10 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
                 if ($column === '*') {
                     $column = 'id';
                 }
-                $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
+                if ($column === '0') {
+                    $column = '1';
+                }
+                $this->getQueryBuilder()->orderBy(DB::raw($column), $orderable['direction']);
             }
         }
     }

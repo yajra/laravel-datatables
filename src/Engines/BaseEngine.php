@@ -1,6 +1,6 @@
 <?php
 
-namespace Yajra\Datatables\Engines;
+namespace Rafaelqm\Datatables\Engines;
 
 /*
  * Laravel Datatables Base Engine
@@ -16,16 +16,16 @@ use Illuminate\Support\Str;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Serializer\DataArraySerializer;
-use Yajra\Datatables\Contracts\DataTableEngineContract;
-use Yajra\Datatables\Helper;
-use Yajra\Datatables\Processors\DataProcessor;
+use Rafaelqm\Datatables\Contracts\DataTableEngineContract;
+use Rafaelqm\Datatables\Helper;
+use Rafaelqm\Datatables\Processors\DataProcessor;
 
 abstract class BaseEngine implements DataTableEngineContract
 {
     /**
      * Datatables Request object.
      *
-     * @var \Yajra\Datatables\Request
+     * @var \Rafaelqm\Datatables\Request
      */
     public $request;
 

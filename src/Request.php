@@ -1,6 +1,6 @@
 <?php
 
-namespace Yajra\Datatables;
+namespace Rafaelqm\Datatables;
 
 use Exception;
 use Illuminate\Http\Request as IlluminateRequest;

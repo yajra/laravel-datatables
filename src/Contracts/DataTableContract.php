@@ -1,6 +1,6 @@
 <?php
 
-namespace Yajra\Datatables\Contracts;
+namespace Rafaelqm\Datatables\Contracts;
 
 interface DataTableContract
 {
@@ -20,17 +20,17 @@ interface DataTableContract
     public function ajax();
 
     /**
-     * @return \Yajra\Datatables\Html\Builder
+     * @return \Rafaelqm\Datatables\Html\Builder
      */
     public function html();
 
     /**
-     * @return \Yajra\Datatables\Html\Builder
+     * @return \Rafaelqm\Datatables\Html\Builder
      */
     public function builder();
 
     /**
-     * @return \Yajra\Datatables\Request
+     * @return \Rafaelqm\Datatables\Request
      */
     public function request();
 
