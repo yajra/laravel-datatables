@@ -855,4 +855,14 @@ abstract class BaseEngine implements DataTableEngineContract
 
         return $this;
     }
+	
+	/**
+     * Check if the current sql language is based on oracle syntax.
+     *
+     * @return bool
+     */
+    public function isOracleSql()
+    {
+        return Config::get('datatables.oracle_sql', false);
+    }
 }
