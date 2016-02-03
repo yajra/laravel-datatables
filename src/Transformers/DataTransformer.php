@@ -1,13 +1,13 @@
 <?php
 
-namespace Yajra\Datatables\Transformers;
+namespace Rafaelqm\Datatables\Transformers;
 
 use Illuminate\Support\Collection;
 
 /**
  * Class DataTransformer
  *
- * @package Yajra\Datatables\Transformers
+ * @package Rafaelqm\Datatables\Transformers
  */
 class DataTransformer
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Yajra\Datatables\Generators;
+namespace Rafaelqm\Datatables\Generators;
 
 use Illuminate\Console\GeneratorCommand;
 

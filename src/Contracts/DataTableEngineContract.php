@@ -1,6 +1,6 @@
 <?php
 
-namespace Yajra\Datatables\Contracts;
+namespace Rafaelqm\Datatables\Contracts;
 
 interface DataTableEngineContract
 {

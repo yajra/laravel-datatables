@@ -27,7 +27,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Yajra\\Datatables\\": "src/"
+            "Rafaelqm\\Datatables\\": "src/"
         }
     },
     "minimum-stability": "stable"

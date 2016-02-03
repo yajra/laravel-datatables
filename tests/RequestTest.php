@@ -1,6 +1,6 @@
 <?php
 
-use Yajra\Datatables\Request;
+use Rafaelqm\Datatables\Request;
 
 class RequestTest extends PHPUnit_Framework_TestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Yajra\Datatables\Engines;
+namespace Rafaelqm\Datatables\Engines;
 
 /**
  * Laravel Datatables Query Builder Engine
@@ -13,16 +13,16 @@ namespace Yajra\Datatables\Engines;
 use Closure;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Str;
-use Yajra\Datatables\Contracts\DataTableEngineContract;
-use Yajra\Datatables\Helper;
-use Yajra\Datatables\Request;
+use Rafaelqm\Datatables\Contracts\DataTableEngineContract;
+use Rafaelqm\Datatables\Helper;
+use Rafaelqm\Datatables\Request;
 use Illuminate\Support\Facades\DB;
 
 class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
 {
     /**
      * @param \Illuminate\Database\Query\Builder $builder
-     * @param \Yajra\Datatables\Request $request
+     * @param \Rafaelqm\Datatables\Request $request
      */
     public function __construct(Builder $builder, Request $request)
     {
@@ -33,7 +33,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
     /**
      * Initialize attributes.
      *
-     * @param  \Yajra\Datatables\Request $request
+     * @param  \Rafaelqm\Datatables\Request $request
      * @param  \Illuminate\Database\Query\Builder $builder
      * @param  string $type
      */

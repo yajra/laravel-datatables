@@ -1,9 +1,9 @@
 <?php
 
-use Yajra\Datatables\Datatables;
-use Yajra\Datatables\Html\Builder;
-use Yajra\Datatables\Html\Column;
-use Yajra\Datatables\Request;
+use Rafaelqm\Datatables\Datatables;
+use Rafaelqm\Datatables\Html\Builder;
+use Rafaelqm\Datatables\Html\Column;
+use Rafaelqm\Datatables\Request;
 
 require_once 'helper.php';
 
@@ -42,7 +42,7 @@ class HtmlBuilderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \Yajra\Datatables\Datatables
+     * @return \Rafaelqm\Datatables\Datatables
      */
     protected function getDatatables()
     {

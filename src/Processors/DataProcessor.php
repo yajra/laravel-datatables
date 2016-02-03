@@ -1,13 +1,13 @@
 <?php
 
-namespace Yajra\Datatables\Processors;
+namespace Rafaelqm\Datatables\Processors;
 
-use Yajra\Datatables\Helper;
+use Rafaelqm\Datatables\Helper;
 
 /**
  * Class DataProcessor
  *
- * @package Yajra\Datatables
+ * @package Rafaelqm\Datatables
  */
 class DataProcessor
 {

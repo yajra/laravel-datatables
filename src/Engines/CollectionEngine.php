@@ -1,6 +1,6 @@
 <?php
 
-namespace Yajra\Datatables\Engines;
+namespace Rafaelqm\Datatables\Engines;
 
 /**
  * Laravel Datatables Collection Engine
@@ -15,8 +15,8 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Yajra\Datatables\Contracts\DataTableEngineContract;
-use Yajra\Datatables\Request;
+use Rafaelqm\Datatables\Contracts\DataTableEngineContract;
+use Rafaelqm\Datatables\Request;
 
 class CollectionEngine extends BaseEngine implements DataTableEngineContract
 {
@@ -36,7 +36,7 @@ class CollectionEngine extends BaseEngine implements DataTableEngineContract
 
     /**
      * @param Collection $collection
-     * @param \Yajra\Datatables\Request $request
+     * @param \Rafaelqm\Datatables\Request $request
      */
     public function __construct(Collection $collection, Request $request)
     {

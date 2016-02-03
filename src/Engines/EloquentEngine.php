@@ -1,6 +1,6 @@
 <?php
 
-namespace Yajra\Datatables\Engines;
+namespace Rafaelqm\Datatables\Engines;
 
 /**
  * Laravel Datatables Eloquent Engine
@@ -11,14 +11,14 @@ namespace Yajra\Datatables\Engines;
  */
 
 use Illuminate\Database\Eloquent\Builder;
-use Yajra\Datatables\Contracts\DataTableEngineContract;
-use Yajra\Datatables\Request;
+use Rafaelqm\Datatables\Contracts\DataTableEngineContract;
+use Rafaelqm\Datatables\Request;
 
 class EloquentEngine extends QueryBuilderEngine implements DataTableEngineContract
 {
     /**
      * @param mixed $model
-     * @param \Yajra\Datatables\Request $request
+     * @param \Rafaelqm\Datatables\Request $request
      */
     public function __construct($model, Request $request)
     {

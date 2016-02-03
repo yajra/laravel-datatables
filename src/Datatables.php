@@ -1,6 +1,6 @@
 <?php
 
-namespace Yajra\Datatables;
+namespace Rafaelqm\Datatables;
 
 /**
  * Laravel Datatables Package
@@ -13,14 +13,14 @@ namespace Yajra\Datatables;
 
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
-use Yajra\Datatables\Engines\CollectionEngine;
-use Yajra\Datatables\Engines\EloquentEngine;
-use Yajra\Datatables\Engines\QueryBuilderEngine;
+use Rafaelqm\Datatables\Engines\CollectionEngine;
+use Rafaelqm\Datatables\Engines\EloquentEngine;
+use Rafaelqm\Datatables\Engines\QueryBuilderEngine;
 
 /**
  * Class Datatables
  *
- * @package Yajra\Datatables
+ * @package Rafaelqm\Datatables
  * @method  EloquentEngine eloquent($builder)
  * @method  CollectionEngine collection(Collection $builder)
  * @method  QueryBuilderEngine queryBuilder(QueryBuilder $builder)
@@ -30,7 +30,7 @@ class Datatables
     /**
      * Datatables request object.
      *
-     * @var \Yajra\Datatables\Request
+     * @var \Rafaelqm\Datatables\Request
      */
     public $request;
 
@@ -44,7 +44,7 @@ class Datatables
     /**
      * Class Constructor
      *
-     * @param \Yajra\Datatables\Request $request
+     * @param \Rafaelqm\Datatables\Request $request
      */
     public function __construct(Request $request)
     {
@@ -75,7 +75,7 @@ class Datatables
      * Datatables using Query Builder.
      *
      * @param \Illuminate\Database\Query\Builder $builder
-     * @return \Yajra\Datatables\Engines\QueryBuilderEngine
+     * @return \Rafaelqm\Datatables\Engines\QueryBuilderEngine
      */
     public function usingQueryBuilder(QueryBuilder $builder)
     {
@@ -86,7 +86,7 @@ class Datatables
      * Datatables using Collection.
      *
      * @param \Illuminate\Support\Collection $builder
-     * @return \Yajra\Datatables\Engines\CollectionEngine
+     * @return \Rafaelqm\Datatables\Engines\CollectionEngine
      */
     public function usingCollection(Collection $builder)
     {
@@ -115,7 +115,7 @@ class Datatables
      * Datatables using Eloquent
      *
      * @param  mixed $builder
-     * @return \Yajra\Datatables\Engines\EloquentEngine
+     * @return \Rafaelqm\Datatables\Engines\EloquentEngine
      */
     public function usingEloquent($builder)
     {
@@ -125,17 +125,17 @@ class Datatables
     /**
      * Get html builder class.
      *
-     * @return \Yajra\Datatables\Html\Builder
+     * @return \Rafaelqm\Datatables\Html\Builder
      */
     public function getHtmlBuilder()
     {
-        return app('Yajra\Datatables\Html\Builder');
+        return app('Rafaelqm\Datatables\Html\Builder');
     }
 
     /**
      * Get request object.
      *
-     * @return \Yajra\Datatables\Request|static
+     * @return \Rafaelqm\Datatables\Request|static
      */
     public function getRequest()
     {
