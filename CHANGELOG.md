@@ -8,6 +8,10 @@
 
 ##Change Log
 
+###v6.3.2 - 2016-02-04
+    - Add order by and group by on count sql optimization exceptions.
+    - Date will now be added on each released version using Y-m-d format.
+
 ###v6.3.1
     - Fix artisan datatables:make service stub.
 
