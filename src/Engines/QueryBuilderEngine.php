@@ -115,12 +115,13 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
                         );
                     } else {
                         if (count(explode('.', $columnName)) > 1) {
-                            $parts = explode('.', $columnName);
+                            $parts      = explode('.', $columnName);
                             $columnName = array_pop($parts);
-                            $relation = implode('.', $parts);
-                            
+                            $relation   = implode('.', $parts);
+
                             if (in_array($relation, $eagerLoads)) {
-                                $this->CompileRelationSearch($this->getQueryBuilder($query), $relation, $columnName, $keyword);
+                                $this->compileRelationSearch($this->getQueryBuilder($query), $relation, $columnName,
+                                    $keyword);
                             } else {
                                 $this->compileGlobalSearch($this->getQueryBuilder($query), $columnName, $keyword);
                             }
@@ -195,6 +196,24 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
     }
 
     /**
+     * Add relation query on global search.
+     *
+     * @param mixed $query
+     * @param string $column
+     * @param string $keyword
+     */
+    protected function compileRelationSearch($query, $relation, $column, $keyword)
+    {
+        $myQuery = clone $this->query;
+        $myQuery->orWhereHas($relation, function ($q) use ($column, $keyword, $query) {
+            $q->where($column, 'like', $keyword);
+            $sql = $q->toSql();
+            $sql = "($sql) >= 1";
+            $query->orWhereRaw($sql, [$keyword]);
+        });
+    }
+
+    /**
      * Add a query on global search.
      *
      * @param mixed $query
@@ -214,25 +233,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Add relation query on global search
-     *
-     * @param mixed $query
-     * @param string $column
-     * @param string $keyword
-     */
-    protected function CompileRelationSearch($query, $relation, $column, $keyword)
-    {
-        $myQuery = clone $this->query;
-        $myQuery->orWhereHas($relation, function($q) use ($column, $keyword, $query) {
-            $q->where($column, 'like', $keyword);
-            $sql = $q->toSql();
-            $sql = "($sql) >= 1";
-            $query->orWhereRaw($sql, [$keyword]);
-        });
-    }
-
-    /**
-     * Wrap a column and cast in pgsql
+     * Wrap a column and cast in pgsql.
      *
      * @param  string $column
      * @return string
