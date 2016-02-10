@@ -115,12 +115,16 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
                         );
                     } else {
                         if (count(explode('.', $columnName)) > 1) {
-                            $parts      = explode('.', $columnName);
-                            $relation   = $parts[0];
+                            $parts          = explode('.', $columnName);
+                            $relationColumn = array_pop($parts);
+                            $relation       = implode('.', $parts);
                             if (in_array($relation, $eagerLoads)) {
-                                $columnName = array_pop($parts);
-                                $this->compileRelationSearch($this->getQueryBuilder($query), $relation, $columnName,
-                                    $keyword);
+                                $this->compileRelationSearch(
+                                    $this->getQueryBuilder($query),
+                                    $relation,
+                                    $relationColumn,
+                                    $keyword
+                                );
                             } else {
                                 $this->compileGlobalSearch($this->getQueryBuilder($query), $columnName, $keyword);
                             }
