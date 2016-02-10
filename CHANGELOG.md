@@ -8,6 +8,12 @@
 
 ##Change Log
 
+###v6.4.0 - 2016-02-10
+    - Add feature to support global search on eager loaded models.
+    - PR #381. Credits to @ikerasLT.
+    - Fix implementation conflicts when using builder and join statements.
+    - Fix cs and doc blocks.
+
 ###v6.3.2 - 2016-02-04
     - Add order by and group by on count sql optimization exceptions.
     - Date will now be added on each released version using Y-m-d format.
