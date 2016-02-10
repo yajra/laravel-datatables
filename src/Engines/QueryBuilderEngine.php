@@ -99,7 +99,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
      */
     public function filtering()
     {
-        $eagerLoads = array_keys($this->query->getEagerLoads());
+        $eagerLoads = $this->getEagerLoads();
 
         $this->query->where(
             function ($query) use ($eagerLoads) {
@@ -133,6 +133,20 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
                 }
             }
         );
+    }
+
+    /**
+     * Get eager loads keys if eloquent.
+     *
+     * @return array
+     */
+    private function getEagerLoads()
+    {
+        if ($this->query_type == 'eloquent') {
+            return array_keys($this->query->getEagerLoads());
+        }
+
+        return [];
     }
 
     /**
