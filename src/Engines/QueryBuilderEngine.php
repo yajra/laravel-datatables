@@ -116,10 +116,9 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
                     } else {
                         if (count(explode('.', $columnName)) > 1) {
                             $parts      = explode('.', $columnName);
-                            $columnName = array_pop($parts);
-                            $relation   = implode('.', $parts);
-
+                            $relation   = $parts[0];
                             if (in_array($relation, $eagerLoads)) {
+                                $columnName = array_pop($parts);
                                 $this->compileRelationSearch($this->getQueryBuilder($query), $relation, $columnName,
                                     $keyword);
                             } else {
