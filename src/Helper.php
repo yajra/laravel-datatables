@@ -19,7 +19,7 @@ class Helper
      */
     public static function includeInArray($item, $array)
     {
-        if ($item['order'] === false) {
+        if ($item['order'] === false || $item['order'] >= count($array)) {
             return array_merge($array, [$item['name'] => $item['content']]);
         } else {
             $count = 0;

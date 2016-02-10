@@ -44,6 +44,27 @@ class HelperTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $data);
     }
 
+    public function test_include_in_array_with_order_outside_of_array_length()
+    {
+        $data = [
+            'id'  => 1,
+            'foo' => 'bar',
+        ];
+        $item = [
+            'name'    => 'user',
+            'content' => 'John',
+            'order'   => 2,
+        ];
+
+        $data     = Helper::includeInArray($item, $data);
+        $expected = [
+            'id'   => 1,
+            'foo'  => 'bar',
+            'user' => 'John',
+        ];
+        $this->assertEquals($expected, $data);
+    }
+
     public function test_compile_content_blade()
     {
         $content = '{!! $id !!}';
