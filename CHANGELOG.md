@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v6.4.1 - 2016-02-10
+    - Fix nested eager loaded relations and column name.
+
 ###v6.4.0 - 2016-02-10
     - Add feature to support global search on eager loaded models.
     - PR #381. Credits to @ikerasLT.
