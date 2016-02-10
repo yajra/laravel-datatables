@@ -99,8 +99,10 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
      */
     public function filtering()
     {
+        $eagerLoads = array_keys($this->query->getEagerLoads());
+
         $this->query->where(
-            function ($query) {
+            function ($query) use ($eagerLoads) {
                 $keyword = $this->setupKeyword($this->request->keyword());
                 foreach ($this->request->searchableColumnIndex() as $index) {
                     $columnName = $this->setupColumnName($index);
@@ -112,7 +114,19 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
                             $this->getQueryBuilder($query), $method, $parameters, $columnName, $keyword
                         );
                     } else {
-                        $this->compileGlobalSearch($this->getQueryBuilder($query), $columnName, $keyword);
+                        if (count(explode('.', $columnName)) > 1) {
+                            $parts = explode('.', $columnName);
+                            $columnName = array_pop($parts);
+                            $relation = implode('.', $parts);
+                            
+                            if (in_array($relation, $eagerLoads)) {
+                                $this->CompileRelationSearch($this->getQueryBuilder($query), $relation, $columnName, $keyword);
+                            } else {
+                                $this->compileGlobalSearch($this->getQueryBuilder($query), $columnName, $keyword);
+                            }
+                        } else {
+                            $this->compileGlobalSearch($this->getQueryBuilder($query), $columnName, $keyword);
+                        }
                     }
 
                     $this->isFilterApplied = true;
@@ -183,6 +197,24 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
         }
 
         $query->orWhereRaw($sql, [$keyword]);
+    }
+
+    /**
+     * Add relation query on global search
+     *
+     * @param mixed $query
+     * @param string $column
+     * @param string $keyword
+     */
+    protected function CompileRelationSearch($query, $relation, $column, $keyword)
+    {
+        $myQuery = clone $this->query;
+        $myQuery->orWhereHas($relation, function($q) use ($column, $keyword, $query) {
+            $q->where($column, 'like', $keyword);
+            $sql = $q->toSql();
+            $sql = "($sql) >= 1";
+            $query->orWhereRaw($sql, [$keyword]);
+        });
     }
 
     /**
