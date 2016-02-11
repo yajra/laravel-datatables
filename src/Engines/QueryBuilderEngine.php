@@ -309,19 +309,30 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
      * Perform case insensitive column search.
      *
      * @param int $i
-     * @param string $column
+     * @param mixed $column
      * @param string $keyword
      */
     protected function caseInsensitiveColumnSearch($i, $column, $keyword)
     {
         if ($this->request->isRegex($i)) {
-            if ($this->isOracleSql()) {
-                $this->query->whereRaw('REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )', [$keyword]);
-            } else {
-                $this->query->whereRaw('LOWER(' . $column . ') REGEXP ?', [Str::lower($keyword)]);
-            }
+            $this->regexCaseInsensitiveColumnSearch($column, $keyword);
         } else {
             $this->query->whereRaw('LOWER(' . $column . ') LIKE ?', [Str::lower($keyword)]);
+        }
+    }
+
+    /**
+     * Perform regex case insensitive column search.
+     *
+     * @param mixed $column
+     * @param string $keyword
+     */
+    protected function regexCaseInsensitiveColumnSearch($column, $keyword)
+    {
+        if ($this->isOracleSql()) {
+            $this->query->whereRaw('REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )', [$keyword]);
+        } else {
+            $this->query->whereRaw('LOWER(' . $column . ') REGEXP ?', [Str::lower($keyword)]);
         }
     }
 
@@ -329,19 +340,29 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
      * Perform case sensitive column search.
      *
      * @param int $i
-     * @param string $column
+     * @param mixed $column
      * @param string $keyword
      */
     protected function caseSensitiveColumnSearch($i, $column, $keyword)
     {
         if ($this->request->isRegex($i)) {
-            if ($this->isOracleSql()) {
-                $this->query->whereRaw('REGEXP_LIKE( ' . $column . ' , ? )', [$keyword]);
-            } else {
-                $this->query->whereRaw($column . ' REGEXP ?', [$keyword]);
-            }
+            $this->regexCaseSensitiveColumnSearch($column, $keyword);
         } else {
             $this->query->whereRaw($column . ' LIKE ?', [$keyword]);
+        }
+    }
+
+    /**
+     * Perform regex case insensitive column search.
+     * @param mixed $column
+     * @param string $keyword
+     */
+    protected function regexCaseSensitiveColumnSearch($column, $keyword)
+    {
+        if ($this->isOracleSql()) {
+            $this->query->whereRaw('REGEXP_LIKE( ' . $column . ' , ? )', [$keyword]);
+        } else {
+            $this->query->whereRaw($column . ' REGEXP ?', [$keyword]);
         }
     }
 
