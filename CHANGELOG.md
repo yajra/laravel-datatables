@@ -8,6 +8,10 @@
 
 ##Change Log
 
+###v6.4.3 - 2016-02-11
+    - Random cs and doc block fix.
+    - Code refactoring to reduce complexity.
+
 ###v6.4.2 - 2016-02-11
     - Change how regex code is generated after a column search. #358
     - Fix addColumn fails when order falls at end of array #386
