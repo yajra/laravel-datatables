@@ -306,7 +306,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Perform case insensitive column search.
+     * Compile queries for column search.
      *
      * @param int $i
      * @param mixed $column
@@ -325,7 +325,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Perform regex case insensitive column search.
+     * Compile regex query column search.
      *
      * @param mixed $column
      * @param string $keyword
@@ -343,7 +343,9 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * @inheritdoc
+     * Perform sorting of columns.
+     *
+     * @return void
      */
     public function ordering()
     {
