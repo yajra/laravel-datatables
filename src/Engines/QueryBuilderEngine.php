@@ -113,7 +113,11 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
                         $method     = Helper::getOrMethod($this->columnDef['filter'][$columnName]['method']);
                         $parameters = $this->columnDef['filter'][$columnName]['parameters'];
                         $this->compileColumnQuery(
-                            $this->getQueryBuilder($query), $method, $parameters, $columnName, $keyword
+                            $this->getQueryBuilder($query),
+                            $method,
+                            $parameters,
+                            $columnName,
+                            $keyword
                         );
                     } else {
                         if (count(explode('.', $columnName)) > 1) {
