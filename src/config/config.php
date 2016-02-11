@@ -2,6 +2,8 @@
 
 return [
 
+	'oracle_sql' => false,
+
     'search'          => [
         'case_insensitive' => true,
         'use_wildcards'    => false,
