@@ -250,6 +250,9 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
      */
     public function castColumn($column)
     {
+        if (substr($column,0,4) === 'raw_'){
+            $column = new Expression(substr($column,4));
+        }
         $column = $this->connection->getQueryGrammar()->wrap($column);
         if ($this->database === 'pgsql') {
             $column = 'CAST(' . $column . ' as TEXT)';
@@ -373,7 +376,8 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
                 if ($column === '*') {
                     $column = 'id';
                 }
-                $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
+                $column = $this->castColumn($column);
+                $this->getQueryBuilder()->orderByRaw($column . $orderable['direction']);
             }
         }
     }
