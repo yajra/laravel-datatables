@@ -19,7 +19,7 @@ class Helper
      */
     public static function includeInArray($item, $array)
     {
-        if ($item['order'] === false || $item['order'] >= count($array)) {
+        if (self::isItemOrderInvalid($item, $array)) {
             return array_merge($array, [$item['name'] => $item['content']]);
         } else {
             $count = 0;
@@ -36,6 +36,18 @@ class Helper
                 $count++;
             }
         }
+    }
+
+    /**
+     * Check if item order is valid.
+     *
+     * @param array $item
+     * @param array $array
+     * @return bool
+     */
+    protected static function isItemOrderInvalid($item, $array)
+    {
+        return $item['order'] === false || $item['order'] >= count($array);
     }
 
     /**
