@@ -278,10 +278,10 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
                 } else {
                     $column = $this->castColumn($column);
                     if ($this->isCaseInsensitive()) {
-                        $this->caseInsensitiveColumnSearch($i, $column, $keyword);
+                        $this->compileColumnSearch($i, $column, $keyword, true);
                     } else {
                         $col = strstr($column, '(') ? $this->connection->raw($column) : $column;
-                        $this->caseSensitiveColumnSearch($i, $col, $keyword);
+                        $this->compileColumnSearch($i, $col, $keyword, false);
                     }
                 }
 
@@ -311,13 +311,16 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
      * @param int $i
      * @param mixed $column
      * @param string $keyword
+     * @param bool $caseSensitive
      */
-    protected function caseInsensitiveColumnSearch($i, $column, $keyword)
+    protected function compileColumnSearch($i, $column, $keyword, $caseSensitive = true)
     {
         if ($this->request->isRegex($i)) {
-            $this->regexCaseInsensitiveColumnSearch($column, $keyword);
+            $this->regexColumnSearch($column, $keyword, $caseSensitive);
         } else {
-            $this->query->whereRaw('LOWER(' . $column . ') LIKE ?', [Str::lower($keyword)]);
+            $sql     = $caseSensitive ? $column . ' LIKE ?' : 'LOWER(' . $column . ') LIKE ?';
+            $keyword = $caseSensitive ? $keyword : Str::lower($keyword);
+            $this->query->whereRaw($sql, [$keyword]);
         }
     }
 
@@ -326,43 +329,16 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
      *
      * @param mixed $column
      * @param string $keyword
+     * @param bool $caseSensitive
      */
-    protected function regexCaseInsensitiveColumnSearch($column, $keyword)
+    protected function regexColumnSearch($column, $keyword, $caseSensitive = true)
     {
         if ($this->isOracleSql()) {
-            $this->query->whereRaw('REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )', [$keyword]);
+            $sql = $caseSensitive ? 'REGEXP_LIKE( ' . $column . ' , ? )' : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
+            $this->query->whereRaw($sql, [$keyword]);
         } else {
-            $this->query->whereRaw('LOWER(' . $column . ') REGEXP ?', [Str::lower($keyword)]);
-        }
-    }
-
-    /**
-     * Perform case sensitive column search.
-     *
-     * @param int $i
-     * @param mixed $column
-     * @param string $keyword
-     */
-    protected function caseSensitiveColumnSearch($i, $column, $keyword)
-    {
-        if ($this->request->isRegex($i)) {
-            $this->regexCaseSensitiveColumnSearch($column, $keyword);
-        } else {
-            $this->query->whereRaw($column . ' LIKE ?', [$keyword]);
-        }
-    }
-
-    /**
-     * Perform regex case insensitive column search.
-     * @param mixed $column
-     * @param string $keyword
-     */
-    protected function regexCaseSensitiveColumnSearch($column, $keyword)
-    {
-        if ($this->isOracleSql()) {
-            $this->query->whereRaw('REGEXP_LIKE( ' . $column . ' , ? )', [$keyword]);
-        } else {
-            $this->query->whereRaw($column . ' REGEXP ?', [$keyword]);
+            $sql = $caseSensitive ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
+            $this->query->whereRaw($sql, [Str::lower($keyword)]);
         }
     }
 
