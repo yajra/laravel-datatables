@@ -270,22 +270,22 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
                     $column = $this->castColumn($column);
                     if ($this->isCaseInsensitive()) {
                         if ($this->request->isRegex($i)) {
-							if($this->isOracleSql()){
-								$this->query->whereRaw(' REGEXP_LIKE( LOWER('.$column.') , ?, \'i\' )', [$keyword]);
-							}else{
-								$this->query->whereRaw('LOWER(' . $column . ') REGEXP ?', [Str::lower($keyword)]);
-							}
+                            if ($this->isOracleSql()) {
+                                $this->query->whereRaw(' REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )', [$keyword]);
+                            } else {
+                                $this->query->whereRaw('LOWER(' . $column . ') REGEXP ?', [Str::lower($keyword)]);
+                            }
                         } else {
                             $this->query->whereRaw('LOWER(' . $column . ') LIKE ?', [Str::lower($keyword)]);
                         }
                     } else {
                         $col = strstr($column, '(') ? $this->connection->raw($column) : $column;
                         if ($this->request->isRegex($i)) {
-							if($this->isOracleSql()){
-								$this->query->whereRaw(' REGEXP_LIKE( '.$col.' , ? )', [$keyword]);
-							}else{
-								$this->query->whereRaw($col . ' REGEXP ?', [$keyword]);
-							}
+                            if ($this->isOracleSql()) {
+                                $this->query->whereRaw(' REGEXP_LIKE( ' . $col . ' , ? )', [$keyword]);
+                            } else {
+                                $this->query->whereRaw($col . ' REGEXP ?', [$keyword]);
+                            }
                         } else {
                             $this->query->whereRaw($col . ' LIKE ?', [$keyword]);
                         }

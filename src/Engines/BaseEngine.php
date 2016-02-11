@@ -855,8 +855,8 @@ abstract class BaseEngine implements DataTableEngineContract
 
         return $this;
     }
-	
-	/**
+
+    /**
      * Check if the current sql language is based on oracle syntax.
      *
      * @return bool
