@@ -8,6 +8,10 @@
 
 ##Change Log
 
+###v6.4.2 - 2016-02-11
+    - Change how regex code is generated after a column search. #358
+    - Fix addColumn fails when order falls at end of array #386
+
 ###v6.4.1 - 2016-02-10
     - Fix nested eager loaded relations and column name.
 
