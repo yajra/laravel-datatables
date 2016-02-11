@@ -95,7 +95,9 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * @inheritdoc
+     * Perform global search.
+     *
+     * @return void
      */
     public function filtering()
     {
@@ -202,6 +204,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
      * Add relation query on global search.
      *
      * @param mixed $query
+     * @param string $relation
      * @param string $column
      * @param string $keyword
      */
@@ -252,7 +255,9 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * @inheritdoc
+     * Perform column search.
+     *
+     * @return void
      */
     public function columnSearch()
     {
