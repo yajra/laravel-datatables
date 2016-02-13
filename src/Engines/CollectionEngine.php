@@ -167,10 +167,13 @@ class CollectionEngine extends BaseEngine implements DataTableEngineContract
                 $this->collection = $this->collection->filter(
                     function ($row) use ($column, $keyword) {
                         $data = $this->serialize($row);
+                        
+                        $value = Arr::get($data, $column);
+                        
                         if ($this->isCaseInsensitive()) {
-                            return strpos(Str::lower($data[$column]), Str::lower($keyword)) !== false;
+                            return strpos(Str::lower($value), Str::lower($keyword)) !== false;
                         } else {
-                            return strpos($data[$column], $keyword) !== false;
+                            return strpos($value, $keyword) !== false;
                         }
                     }
                 );
