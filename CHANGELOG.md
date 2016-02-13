@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v6.4.4 - 2016-02-13
+    - Fix filtering in nested columns of Collections. PR #392
+    
 ###v6.4.3 - 2016-02-11
     - Random cs and doc block fix.
     - Code refactoring to reduce complexity.
