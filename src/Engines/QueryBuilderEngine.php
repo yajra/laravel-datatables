@@ -278,10 +278,10 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
                 } else {
                     $column = $this->castColumn($column);
                     if ($this->isCaseInsensitive()) {
-                        $this->compileColumnSearch($i, $column, $keyword, true);
+                        $this->compileColumnSearch($i, $column, $keyword, false);
                     } else {
                         $col = strstr($column, '(') ? $this->connection->raw($column) : $column;
-                        $this->compileColumnSearch($i, $col, $keyword, false);
+                        $this->compileColumnSearch($i, $col, $keyword, true);
                     }
                 }
 
