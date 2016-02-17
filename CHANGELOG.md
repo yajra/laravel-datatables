@@ -8,6 +8,10 @@
 
 ##Change Log
 
+###v6.4.5 - 2016-02-18
+    - Allow edit columns for nested arrays. PR #399 - credits to @ramilexe
+    - Fix flag for case insensitive search. PR #400 - credits to @ansient 
+    
 ###v6.4.4 - 2016-02-13
     - Fix filtering in nested columns of Collections. PR #392
     
