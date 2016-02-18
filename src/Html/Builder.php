@@ -149,17 +149,35 @@ class Builder
     }
 
     /**
-     * Generate datatable js parameters.
+     * Generate DataTables js parameters.
      *
      * @param  array $attributes
      * @return string
      */
     public function parameterize($attributes = [])
     {
-        $parameters        = (new Parameters($attributes))->toArray();
-        $columnFunctions   = [];
-        $callbackFunctions = [];
+        $parameters = (new Parameters($attributes))->toArray();
 
+        list($columnFunctions, $parameters) = $this->encodeColumnFunctions($parameters);
+        list($callbackFunctions, $parameters) = $this->encodeCallbackFunctions($parameters);
+
+        $json = json_encode($parameters);
+
+        $json = $this->decodeColumnFunctions($columnFunctions, $json);
+        $json = $this->decodeCallbackFunctions($callbackFunctions, $json);
+
+        return $json;
+    }
+
+    /**
+     * Encode columns render function.
+     *
+     * @param array $parameters
+     * @return array
+     */
+    protected function encodeColumnFunctions(array $parameters)
+    {
+        $columnFunctions = [];
         foreach ($parameters['columns'] as $i => $column) {
             unset($parameters['columns'][$i]['exportable']);
             unset($parameters['columns'][$i]['printable']);
@@ -170,6 +188,18 @@ class Builder
             }
         }
 
+        return [$columnFunctions, $parameters];
+    }
+
+    /**
+     * Encode DataTables callbacks function.
+     *
+     * @param array $parameters
+     * @return array
+     */
+    protected function encodeCallbackFunctions(array $parameters)
+    {
+        $callbackFunctions = [];
         foreach ($parameters as $key => $callback) {
             if (in_array($key, $this->validCallbacks)) {
                 $callbackFunctions[$key] = $this->compileCallback($callback);
@@ -177,17 +207,7 @@ class Builder
             }
         }
 
-        $json = json_encode($parameters);
-
-        foreach ($columnFunctions as $i => $function) {
-            $json = str_replace("\"#column_function.{$i}#\"", $function, $json);
-        }
-
-        foreach ($callbackFunctions as $i => $function) {
-            $json = str_replace("\"#callback_function.{$i}#\"", $function, $json);
-        }
-
-        return $json;
+        return [$callbackFunctions, $parameters];
     }
 
     /**
@@ -205,6 +225,38 @@ class Builder
         }
 
         return $callback;
+    }
+
+    /**
+     * Decode columns render functions.
+     *
+     * @param array $columnFunctions
+     * @param string $json
+     * @return string
+     */
+    protected function decodeColumnFunctions(array $columnFunctions, $json)
+    {
+        foreach ($columnFunctions as $i => $function) {
+            $json = str_replace("\"#column_function.{$i}#\"", $function, $json);
+        }
+
+        return $json;
+    }
+
+    /**
+     * Decode DataTables callbacks function.
+     *
+     * @param array $callbackFunctions
+     * @param string $json
+     * @return string
+     */
+    protected function decodeCallbackFunctions(array $callbackFunctions, $json)
+    {
+        foreach ($callbackFunctions as $i => $function) {
+            $json = str_replace("\"#callback_function.{$i}#\"", $function, $json);
+        }
+
+        return $json;
     }
 
     /**
