@@ -364,15 +364,6 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
                     $this->getQueryBuilder(), $method, $parameters, $column, $orderable['direction']
                 );
             } else {
-                /**
-                 * If we perform a select("*"), the ORDER BY clause will look like this:
-                 * ORDER BY * ASC
-                 * which causes a query exception
-                 * The temporary fix is modify `*` column to `id` column
-                 */
-                if ($column === '*') {
-                    $column = 'id';
-                }
                 $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
             }
         }
@@ -387,8 +378,8 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
     private function setupOrderColumn(array $orderable)
     {
         $r_column = $this->request->input('columns')[$orderable['column']];
-        $column   = isset($r_column['name']) ? $r_column['name'] : $r_column['data'];
-        if ($column >= 0) {
+        $column   = isset($r_column['name']) && $r_column['name'] <> '' ? $r_column['name'] : $r_column['data'];
+        if (is_int($column)) {
             $column = $this->setupColumnName($orderable['column'], true);
 
             return $column;
