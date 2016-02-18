@@ -68,6 +68,29 @@ class Builder
     protected $attributes = [];
 
     /**
+     * Lists of valid DataTables Callbacks.
+     *
+     * @link https://datatables.net/reference/option/.
+     * @var array
+     */
+    protected $validCallbacks = [
+        'createdRow',
+        'drawCallback',
+        'footerCallback',
+        'formatNumber',
+        'headerCallback',
+        'infoCallback',
+        'initComplete',
+        'preDrawCallback',
+        'rowCallback',
+        'stateLoadCallback',
+        'stateLoaded',
+        'stateLoadParams',
+        'stateSaveCallback',
+        'stateSaveParams',
+    ];
+
+    /**
      * @param Repository $config
      * @param Factory $view
      * @param HtmlBuilder $html
@@ -133,26 +156,55 @@ class Builder
      */
     public function parameterize($attributes = [])
     {
-        $parameters       = (new Parameters($attributes))->toArray();
-        $column_functions = [];
+        $parameters        = (new Parameters($attributes))->toArray();
+        $columnFunctions   = [];
+        $callbackFunctions = [];
 
         foreach ($parameters['columns'] as $i => $column) {
             unset($parameters['columns'][$i]['exportable']);
             unset($parameters['columns'][$i]['printable']);
 
             if (isset($column['render'])) {
-                $column_functions[$i]                = $column['render'];
+                $columnFunctions[$i]                 = $column['render'];
                 $parameters['columns'][$i]['render'] = "#column_function.{$i}#";
+            }
+        }
+
+        foreach ($parameters as $key => $callback) {
+            if (in_array($key, $this->validCallbacks)) {
+                $callbackFunctions[$key] = $this->compileCallback($callback);
+                $parameters[$key]        = "#callback_function.{$key}#";
             }
         }
 
         $json = json_encode($parameters);
 
-        foreach ($column_functions as $i => $function) {
+        foreach ($columnFunctions as $i => $function) {
             $json = str_replace("\"#column_function.{$i}#\"", $function, $json);
         }
 
+        foreach ($callbackFunctions as $i => $function) {
+            $json = str_replace("\"#callback_function.{$i}#\"", $function, $json);
+        }
+
         return $json;
+    }
+
+    /**
+     * Compile DataTable callback value.
+     *
+     * @param mixed $callback
+     * @return mixed|string
+     */
+    private function compileCallback($callback)
+    {
+        if (is_callable($callback)) {
+            return value($callback);
+        } elseif ($this->view->exists($callback)) {
+            return $this->view->make($callback)->render();
+        }
+
+        return $callback;
     }
 
     /**
