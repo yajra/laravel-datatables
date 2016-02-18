@@ -8,6 +8,10 @@
 
 ##Change Log
 
+###v6.5.0 - 2016-02-18
+    - Add support for DataTables valid callbacks.
+    - Fix issue #387 & #401.
+
 ###v6.4.5 - 2016-02-18
     - Allow edit columns for nested arrays. PR #399 - credits to @ramilexe
     - Fix flag for case insensitive search. PR #400 - credits to @ansient 
