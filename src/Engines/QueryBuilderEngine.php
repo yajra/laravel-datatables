@@ -389,7 +389,9 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * @inheritdoc
+     * Perform pagination
+     *
+     * @return void
      */
     public function paging()
     {
