@@ -305,19 +305,17 @@ class Builder
      */
     public function addCheckbox(array $attributes = [])
     {
-        $attributes = array_merge(
-            [
-                'defaultContent' => '<input type="checkbox" ' . $this->html->attributes($attributes) . '/>',
-                'title'          => $this->form->checkbox('', '', false, ['id' => 'dataTablesCheckbox']),
-                'data'           => 'checkbox',
-                'name'           => 'checkbox',
-                'orderable'      => false,
-                'searchable'     => false,
-                'exportable'     => false,
-                'printable'      => true,
-                'width'          => '10px',
-            ], $attributes
-        );
+        $attributes = array_merge([
+            'defaultContent' => '<input type="checkbox" ' . $this->html->attributes($attributes) . '/>',
+            'title'          => $this->form->checkbox('', '', false, ['id' => 'dataTablesCheckbox']),
+            'data'           => 'checkbox',
+            'name'           => 'checkbox',
+            'orderable'      => false,
+            'searchable'     => false,
+            'exportable'     => false,
+            'printable'      => true,
+            'width'          => '10px',
+        ], $attributes);
         $this->collection->push(new Column($attributes));
 
         return $this;
@@ -331,19 +329,17 @@ class Builder
      */
     public function addAction(array $attributes = [])
     {
-        $attributes = array_merge(
-            [
-                'defaultContent' => '',
-                'data'           => 'action',
-                'name'           => 'action',
-                'title'          => 'Action',
-                'render'         => null,
-                'orderable'      => false,
-                'searchable'     => false,
-                'exportable'     => false,
-                'printable'      => true,
-            ], $attributes
-        );
+        $attributes = array_merge([
+            'defaultContent' => '',
+            'data'           => 'action',
+            'name'           => 'action',
+            'title'          => 'Action',
+            'render'         => null,
+            'orderable'      => false,
+            'searchable'     => false,
+            'exportable'     => false,
+            'printable'      => true,
+        ], $attributes);
         $this->collection->push(new Column($attributes));
 
         return $this;
