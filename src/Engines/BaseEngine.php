@@ -762,7 +762,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     protected function getColumnName($index, $wantsAlias = false)
     {
-        $column = $this->getColumnNameFromRequest($index);
+        $column = $this->request->columnName($index);
 
         // DataTables is using make(false)
         if (is_numeric($column)) {
@@ -772,20 +772,6 @@ abstract class BaseEngine implements DataTableEngineContract
         if (Str::contains(Str::upper($column), ' AS ')) {
             $column = $this->extractColumnName($column, $wantsAlias);
         }
-
-        return $column;
-    }
-
-    /**
-     * Get column name from request.
-     *
-     * @param int $index
-     * @return string
-     */
-    protected function getColumnNameFromRequest($index)
-    {
-        $r_column = $this->request->input('columns')[$index];
-        $column   = isset($r_column['name']) && $r_column['name'] <> '' ? $r_column['name'] : $r_column['data'];
 
         return $column;
     }
