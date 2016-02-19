@@ -142,7 +142,7 @@
 		<b>Namespace:</b> <a href="namespace-Yajra.html">Yajra</a>\<a href="namespace-Yajra.Datatables.html">Datatables</a>\<a href="namespace-Yajra.Datatables.Html.html">Html</a><br>
 		<b>Package:</b> Yajra\Datatables\Html<br>
 
-			<b>Located at</b> <a href="source-class-Yajra.Datatables.Html.Builder.html#13-409" title="Go to source code">Html/Builder.php</a>
+			<b>Located at</b> <a href="source-class-Yajra.Datatables.Html.Builder.html#13-461" title="Go to source code">Html/Builder.php</a>
 		<br>
 	</div>
 
@@ -280,19 +280,179 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_parameterize">#</a>
-		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#151-191" title="Go to source code">parameterize</a>( <span>array <var>$attributes</var> = []</span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#151-170" title="Go to source code">parameterize</a>( <span>array <var>$attributes</var> = []</span> )</code>
 
 		<div class="description short">
-			<p>Generate datatable js parameters.</p>
+			<p>Generate DataTables js parameters.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Generate datatable js parameters.</p>
+			<p>Generate DataTables js parameters.</p>
 
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$attributes</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="encodeColumnFunctions" id="_encodeColumnFunctions">
+
+		<td class="attributes"><code>
+			 protected 
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_encodeColumnFunctions">#</a>
+		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#172-192" title="Go to source code">encodeColumnFunctions</a>( <span>array <var>$parameters</var></span> )</code>
+
+		<div class="description short">
+			<p>Encode columns render function.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Encode columns render function.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$parameters</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					array
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="encodeCallbackFunctions" id="_encodeCallbackFunctions">
+
+		<td class="attributes"><code>
+			 protected 
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_encodeCallbackFunctions">#</a>
+		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#194-211" title="Go to source code">encodeCallbackFunctions</a>( <span>array <var>$parameters</var></span> )</code>
+
+		<div class="description short">
+			<p>Encode DataTables callbacks function.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Encode DataTables callbacks function.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$parameters</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					array
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="decodeColumnFunctions" id="_decodeColumnFunctions">
+
+		<td class="attributes"><code>
+			 protected 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_decodeColumnFunctions">#</a>
+		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#230-244" title="Go to source code">decodeColumnFunctions</a>( <span>array <var>$columnFunctions</var></span>, <span>string <var>$json</var></span> )</code>
+
+		<div class="description short">
+			<p>Decode columns render functions.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Decode columns render functions.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$columnFunctions</var></dt>
+					<dd></dd>
+					<dt><var>$json</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="decodeCallbackFunctions" id="_decodeCallbackFunctions">
+
+		<td class="attributes"><code>
+			 protected 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_decodeCallbackFunctions">#</a>
+		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#246-260" title="Go to source code">decodeCallbackFunctions</a>( <span>array <var>$callbackFunctions</var></span>, <span>string <var>$json</var></span> )</code>
+
+		<div class="description short">
+			<p>Decode DataTables callbacks function.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Decode DataTables callbacks function.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$callbackFunctions</var></dt>
+					<dd></dd>
+					<dt><var>$json</var></dt>
 					<dd></dd>
 				</dl></div>
 
@@ -319,7 +479,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_template">#</a>
-		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#210-220" title="Go to source code">template</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#262-272" title="Go to source code">template</a>( )</code>
 
 		<div class="description short">
 			<p>Get javascript template to use.</p>
@@ -353,7 +513,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_addColumn">#</a>
-		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#222-233" title="Go to source code">addColumn</a>( <span>array <var>$attributes</var></span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#274-285" title="Go to source code">addColumn</a>( <span>array <var>$attributes</var></span> )</code>
 
 		<div class="description short">
 			<p>Add a column in collection using attributes.</p>
@@ -392,7 +552,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_add">#</a>
-		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#235-246" title="Go to source code">add</a>( <span><code><a href="class-Yajra.Datatables.Html.Column.html">Yajra\Datatables\Html\Column</a></code> <var>$column</var></span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#287-298" title="Go to source code">add</a>( <span><code><a href="class-Yajra.Datatables.Html.Column.html">Yajra\Datatables\Html\Column</a></code> <var>$column</var></span> )</code>
 
 		<div class="description short">
 			<p>Add a Column object in collection.</p>
@@ -431,7 +591,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_columns">#</a>
-		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#248-271" title="Go to source code">columns</a>( <span>array <var>$columns</var></span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#300-323" title="Go to source code">columns</a>( <span>array <var>$columns</var></span> )</code>
 
 		<div class="description short">
 			<p>Set datatables columns from array definition.</p>
@@ -470,7 +630,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setTitle">#</a>
-		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#273-287" title="Go to source code">setTitle</a>( <span>string <var>$title</var></span>, <span>array <var>$attributes</var></span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#325-339" title="Go to source code">setTitle</a>( <span>string <var>$title</var></span>, <span>array <var>$attributes</var></span> )</code>
 
 		<div class="description short">
 			<p>Set title attribute of an array if not set.</p>
@@ -511,7 +671,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getQualifiedTitle">#</a>
-		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#289-298" title="Go to source code">getQualifiedTitle</a>( <span>string <var>$title</var></span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#341-350" title="Go to source code">getQualifiedTitle</a>( <span>string <var>$title</var></span> )</code>
 
 		<div class="description short">
 			<p>Convert string into a readable title.</p>
@@ -550,7 +710,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_addCheckbox">#</a>
-		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#300-322" title="Go to source code">addCheckbox</a>( <span>array <var>$attributes</var> = []</span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#352-374" title="Go to source code">addCheckbox</a>( <span>array <var>$attributes</var> = []</span> )</code>
 
 		<div class="description short">
 			<p>Add a checkbox column.</p>
@@ -589,7 +749,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_addAction">#</a>
-		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#324-346" title="Go to source code">addAction</a>( <span>array <var>$attributes</var> = []</span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#376-398" title="Go to source code">addAction</a>( <span>array <var>$attributes</var> = []</span> )</code>
 
 		<div class="description short">
 			<p>Add a action column.</p>
@@ -628,7 +788,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_ajax">#</a>
-		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#348-359" title="Go to source code">ajax</a>( <span>string|array <var>$attributes</var></span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#400-411" title="Go to source code">ajax</a>( <span>string|array <var>$attributes</var></span> )</code>
 
 		<div class="description short">
 			<p>Setup ajax parameter</p>
@@ -667,7 +827,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_table">#</a>
-		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#361-372" title="Go to source code">table</a>( <span>array <var>$attributes</var> = []</span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#413-424" title="Go to source code">table</a>( <span>array <var>$attributes</var> = []</span> )</code>
 
 		<div class="description short">
 			<p>Generate DataTable's table html.</p>
@@ -706,7 +866,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_parameters">#</a>
-		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#374-385" title="Go to source code">parameters</a>( <span>array <var>$attributes</var> = []</span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#426-437" title="Go to source code">parameters</a>( <span>array <var>$attributes</var> = []</span> )</code>
 
 		<div class="description short">
 			<p>Configure DataTable's parameters.</p>
@@ -745,7 +905,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setTemplate">#</a>
-		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#387-398" title="Go to source code">setTemplate</a>( <span>string <var>$template</var></span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#439-450" title="Go to source code">setTemplate</a>( <span>string <var>$template</var></span> )</code>
 
 		<div class="description short">
 			<p>Set custom javascript template.</p>
@@ -784,7 +944,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getColumns">#</a>
-		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#400-408" title="Go to source code">getColumns</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Html.Builder.html#452-460" title="Go to source code">getColumns</a>( )</code>
 
 		<div class="description short">
 			<p>Get collection of columns.</p>

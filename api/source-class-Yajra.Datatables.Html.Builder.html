@@ -297,265 +297,317 @@
 </span><span id="149" class="l"><a href="#149">149: </a>    }
 </span><span id="150" class="l"><a href="#150">150: </a>
 </span><span id="151" class="l"><a href="#151">151: </a>    <span class="php-comment">/**
-</span></span><span id="152" class="l"><a href="#152">152: </a><span class="php-comment">     * Generate datatable js parameters.
+</span></span><span id="152" class="l"><a href="#152">152: </a><span class="php-comment">     * Generate DataTables js parameters.
 </span></span><span id="153" class="l"><a href="#153">153: </a><span class="php-comment">     *
 </span></span><span id="154" class="l"><a href="#154">154: </a><span class="php-comment">     * @param  array $attributes
 </span></span><span id="155" class="l"><a href="#155">155: </a><span class="php-comment">     * @return string
 </span></span><span id="156" class="l"><a href="#156">156: </a><span class="php-comment">     */</span>
 </span><span id="157" class="l"><a href="#157">157: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> parameterize(<span class="php-var">$attributes</span> = [])
 </span><span id="158" class="l"><a href="#158">158: </a>    {
-</span><span id="159" class="l"><a href="#159">159: </a>        <span class="php-var">$parameters</span>        = (<span class="php-keyword1">new</span> Parameters(<span class="php-var">$attributes</span>))-&gt;toArray();
-</span><span id="160" class="l"><a href="#160">160: </a>        <span class="php-var">$columnFunctions</span>   = [];
-</span><span id="161" class="l"><a href="#161">161: </a>        <span class="php-var">$callbackFunctions</span> = [];
-</span><span id="162" class="l"><a href="#162">162: </a>
-</span><span id="163" class="l"><a href="#163">163: </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$parameters</span>[<span class="php-quote">'columns'</span>] <span class="php-keyword1">as</span> <span class="php-var">$i</span> =&gt; <span class="php-var">$column</span>) {
-</span><span id="164" class="l"><a href="#164">164: </a>            <span class="php-keyword1">unset</span>(<span class="php-var">$parameters</span>[<span class="php-quote">'columns'</span>][<span class="php-var">$i</span>][<span class="php-quote">'exportable'</span>]);
-</span><span id="165" class="l"><a href="#165">165: </a>            <span class="php-keyword1">unset</span>(<span class="php-var">$parameters</span>[<span class="php-quote">'columns'</span>][<span class="php-var">$i</span>][<span class="php-quote">'printable'</span>]);
-</span><span id="166" class="l"><a href="#166">166: </a>
-</span><span id="167" class="l"><a href="#167">167: </a>            <span class="php-keyword1">if</span> (<span class="php-keyword1">isset</span>(<span class="php-var">$column</span>[<span class="php-quote">'render'</span>])) {
-</span><span id="168" class="l"><a href="#168">168: </a>                <span class="php-var">$columnFunctions</span>[<span class="php-var">$i</span>]                 = <span class="php-var">$column</span>[<span class="php-quote">'render'</span>];
-</span><span id="169" class="l"><a href="#169">169: </a>                <span class="php-var">$parameters</span>[<span class="php-quote">'columns'</span>][<span class="php-var">$i</span>][<span class="php-quote">'render'</span>] = <span class="php-quote">&quot;#column_function.</span><span class="php-var">{$i}</span><span class="php-quote">#&quot;</span>;
-</span><span id="170" class="l"><a href="#170">170: </a>            }
-</span><span id="171" class="l"><a href="#171">171: </a>        }
-</span><span id="172" class="l"><a href="#172">172: </a>
-</span><span id="173" class="l"><a href="#173">173: </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$parameters</span> <span class="php-keyword1">as</span> <span class="php-var">$key</span> =&gt; <span class="php-var">$callback</span>) {
-</span><span id="174" class="l"><a href="#174">174: </a>            <span class="php-keyword1">if</span> (<span class="php-keyword2">in_array</span>(<span class="php-var">$key</span>, <span class="php-var">$this</span>-&gt;validCallbacks)) {
-</span><span id="175" class="l"><a href="#175">175: </a>                <span class="php-var">$callbackFunctions</span>[<span class="php-var">$key</span>] = <span class="php-var">$this</span>-&gt;compileCallback(<span class="php-var">$callback</span>);
-</span><span id="176" class="l"><a href="#176">176: </a>                <span class="php-var">$parameters</span>[<span class="php-var">$key</span>]        = <span class="php-quote">&quot;#callback_function.</span><span class="php-var">{$key}</span><span class="php-quote">#&quot;</span>;
-</span><span id="177" class="l"><a href="#177">177: </a>            }
-</span><span id="178" class="l"><a href="#178">178: </a>        }
-</span><span id="179" class="l"><a href="#179">179: </a>
-</span><span id="180" class="l"><a href="#180">180: </a>        <span class="php-var">$json</span> = <span class="php-keyword2">json_encode</span>(<span class="php-var">$parameters</span>);
-</span><span id="181" class="l"><a href="#181">181: </a>
-</span><span id="182" class="l"><a href="#182">182: </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$columnFunctions</span> <span class="php-keyword1">as</span> <span class="php-var">$i</span> =&gt; <span class="php-var">$function</span>) {
-</span><span id="183" class="l"><a href="#183">183: </a>            <span class="php-var">$json</span> = <span class="php-keyword2">str_replace</span>(<span class="php-quote">&quot;\&quot;#column_function.</span><span class="php-var">{$i}</span><span class="php-quote">#\&quot;&quot;</span>, <span class="php-var">$function</span>, <span class="php-var">$json</span>);
-</span><span id="184" class="l"><a href="#184">184: </a>        }
-</span><span id="185" class="l"><a href="#185">185: </a>
-</span><span id="186" class="l"><a href="#186">186: </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$callbackFunctions</span> <span class="php-keyword1">as</span> <span class="php-var">$i</span> =&gt; <span class="php-var">$function</span>) {
-</span><span id="187" class="l"><a href="#187">187: </a>            <span class="php-var">$json</span> = <span class="php-keyword2">str_replace</span>(<span class="php-quote">&quot;\&quot;#callback_function.</span><span class="php-var">{$i}</span><span class="php-quote">#\&quot;&quot;</span>, <span class="php-var">$function</span>, <span class="php-var">$json</span>);
-</span><span id="188" class="l"><a href="#188">188: </a>        }
-</span><span id="189" class="l"><a href="#189">189: </a>
-</span><span id="190" class="l"><a href="#190">190: </a>        <span class="php-keyword1">return</span> <span class="php-var">$json</span>;
-</span><span id="191" class="l"><a href="#191">191: </a>    }
-</span><span id="192" class="l"><a href="#192">192: </a>
-</span><span id="193" class="l"><a href="#193">193: </a>    <span class="php-comment">/**
-</span></span><span id="194" class="l"><a href="#194">194: </a><span class="php-comment">     * Compile DataTable callback value.
-</span></span><span id="195" class="l"><a href="#195">195: </a><span class="php-comment">     *
-</span></span><span id="196" class="l"><a href="#196">196: </a><span class="php-comment">     * @param mixed $callback
-</span></span><span id="197" class="l"><a href="#197">197: </a><span class="php-comment">     * @return mixed|string
-</span></span><span id="198" class="l"><a href="#198">198: </a><span class="php-comment">     */</span>
-</span><span id="199" class="l"><a href="#199">199: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">function</span> compileCallback(<span class="php-var">$callback</span>)
-</span><span id="200" class="l"><a href="#200">200: </a>    {
-</span><span id="201" class="l"><a href="#201">201: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">is_callable</span>(<span class="php-var">$callback</span>)) {
-</span><span id="202" class="l"><a href="#202">202: </a>            <span class="php-keyword1">return</span> value(<span class="php-var">$callback</span>);
-</span><span id="203" class="l"><a href="#203">203: </a>        } <span class="php-keyword1">elseif</span> (<span class="php-var">$this</span>-&gt;view-&gt;exists(<span class="php-var">$callback</span>)) {
-</span><span id="204" class="l"><a href="#204">204: </a>            <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;view-&gt;make(<span class="php-var">$callback</span>)-&gt;render();
-</span><span id="205" class="l"><a href="#205">205: </a>        }
-</span><span id="206" class="l"><a href="#206">206: </a>
-</span><span id="207" class="l"><a href="#207">207: </a>        <span class="php-keyword1">return</span> <span class="php-var">$callback</span>;
-</span><span id="208" class="l"><a href="#208">208: </a>    }
+</span><span id="159" class="l"><a href="#159">159: </a>        <span class="php-var">$parameters</span> = (<span class="php-keyword1">new</span> Parameters(<span class="php-var">$attributes</span>))-&gt;toArray();
+</span><span id="160" class="l"><a href="#160">160: </a>
+</span><span id="161" class="l"><a href="#161">161: </a>        <span class="php-keyword1">list</span>(<span class="php-var">$columnFunctions</span>, <span class="php-var">$parameters</span>) = <span class="php-var">$this</span>-&gt;encodeColumnFunctions(<span class="php-var">$parameters</span>);
+</span><span id="162" class="l"><a href="#162">162: </a>        <span class="php-keyword1">list</span>(<span class="php-var">$callbackFunctions</span>, <span class="php-var">$parameters</span>) = <span class="php-var">$this</span>-&gt;encodeCallbackFunctions(<span class="php-var">$parameters</span>);
+</span><span id="163" class="l"><a href="#163">163: </a>
+</span><span id="164" class="l"><a href="#164">164: </a>        <span class="php-var">$json</span> = <span class="php-keyword2">json_encode</span>(<span class="php-var">$parameters</span>);
+</span><span id="165" class="l"><a href="#165">165: </a>
+</span><span id="166" class="l"><a href="#166">166: </a>        <span class="php-var">$json</span> = <span class="php-var">$this</span>-&gt;decodeColumnFunctions(<span class="php-var">$columnFunctions</span>, <span class="php-var">$json</span>);
+</span><span id="167" class="l"><a href="#167">167: </a>        <span class="php-var">$json</span> = <span class="php-var">$this</span>-&gt;decodeCallbackFunctions(<span class="php-var">$callbackFunctions</span>, <span class="php-var">$json</span>);
+</span><span id="168" class="l"><a href="#168">168: </a>
+</span><span id="169" class="l"><a href="#169">169: </a>        <span class="php-keyword1">return</span> <span class="php-var">$json</span>;
+</span><span id="170" class="l"><a href="#170">170: </a>    }
+</span><span id="171" class="l"><a href="#171">171: </a>
+</span><span id="172" class="l"><a href="#172">172: </a>    <span class="php-comment">/**
+</span></span><span id="173" class="l"><a href="#173">173: </a><span class="php-comment">     * Encode columns render function.
+</span></span><span id="174" class="l"><a href="#174">174: </a><span class="php-comment">     *
+</span></span><span id="175" class="l"><a href="#175">175: </a><span class="php-comment">     * @param array $parameters
+</span></span><span id="176" class="l"><a href="#176">176: </a><span class="php-comment">     * @return array
+</span></span><span id="177" class="l"><a href="#177">177: </a><span class="php-comment">     */</span>
+</span><span id="178" class="l"><a href="#178">178: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> encodeColumnFunctions(<span class="php-keyword1">array</span> <span class="php-var">$parameters</span>)
+</span><span id="179" class="l"><a href="#179">179: </a>    {
+</span><span id="180" class="l"><a href="#180">180: </a>        <span class="php-var">$columnFunctions</span> = [];
+</span><span id="181" class="l"><a href="#181">181: </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$parameters</span>[<span class="php-quote">'columns'</span>] <span class="php-keyword1">as</span> <span class="php-var">$i</span> =&gt; <span class="php-var">$column</span>) {
+</span><span id="182" class="l"><a href="#182">182: </a>            <span class="php-keyword1">unset</span>(<span class="php-var">$parameters</span>[<span class="php-quote">'columns'</span>][<span class="php-var">$i</span>][<span class="php-quote">'exportable'</span>]);
+</span><span id="183" class="l"><a href="#183">183: </a>            <span class="php-keyword1">unset</span>(<span class="php-var">$parameters</span>[<span class="php-quote">'columns'</span>][<span class="php-var">$i</span>][<span class="php-quote">'printable'</span>]);
+</span><span id="184" class="l"><a href="#184">184: </a>
+</span><span id="185" class="l"><a href="#185">185: </a>            <span class="php-keyword1">if</span> (<span class="php-keyword1">isset</span>(<span class="php-var">$column</span>[<span class="php-quote">'render'</span>])) {
+</span><span id="186" class="l"><a href="#186">186: </a>                <span class="php-var">$columnFunctions</span>[<span class="php-var">$i</span>]                 = <span class="php-var">$column</span>[<span class="php-quote">'render'</span>];
+</span><span id="187" class="l"><a href="#187">187: </a>                <span class="php-var">$parameters</span>[<span class="php-quote">'columns'</span>][<span class="php-var">$i</span>][<span class="php-quote">'render'</span>] = <span class="php-quote">&quot;#column_function.</span><span class="php-var">{$i}</span><span class="php-quote">#&quot;</span>;
+</span><span id="188" class="l"><a href="#188">188: </a>            }
+</span><span id="189" class="l"><a href="#189">189: </a>        }
+</span><span id="190" class="l"><a href="#190">190: </a>
+</span><span id="191" class="l"><a href="#191">191: </a>        <span class="php-keyword1">return</span> [<span class="php-var">$columnFunctions</span>, <span class="php-var">$parameters</span>];
+</span><span id="192" class="l"><a href="#192">192: </a>    }
+</span><span id="193" class="l"><a href="#193">193: </a>
+</span><span id="194" class="l"><a href="#194">194: </a>    <span class="php-comment">/**
+</span></span><span id="195" class="l"><a href="#195">195: </a><span class="php-comment">     * Encode DataTables callbacks function.
+</span></span><span id="196" class="l"><a href="#196">196: </a><span class="php-comment">     *
+</span></span><span id="197" class="l"><a href="#197">197: </a><span class="php-comment">     * @param array $parameters
+</span></span><span id="198" class="l"><a href="#198">198: </a><span class="php-comment">     * @return array
+</span></span><span id="199" class="l"><a href="#199">199: </a><span class="php-comment">     */</span>
+</span><span id="200" class="l"><a href="#200">200: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> encodeCallbackFunctions(<span class="php-keyword1">array</span> <span class="php-var">$parameters</span>)
+</span><span id="201" class="l"><a href="#201">201: </a>    {
+</span><span id="202" class="l"><a href="#202">202: </a>        <span class="php-var">$callbackFunctions</span> = [];
+</span><span id="203" class="l"><a href="#203">203: </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$parameters</span> <span class="php-keyword1">as</span> <span class="php-var">$key</span> =&gt; <span class="php-var">$callback</span>) {
+</span><span id="204" class="l"><a href="#204">204: </a>            <span class="php-keyword1">if</span> (<span class="php-keyword2">in_array</span>(<span class="php-var">$key</span>, <span class="php-var">$this</span>-&gt;validCallbacks)) {
+</span><span id="205" class="l"><a href="#205">205: </a>                <span class="php-var">$callbackFunctions</span>[<span class="php-var">$key</span>] = <span class="php-var">$this</span>-&gt;compileCallback(<span class="php-var">$callback</span>);
+</span><span id="206" class="l"><a href="#206">206: </a>                <span class="php-var">$parameters</span>[<span class="php-var">$key</span>]        = <span class="php-quote">&quot;#callback_function.</span><span class="php-var">{$key}</span><span class="php-quote">#&quot;</span>;
+</span><span id="207" class="l"><a href="#207">207: </a>            }
+</span><span id="208" class="l"><a href="#208">208: </a>        }
 </span><span id="209" class="l"><a href="#209">209: </a>
-</span><span id="210" class="l"><a href="#210">210: </a>    <span class="php-comment">/**
-</span></span><span id="211" class="l"><a href="#211">211: </a><span class="php-comment">     * Get javascript template to use.
-</span></span><span id="212" class="l"><a href="#212">212: </a><span class="php-comment">     *
-</span></span><span id="213" class="l"><a href="#213">213: </a><span class="php-comment">     * @return string
-</span></span><span id="214" class="l"><a href="#214">214: </a><span class="php-comment">     */</span>
-</span><span id="215" class="l"><a href="#215">215: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> template()
-</span><span id="216" class="l"><a href="#216">216: </a>    {
-</span><span id="217" class="l"><a href="#217">217: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;view-&gt;make(
-</span><span id="218" class="l"><a href="#218">218: </a>            <span class="php-var">$this</span>-&gt;template ?: <span class="php-var">$this</span>-&gt;config-&gt;get(<span class="php-quote">'datatables.script_template'</span>, <span class="php-quote">'datatables::script'</span>)
-</span><span id="219" class="l"><a href="#219">219: </a>        )-&gt;render();
-</span><span id="220" class="l"><a href="#220">220: </a>    }
-</span><span id="221" class="l"><a href="#221">221: </a>
-</span><span id="222" class="l"><a href="#222">222: </a>    <span class="php-comment">/**
-</span></span><span id="223" class="l"><a href="#223">223: </a><span class="php-comment">     * Add a column in collection using attributes.
-</span></span><span id="224" class="l"><a href="#224">224: </a><span class="php-comment">     *
-</span></span><span id="225" class="l"><a href="#225">225: </a><span class="php-comment">     * @param  array $attributes
-</span></span><span id="226" class="l"><a href="#226">226: </a><span class="php-comment">     * @return $this
-</span></span><span id="227" class="l"><a href="#227">227: </a><span class="php-comment">     */</span>
-</span><span id="228" class="l"><a href="#228">228: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> addColumn(<span class="php-keyword1">array</span> <span class="php-var">$attributes</span>)
-</span><span id="229" class="l"><a href="#229">229: </a>    {
-</span><span id="230" class="l"><a href="#230">230: </a>        <span class="php-var">$this</span>-&gt;collection-&gt;push(<span class="php-keyword1">new</span> Column(<span class="php-var">$attributes</span>));
-</span><span id="231" class="l"><a href="#231">231: </a>
-</span><span id="232" class="l"><a href="#232">232: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>;
-</span><span id="233" class="l"><a href="#233">233: </a>    }
-</span><span id="234" class="l"><a href="#234">234: </a>
-</span><span id="235" class="l"><a href="#235">235: </a>    <span class="php-comment">/**
-</span></span><span id="236" class="l"><a href="#236">236: </a><span class="php-comment">     * Add a Column object in collection.
-</span></span><span id="237" class="l"><a href="#237">237: </a><span class="php-comment">     *
-</span></span><span id="238" class="l"><a href="#238">238: </a><span class="php-comment">     * @param \Yajra\Datatables\Html\Column $column
-</span></span><span id="239" class="l"><a href="#239">239: </a><span class="php-comment">     * @return $this
-</span></span><span id="240" class="l"><a href="#240">240: </a><span class="php-comment">     */</span>
-</span><span id="241" class="l"><a href="#241">241: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> add(Column <span class="php-var">$column</span>)
-</span><span id="242" class="l"><a href="#242">242: </a>    {
-</span><span id="243" class="l"><a href="#243">243: </a>        <span class="php-var">$this</span>-&gt;collection-&gt;push(<span class="php-var">$column</span>);
-</span><span id="244" class="l"><a href="#244">244: </a>
-</span><span id="245" class="l"><a href="#245">245: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>;
-</span><span id="246" class="l"><a href="#246">246: </a>    }
-</span><span id="247" class="l"><a href="#247">247: </a>
-</span><span id="248" class="l"><a href="#248">248: </a>    <span class="php-comment">/**
-</span></span><span id="249" class="l"><a href="#249">249: </a><span class="php-comment">     * Set datatables columns from array definition.
-</span></span><span id="250" class="l"><a href="#250">250: </a><span class="php-comment">     *
-</span></span><span id="251" class="l"><a href="#251">251: </a><span class="php-comment">     * @param array $columns
-</span></span><span id="252" class="l"><a href="#252">252: </a><span class="php-comment">     * @return $this
-</span></span><span id="253" class="l"><a href="#253">253: </a><span class="php-comment">     */</span>
-</span><span id="254" class="l"><a href="#254">254: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> columns(<span class="php-keyword1">array</span> <span class="php-var">$columns</span>)
-</span><span id="255" class="l"><a href="#255">255: </a>    {
-</span><span id="256" class="l"><a href="#256">256: </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$columns</span> <span class="php-keyword1">as</span> <span class="php-var">$key</span> =&gt; <span class="php-var">$value</span>) {
-</span><span id="257" class="l"><a href="#257">257: </a>            <span class="php-keyword1">if</span> (<span class="php-keyword2">is_array</span>(<span class="php-var">$value</span>)) {
-</span><span id="258" class="l"><a href="#258">258: </a>                <span class="php-var">$attributes</span> = <span class="php-keyword2">array_merge</span>([<span class="php-quote">'name'</span> =&gt; <span class="php-var">$key</span>, <span class="php-quote">'data'</span> =&gt; <span class="php-var">$key</span>], <span class="php-var">$this</span>-&gt;setTitle(<span class="php-var">$key</span>, <span class="php-var">$value</span>));
-</span><span id="259" class="l"><a href="#259">259: </a>            } <span class="php-keyword1">else</span> {
-</span><span id="260" class="l"><a href="#260">260: </a>                <span class="php-var">$attributes</span> = [
-</span><span id="261" class="l"><a href="#261">261: </a>                    <span class="php-quote">'name'</span>  =&gt; <span class="php-var">$value</span>,
-</span><span id="262" class="l"><a href="#262">262: </a>                    <span class="php-quote">'data'</span>  =&gt; <span class="php-var">$value</span>,
-</span><span id="263" class="l"><a href="#263">263: </a>                    <span class="php-quote">'title'</span> =&gt; <span class="php-var">$this</span>-&gt;getQualifiedTitle(<span class="php-var">$value</span>),
-</span><span id="264" class="l"><a href="#264">264: </a>                ];
-</span><span id="265" class="l"><a href="#265">265: </a>            }
-</span><span id="266" class="l"><a href="#266">266: </a>
-</span><span id="267" class="l"><a href="#267">267: </a>            <span class="php-var">$this</span>-&gt;collection-&gt;push(<span class="php-keyword1">new</span> Column(<span class="php-var">$attributes</span>));
-</span><span id="268" class="l"><a href="#268">268: </a>        }
-</span><span id="269" class="l"><a href="#269">269: </a>
-</span><span id="270" class="l"><a href="#270">270: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>;
-</span><span id="271" class="l"><a href="#271">271: </a>    }
-</span><span id="272" class="l"><a href="#272">272: </a>
-</span><span id="273" class="l"><a href="#273">273: </a>    <span class="php-comment">/**
-</span></span><span id="274" class="l"><a href="#274">274: </a><span class="php-comment">     * Set title attribute of an array if not set.
-</span></span><span id="275" class="l"><a href="#275">275: </a><span class="php-comment">     *
-</span></span><span id="276" class="l"><a href="#276">276: </a><span class="php-comment">     * @param string $title
-</span></span><span id="277" class="l"><a href="#277">277: </a><span class="php-comment">     * @param array $attributes
-</span></span><span id="278" class="l"><a href="#278">278: </a><span class="php-comment">     * @return array
+</span><span id="210" class="l"><a href="#210">210: </a>        <span class="php-keyword1">return</span> [<span class="php-var">$callbackFunctions</span>, <span class="php-var">$parameters</span>];
+</span><span id="211" class="l"><a href="#211">211: </a>    }
+</span><span id="212" class="l"><a href="#212">212: </a>
+</span><span id="213" class="l"><a href="#213">213: </a>    <span class="php-comment">/**
+</span></span><span id="214" class="l"><a href="#214">214: </a><span class="php-comment">     * Compile DataTable callback value.
+</span></span><span id="215" class="l"><a href="#215">215: </a><span class="php-comment">     *
+</span></span><span id="216" class="l"><a href="#216">216: </a><span class="php-comment">     * @param mixed $callback
+</span></span><span id="217" class="l"><a href="#217">217: </a><span class="php-comment">     * @return mixed|string
+</span></span><span id="218" class="l"><a href="#218">218: </a><span class="php-comment">     */</span>
+</span><span id="219" class="l"><a href="#219">219: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">function</span> compileCallback(<span class="php-var">$callback</span>)
+</span><span id="220" class="l"><a href="#220">220: </a>    {
+</span><span id="221" class="l"><a href="#221">221: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">is_callable</span>(<span class="php-var">$callback</span>)) {
+</span><span id="222" class="l"><a href="#222">222: </a>            <span class="php-keyword1">return</span> value(<span class="php-var">$callback</span>);
+</span><span id="223" class="l"><a href="#223">223: </a>        } <span class="php-keyword1">elseif</span> (<span class="php-var">$this</span>-&gt;view-&gt;exists(<span class="php-var">$callback</span>)) {
+</span><span id="224" class="l"><a href="#224">224: </a>            <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;view-&gt;make(<span class="php-var">$callback</span>)-&gt;render();
+</span><span id="225" class="l"><a href="#225">225: </a>        }
+</span><span id="226" class="l"><a href="#226">226: </a>
+</span><span id="227" class="l"><a href="#227">227: </a>        <span class="php-keyword1">return</span> <span class="php-var">$callback</span>;
+</span><span id="228" class="l"><a href="#228">228: </a>    }
+</span><span id="229" class="l"><a href="#229">229: </a>
+</span><span id="230" class="l"><a href="#230">230: </a>    <span class="php-comment">/**
+</span></span><span id="231" class="l"><a href="#231">231: </a><span class="php-comment">     * Decode columns render functions.
+</span></span><span id="232" class="l"><a href="#232">232: </a><span class="php-comment">     *
+</span></span><span id="233" class="l"><a href="#233">233: </a><span class="php-comment">     * @param array $columnFunctions
+</span></span><span id="234" class="l"><a href="#234">234: </a><span class="php-comment">     * @param string $json
+</span></span><span id="235" class="l"><a href="#235">235: </a><span class="php-comment">     * @return string
+</span></span><span id="236" class="l"><a href="#236">236: </a><span class="php-comment">     */</span>
+</span><span id="237" class="l"><a href="#237">237: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> decodeColumnFunctions(<span class="php-keyword1">array</span> <span class="php-var">$columnFunctions</span>, <span class="php-var">$json</span>)
+</span><span id="238" class="l"><a href="#238">238: </a>    {
+</span><span id="239" class="l"><a href="#239">239: </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$columnFunctions</span> <span class="php-keyword1">as</span> <span class="php-var">$i</span> =&gt; <span class="php-var">$function</span>) {
+</span><span id="240" class="l"><a href="#240">240: </a>            <span class="php-var">$json</span> = <span class="php-keyword2">str_replace</span>(<span class="php-quote">&quot;\&quot;#column_function.</span><span class="php-var">{$i}</span><span class="php-quote">#\&quot;&quot;</span>, <span class="php-var">$function</span>, <span class="php-var">$json</span>);
+</span><span id="241" class="l"><a href="#241">241: </a>        }
+</span><span id="242" class="l"><a href="#242">242: </a>
+</span><span id="243" class="l"><a href="#243">243: </a>        <span class="php-keyword1">return</span> <span class="php-var">$json</span>;
+</span><span id="244" class="l"><a href="#244">244: </a>    }
+</span><span id="245" class="l"><a href="#245">245: </a>
+</span><span id="246" class="l"><a href="#246">246: </a>    <span class="php-comment">/**
+</span></span><span id="247" class="l"><a href="#247">247: </a><span class="php-comment">     * Decode DataTables callbacks function.
+</span></span><span id="248" class="l"><a href="#248">248: </a><span class="php-comment">     *
+</span></span><span id="249" class="l"><a href="#249">249: </a><span class="php-comment">     * @param array $callbackFunctions
+</span></span><span id="250" class="l"><a href="#250">250: </a><span class="php-comment">     * @param string $json
+</span></span><span id="251" class="l"><a href="#251">251: </a><span class="php-comment">     * @return string
+</span></span><span id="252" class="l"><a href="#252">252: </a><span class="php-comment">     */</span>
+</span><span id="253" class="l"><a href="#253">253: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> decodeCallbackFunctions(<span class="php-keyword1">array</span> <span class="php-var">$callbackFunctions</span>, <span class="php-var">$json</span>)
+</span><span id="254" class="l"><a href="#254">254: </a>    {
+</span><span id="255" class="l"><a href="#255">255: </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$callbackFunctions</span> <span class="php-keyword1">as</span> <span class="php-var">$i</span> =&gt; <span class="php-var">$function</span>) {
+</span><span id="256" class="l"><a href="#256">256: </a>            <span class="php-var">$json</span> = <span class="php-keyword2">str_replace</span>(<span class="php-quote">&quot;\&quot;#callback_function.</span><span class="php-var">{$i}</span><span class="php-quote">#\&quot;&quot;</span>, <span class="php-var">$function</span>, <span class="php-var">$json</span>);
+</span><span id="257" class="l"><a href="#257">257: </a>        }
+</span><span id="258" class="l"><a href="#258">258: </a>
+</span><span id="259" class="l"><a href="#259">259: </a>        <span class="php-keyword1">return</span> <span class="php-var">$json</span>;
+</span><span id="260" class="l"><a href="#260">260: </a>    }
+</span><span id="261" class="l"><a href="#261">261: </a>
+</span><span id="262" class="l"><a href="#262">262: </a>    <span class="php-comment">/**
+</span></span><span id="263" class="l"><a href="#263">263: </a><span class="php-comment">     * Get javascript template to use.
+</span></span><span id="264" class="l"><a href="#264">264: </a><span class="php-comment">     *
+</span></span><span id="265" class="l"><a href="#265">265: </a><span class="php-comment">     * @return string
+</span></span><span id="266" class="l"><a href="#266">266: </a><span class="php-comment">     */</span>
+</span><span id="267" class="l"><a href="#267">267: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> template()
+</span><span id="268" class="l"><a href="#268">268: </a>    {
+</span><span id="269" class="l"><a href="#269">269: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;view-&gt;make(
+</span><span id="270" class="l"><a href="#270">270: </a>            <span class="php-var">$this</span>-&gt;template ?: <span class="php-var">$this</span>-&gt;config-&gt;get(<span class="php-quote">'datatables.script_template'</span>, <span class="php-quote">'datatables::script'</span>)
+</span><span id="271" class="l"><a href="#271">271: </a>        )-&gt;render();
+</span><span id="272" class="l"><a href="#272">272: </a>    }
+</span><span id="273" class="l"><a href="#273">273: </a>
+</span><span id="274" class="l"><a href="#274">274: </a>    <span class="php-comment">/**
+</span></span><span id="275" class="l"><a href="#275">275: </a><span class="php-comment">     * Add a column in collection using attributes.
+</span></span><span id="276" class="l"><a href="#276">276: </a><span class="php-comment">     *
+</span></span><span id="277" class="l"><a href="#277">277: </a><span class="php-comment">     * @param  array $attributes
+</span></span><span id="278" class="l"><a href="#278">278: </a><span class="php-comment">     * @return $this
 </span></span><span id="279" class="l"><a href="#279">279: </a><span class="php-comment">     */</span>
-</span><span id="280" class="l"><a href="#280">280: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> setTitle(<span class="php-var">$title</span>, <span class="php-keyword1">array</span> <span class="php-var">$attributes</span>)
+</span><span id="280" class="l"><a href="#280">280: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> addColumn(<span class="php-keyword1">array</span> <span class="php-var">$attributes</span>)
 </span><span id="281" class="l"><a href="#281">281: </a>    {
-</span><span id="282" class="l"><a href="#282">282: </a>        <span class="php-keyword1">if</span> (! <span class="php-keyword1">isset</span>(<span class="php-var">$attributes</span>[<span class="php-quote">'title'</span>])) {
-</span><span id="283" class="l"><a href="#283">283: </a>            <span class="php-var">$attributes</span>[<span class="php-quote">'title'</span>] = <span class="php-var">$this</span>-&gt;getQualifiedTitle(<span class="php-var">$title</span>);
-</span><span id="284" class="l"><a href="#284">284: </a>        }
-</span><span id="285" class="l"><a href="#285">285: </a>
-</span><span id="286" class="l"><a href="#286">286: </a>        <span class="php-keyword1">return</span> <span class="php-var">$attributes</span>;
-</span><span id="287" class="l"><a href="#287">287: </a>    }
-</span><span id="288" class="l"><a href="#288">288: </a>
-</span><span id="289" class="l"><a href="#289">289: </a>    <span class="php-comment">/**
-</span></span><span id="290" class="l"><a href="#290">290: </a><span class="php-comment">     * Convert string into a readable title.
-</span></span><span id="291" class="l"><a href="#291">291: </a><span class="php-comment">     *
-</span></span><span id="292" class="l"><a href="#292">292: </a><span class="php-comment">     * @param string $title
-</span></span><span id="293" class="l"><a href="#293">293: </a><span class="php-comment">     * @return string
-</span></span><span id="294" class="l"><a href="#294">294: </a><span class="php-comment">     */</span>
-</span><span id="295" class="l"><a href="#295">295: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> getQualifiedTitle(<span class="php-var">$title</span>)
-</span><span id="296" class="l"><a href="#296">296: </a>    {
-</span><span id="297" class="l"><a href="#297">297: </a>        <span class="php-keyword1">return</span> Str::title(<span class="php-keyword2">str_replace</span>([<span class="php-quote">'.'</span>, <span class="php-quote">'_'</span>], <span class="php-quote">' '</span>, Str::snake(<span class="php-var">$title</span>)));
+</span><span id="282" class="l"><a href="#282">282: </a>        <span class="php-var">$this</span>-&gt;collection-&gt;push(<span class="php-keyword1">new</span> Column(<span class="php-var">$attributes</span>));
+</span><span id="283" class="l"><a href="#283">283: </a>
+</span><span id="284" class="l"><a href="#284">284: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>;
+</span><span id="285" class="l"><a href="#285">285: </a>    }
+</span><span id="286" class="l"><a href="#286">286: </a>
+</span><span id="287" class="l"><a href="#287">287: </a>    <span class="php-comment">/**
+</span></span><span id="288" class="l"><a href="#288">288: </a><span class="php-comment">     * Add a Column object in collection.
+</span></span><span id="289" class="l"><a href="#289">289: </a><span class="php-comment">     *
+</span></span><span id="290" class="l"><a href="#290">290: </a><span class="php-comment">     * @param \Yajra\Datatables\Html\Column $column
+</span></span><span id="291" class="l"><a href="#291">291: </a><span class="php-comment">     * @return $this
+</span></span><span id="292" class="l"><a href="#292">292: </a><span class="php-comment">     */</span>
+</span><span id="293" class="l"><a href="#293">293: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> add(Column <span class="php-var">$column</span>)
+</span><span id="294" class="l"><a href="#294">294: </a>    {
+</span><span id="295" class="l"><a href="#295">295: </a>        <span class="php-var">$this</span>-&gt;collection-&gt;push(<span class="php-var">$column</span>);
+</span><span id="296" class="l"><a href="#296">296: </a>
+</span><span id="297" class="l"><a href="#297">297: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>;
 </span><span id="298" class="l"><a href="#298">298: </a>    }
 </span><span id="299" class="l"><a href="#299">299: </a>
 </span><span id="300" class="l"><a href="#300">300: </a>    <span class="php-comment">/**
-</span></span><span id="301" class="l"><a href="#301">301: </a><span class="php-comment">     * Add a checkbox column.
+</span></span><span id="301" class="l"><a href="#301">301: </a><span class="php-comment">     * Set datatables columns from array definition.
 </span></span><span id="302" class="l"><a href="#302">302: </a><span class="php-comment">     *
-</span></span><span id="303" class="l"><a href="#303">303: </a><span class="php-comment">     * @param  array $attributes
+</span></span><span id="303" class="l"><a href="#303">303: </a><span class="php-comment">     * @param array $columns
 </span></span><span id="304" class="l"><a href="#304">304: </a><span class="php-comment">     * @return $this
 </span></span><span id="305" class="l"><a href="#305">305: </a><span class="php-comment">     */</span>
-</span><span id="306" class="l"><a href="#306">306: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> addCheckbox(<span class="php-keyword1">array</span> <span class="php-var">$attributes</span> = [])
+</span><span id="306" class="l"><a href="#306">306: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> columns(<span class="php-keyword1">array</span> <span class="php-var">$columns</span>)
 </span><span id="307" class="l"><a href="#307">307: </a>    {
-</span><span id="308" class="l"><a href="#308">308: </a>        <span class="php-var">$attributes</span> = <span class="php-keyword2">array_merge</span>([
-</span><span id="309" class="l"><a href="#309">309: </a>            <span class="php-quote">'defaultContent'</span> =&gt; <span class="php-quote">'&lt;input type=&quot;checkbox&quot; '</span> . <span class="php-var">$this</span>-&gt;html-&gt;attributes(<span class="php-var">$attributes</span>) . <span class="php-quote">'/&gt;'</span>,
-</span><span id="310" class="l"><a href="#310">310: </a>            <span class="php-quote">'title'</span>          =&gt; <span class="php-var">$this</span>-&gt;form-&gt;checkbox(<span class="php-quote">''</span>, <span class="php-quote">''</span>, <span class="php-keyword1">false</span>, [<span class="php-quote">'id'</span> =&gt; <span class="php-quote">'dataTablesCheckbox'</span>]),
-</span><span id="311" class="l"><a href="#311">311: </a>            <span class="php-quote">'data'</span>           =&gt; <span class="php-quote">'checkbox'</span>,
-</span><span id="312" class="l"><a href="#312">312: </a>            <span class="php-quote">'name'</span>           =&gt; <span class="php-quote">'checkbox'</span>,
-</span><span id="313" class="l"><a href="#313">313: </a>            <span class="php-quote">'orderable'</span>      =&gt; <span class="php-keyword1">false</span>,
-</span><span id="314" class="l"><a href="#314">314: </a>            <span class="php-quote">'searchable'</span>     =&gt; <span class="php-keyword1">false</span>,
-</span><span id="315" class="l"><a href="#315">315: </a>            <span class="php-quote">'exportable'</span>     =&gt; <span class="php-keyword1">false</span>,
-</span><span id="316" class="l"><a href="#316">316: </a>            <span class="php-quote">'printable'</span>      =&gt; <span class="php-keyword1">true</span>,
-</span><span id="317" class="l"><a href="#317">317: </a>            <span class="php-quote">'width'</span>          =&gt; <span class="php-quote">'10px'</span>,
-</span><span id="318" class="l"><a href="#318">318: </a>        ], <span class="php-var">$attributes</span>);
-</span><span id="319" class="l"><a href="#319">319: </a>        <span class="php-var">$this</span>-&gt;collection-&gt;push(<span class="php-keyword1">new</span> Column(<span class="php-var">$attributes</span>));
-</span><span id="320" class="l"><a href="#320">320: </a>
-</span><span id="321" class="l"><a href="#321">321: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>;
-</span><span id="322" class="l"><a href="#322">322: </a>    }
-</span><span id="323" class="l"><a href="#323">323: </a>
-</span><span id="324" class="l"><a href="#324">324: </a>    <span class="php-comment">/**
-</span></span><span id="325" class="l"><a href="#325">325: </a><span class="php-comment">     * Add a action column.
-</span></span><span id="326" class="l"><a href="#326">326: </a><span class="php-comment">     *
-</span></span><span id="327" class="l"><a href="#327">327: </a><span class="php-comment">     * @param  array $attributes
-</span></span><span id="328" class="l"><a href="#328">328: </a><span class="php-comment">     * @return $this
-</span></span><span id="329" class="l"><a href="#329">329: </a><span class="php-comment">     */</span>
-</span><span id="330" class="l"><a href="#330">330: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> addAction(<span class="php-keyword1">array</span> <span class="php-var">$attributes</span> = [])
-</span><span id="331" class="l"><a href="#331">331: </a>    {
-</span><span id="332" class="l"><a href="#332">332: </a>        <span class="php-var">$attributes</span> = <span class="php-keyword2">array_merge</span>([
-</span><span id="333" class="l"><a href="#333">333: </a>            <span class="php-quote">'defaultContent'</span> =&gt; <span class="php-quote">''</span>,
-</span><span id="334" class="l"><a href="#334">334: </a>            <span class="php-quote">'data'</span>           =&gt; <span class="php-quote">'action'</span>,
-</span><span id="335" class="l"><a href="#335">335: </a>            <span class="php-quote">'name'</span>           =&gt; <span class="php-quote">'action'</span>,
-</span><span id="336" class="l"><a href="#336">336: </a>            <span class="php-quote">'title'</span>          =&gt; <span class="php-quote">'Action'</span>,
-</span><span id="337" class="l"><a href="#337">337: </a>            <span class="php-quote">'render'</span>         =&gt; <span class="php-keyword1">null</span>,
-</span><span id="338" class="l"><a href="#338">338: </a>            <span class="php-quote">'orderable'</span>      =&gt; <span class="php-keyword1">false</span>,
-</span><span id="339" class="l"><a href="#339">339: </a>            <span class="php-quote">'searchable'</span>     =&gt; <span class="php-keyword1">false</span>,
-</span><span id="340" class="l"><a href="#340">340: </a>            <span class="php-quote">'exportable'</span>     =&gt; <span class="php-keyword1">false</span>,
-</span><span id="341" class="l"><a href="#341">341: </a>            <span class="php-quote">'printable'</span>      =&gt; <span class="php-keyword1">true</span>,
-</span><span id="342" class="l"><a href="#342">342: </a>        ], <span class="php-var">$attributes</span>);
-</span><span id="343" class="l"><a href="#343">343: </a>        <span class="php-var">$this</span>-&gt;collection-&gt;push(<span class="php-keyword1">new</span> Column(<span class="php-var">$attributes</span>));
-</span><span id="344" class="l"><a href="#344">344: </a>
-</span><span id="345" class="l"><a href="#345">345: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>;
-</span><span id="346" class="l"><a href="#346">346: </a>    }
-</span><span id="347" class="l"><a href="#347">347: </a>
-</span><span id="348" class="l"><a href="#348">348: </a>    <span class="php-comment">/**
-</span></span><span id="349" class="l"><a href="#349">349: </a><span class="php-comment">     * Setup ajax parameter
-</span></span><span id="350" class="l"><a href="#350">350: </a><span class="php-comment">     *
-</span></span><span id="351" class="l"><a href="#351">351: </a><span class="php-comment">     * @param  string|array $attributes
-</span></span><span id="352" class="l"><a href="#352">352: </a><span class="php-comment">     * @return $this
-</span></span><span id="353" class="l"><a href="#353">353: </a><span class="php-comment">     */</span>
-</span><span id="354" class="l"><a href="#354">354: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> ajax(<span class="php-var">$attributes</span>)
-</span><span id="355" class="l"><a href="#355">355: </a>    {
-</span><span id="356" class="l"><a href="#356">356: </a>        <span class="php-var">$this</span>-&gt;ajax = <span class="php-var">$attributes</span>;
-</span><span id="357" class="l"><a href="#357">357: </a>
-</span><span id="358" class="l"><a href="#358">358: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>;
-</span><span id="359" class="l"><a href="#359">359: </a>    }
-</span><span id="360" class="l"><a href="#360">360: </a>
-</span><span id="361" class="l"><a href="#361">361: </a>    <span class="php-comment">/**
-</span></span><span id="362" class="l"><a href="#362">362: </a><span class="php-comment">     * Generate DataTable's table html.
-</span></span><span id="363" class="l"><a href="#363">363: </a><span class="php-comment">     *
-</span></span><span id="364" class="l"><a href="#364">364: </a><span class="php-comment">     * @param  array $attributes
-</span></span><span id="365" class="l"><a href="#365">365: </a><span class="php-comment">     * @return string
-</span></span><span id="366" class="l"><a href="#366">366: </a><span class="php-comment">     */</span>
-</span><span id="367" class="l"><a href="#367">367: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> table(<span class="php-keyword1">array</span> <span class="php-var">$attributes</span> = [])
-</span><span id="368" class="l"><a href="#368">368: </a>    {
-</span><span id="369" class="l"><a href="#369">369: </a>        <span class="php-var">$this</span>-&gt;tableAttributes = <span class="php-keyword2">array_merge</span>(<span class="php-var">$this</span>-&gt;tableAttributes, <span class="php-var">$attributes</span>);
-</span><span id="370" class="l"><a href="#370">370: </a>
-</span><span id="371" class="l"><a href="#371">371: </a>        <span class="php-keyword1">return</span> <span class="php-quote">'&lt;table '</span> . <span class="php-var">$this</span>-&gt;html-&gt;attributes(<span class="php-var">$this</span>-&gt;tableAttributes) . <span class="php-quote">'&gt;&lt;/table&gt;'</span>;
-</span><span id="372" class="l"><a href="#372">372: </a>    }
-</span><span id="373" class="l"><a href="#373">373: </a>
-</span><span id="374" class="l"><a href="#374">374: </a>    <span class="php-comment">/**
-</span></span><span id="375" class="l"><a href="#375">375: </a><span class="php-comment">     * Configure DataTable's parameters.
-</span></span><span id="376" class="l"><a href="#376">376: </a><span class="php-comment">     *
-</span></span><span id="377" class="l"><a href="#377">377: </a><span class="php-comment">     * @param  array $attributes
-</span></span><span id="378" class="l"><a href="#378">378: </a><span class="php-comment">     * @return $this
-</span></span><span id="379" class="l"><a href="#379">379: </a><span class="php-comment">     */</span>
-</span><span id="380" class="l"><a href="#380">380: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> parameters(<span class="php-keyword1">array</span> <span class="php-var">$attributes</span> = [])
-</span><span id="381" class="l"><a href="#381">381: </a>    {
-</span><span id="382" class="l"><a href="#382">382: </a>        <span class="php-var">$this</span>-&gt;attributes = <span class="php-keyword2">array_merge</span>(<span class="php-var">$this</span>-&gt;attributes, <span class="php-var">$attributes</span>);
-</span><span id="383" class="l"><a href="#383">383: </a>
-</span><span id="384" class="l"><a href="#384">384: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>;
-</span><span id="385" class="l"><a href="#385">385: </a>    }
-</span><span id="386" class="l"><a href="#386">386: </a>
-</span><span id="387" class="l"><a href="#387">387: </a>    <span class="php-comment">/**
-</span></span><span id="388" class="l"><a href="#388">388: </a><span class="php-comment">     * Set custom javascript template.
-</span></span><span id="389" class="l"><a href="#389">389: </a><span class="php-comment">     *
-</span></span><span id="390" class="l"><a href="#390">390: </a><span class="php-comment">     * @param string $template
-</span></span><span id="391" class="l"><a href="#391">391: </a><span class="php-comment">     * @return $this
-</span></span><span id="392" class="l"><a href="#392">392: </a><span class="php-comment">     */</span>
-</span><span id="393" class="l"><a href="#393">393: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> setTemplate(<span class="php-var">$template</span>)
-</span><span id="394" class="l"><a href="#394">394: </a>    {
-</span><span id="395" class="l"><a href="#395">395: </a>        <span class="php-var">$this</span>-&gt;template = <span class="php-var">$template</span>;
+</span><span id="308" class="l"><a href="#308">308: </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$columns</span> <span class="php-keyword1">as</span> <span class="php-var">$key</span> =&gt; <span class="php-var">$value</span>) {
+</span><span id="309" class="l"><a href="#309">309: </a>            <span class="php-keyword1">if</span> (<span class="php-keyword2">is_array</span>(<span class="php-var">$value</span>)) {
+</span><span id="310" class="l"><a href="#310">310: </a>                <span class="php-var">$attributes</span> = <span class="php-keyword2">array_merge</span>([<span class="php-quote">'name'</span> =&gt; <span class="php-var">$key</span>, <span class="php-quote">'data'</span> =&gt; <span class="php-var">$key</span>], <span class="php-var">$this</span>-&gt;setTitle(<span class="php-var">$key</span>, <span class="php-var">$value</span>));
+</span><span id="311" class="l"><a href="#311">311: </a>            } <span class="php-keyword1">else</span> {
+</span><span id="312" class="l"><a href="#312">312: </a>                <span class="php-var">$attributes</span> = [
+</span><span id="313" class="l"><a href="#313">313: </a>                    <span class="php-quote">'name'</span>  =&gt; <span class="php-var">$value</span>,
+</span><span id="314" class="l"><a href="#314">314: </a>                    <span class="php-quote">'data'</span>  =&gt; <span class="php-var">$value</span>,
+</span><span id="315" class="l"><a href="#315">315: </a>                    <span class="php-quote">'title'</span> =&gt; <span class="php-var">$this</span>-&gt;getQualifiedTitle(<span class="php-var">$value</span>),
+</span><span id="316" class="l"><a href="#316">316: </a>                ];
+</span><span id="317" class="l"><a href="#317">317: </a>            }
+</span><span id="318" class="l"><a href="#318">318: </a>
+</span><span id="319" class="l"><a href="#319">319: </a>            <span class="php-var">$this</span>-&gt;collection-&gt;push(<span class="php-keyword1">new</span> Column(<span class="php-var">$attributes</span>));
+</span><span id="320" class="l"><a href="#320">320: </a>        }
+</span><span id="321" class="l"><a href="#321">321: </a>
+</span><span id="322" class="l"><a href="#322">322: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>;
+</span><span id="323" class="l"><a href="#323">323: </a>    }
+</span><span id="324" class="l"><a href="#324">324: </a>
+</span><span id="325" class="l"><a href="#325">325: </a>    <span class="php-comment">/**
+</span></span><span id="326" class="l"><a href="#326">326: </a><span class="php-comment">     * Set title attribute of an array if not set.
+</span></span><span id="327" class="l"><a href="#327">327: </a><span class="php-comment">     *
+</span></span><span id="328" class="l"><a href="#328">328: </a><span class="php-comment">     * @param string $title
+</span></span><span id="329" class="l"><a href="#329">329: </a><span class="php-comment">     * @param array $attributes
+</span></span><span id="330" class="l"><a href="#330">330: </a><span class="php-comment">     * @return array
+</span></span><span id="331" class="l"><a href="#331">331: </a><span class="php-comment">     */</span>
+</span><span id="332" class="l"><a href="#332">332: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> setTitle(<span class="php-var">$title</span>, <span class="php-keyword1">array</span> <span class="php-var">$attributes</span>)
+</span><span id="333" class="l"><a href="#333">333: </a>    {
+</span><span id="334" class="l"><a href="#334">334: </a>        <span class="php-keyword1">if</span> (! <span class="php-keyword1">isset</span>(<span class="php-var">$attributes</span>[<span class="php-quote">'title'</span>])) {
+</span><span id="335" class="l"><a href="#335">335: </a>            <span class="php-var">$attributes</span>[<span class="php-quote">'title'</span>] = <span class="php-var">$this</span>-&gt;getQualifiedTitle(<span class="php-var">$title</span>);
+</span><span id="336" class="l"><a href="#336">336: </a>        }
+</span><span id="337" class="l"><a href="#337">337: </a>
+</span><span id="338" class="l"><a href="#338">338: </a>        <span class="php-keyword1">return</span> <span class="php-var">$attributes</span>;
+</span><span id="339" class="l"><a href="#339">339: </a>    }
+</span><span id="340" class="l"><a href="#340">340: </a>
+</span><span id="341" class="l"><a href="#341">341: </a>    <span class="php-comment">/**
+</span></span><span id="342" class="l"><a href="#342">342: </a><span class="php-comment">     * Convert string into a readable title.
+</span></span><span id="343" class="l"><a href="#343">343: </a><span class="php-comment">     *
+</span></span><span id="344" class="l"><a href="#344">344: </a><span class="php-comment">     * @param string $title
+</span></span><span id="345" class="l"><a href="#345">345: </a><span class="php-comment">     * @return string
+</span></span><span id="346" class="l"><a href="#346">346: </a><span class="php-comment">     */</span>
+</span><span id="347" class="l"><a href="#347">347: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> getQualifiedTitle(<span class="php-var">$title</span>)
+</span><span id="348" class="l"><a href="#348">348: </a>    {
+</span><span id="349" class="l"><a href="#349">349: </a>        <span class="php-keyword1">return</span> Str::title(<span class="php-keyword2">str_replace</span>([<span class="php-quote">'.'</span>, <span class="php-quote">'_'</span>], <span class="php-quote">' '</span>, Str::snake(<span class="php-var">$title</span>)));
+</span><span id="350" class="l"><a href="#350">350: </a>    }
+</span><span id="351" class="l"><a href="#351">351: </a>
+</span><span id="352" class="l"><a href="#352">352: </a>    <span class="php-comment">/**
+</span></span><span id="353" class="l"><a href="#353">353: </a><span class="php-comment">     * Add a checkbox column.
+</span></span><span id="354" class="l"><a href="#354">354: </a><span class="php-comment">     *
+</span></span><span id="355" class="l"><a href="#355">355: </a><span class="php-comment">     * @param  array $attributes
+</span></span><span id="356" class="l"><a href="#356">356: </a><span class="php-comment">     * @return $this
+</span></span><span id="357" class="l"><a href="#357">357: </a><span class="php-comment">     */</span>
+</span><span id="358" class="l"><a href="#358">358: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> addCheckbox(<span class="php-keyword1">array</span> <span class="php-var">$attributes</span> = [])
+</span><span id="359" class="l"><a href="#359">359: </a>    {
+</span><span id="360" class="l"><a href="#360">360: </a>        <span class="php-var">$attributes</span> = <span class="php-keyword2">array_merge</span>([
+</span><span id="361" class="l"><a href="#361">361: </a>            <span class="php-quote">'defaultContent'</span> =&gt; <span class="php-quote">'&lt;input type=&quot;checkbox&quot; '</span> . <span class="php-var">$this</span>-&gt;html-&gt;attributes(<span class="php-var">$attributes</span>) . <span class="php-quote">'/&gt;'</span>,
+</span><span id="362" class="l"><a href="#362">362: </a>            <span class="php-quote">'title'</span>          =&gt; <span class="php-var">$this</span>-&gt;form-&gt;checkbox(<span class="php-quote">''</span>, <span class="php-quote">''</span>, <span class="php-keyword1">false</span>, [<span class="php-quote">'id'</span> =&gt; <span class="php-quote">'dataTablesCheckbox'</span>]),
+</span><span id="363" class="l"><a href="#363">363: </a>            <span class="php-quote">'data'</span>           =&gt; <span class="php-quote">'checkbox'</span>,
+</span><span id="364" class="l"><a href="#364">364: </a>            <span class="php-quote">'name'</span>           =&gt; <span class="php-quote">'checkbox'</span>,
+</span><span id="365" class="l"><a href="#365">365: </a>            <span class="php-quote">'orderable'</span>      =&gt; <span class="php-keyword1">false</span>,
+</span><span id="366" class="l"><a href="#366">366: </a>            <span class="php-quote">'searchable'</span>     =&gt; <span class="php-keyword1">false</span>,
+</span><span id="367" class="l"><a href="#367">367: </a>            <span class="php-quote">'exportable'</span>     =&gt; <span class="php-keyword1">false</span>,
+</span><span id="368" class="l"><a href="#368">368: </a>            <span class="php-quote">'printable'</span>      =&gt; <span class="php-keyword1">true</span>,
+</span><span id="369" class="l"><a href="#369">369: </a>            <span class="php-quote">'width'</span>          =&gt; <span class="php-quote">'10px'</span>,
+</span><span id="370" class="l"><a href="#370">370: </a>        ], <span class="php-var">$attributes</span>);
+</span><span id="371" class="l"><a href="#371">371: </a>        <span class="php-var">$this</span>-&gt;collection-&gt;push(<span class="php-keyword1">new</span> Column(<span class="php-var">$attributes</span>));
+</span><span id="372" class="l"><a href="#372">372: </a>
+</span><span id="373" class="l"><a href="#373">373: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>;
+</span><span id="374" class="l"><a href="#374">374: </a>    }
+</span><span id="375" class="l"><a href="#375">375: </a>
+</span><span id="376" class="l"><a href="#376">376: </a>    <span class="php-comment">/**
+</span></span><span id="377" class="l"><a href="#377">377: </a><span class="php-comment">     * Add a action column.
+</span></span><span id="378" class="l"><a href="#378">378: </a><span class="php-comment">     *
+</span></span><span id="379" class="l"><a href="#379">379: </a><span class="php-comment">     * @param  array $attributes
+</span></span><span id="380" class="l"><a href="#380">380: </a><span class="php-comment">     * @return $this
+</span></span><span id="381" class="l"><a href="#381">381: </a><span class="php-comment">     */</span>
+</span><span id="382" class="l"><a href="#382">382: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> addAction(<span class="php-keyword1">array</span> <span class="php-var">$attributes</span> = [])
+</span><span id="383" class="l"><a href="#383">383: </a>    {
+</span><span id="384" class="l"><a href="#384">384: </a>        <span class="php-var">$attributes</span> = <span class="php-keyword2">array_merge</span>([
+</span><span id="385" class="l"><a href="#385">385: </a>            <span class="php-quote">'defaultContent'</span> =&gt; <span class="php-quote">''</span>,
+</span><span id="386" class="l"><a href="#386">386: </a>            <span class="php-quote">'data'</span>           =&gt; <span class="php-quote">'action'</span>,
+</span><span id="387" class="l"><a href="#387">387: </a>            <span class="php-quote">'name'</span>           =&gt; <span class="php-quote">'action'</span>,
+</span><span id="388" class="l"><a href="#388">388: </a>            <span class="php-quote">'title'</span>          =&gt; <span class="php-quote">'Action'</span>,
+</span><span id="389" class="l"><a href="#389">389: </a>            <span class="php-quote">'render'</span>         =&gt; <span class="php-keyword1">null</span>,
+</span><span id="390" class="l"><a href="#390">390: </a>            <span class="php-quote">'orderable'</span>      =&gt; <span class="php-keyword1">false</span>,
+</span><span id="391" class="l"><a href="#391">391: </a>            <span class="php-quote">'searchable'</span>     =&gt; <span class="php-keyword1">false</span>,
+</span><span id="392" class="l"><a href="#392">392: </a>            <span class="php-quote">'exportable'</span>     =&gt; <span class="php-keyword1">false</span>,
+</span><span id="393" class="l"><a href="#393">393: </a>            <span class="php-quote">'printable'</span>      =&gt; <span class="php-keyword1">true</span>,
+</span><span id="394" class="l"><a href="#394">394: </a>        ], <span class="php-var">$attributes</span>);
+</span><span id="395" class="l"><a href="#395">395: </a>        <span class="php-var">$this</span>-&gt;collection-&gt;push(<span class="php-keyword1">new</span> Column(<span class="php-var">$attributes</span>));
 </span><span id="396" class="l"><a href="#396">396: </a>
 </span><span id="397" class="l"><a href="#397">397: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>;
 </span><span id="398" class="l"><a href="#398">398: </a>    }
 </span><span id="399" class="l"><a href="#399">399: </a>
 </span><span id="400" class="l"><a href="#400">400: </a>    <span class="php-comment">/**
-</span></span><span id="401" class="l"><a href="#401">401: </a><span class="php-comment">     * Get collection of columns.
+</span></span><span id="401" class="l"><a href="#401">401: </a><span class="php-comment">     * Setup ajax parameter
 </span></span><span id="402" class="l"><a href="#402">402: </a><span class="php-comment">     *
-</span></span><span id="403" class="l"><a href="#403">403: </a><span class="php-comment">     * @return Collection
-</span></span><span id="404" class="l"><a href="#404">404: </a><span class="php-comment">     */</span>
-</span><span id="405" class="l"><a href="#405">405: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> getColumns()
-</span><span id="406" class="l"><a href="#406">406: </a>    {
-</span><span id="407" class="l"><a href="#407">407: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;collection;
-</span><span id="408" class="l"><a href="#408">408: </a>    }
-</span><span id="409" class="l"><a href="#409">409: </a>}
-</span><span id="410" class="l"><a href="#410">410: </a></span></code></pre>
+</span></span><span id="403" class="l"><a href="#403">403: </a><span class="php-comment">     * @param  string|array $attributes
+</span></span><span id="404" class="l"><a href="#404">404: </a><span class="php-comment">     * @return $this
+</span></span><span id="405" class="l"><a href="#405">405: </a><span class="php-comment">     */</span>
+</span><span id="406" class="l"><a href="#406">406: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> ajax(<span class="php-var">$attributes</span>)
+</span><span id="407" class="l"><a href="#407">407: </a>    {
+</span><span id="408" class="l"><a href="#408">408: </a>        <span class="php-var">$this</span>-&gt;ajax = <span class="php-var">$attributes</span>;
+</span><span id="409" class="l"><a href="#409">409: </a>
+</span><span id="410" class="l"><a href="#410">410: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>;
+</span><span id="411" class="l"><a href="#411">411: </a>    }
+</span><span id="412" class="l"><a href="#412">412: </a>
+</span><span id="413" class="l"><a href="#413">413: </a>    <span class="php-comment">/**
+</span></span><span id="414" class="l"><a href="#414">414: </a><span class="php-comment">     * Generate DataTable's table html.
+</span></span><span id="415" class="l"><a href="#415">415: </a><span class="php-comment">     *
+</span></span><span id="416" class="l"><a href="#416">416: </a><span class="php-comment">     * @param  array $attributes
+</span></span><span id="417" class="l"><a href="#417">417: </a><span class="php-comment">     * @return string
+</span></span><span id="418" class="l"><a href="#418">418: </a><span class="php-comment">     */</span>
+</span><span id="419" class="l"><a href="#419">419: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> table(<span class="php-keyword1">array</span> <span class="php-var">$attributes</span> = [])
+</span><span id="420" class="l"><a href="#420">420: </a>    {
+</span><span id="421" class="l"><a href="#421">421: </a>        <span class="php-var">$this</span>-&gt;tableAttributes = <span class="php-keyword2">array_merge</span>(<span class="php-var">$this</span>-&gt;tableAttributes, <span class="php-var">$attributes</span>);
+</span><span id="422" class="l"><a href="#422">422: </a>
+</span><span id="423" class="l"><a href="#423">423: </a>        <span class="php-keyword1">return</span> <span class="php-quote">'&lt;table '</span> . <span class="php-var">$this</span>-&gt;html-&gt;attributes(<span class="php-var">$this</span>-&gt;tableAttributes) . <span class="php-quote">'&gt;&lt;/table&gt;'</span>;
+</span><span id="424" class="l"><a href="#424">424: </a>    }
+</span><span id="425" class="l"><a href="#425">425: </a>
+</span><span id="426" class="l"><a href="#426">426: </a>    <span class="php-comment">/**
+</span></span><span id="427" class="l"><a href="#427">427: </a><span class="php-comment">     * Configure DataTable's parameters.
+</span></span><span id="428" class="l"><a href="#428">428: </a><span class="php-comment">     *
+</span></span><span id="429" class="l"><a href="#429">429: </a><span class="php-comment">     * @param  array $attributes
+</span></span><span id="430" class="l"><a href="#430">430: </a><span class="php-comment">     * @return $this
+</span></span><span id="431" class="l"><a href="#431">431: </a><span class="php-comment">     */</span>
+</span><span id="432" class="l"><a href="#432">432: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> parameters(<span class="php-keyword1">array</span> <span class="php-var">$attributes</span> = [])
+</span><span id="433" class="l"><a href="#433">433: </a>    {
+</span><span id="434" class="l"><a href="#434">434: </a>        <span class="php-var">$this</span>-&gt;attributes = <span class="php-keyword2">array_merge</span>(<span class="php-var">$this</span>-&gt;attributes, <span class="php-var">$attributes</span>);
+</span><span id="435" class="l"><a href="#435">435: </a>
+</span><span id="436" class="l"><a href="#436">436: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>;
+</span><span id="437" class="l"><a href="#437">437: </a>    }
+</span><span id="438" class="l"><a href="#438">438: </a>
+</span><span id="439" class="l"><a href="#439">439: </a>    <span class="php-comment">/**
+</span></span><span id="440" class="l"><a href="#440">440: </a><span class="php-comment">     * Set custom javascript template.
+</span></span><span id="441" class="l"><a href="#441">441: </a><span class="php-comment">     *
+</span></span><span id="442" class="l"><a href="#442">442: </a><span class="php-comment">     * @param string $template
+</span></span><span id="443" class="l"><a href="#443">443: </a><span class="php-comment">     * @return $this
+</span></span><span id="444" class="l"><a href="#444">444: </a><span class="php-comment">     */</span>
+</span><span id="445" class="l"><a href="#445">445: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> setTemplate(<span class="php-var">$template</span>)
+</span><span id="446" class="l"><a href="#446">446: </a>    {
+</span><span id="447" class="l"><a href="#447">447: </a>        <span class="php-var">$this</span>-&gt;template = <span class="php-var">$template</span>;
+</span><span id="448" class="l"><a href="#448">448: </a>
+</span><span id="449" class="l"><a href="#449">449: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>;
+</span><span id="450" class="l"><a href="#450">450: </a>    }
+</span><span id="451" class="l"><a href="#451">451: </a>
+</span><span id="452" class="l"><a href="#452">452: </a>    <span class="php-comment">/**
+</span></span><span id="453" class="l"><a href="#453">453: </a><span class="php-comment">     * Get collection of columns.
+</span></span><span id="454" class="l"><a href="#454">454: </a><span class="php-comment">     *
+</span></span><span id="455" class="l"><a href="#455">455: </a><span class="php-comment">     * @return Collection
+</span></span><span id="456" class="l"><a href="#456">456: </a><span class="php-comment">     */</span>
+</span><span id="457" class="l"><a href="#457">457: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> getColumns()
+</span><span id="458" class="l"><a href="#458">458: </a>    {
+</span><span id="459" class="l"><a href="#459">459: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;collection;
+</span><span id="460" class="l"><a href="#460">460: </a>    }
+</span><span id="461" class="l"><a href="#461">461: </a>}
+</span><span id="462" class="l"><a href="#462">462: </a></span></code></pre>
 
 	<div id="footer">
 		 API documentation generated by <a href="http://apigen.org">ApiGen</a>
