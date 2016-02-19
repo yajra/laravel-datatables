@@ -744,16 +744,6 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Check if the current sql language is based on oracle syntax.
-     *
-     * @return bool
-     */
-    public function isOracleSql()
-    {
-        return Config::get('datatables.oracle_sql', false);
-    }
-
-    /**
      * Get column name to be use for filtering and sorting.
      *
      * @param integer $index

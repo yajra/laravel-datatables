@@ -342,6 +342,16 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
+     * Check if the current sql language is based on oracle syntax.
+     *
+     * @return bool
+     */
+    protected function isOracleSql()
+    {
+        return $this->database === 'oracle';
+    }
+
+    /**
      * Perform sorting of columns.
      *
      * @return void
