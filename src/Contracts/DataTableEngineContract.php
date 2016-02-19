@@ -19,6 +19,13 @@ interface DataTableEngineContract
     public function count();
 
     /**
+     * Count total items.
+     *
+     * @return integer
+     */
+    public function totalCount();
+
+    /**
      * Set auto filter off and run your own filter.
      * Overrides global search
      *
@@ -54,7 +61,6 @@ interface DataTableEngineContract
      * @return void
      */
     public function ordering();
-
 
     /**
      * Organizes works
