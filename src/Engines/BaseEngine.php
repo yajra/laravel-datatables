@@ -811,7 +811,7 @@ abstract class BaseEngine implements DataTableEngineContract
     protected function getPrimaryKeyName()
     {
         if ($this->isEloquent()) {
-            return $this->getQueryBuilder()->getModel()->getKeyName();
+            return $this->query->getModel()->getKeyName();
         }
 
         return 'id';
