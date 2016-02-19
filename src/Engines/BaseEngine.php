@@ -765,7 +765,7 @@ abstract class BaseEngine implements DataTableEngineContract
         $column = $this->getColumnNameFromRequest($index);
 
         // DataTables is using make(false)
-        if (is_int($column)) {
+        if (is_numeric($column)) {
             $column = $this->getColumnNameByIndex($index);
         }
 
