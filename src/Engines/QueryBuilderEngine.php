@@ -13,11 +13,10 @@ namespace Yajra\Datatables\Engines;
 use Closure;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Str;
-use Yajra\Datatables\Contracts\DataTableEngineContract;
 use Yajra\Datatables\Helper;
 use Yajra\Datatables\Request;
 
-class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
+class QueryBuilderEngine extends BaseEngine
 {
     /**
      * @param \Illuminate\Database\Query\Builder $builder

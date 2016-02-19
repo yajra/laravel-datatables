@@ -15,10 +15,9 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Yajra\Datatables\Contracts\DataTableEngineContract;
 use Yajra\Datatables\Request;
 
-class CollectionEngine extends BaseEngine implements DataTableEngineContract
+class CollectionEngine extends BaseEngine
 {
     /**
      * Collection object

@@ -11,10 +11,9 @@ namespace Yajra\Datatables\Engines;
  */
 
 use Illuminate\Database\Eloquent\Builder;
-use Yajra\Datatables\Contracts\DataTableEngineContract;
 use Yajra\Datatables\Request;
 
-class EloquentEngine extends QueryBuilderEngine implements DataTableEngineContract
+class EloquentEngine extends QueryBuilderEngine
 {
     /**
      * @param mixed $model
