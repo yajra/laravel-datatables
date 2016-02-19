@@ -798,17 +798,17 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     protected function getColumnNameByIndex($index)
     {
-        $name = isset($this->columns[$index]) && $this->columns[$index] <> '*' ? $this->columns[$index] : $this->getFallbackColumnName();
+        $name = isset($this->columns[$index]) && $this->columns[$index] <> '*' ? $this->columns[$index] : $this->getPrimaryKeyName();
 
-        return in_array($name, $this->extraColumns, true) ? $this->getFallbackColumnName() : $name;
+        return in_array($name, $this->extraColumns, true) ? $this->getPrimaryKeyName() : $name;
     }
 
     /**
-     * If query uses select *, then get the primary key column as default name.
+     * If column name could not be resolved then use primary key.
      *
      * @return string
      */
-    protected function getFallbackColumnName()
+    protected function getPrimaryKeyName()
     {
         if ($this->isEloquent()) {
             return $this->getQueryBuilder()->getModel()->getKeyName();
