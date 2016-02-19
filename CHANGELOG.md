@@ -8,6 +8,15 @@
 
 ##Change Log
 
+###Unreleased
+    - Add totalCount on contact and remove excess new line.
+    - Remove unnecessary abstract function on BaseEngine since we have a contract.
+    - Remove engine implementation of contract since BaseEngine already requires it.
+    - Improve column name detection for filtering and sorting.
+    - Dynamically determine if oracle depending on connection used.
+    - Automatic detection of primary key when using Eloquent engine.
+    - Use primary key when column name could not be resolve.
+
 ###v6.5.1 - 2016-02-19
     - Fix ordering column name detection. Issue #339.
     - Refactor Builder parameterize method.
