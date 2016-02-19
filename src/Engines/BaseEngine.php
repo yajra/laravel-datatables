@@ -798,7 +798,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     protected function getColumnNameByIndex($index)
     {
-        $name = isset($this->columns[$index]) ? $this->columns[$index] : $this->getFallbackColumnName();
+        $name = isset($this->columns[$index]) && $this->columns[$index] <> '*' ? $this->columns[$index] : $this->getFallbackColumnName();
 
         return in_array($name, $this->extraColumns, true) ? $this->getFallbackColumnName() : $name;
     }
