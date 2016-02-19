@@ -549,13 +549,6 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Count total items.
-     *
-     * @return integer
-     */
-    abstract public function totalCount();
-
-    /**
      * Sort records.
      *
      * @param  boolean $skip
@@ -567,13 +560,6 @@ abstract class BaseEngine implements DataTableEngineContract
             $this->ordering();
         }
     }
-
-    /**
-     * Perform sorting of columns.
-     *
-     * @return void
-     */
-    abstract public function ordering();
 
     /**
      * Perform necessary filters.
@@ -595,27 +581,6 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Perform global search.
-     *
-     * @return void
-     */
-    abstract public function filtering();
-
-    /**
-     * Perform column search.
-     *
-     * @return void
-     */
-    abstract public function columnSearch();
-
-    /**
-     * Count results.
-     *
-     * @return integer
-     */
-    abstract public function count();
-
-    /**
      * Apply pagination.
      *
      * @return void
@@ -626,13 +591,6 @@ abstract class BaseEngine implements DataTableEngineContract
             $this->paging();
         }
     }
-
-    /**
-     * Perform pagination
-     *
-     * @return void
-     */
-    abstract public function paging();
 
     /**
      * Render json response.
@@ -687,13 +645,6 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Get results
-     *
-     * @return array
-     */
-    abstract public function results();
-
-    /**
      * Get processed data
      *
      * @param bool|false $object
@@ -733,15 +684,6 @@ abstract class BaseEngine implements DataTableEngineContract
 
         return $output;
     }
-
-    /**
-     * Set auto filter off and run your own filter.
-     * Overrides global search
-     *
-     * @param \Closure $callback
-     * @return $this
-     */
-    abstract public function filter(\Closure $callback);
 
     /**
      * Update flags to disable global search
