@@ -233,62 +233,6 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Setup column name to be use for filtering.
-     *
-     * @param integer $i
-     * @param bool $wantsAlias
-     * @return string
-     */
-    public function setupColumnName($i, $wantsAlias = false)
-    {
-        $column = $this->getColumnName($i);
-        if (Str::contains(Str::upper($column), ' AS ')) {
-            $column = $this->extractColumnName($column, $wantsAlias);
-        }
-
-        return $column;
-    }
-
-    /**
-     * Get column name by order column index.
-     *
-     * @param int $column
-     * @return mixed
-     */
-    protected function getColumnName($column)
-    {
-        $name = $this->request->columnName($column) ?: (isset($this->columns[$column]) ? $this->columns[$column] : $this->columns[0]);
-
-        return in_array($name, $this->extraColumns, true) ? $this->columns[0] : $name;
-    }
-
-    /**
-     * Get column name from string.
-     *
-     * @param string $str
-     * @param bool $wantsAlias
-     * @return string
-     */
-    public function extractColumnName($str, $wantsAlias)
-    {
-        $matches = explode(' as ', Str::lower($str));
-
-        if (! empty($matches)) {
-            if ($wantsAlias) {
-                return array_pop($matches);
-            } else {
-                return array_shift($matches);
-            }
-        } elseif (strpos($str, '.')) {
-            $array = explode('.', $str);
-
-            return array_pop($array);
-        }
-
-        return $str;
-    }
-
-    /**
      * Will prefix column if needed.
      *
      * @param string $column
@@ -421,6 +365,7 @@ abstract class BaseEngine implements DataTableEngineContract
     /**
      * Allows previous API calls where the methods were snake_case.
      * Will convert a camelCase API call to a snake_case call.
+     * Allow query builder method to be used by the engine.
      *
      * @param  $name
      * @param  $arguments
@@ -864,5 +809,105 @@ abstract class BaseEngine implements DataTableEngineContract
     public function isOracleSql()
     {
         return Config::get('datatables.oracle_sql', false);
+    }
+
+    /**
+     * Get column name to be use for filtering.
+     *
+     * @param integer $index
+     * @param bool $wantsAlias
+     * @return string
+     */
+    protected function getColumnName($index, $wantsAlias = false)
+    {
+        $column = $this->getColumnNameFromRequest($index);
+
+        // DataTables is using make(false)
+        if (is_int($column)) {
+            $column = $this->getColumnNameByIndex($index);
+        }
+
+        if (Str::contains(Str::upper($column), ' AS ')) {
+            $column = $this->extractColumnName($column, $wantsAlias);
+        }
+
+        return $column;
+    }
+
+    /**
+     * Get column name from request.
+     *
+     * @param int $index
+     * @return string
+     */
+    protected function getColumnNameFromRequest($index)
+    {
+        $r_column = $this->request->input('columns')[$index];
+        $column   = isset($r_column['name']) && $r_column['name'] <> '' ? $r_column['name'] : $r_column['data'];
+
+        return $column;
+    }
+
+    /**
+     * Get column name by order column index.
+     *
+     * @param int $index
+     * @return mixed
+     */
+    protected function getColumnNameByIndex($index)
+    {
+        $name = isset($this->columns[$index]) ? $this->columns[$index] : $this->getFallbackColumnName();
+
+        return in_array($name, $this->extraColumns, true) ? $this->getFallbackColumnName() : $name;
+    }
+
+    /**
+     * If query uses select *, then get the primary key column as default name.
+     *
+     * @return string
+     */
+    protected function getFallbackColumnName()
+    {
+        if ($this->isEloquent()) {
+            return $this->getQueryBuilder()->getModel()->getKeyName();
+        }
+
+        return 'id';
+    }
+
+    /**
+     * Check if the engine use is eloquent.
+     *
+     * @return bool
+     */
+    protected function isEloquent()
+    {
+        return $this->query_type === 'eloquent';
+    }
+
+    /**
+     * Get column name from string.
+     *
+     * @param string $str
+     * @param bool $wantsAlias
+     * @return string
+     */
+    protected function extractColumnName($str, $wantsAlias)
+    {
+        $matches = explode(' as ', Str::lower($str));
+
+        if (! empty($matches)) {
+            if ($wantsAlias) {
+                return array_pop($matches);
+            } else {
+                return array_shift($matches);
+            }
+        } elseif (strpos($str, '.')) {
+            $array = explode('.', $str);
+
+            return array_pop($array);
+        }
+
+        return $str;
     }
 }

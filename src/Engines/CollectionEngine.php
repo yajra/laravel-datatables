@@ -105,7 +105,7 @@ class CollectionEngine extends BaseEngine implements DataTableEngineContract
         }
 
         foreach ($this->request->orderableColumns() as $orderable) {
-            $column           = $this->getColumnName($orderable['column']);
+            $column           = $this->getColumnNameByIndex($orderable['column']);
             $this->collection = $this->collection->sortBy(
                 function ($row) use ($column) {
                     $data = $this->serialize($row);
@@ -134,7 +134,7 @@ class CollectionEngine extends BaseEngine implements DataTableEngineContract
 
                 $keyword = $this->request->keyword();
                 foreach ($this->request->searchableColumnIndex() as $index) {
-                    $column = $this->getColumnName($index);
+                    $column = $this->getColumnNameByIndex($index);
                     if (! $value = Arr::get($data, $column)) {
                         continue;
                     }
@@ -161,15 +161,15 @@ class CollectionEngine extends BaseEngine implements DataTableEngineContract
             if ($this->request->isColumnSearchable($i)) {
                 $this->isFilterApplied = true;
 
-                $column  = $this->getColumnName($i);
+                $column  = $this->getColumnNameByIndex($i);
                 $keyword = $this->request->columnKeyword($i);
 
                 $this->collection = $this->collection->filter(
                     function ($row) use ($column, $keyword) {
                         $data = $this->serialize($row);
-                        
+
                         $value = Arr::get($data, $column);
-                        
+
                         if ($this->isCaseInsensitive()) {
                             return strpos(Str::lower($value), Str::lower($keyword)) !== false;
                         } else {

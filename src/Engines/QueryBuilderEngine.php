@@ -107,7 +107,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
             function ($query) use ($eagerLoads) {
                 $keyword = $this->setupKeyword($this->request->keyword());
                 foreach ($this->request->searchableColumnIndex() as $index) {
-                    $columnName = $this->setupColumnName($index);
+                    $columnName = $this->getColumnName($index);
 
                     if (isset($this->columnDef['filter'][$columnName])) {
                         $method     = Helper::getOrMethod($this->columnDef['filter'][$columnName]['method']);
@@ -268,7 +268,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
         $columns = $this->request->get('columns');
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($this->request->isColumnSearchable($i)) {
-                $column  = $this->setupColumnName($i);
+                $column  = $this->getColumnName($i);
                 $keyword = $this->getSearchKeyword($i);
 
                 if (isset($this->columnDef['filter'][$column])) {
@@ -356,7 +356,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
         }
 
         foreach ($this->request->orderableColumns() as $orderable) {
-            $column = $this->setupOrderColumn($orderable);
+            $column = $this->getColumnName($orderable['column'], true);
             if (isset($this->columnDef['order'][$column])) {
                 $method     = $this->columnDef['order'][$column]['method'];
                 $parameters = $this->columnDef['order'][$column]['parameters'];
@@ -367,25 +367,6 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngineContract
                 $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
             }
         }
-    }
-
-    /**
-     * Get order by column name.
-     *
-     * @param array $orderable
-     * @return string
-     */
-    private function setupOrderColumn(array $orderable)
-    {
-        $r_column = $this->request->input('columns')[$orderable['column']];
-        $column   = isset($r_column['name']) && $r_column['name'] <> '' ? $r_column['name'] : $r_column['data'];
-        if (is_int($column)) {
-            $column = $this->setupColumnName($orderable['column'], true);
-
-            return $column;
-        }
-
-        return $column;
     }
 
     /**
