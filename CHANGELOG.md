@@ -8,6 +8,10 @@
 
 ##Change Log
 
+###v6.5.1 - 2016-02-19
+    - Fix ordering column name detection. Issue #339.
+    - Refactor Builder parameterize method.
+
 ###v6.5.0 - 2016-02-18
     - Add support for DataTables valid callbacks.
     - Fix issue #387 & #401.
