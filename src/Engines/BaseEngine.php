@@ -754,7 +754,7 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Get column name to be use for filtering.
+     * Get column name to be use for filtering and sorting.
      *
      * @param integer $index
      * @param bool $wantsAlias
