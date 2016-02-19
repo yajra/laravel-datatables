@@ -818,7 +818,7 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Check if the engine use is eloquent.
+     * Check if the engine used was eloquent.
      *
      * @return bool
      */
