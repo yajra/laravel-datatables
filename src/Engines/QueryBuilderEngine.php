@@ -215,8 +215,9 @@ class QueryBuilderEngine extends BaseEngine
     {
         $myQuery = clone $this->query;
         $myQuery->orWhereHas($relation, function ($q) use ($column, $keyword, $query) {
-            $q->where($column, 'like', $keyword);
-            $sql = $q->toSql();
+            $sql = $q->select($this->connection->raw('count(1)'))
+                     ->where($column, 'like', $keyword)
+                     ->toSql();
             $sql = "($sql) >= 1";
             $query->orWhereRaw($sql, [$keyword]);
         });

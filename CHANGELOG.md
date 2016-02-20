@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v6.6.1 - 2016-02-20
+    - Fix eager loading search (SQLSTATE[21000]: Cardinality violation:). Issue #403.
+
 ###v6.6.0 - 2016-02-20
     - Add totalCount on contact and remove excess new line.
     - Remove unnecessary abstract function on BaseEngine since we have a contract.
