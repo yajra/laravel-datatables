@@ -132,12 +132,15 @@
 
 	<div>
 		<h4>Direct known implementers</h4>
-			<a href="class-Yajra.Datatables.Engines.BaseEngine.html">Yajra\Datatables\Engines\BaseEngine</a>, 
+			<a href="class-Yajra.Datatables.Engines.BaseEngine.html">Yajra\Datatables\Engines\BaseEngine</a>
+	</div>
+
+	<div>
+		<h4>Indirect known implementers</h4>
 			<a href="class-Yajra.Datatables.Engines.CollectionEngine.html">Yajra\Datatables\Engines\CollectionEngine</a>, 
 			<a href="class-Yajra.Datatables.Engines.EloquentEngine.html">Yajra\Datatables\Engines\EloquentEngine</a>, 
 			<a href="class-Yajra.Datatables.Engines.QueryBuilderEngine.html">Yajra\Datatables\Engines\QueryBuilderEngine</a>
 	</div>
-
 
 
 
@@ -147,7 +150,7 @@
 		<b>Namespace:</b> <a href="namespace-Yajra.html">Yajra</a>\<a href="namespace-Yajra.Datatables.html">Datatables</a>\<a href="namespace-Yajra.Datatables.Contracts.html">Contracts</a><br>
 		
 
-			<b>Located at</b> <a href="source-class-Yajra.Datatables.Contracts.DataTableEngineContract.html#5-66" title="Go to source code">Contracts/DataTableEngineContract.php</a>
+			<b>Located at</b> <a href="source-class-Yajra.Datatables.Contracts.DataTableEngineContract.html#5-72" title="Go to source code">Contracts/DataTableEngineContract.php</a>
 		<br>
 	</div>
 
@@ -223,6 +226,40 @@
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="totalCount" id="_totalCount">
+
+		<td class="attributes"><code>
+			 public 
+
+			integer
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_totalCount">#</a>
+		<code><a href="source-class-Yajra.Datatables.Contracts.DataTableEngineContract.html#21-26" title="Go to source code">totalCount</a>( )</code>
+
+		<div class="description short">
+			<p>Count total items.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Count total items.</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					integer
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="filter" id="_filter">
 
 		<td class="attributes"><code>
@@ -235,7 +272,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_filter">#</a>
-		<code><a href="source-class-Yajra.Datatables.Contracts.DataTableEngineContract.html#21-28" title="Go to source code">filter</a>( <span>Closure <var>$callback</var></span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Contracts.DataTableEngineContract.html#28-35" title="Go to source code">filter</a>( <span>Closure <var>$callback</var></span> )</code>
 
 		<div class="description short">
 			<p>Set auto filter off and run your own filter.
@@ -276,7 +313,7 @@ Overrides global search</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_filtering">#</a>
-		<code><a href="source-class-Yajra.Datatables.Contracts.DataTableEngineContract.html#30-35" title="Go to source code">filtering</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Contracts.DataTableEngineContract.html#37-42" title="Go to source code">filtering</a>( )</code>
 
 		<div class="description short">
 			<p>Perform global search</p>
@@ -306,7 +343,7 @@ Overrides global search</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_columnSearch">#</a>
-		<code><a href="source-class-Yajra.Datatables.Contracts.DataTableEngineContract.html#37-42" title="Go to source code">columnSearch</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Contracts.DataTableEngineContract.html#44-49" title="Go to source code">columnSearch</a>( )</code>
 
 		<div class="description short">
 			<p>Perform column search</p>
@@ -336,7 +373,7 @@ Overrides global search</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_paging">#</a>
-		<code><a href="source-class-Yajra.Datatables.Contracts.DataTableEngineContract.html#44-49" title="Go to source code">paging</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Contracts.DataTableEngineContract.html#51-56" title="Go to source code">paging</a>( )</code>
 
 		<div class="description short">
 			<p>Perform pagination</p>
@@ -366,7 +403,7 @@ Overrides global search</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_ordering">#</a>
-		<code><a href="source-class-Yajra.Datatables.Contracts.DataTableEngineContract.html#51-56" title="Go to source code">ordering</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Contracts.DataTableEngineContract.html#58-63" title="Go to source code">ordering</a>( )</code>
 
 		<div class="description short">
 			<p>Perform sorting of columns</p>
@@ -396,7 +433,7 @@ Overrides global search</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_make">#</a>
-		<code><a href="source-class-Yajra.Datatables.Contracts.DataTableEngineContract.html#59-65" title="Go to source code">make</a>( <span>boolean <var>$mDataSupport</var> = <span class="php-keyword1">false</span></span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Contracts.DataTableEngineContract.html#65-71" title="Go to source code">make</a>( <span>boolean <var>$mDataSupport</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			<p>Organizes works</p>
