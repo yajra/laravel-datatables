@@ -8,7 +8,7 @@
 
 ##Change Log
 
-###Unreleased
+###v6.6.0 - 2016-02-20
     - Add totalCount on contact and remove excess new line.
     - Remove unnecessary abstract function on BaseEngine since we have a contract.
     - Remove engine implementation of contract since BaseEngine already requires it.
@@ -16,6 +16,7 @@
     - Dynamically determine if oracle depending on connection used.
     - Automatic detection of primary key when using Eloquent engine.
     - Use primary key when column name could not be resolve.
+    - Update DataTable service doc blocks and refactor render method.
 
 ###v6.5.1 - 2016-02-19
     - Fix ordering column name detection. Issue #339.
