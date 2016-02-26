@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v6.7.1 - 2016-02-26
+    - Fix multiple column sorting when using eager loaded models. Fix #410 
+
 ###v6.7.0 - 2016-02-26
     - Add support for sorting on eager loaded models. 
     - PR #409 - Credits to @ikerasLT.

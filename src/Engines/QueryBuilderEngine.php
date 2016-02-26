@@ -391,9 +391,15 @@ class QueryBuilderEngine extends BaseEngine
                         $other   = $this->query->getRelation($relation)->getQualifiedOtherKeyName();
                         $orderBy = $table . '.' . $relationColumn;
 
-                        $this->getQueryBuilder()
-                             ->leftJoin($table, $foreign, '=', $other)
-                             ->orderBy($orderBy, $orderable['direction']);
+                        $joins = [];
+                        foreach ((array) $this->getQueryBuilder()->joins as $key => $join) {
+                            $joins[] = $join->table;
+                        }
+                        if (! in_array($table, $joins)) {
+                            $this->getQueryBuilder()
+                                 ->leftJoin($table, $foreign, '=', $other)
+                                 ->orderBy($orderBy, $orderable['direction']);
+                        }
                     } else {
                         $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
                     }
