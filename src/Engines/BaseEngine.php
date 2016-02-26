@@ -39,7 +39,7 @@ abstract class BaseEngine implements DataTableEngineContract
     /**
      * Builder object.
      *
-     * @var mixed
+     * @var \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
      */
     protected $query;
 
@@ -367,9 +367,9 @@ abstract class BaseEngine implements DataTableEngineContract
      * Will convert a camelCase API call to a snake_case call.
      * Allow query builder method to be used by the engine.
      *
-     * @param  $name
-     * @param  $arguments
-     * @return $this|mixed
+     * @param  string $name
+     * @param  array $arguments
+     * @return mixed
      */
     public function __call($name, $arguments)
     {
@@ -386,7 +386,7 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Sets DT_RowClass template
+     * Sets DT_RowClass template.
      * result: <tr class="output_from_your_template">.
      *
      * @param string|callable $content
@@ -400,7 +400,7 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Sets DT_RowId template
+     * Sets DT_RowId template.
      * result: <tr id="output_from_your_template">.
      *
      * @param string|callable $content
@@ -441,7 +441,7 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Set DT_RowAttr templates
+     * Set DT_RowAttr templates.
      * result: <tr attr1="attr1" attr2="attr2">.
      *
      * @param array $data
