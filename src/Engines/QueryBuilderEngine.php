@@ -365,16 +365,39 @@ class QueryBuilderEngine extends BaseEngine
             return;
         }
 
+        $eagerLoads = $this->getEagerLoads();
+
         foreach ($this->request->orderableColumns() as $orderable) {
             $column = $this->getColumnName($orderable['column'], true);
             if (isset($this->columnDef['order'][$column])) {
                 $method     = $this->columnDef['order'][$column]['method'];
                 $parameters = $this->columnDef['order'][$column]['parameters'];
                 $this->compileColumnQuery(
-                    $this->getQueryBuilder(), $method, $parameters, $column, $orderable['direction']
+                    $this->getQueryBuilder(),
+                    $method,
+                    $parameters,
+                    $column,
+                    $orderable['direction']
                 );
             } else {
-                $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
+                if (count(explode('.', $column)) > 1) {
+                    $parts          = explode('.', $column);
+                    $relationColumn = array_pop($parts);
+                    $relation       = implode('.', $parts);
+
+                    if (in_array($relation, $eagerLoads)) {
+                        $table = $this->query->getRelation($relation)->getRelated()->getTable();
+                        $foreign = $this->query->getRelation($relation)->getQualifiedForeignKey();
+                        $other = $this->query->getRelation($relation)->getQualifiedOtherKeyName();
+                        $orderBy = $table . '.' . $relationColumn;
+
+                        $this->getQueryBuilder()->leftJoin($table, $foreign, '=', $other)->orderBy($orderBy, $orderable['direction']);
+                    } else {
+                        $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
+                    }
+                } else {
+                    $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
+                }
             }
         }
     }
