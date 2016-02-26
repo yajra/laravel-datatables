@@ -8,6 +8,10 @@
 
 ##Change Log
 
+###v6.7.0 - 2016-02-26
+    - Add support for sorting on eager loaded models. 
+    - PR #409 - Credits to @ikerasLT.
+
 ###v6.6.1 - 2016-02-20
     - Fix eager loading search (SQLSTATE[21000]: Cardinality violation:). Issue #403.
 
