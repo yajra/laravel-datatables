@@ -386,12 +386,14 @@ class QueryBuilderEngine extends BaseEngine
                     $relation       = implode('.', $parts);
 
                     if (in_array($relation, $eagerLoads)) {
-                        $table = $this->query->getRelation($relation)->getRelated()->getTable();
+                        $table   = $this->query->getRelation($relation)->getRelated()->getTable();
                         $foreign = $this->query->getRelation($relation)->getQualifiedForeignKey();
-                        $other = $this->query->getRelation($relation)->getQualifiedOtherKeyName();
+                        $other   = $this->query->getRelation($relation)->getQualifiedOtherKeyName();
                         $orderBy = $table . '.' . $relationColumn;
 
-                        $this->getQueryBuilder()->leftJoin($table, $foreign, '=', $other)->orderBy($orderBy, $orderable['direction']);
+                        $this->getQueryBuilder()
+                             ->leftJoin($table, $foreign, '=', $other)
+                             ->orderBy($orderBy, $orderable['direction']);
                     } else {
                         $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
                     }
