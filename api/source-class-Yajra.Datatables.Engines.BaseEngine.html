@@ -187,7 +187,7 @@
 </span><span id="39" class="l"><a href="#39"> 39: </a>    <span class="php-comment">/**
 </span></span><span id="40" class="l"><a href="#40"> 40: </a><span class="php-comment">     * Builder object.
 </span></span><span id="41" class="l"><a href="#41"> 41: </a><span class="php-comment">     *
-</span></span><span id="42" class="l"><a href="#42"> 42: </a><span class="php-comment">     * @var mixed
+</span></span><span id="42" class="l"><a href="#42"> 42: </a><span class="php-comment">     * @var \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
 </span></span><span id="43" class="l"><a href="#43"> 43: </a><span class="php-comment">     */</span>
 </span><span id="44" class="l"><a href="#44"> 44: </a>    <span class="php-keyword1">protected</span> <span class="php-var">$query</span>;
 </span><span id="45" class="l"><a href="#45"> 45: </a>
@@ -515,9 +515,9 @@
 </span></span><span id="367" class="l"><a href="#367">367: </a><span class="php-comment">     * Will convert a camelCase API call to a snake_case call.
 </span></span><span id="368" class="l"><a href="#368">368: </a><span class="php-comment">     * Allow query builder method to be used by the engine.
 </span></span><span id="369" class="l"><a href="#369">369: </a><span class="php-comment">     *
-</span></span><span id="370" class="l"><a href="#370">370: </a><span class="php-comment">     * @param  $name
-</span></span><span id="371" class="l"><a href="#371">371: </a><span class="php-comment">     * @param  $arguments
-</span></span><span id="372" class="l"><a href="#372">372: </a><span class="php-comment">     * @return $this|mixed
+</span></span><span id="370" class="l"><a href="#370">370: </a><span class="php-comment">     * @param  string $name
+</span></span><span id="371" class="l"><a href="#371">371: </a><span class="php-comment">     * @param  array $arguments
+</span></span><span id="372" class="l"><a href="#372">372: </a><span class="php-comment">     * @return mixed
 </span></span><span id="373" class="l"><a href="#373">373: </a><span class="php-comment">     */</span>
 </span><span id="374" class="l"><a href="#374">374: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> __call(<span class="php-var">$name</span>, <span class="php-var">$arguments</span>)
 </span><span id="375" class="l"><a href="#375">375: </a>    {
@@ -534,7 +534,7 @@
 </span><span id="386" class="l"><a href="#386">386: </a>    }
 </span><span id="387" class="l"><a href="#387">387: </a>
 </span><span id="388" class="l"><a href="#388">388: </a>    <span class="php-comment">/**
-</span></span><span id="389" class="l"><a href="#389">389: </a><span class="php-comment">     * Sets DT_RowClass template
+</span></span><span id="389" class="l"><a href="#389">389: </a><span class="php-comment">     * Sets DT_RowClass template.
 </span></span><span id="390" class="l"><a href="#390">390: </a><span class="php-comment">     * result: &lt;tr class=&quot;output_from_your_template&quot;&gt;.
 </span></span><span id="391" class="l"><a href="#391">391: </a><span class="php-comment">     *
 </span></span><span id="392" class="l"><a href="#392">392: </a><span class="php-comment">     * @param string|callable $content
@@ -548,7 +548,7 @@
 </span><span id="400" class="l"><a href="#400">400: </a>    }
 </span><span id="401" class="l"><a href="#401">401: </a>
 </span><span id="402" class="l"><a href="#402">402: </a>    <span class="php-comment">/**
-</span></span><span id="403" class="l"><a href="#403">403: </a><span class="php-comment">     * Sets DT_RowId template
+</span></span><span id="403" class="l"><a href="#403">403: </a><span class="php-comment">     * Sets DT_RowId template.
 </span></span><span id="404" class="l"><a href="#404">404: </a><span class="php-comment">     * result: &lt;tr id=&quot;output_from_your_template&quot;&gt;.
 </span></span><span id="405" class="l"><a href="#405">405: </a><span class="php-comment">     *
 </span></span><span id="406" class="l"><a href="#406">406: </a><span class="php-comment">     * @param string|callable $content
@@ -589,7 +589,7 @@
 </span><span id="441" class="l"><a href="#441">441: </a>    }
 </span><span id="442" class="l"><a href="#442">442: </a>
 </span><span id="443" class="l"><a href="#443">443: </a>    <span class="php-comment">/**
-</span></span><span id="444" class="l"><a href="#444">444: </a><span class="php-comment">     * Set DT_RowAttr templates
+</span></span><span id="444" class="l"><a href="#444">444: </a><span class="php-comment">     * Set DT_RowAttr templates.
 </span></span><span id="445" class="l"><a href="#445">445: </a><span class="php-comment">     * result: &lt;tr attr1=&quot;attr1&quot; attr2=&quot;attr2&quot;&gt;.
 </span></span><span id="446" class="l"><a href="#446">446: </a><span class="php-comment">     *
 </span></span><span id="447" class="l"><a href="#447">447: </a><span class="php-comment">     * @param array $data

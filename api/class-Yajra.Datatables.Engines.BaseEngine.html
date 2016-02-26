@@ -588,14 +588,14 @@
 		<td class="attributes"><code>
 			 public 
 
-			
+			mixed
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___call">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#365-386" title="Go to source code">__call</a>( <span> <var>$name</var></span>, <span> <var>$arguments</var></span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#365-386" title="Go to source code">__call</a>( <span>string <var>$name</var></span>, <span>array <var>$arguments</var></span> )</code>
 
 		<div class="description short">
 			<p>Allows previous API calls where the methods were snake_case.
@@ -619,7 +619,7 @@ Allow query builder method to be used by the engine.</p>
 
 				<h4>Returns</h4>
 				<div class="list">
-					<br>$this|mixed
+					mixed
 				</div>
 
 
@@ -643,12 +643,12 @@ Allow query builder method to be used by the engine.</p>
 		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#388-400" title="Go to source code">setRowClass</a>( <span>string|callable <var>$content</var></span> )</code>
 
 		<div class="description short">
-			<p>Sets DT_RowClass template
+			<p>Sets DT_RowClass template.
 result: <tr class="output_from_your_template">.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Sets DT_RowClass template
+			<p>Sets DT_RowClass template.
 result: <tr class="output_from_your_template">.</p>
 
 
@@ -684,12 +684,12 @@ result: <tr class="output_from_your_template">.</p>
 		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#402-414" title="Go to source code">setRowId</a>( <span>string|callable <var>$content</var></span> )</code>
 
 		<div class="description short">
-			<p>Sets DT_RowId template
+			<p>Sets DT_RowId template.
 result: <tr id="output_from_your_template">.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Sets DT_RowId template
+			<p>Sets DT_RowId template.
 result: <tr id="output_from_your_template">.</p>
 
 
@@ -805,12 +805,12 @@ result: <tr id="output_from_your_template">.</p>
 		<code><a href="source-class-Yajra.Datatables.Engines.BaseEngine.html#443-455" title="Go to source code">setRowAttr</a>( <span>array <var>$data</var></span> )</code>
 
 		<div class="description short">
-			<p>Set DT_RowAttr templates
+			<p>Set DT_RowAttr templates.
 result: <tr attr1="attr1" attr2="attr2">.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Set DT_RowAttr templates
+			<p>Set DT_RowAttr templates.
 result: <tr attr1="attr1" attr2="attr2">.</p>
 
 
@@ -1707,7 +1707,7 @@ result: <tr attr1="attr1" attr2="attr2">.</p>
 	<tr data-order="query" id="$query">
 		<td class="attributes"><code>
 			protected  
-			mixed
+			Illuminate\Database\Query\Builder|Illuminate\Database\Eloquent\Builder
 		</code></td>
 
 		<td class="name">
