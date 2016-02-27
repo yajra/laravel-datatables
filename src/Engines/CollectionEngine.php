@@ -104,7 +104,7 @@ class CollectionEngine extends BaseEngine
         }
 
         foreach ($this->request->orderableColumns() as $orderable) {
-            $column           = $this->getColumnNameByIndex($orderable['column']);
+            $column           = $this->getColumnName($orderable['column']);
             $this->collection = $this->collection->sortBy(
                 function ($row) use ($column) {
                     $data = $this->serialize($row);
@@ -133,7 +133,7 @@ class CollectionEngine extends BaseEngine
 
                 $keyword = $this->request->keyword();
                 foreach ($this->request->searchableColumnIndex() as $index) {
-                    $column = $this->getColumnNameByIndex($index);
+                    $column = $this->getColumnName($index);
                     if (! $value = Arr::get($data, $column)) {
                         continue;
                     }
@@ -160,7 +160,7 @@ class CollectionEngine extends BaseEngine
             if ($this->request->isColumnSearchable($i)) {
                 $this->isFilterApplied = true;
 
-                $column  = $this->getColumnNameByIndex($i);
+                $column  = $this->getColumnName($i);
                 $keyword = $this->request->columnKeyword($i);
 
                 $this->collection = $this->collection->filter(
