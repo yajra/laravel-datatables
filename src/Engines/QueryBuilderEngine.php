@@ -100,10 +100,8 @@ class QueryBuilderEngine extends BaseEngine
      */
     public function filtering()
     {
-        $eagerLoads = $this->getEagerLoads();
-
         $this->query->where(
-            function ($query) use ($eagerLoads) {
+            function ($query) {
                 $keyword = $this->setupKeyword($this->request->keyword());
                 foreach ($this->request->searchableColumnIndex() as $index) {
                     $columnName = $this->getColumnName($index);
@@ -120,6 +118,7 @@ class QueryBuilderEngine extends BaseEngine
                         );
                     } else {
                         if (count(explode('.', $columnName)) > 1) {
+                            $eagerLoads     = $this->getEagerLoads();
                             $parts          = explode('.', $columnName);
                             $relationColumn = array_pop($parts);
                             $relation       = implode('.', $parts);
@@ -142,20 +141,6 @@ class QueryBuilderEngine extends BaseEngine
                 }
             }
         );
-    }
-
-    /**
-     * Get eager loads keys if eloquent.
-     *
-     * @return array
-     */
-    private function getEagerLoads()
-    {
-        if ($this->query_type == 'eloquent') {
-            return array_keys($this->query->getEagerLoads());
-        }
-
-        return [];
     }
 
     /**
@@ -201,6 +186,20 @@ class QueryBuilderEngine extends BaseEngine
         $parameters = Helper::replacePatternWithKeyword($parameters, $keyword, '$1');
 
         return $parameters;
+    }
+
+    /**
+     * Get eager loads keys if eloquent.
+     *
+     * @return array
+     */
+    protected function getEagerLoads()
+    {
+        if ($this->query_type == 'eloquent') {
+            return array_keys($this->query->getEagerLoads());
+        }
+
+        return [];
     }
 
     /**
