@@ -8,6 +8,10 @@
 
 ##Change Log
 
+###v6.7.2 - 2016-02-28
+    - Fix collection engine sorting and sorting function.
+    - Fix #413 and #415. 
+
 ###v6.7.1 - 2016-02-26
     - Fix multiple column sorting when using eager loaded models. Fix #410 
 
