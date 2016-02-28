@@ -365,8 +365,6 @@ class QueryBuilderEngine extends BaseEngine
             return;
         }
 
-        $eagerLoads = $this->getEagerLoads();
-
         foreach ($this->request->orderableColumns() as $orderable) {
             $column = $this->getColumnName($orderable['column'], true);
             if (isset($this->columnDef['order'][$column])) {
@@ -381,6 +379,7 @@ class QueryBuilderEngine extends BaseEngine
                 );
             } else {
                 if (count(explode('.', $column)) > 1) {
+                    $eagerLoads     = $this->getEagerLoads();
                     $parts          = explode('.', $column);
                     $relationColumn = array_pop($parts);
                     $relation       = implode('.', $parts);
