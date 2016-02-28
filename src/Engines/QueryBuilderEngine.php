@@ -397,9 +397,10 @@ class QueryBuilderEngine extends BaseEngine
                         }
                         if (! in_array($table, $joins)) {
                             $this->getQueryBuilder()
-                                 ->leftJoin($table, $foreign, '=', $other)
-                                 ->orderBy($orderBy, $orderable['direction']);
+                                 ->leftJoin($table, $foreign, '=', $other);
                         }
+
+                        $this->getQueryBuilder()->orderBy($orderBy, $orderable['direction']);
                     } else {
                         $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
                     }
