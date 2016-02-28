@@ -385,25 +385,40 @@ class QueryBuilderEngine extends BaseEngine
                     $relation       = implode('.', $parts);
 
                     if (in_array($relation, $eagerLoads)) {
-                        $table   = $this->query->getRelation($relation)->getRelated()->getTable();
-                        $foreign = $this->query->getRelation($relation)->getQualifiedForeignKey();
-                        $other   = $this->query->getRelation($relation)->getQualifiedOtherKeyName();
-                        $column  = $table . '.' . $relationColumn;
-
-                        $joins = [];
-                        foreach ((array) $this->getQueryBuilder()->joins as $key => $join) {
-                            $joins[] = $join->table;
-                        }
-                        if (! in_array($table, $joins)) {
-                            $this->getQueryBuilder()
-                                 ->leftJoin($table, $foreign, '=', $other);
-                        }
+                        $column = $this->joinEagerLoadedColumn($relation, $relationColumn);
                     }
                 }
 
                 $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
             }
         }
+    }
+
+    /**
+     * Join eager loaded relation and get the related column name.
+     *
+     * @param string $relation
+     * @param string $relationColumn
+     * @return string
+     */
+    protected function joinEagerLoadedColumn($relation, $relationColumn)
+    {
+        $table   = $this->query->getRelation($relation)->getRelated()->getTable();
+        $foreign = $this->query->getRelation($relation)->getQualifiedForeignKey();
+        $other   = $this->query->getRelation($relation)->getQualifiedOtherKeyName();
+        $column  = $table . '.' . $relationColumn;
+
+        $joins = [];
+        foreach ((array) $this->getQueryBuilder()->joins as $key => $join) {
+            $joins[] = $join->table;
+        }
+
+        if (! in_array($table, $joins)) {
+            $this->getQueryBuilder()
+                 ->leftJoin($table, $foreign, '=', $other);
+        }
+
+        return $column;
     }
 
     /**
