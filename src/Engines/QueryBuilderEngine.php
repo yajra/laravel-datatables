@@ -389,7 +389,7 @@ class QueryBuilderEngine extends BaseEngine
                         $table   = $this->query->getRelation($relation)->getRelated()->getTable();
                         $foreign = $this->query->getRelation($relation)->getQualifiedForeignKey();
                         $other   = $this->query->getRelation($relation)->getQualifiedOtherKeyName();
-                        $orderBy = $table . '.' . $relationColumn;
+                        $column  = $table . '.' . $relationColumn;
 
                         $joins = [];
                         foreach ((array) $this->getQueryBuilder()->joins as $key => $join) {
@@ -399,14 +399,10 @@ class QueryBuilderEngine extends BaseEngine
                             $this->getQueryBuilder()
                                  ->leftJoin($table, $foreign, '=', $other);
                         }
-
-                        $this->getQueryBuilder()->orderBy($orderBy, $orderable['direction']);
-                    } else {
-                        $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
                     }
-                } else {
-                    $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
                 }
+
+                $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
             }
         }
     }
