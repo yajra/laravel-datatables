@@ -252,7 +252,7 @@
 </span><span id="104" class="l"><a href="#104">104: </a>        }
 </span><span id="105" class="l"><a href="#105">105: </a>
 </span><span id="106" class="l"><a href="#106">106: </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$this</span>-&gt;request-&gt;orderableColumns() <span class="php-keyword1">as</span> <span class="php-var">$orderable</span>) {
-</span><span id="107" class="l"><a href="#107">107: </a>            <span class="php-var">$column</span>           = <span class="php-var">$this</span>-&gt;getColumnNameByIndex(<span class="php-var">$orderable</span>[<span class="php-quote">'column'</span>]);
+</span><span id="107" class="l"><a href="#107">107: </a>            <span class="php-var">$column</span>           = <span class="php-var">$this</span>-&gt;getColumnName(<span class="php-var">$orderable</span>[<span class="php-quote">'column'</span>]);
 </span><span id="108" class="l"><a href="#108">108: </a>            <span class="php-var">$this</span>-&gt;collection = <span class="php-var">$this</span>-&gt;collection-&gt;sortBy(
 </span><span id="109" class="l"><a href="#109">109: </a>                <span class="php-keyword1">function</span> (<span class="php-var">$row</span>) <span class="php-keyword1">use</span> (<span class="php-var">$column</span>) {
 </span><span id="110" class="l"><a href="#110">110: </a>                    <span class="php-var">$data</span> = <span class="php-var">$this</span>-&gt;<span class="php-keyword2">serialize</span>(<span class="php-var">$row</span>);
@@ -281,7 +281,7 @@
 </span><span id="133" class="l"><a href="#133">133: </a>
 </span><span id="134" class="l"><a href="#134">134: </a>                <span class="php-var">$keyword</span> = <span class="php-var">$this</span>-&gt;request-&gt;keyword();
 </span><span id="135" class="l"><a href="#135">135: </a>                <span class="php-keyword1">foreach</span> (<span class="php-var">$this</span>-&gt;request-&gt;searchableColumnIndex() <span class="php-keyword1">as</span> <span class="php-var">$index</span>) {
-</span><span id="136" class="l"><a href="#136">136: </a>                    <span class="php-var">$column</span> = <span class="php-var">$this</span>-&gt;getColumnNameByIndex(<span class="php-var">$index</span>);
+</span><span id="136" class="l"><a href="#136">136: </a>                    <span class="php-var">$column</span> = <span class="php-var">$this</span>-&gt;getColumnName(<span class="php-var">$index</span>);
 </span><span id="137" class="l"><a href="#137">137: </a>                    <span class="php-keyword1">if</span> (! <span class="php-var">$value</span> = Arr::get(<span class="php-var">$data</span>, <span class="php-var">$column</span>)) {
 </span><span id="138" class="l"><a href="#138">138: </a>                        <span class="php-keyword1">continue</span>;
 </span><span id="139" class="l"><a href="#139">139: </a>                    }
@@ -308,7 +308,7 @@
 </span><span id="160" class="l"><a href="#160">160: </a>            <span class="php-keyword1">if</span> (<span class="php-var">$this</span>-&gt;request-&gt;isColumnSearchable(<span class="php-var">$i</span>)) {
 </span><span id="161" class="l"><a href="#161">161: </a>                <span class="php-var">$this</span>-&gt;isFilterApplied = <span class="php-keyword1">true</span>;
 </span><span id="162" class="l"><a href="#162">162: </a>
-</span><span id="163" class="l"><a href="#163">163: </a>                <span class="php-var">$column</span>  = <span class="php-var">$this</span>-&gt;getColumnNameByIndex(<span class="php-var">$i</span>);
+</span><span id="163" class="l"><a href="#163">163: </a>                <span class="php-var">$column</span>  = <span class="php-var">$this</span>-&gt;getColumnName(<span class="php-var">$i</span>);
 </span><span id="164" class="l"><a href="#164">164: </a>                <span class="php-var">$keyword</span> = <span class="php-var">$this</span>-&gt;request-&gt;columnKeyword(<span class="php-var">$i</span>);
 </span><span id="165" class="l"><a href="#165">165: </a>
 </span><span id="166" class="l"><a href="#166">166: </a>                <span class="php-var">$this</span>-&gt;collection = <span class="php-var">$this</span>-&gt;collection-&gt;filter(
