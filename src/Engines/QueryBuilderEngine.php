@@ -106,6 +106,10 @@ class QueryBuilderEngine extends BaseEngine
                 foreach ($this->request->searchableColumnIndex() as $index) {
                     $columnName = $this->getColumnName($index);
 
+                    if (in_array($columnName, $this->columnDef['blacklist'])) {
+                        continue;
+                    }
+
                     if (isset($this->columnDef['filter'][$columnName])) {
                         $method     = Helper::getOrMethod($this->columnDef['filter'][$columnName]['method']);
                         $parameters = $this->columnDef['filter'][$columnName]['parameters'];
@@ -366,6 +370,11 @@ class QueryBuilderEngine extends BaseEngine
 
         foreach ($this->request->orderableColumns() as $orderable) {
             $column = $this->getColumnName($orderable['column'], true);
+
+            if (in_array($column, $this->columnDef['blacklist'])) {
+                continue;
+            }
+
             if (isset($this->columnDef['order'][$column])) {
                 $method     = $this->columnDef['order'][$column]['method'];
                 $parameters = $this->columnDef['order'][$column]['parameters'];

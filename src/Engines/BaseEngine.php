@@ -63,12 +63,13 @@ abstract class BaseEngine implements DataTableEngineContract
      * @var array
      */
     protected $columnDef = [
-        'append' => [],
-        'edit'   => [],
-        'excess' => ['rn', 'row_num'],
-        'filter' => [],
-        'order'  => [],
-        'escape' => [],
+        'append'    => [],
+        'edit'      => [],
+        'excess'    => ['rn', 'row_num'],
+        'filter'    => [],
+        'order'     => [],
+        'escape'    => [],
+        'blacklist' => ['password', 'remember_token'],
     ];
 
     /**
@@ -739,6 +740,19 @@ abstract class BaseEngine implements DataTableEngineContract
     public function order(\Closure $closure)
     {
         $this->orderCallback = $closure;
+
+        return $this;
+    }
+
+    /**
+     * Update list of columns that is not allowed for search/sort.
+     *
+     * @param  array $blacklist
+     * @return $this
+     */
+    public function blacklist(array $blacklist)
+    {
+        $this->columnDef['blacklist'] = $blacklist;
 
         return $this;
     }
