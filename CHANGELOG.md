@@ -8,7 +8,7 @@
 
 ##Change Log
 
-###UNRELEASED
+###v6.7.3 - 2016-03-02
     - Fix eager load multiple column sorting where other columns are being ignored when join statement already exists.
     - Refactor redundant else order by statement.
     - Call eager loads only when required when filtering and ordering.
