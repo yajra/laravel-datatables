@@ -63,12 +63,14 @@ abstract class BaseEngine implements DataTableEngineContract
      * @var array
      */
     protected $columnDef = [
-        'append' => [],
-        'edit'   => [],
-        'excess' => ['rn', 'row_num'],
-        'filter' => [],
-        'order'  => [],
-        'escape' => [],
+        'append'    => [],
+        'edit'      => [],
+        'excess'    => ['rn', 'row_num'],
+        'filter'    => [],
+        'order'     => [],
+        'escape'    => [],
+        'blacklist' => ['password', 'remember_token'],
+        'whitelist' => '*',
     ];
 
     /**
@@ -741,6 +743,51 @@ abstract class BaseEngine implements DataTableEngineContract
         $this->orderCallback = $closure;
 
         return $this;
+    }
+
+    /**
+     * Update list of columns that is not allowed for search/sort.
+     *
+     * @param  array $blacklist
+     * @return $this
+     */
+    public function blacklist(array $blacklist)
+    {
+        $this->columnDef['blacklist'] = $blacklist;
+
+        return $this;
+    }
+
+    /**
+     * Update list of columns that is not allowed for search/sort.
+     *
+     * @param  string|array $whitelist
+     * @return $this
+     */
+    public function whitelist($whitelist = '*')
+    {
+        $this->columnDef['whitelist'] = $whitelist;
+
+        return $this;
+    }
+
+    /**
+     * Check if column is blacklisted.
+     *
+     * @param string $column
+     * @return bool
+     */
+    protected function isBlacklisted($column)
+    {
+        if (in_array($column, $this->columnDef['blacklist'])) {
+            return true;
+        }
+
+        if ($this->columnDef['whitelist'] === '*' || in_array($column, $this->columnDef['whitelist'])) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
