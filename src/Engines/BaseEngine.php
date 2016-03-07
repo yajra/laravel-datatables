@@ -70,6 +70,7 @@ abstract class BaseEngine implements DataTableEngineContract
         'order'     => [],
         'escape'    => [],
         'blacklist' => ['password', 'remember_token'],
+        'whitelist' => '*',
     ];
 
     /**
@@ -755,6 +756,38 @@ abstract class BaseEngine implements DataTableEngineContract
         $this->columnDef['blacklist'] = $blacklist;
 
         return $this;
+    }
+
+    /**
+     * Update list of columns that is not allowed for search/sort.
+     *
+     * @param  string|array $whitelist
+     * @return $this
+     */
+    public function whitelist($whitelist = '*')
+    {
+        $this->columnDef['whitelist'] = $whitelist;
+
+        return $this;
+    }
+
+    /**
+     * Check if column is blacklisted.
+     *
+     * @param string $column
+     * @return bool
+     */
+    protected function isBlacklisted($column)
+    {
+        if (in_array($column, $this->columnDef['blacklist'])) {
+            return true;
+        }
+
+        if ($this->columnDef['whitelist'] === '*' || in_array($column, $this->columnDef['whitelist'])) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
