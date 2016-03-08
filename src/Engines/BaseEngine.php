@@ -472,7 +472,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * Override default column filter search.
      *
      * @param string $column
-     * @param string $method
+     * @param string|Closure $method
      * @return $this
      * @internal param $mixed ...,... All the individual parameters required for specified $method
      * @internal string $1 Special variable that returns the requested search keyword.

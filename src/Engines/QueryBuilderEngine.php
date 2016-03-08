@@ -102,20 +102,33 @@ class QueryBuilderEngine extends BaseEngine
     {
         $this->query->where(
             function ($query) {
-                $keyword = $this->setupKeyword($this->request->keyword());
+                $globalKeyword = $this->setupKeyword($this->request->keyword());
+                $queryBuilder = $this->getQueryBuilder($query);
+
                 foreach ($this->request->searchableColumnIndex() as $index) {
                     $columnName = $this->getColumnName($index);
-
+                    // check if custom column filtering is applied
                     if (isset($this->columnDef['filter'][$columnName])) {
-                        $method     = Helper::getOrMethod($this->columnDef['filter'][$columnName]['method']);
-                        $parameters = $this->columnDef['filter'][$columnName]['parameters'];
-                        $this->compileColumnQuery(
-                            $this->getQueryBuilder($query),
-                            $method,
-                            $parameters,
-                            $columnName,
-                            $keyword
-                        );
+                        $columnDef = $this->columnDef['filter'][$columnName];
+                        // check if global search should be applied for the specific column
+                        $applyGlobalSearch = count($columnDef['parameters']) == 0 || end($columnDef['parameters']) !== false;
+                        if (!$applyGlobalSearch) {
+                            continue;
+                        }
+
+                        if ($columnDef['method'] instanceof Closure) {
+                            $whereQuery = $queryBuilder->newQuery();
+                            call_user_func_array($columnDef['method'], [$whereQuery, $this->request->keyword()]);
+                            $queryBuilder->addNestedWhereQuery($whereQuery, 'or');
+                        } else {
+                            $this->compileColumnQuery(
+                                $queryBuilder,
+                                Helper::getOrMethod($columnDef['method']),
+                                $columnDef['parameters'],
+                                $columnName,
+                                $this->request->keyword()
+                            );
+                        }
                     } else {
                         if (count(explode('.', $columnName)) > 1) {
                             $eagerLoads     = $this->getEagerLoads();
@@ -124,16 +137,16 @@ class QueryBuilderEngine extends BaseEngine
                             $relation       = implode('.', $parts);
                             if (in_array($relation, $eagerLoads)) {
                                 $this->compileRelationSearch(
-                                    $this->getQueryBuilder($query),
+                                    $queryBuilder,
                                     $relation,
                                     $relationColumn,
-                                    $keyword
+                                    $globalKeyword
                                 );
                             } else {
-                                $this->compileGlobalSearch($this->getQueryBuilder($query), $columnName, $keyword);
+                                $this->compileGlobalSearch($queryBuilder, $columnName, $globalKeyword);
                             }
                         } else {
-                            $this->compileGlobalSearch($this->getQueryBuilder($query), $columnName, $keyword);
+                            $this->compileGlobalSearch($queryBuilder, $columnName, $globalKeyword);
                         }
                     }
 
@@ -147,7 +160,7 @@ class QueryBuilderEngine extends BaseEngine
      * Perform filter column on selected field.
      *
      * @param mixed $query
-     * @param string $method
+     * @param string|Closure $method
      * @param mixed $parameters
      * @param string $column
      * @param string $keyword
@@ -265,27 +278,46 @@ class QueryBuilderEngine extends BaseEngine
     public function columnSearch()
     {
         $columns = $this->request->get('columns');
-        for ($i = 0, $c = count($columns); $i < $c; $i++) {
-            if ($this->request->isColumnSearchable($i)) {
-                $column  = $this->getColumnName($i);
-                $keyword = $this->getSearchKeyword($i);
 
-                if (isset($this->columnDef['filter'][$column])) {
-                    $method     = $this->columnDef['filter'][$column]['method'];
-                    $parameters = $this->columnDef['filter'][$column]['parameters'];
-                    $this->compileColumnQuery($this->getQueryBuilder(), $method, $parameters, $column, $keyword);
-                } else {
-                    $column = $this->castColumn($column);
-                    if ($this->isCaseInsensitive()) {
-                        $this->compileColumnSearch($i, $column, $keyword, false);
-                    } else {
-                        $col = strstr($column, '(') ? $this->connection->raw($column) : $column;
-                        $this->compileColumnSearch($i, $col, $keyword, true);
-                    }
-                }
-
-                $this->isFilterApplied = true;
+        foreach ($columns as $index => $column) {
+            if (!$this->request->isColumnSearchable($index)) {
+                continue;
             }
+
+            $column = $this->getColumnName($index);
+
+            if (isset($this->columnDef['filter'][$column])) {
+                $columnDef = $this->columnDef['filter'][$column];
+                // get a raw keyword (without wildcards)
+                $keyword = $this->getSearchKeyword($index, true);
+                $builder = $this->getQueryBuilder();
+
+                if ($columnDef['method'] instanceof Closure) {
+                    $whereQuery = $builder->newQuery();
+                    call_user_func_array($columnDef['method'], [$whereQuery, $keyword]);
+                    $builder->addNestedWhereQuery($whereQuery);
+                } else {
+                    $this->compileColumnQuery(
+                        $builder,
+                        $columnDef['method'],
+                        $columnDef['parameters'],
+                        $column,
+                        $keyword
+                    );
+                }
+            } else {
+                $column = $this->castColumn($column);
+                $keyword = $this->getSearchKeyword($index);
+
+                if ($this->isCaseInsensitive()) {
+                    $this->compileColumnSearch($index, $column, $keyword, false);
+                } else {
+                    $col = strstr($column, '(') ? $this->connection->raw($column) : $column;
+                    $this->compileColumnSearch($index, $col, $keyword, true);
+                }
+            }
+
+            $this->isFilterApplied = true;
         }
     }
 
@@ -295,13 +327,14 @@ class QueryBuilderEngine extends BaseEngine
      * @param int $i
      * @return string
      */
-    private function getSearchKeyword($i)
+    private function getSearchKeyword($i, $raw = false)
     {
-        if ($this->request->isRegex($i)) {
-            return $this->request->columnKeyword($i);
+        $keyword = $this->request->columnKeyword($i);
+        if ($raw || $this->request->isRegex($i)) {
+            return $keyword;
         }
 
-        return $this->setupKeyword($this->request->columnKeyword($i));
+        return $this->setupKeyword($keyword);
     }
 
     /**
