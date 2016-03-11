@@ -8,6 +8,10 @@
 
 ##Change Log
 
+###v6.8.0 - 2016-03-11
+    - Added Closure support for filterColumn method.
+    - PR #440. Credits to @codewizz.
+
 ###v6.7.3 - 2016-03-02
     - Fix eager load multiple column sorting where other columns are being ignored when join statement already exists.
     - Refactor redundant else order by statement.
