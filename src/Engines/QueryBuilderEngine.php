@@ -103,7 +103,7 @@ class QueryBuilderEngine extends BaseEngine
         $this->query->where(
             function ($query) {
                 $globalKeyword = $this->setupKeyword($this->request->keyword());
-                $queryBuilder = $this->getQueryBuilder($query);
+                $queryBuilder  = $this->getQueryBuilder($query);
 
                 foreach ($this->request->searchableColumnIndex() as $index) {
                     $columnName = $this->getColumnName($index);
@@ -112,7 +112,7 @@ class QueryBuilderEngine extends BaseEngine
                         $columnDef = $this->columnDef['filter'][$columnName];
                         // check if global search should be applied for the specific column
                         $applyGlobalSearch = count($columnDef['parameters']) == 0 || end($columnDef['parameters']) !== false;
-                        if (!$applyGlobalSearch) {
+                        if (! $applyGlobalSearch) {
                             continue;
                         }
 
@@ -280,7 +280,7 @@ class QueryBuilderEngine extends BaseEngine
         $columns = $this->request->get('columns');
 
         foreach ($columns as $index => $column) {
-            if (!$this->request->isColumnSearchable($index)) {
+            if (! $this->request->isColumnSearchable($index)) {
                 continue;
             }
 
@@ -306,7 +306,7 @@ class QueryBuilderEngine extends BaseEngine
                     );
                 }
             } else {
-                $column = $this->castColumn($column);
+                $column  = $this->castColumn($column);
                 $keyword = $this->getSearchKeyword($index);
 
                 if ($this->isCaseInsensitive()) {
