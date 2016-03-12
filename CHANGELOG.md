@@ -8,12 +8,13 @@
 
 ##Change Log
 
-###UNRELEASED
+###v6.9.0 - 2016-03-11
     - Re-implement facade.
     - Add blacklist and whitelist feature.
     - Fix string casting for object values.
     - Add missing doc block for getSearchKeyword.
     - Fix eloquent engine missing parent constructor.
+    - Add/Update class doc blocks.
     
 ###v6.8.0 - 2016-03-11
     - Added Closure support for filterColumn method.
