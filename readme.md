@@ -1,4 +1,4 @@
-# Datatables Package for Laravel 4|5
+# jQuery DataTables API for Laravel 4|5
 
 [![Laravel 4.2|5.0|5.1|5.2](https://img.shields.io/badge/Laravel-4.2|5.0|5.1|5.2-orange.svg)](http://laravel.com)
 [![Latest Stable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/stable)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
@@ -8,6 +8,24 @@
 [![License](https://poser.pugx.org/yajra/laravel-datatables-oracle/license)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 
 This package is created to handle [server-side](https://www.datatables.net/manual/server-side) works of [DataTables](http://datatables.net) jQuery Plugin via [AJAX option](https://datatables.net/reference/option/ajax) by using Eloquent ORM, Fluent Query Builder or Collection.
+
+```php
+use Yajra\Datatables\Facades\Datatables;
+
+// Using Eloquent
+return Datatables::eloquent(User::query())->make(true);
+
+// Using Query Builder
+return Datatables::queryBuilder(DB::table('users'))->make(true);
+
+// Using Collection
+return Datatables::collection(User::all())->make(true);
+
+// Using the Engine Factory
+return Datatables::of(User::query())->make(true);
+return Datatables::of(DB::table('users'))->make(true);
+return Datatables::of(User::all())->make(true);
+```
 
 ## Feature Overview
 - Supports the following data source
@@ -23,8 +41,8 @@ This package is created to handle [server-side](https://www.datatables.net/manua
     - **Note:** DT Legacy code is not supported on v5.x
 - Works with [DataTables](http://datatables.net) v1.9 and v1.10 legacy code.
     - **Note:** Use [v4.x](https://github.com/yajra/laravel-datatables-oracle/tree/v4.3.2) for Laravel 5 and [v3.x](https://github.com/yajra/laravel-datatables-oracle/tree/L4) for Laravel 4
-- Extended column filtering via [`filterColumn`](http://yajra.github.io/laravel-datatables/api/source-class-yajra.Datatables.Engines.BaseEngine.html#489-503) API.
-- Extended column ordering via [`orderColumn`](http://yajra.github.io/laravel-datatables/api/source-class-yajra.Datatables.Engines.BaseEngine.html#505-519) API.
+- Extended column filtering via `filterColumn` API.
+- Extended column ordering via `orderColumn` API.
 - Extended Query Builder functionality allowing you to filter using Datatables class directly.
 - Decorate your data output using [`league\fractal`](https://github.com/thephpleague/fractal) Transformer with Serializer support.
 - Works with Laravel Dependency Injection and IoC Container.
@@ -36,6 +54,7 @@ This package is created to handle [server-side](https://www.datatables.net/manua
 - Built-in support for exporting to CSV, EXCEL and PDF using [Laravel-Excel](https://github.com/Maatwebsite/Laravel-Excel).
 - Built-in printer friendly view or create your own by overriding `printPreview()` method.
 - Provides an artisan command for generating a DataTable service and scope.
+- Provides **WHITELIST** and **BLACKLIST** feature to explicitly allow/deny columns from searching/sorting. 
 - See [change logs](https://github.com/yajra/laravel-datatables/blob/6.0/CHANGELOG.md) for more details.
     
 ## Requirements:
@@ -61,7 +80,7 @@ Most of the latest updates/features are not available on these versions. Please 
 `Yajra\Datatables\DatatablesServiceProvider::class`
 
 #### Facade
-`Datatables` facade are automatically registered as an alias for `Yajra\Datatables\Datatables` class. 
+`Datatables` facade are automatically registered as an alias for `Yajra\Datatables\Facades\Datatables` class. 
 
 #### Configuration and Assets
 `$ php artisan vendor:publish --tag=datatables`

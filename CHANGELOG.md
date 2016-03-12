@@ -8,6 +8,12 @@
 
 ##Change Log
 
+###UNRELEASED
+    - Re-implement facade.
+    - Add blacklist and whitelist feature.
+    - Fix string casting for object values.
+    - Add missing doc block for getSearchKeyword.
+    
 ###v6.8.0 - 2016-03-11
     - Added Closure support for filterColumn method.
     - PR #440. Credits to @codewizz.
