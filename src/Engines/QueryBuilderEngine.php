@@ -107,6 +107,10 @@ class QueryBuilderEngine extends BaseEngine
 
                 foreach ($this->request->searchableColumnIndex() as $index) {
                     $columnName = $this->getColumnName($index);
+                    if ($this->isBlacklisted($columnName)) {
+                        continue;
+                    }
+
                     // check if custom column filtering is applied
                     if (isset($this->columnDef['filter'][$columnName])) {
                         $columnDef = $this->columnDef['filter'][$columnName];
@@ -400,6 +404,11 @@ class QueryBuilderEngine extends BaseEngine
 
         foreach ($this->request->orderableColumns() as $orderable) {
             $column = $this->getColumnName($orderable['column'], true);
+
+            if ($this->isBlacklisted($column)) {
+                continue;
+            }
+
             if (isset($this->columnDef['order'][$column])) {
                 $method     = $this->columnDef['order'][$column]['method'];
                 $parameters = $this->columnDef['order'][$column]['parameters'];
