@@ -325,6 +325,7 @@ class QueryBuilderEngine extends BaseEngine
      * Get proper keyword to use for search.
      *
      * @param int $i
+     * @param bool $raw
      * @return string
      */
     private function getSearchKeyword($i, $raw = false)
