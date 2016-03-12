@@ -2,6 +2,12 @@
 
 namespace Yajra\Datatables\Engines;
 
+use Closure;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Str;
+use Yajra\Datatables\Helper;
+use Yajra\Datatables\Request;
+
 /**
  * Laravel Datatables Query Builder Engine
  *
@@ -9,13 +15,6 @@ namespace Yajra\Datatables\Engines;
  * @category Package
  * @author   Arjay Angeles <aqangeles@gmail.com>
  */
-
-use Closure;
-use Illuminate\Database\Query\Builder;
-use Illuminate\Support\Str;
-use Yajra\Datatables\Helper;
-use Yajra\Datatables\Request;
-
 class QueryBuilderEngine extends BaseEngine
 {
     /**
@@ -49,7 +48,11 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * @inheritdoc
+     * Set auto filter off and run your own filter.
+     * Overrides global search
+     *
+     * @param \Closure $callback
+     * @return $this
      */
     public function filter(Closure $callback)
     {
@@ -59,7 +62,11 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * @inheritdoc
+     * Organizes works
+     *
+     * @param bool $mDataSupport
+     * @param bool $orderFirst
+     * @return \Illuminate\Http\JsonResponse
      */
     public function make($mDataSupport = false, $orderFirst = false)
     {
@@ -67,7 +74,9 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * @inheritdoc
+     * Count total items.
+     *
+     * @return integer
      */
     public function totalCount()
     {

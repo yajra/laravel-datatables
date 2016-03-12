@@ -2,14 +2,6 @@
 
 namespace Yajra\Datatables\Engines;
 
-/**
- * Laravel Datatables Collection Engine
- *
- * @package  Laravel
- * @category Package
- * @author   Arjay Angeles <aqangeles@gmail.com>
- */
-
 use Closure;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
@@ -17,24 +9,33 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Yajra\Datatables\Request;
 
+/**
+ * Laravel Datatables Collection Engine
+ *
+ * @package  Laravel
+ * @category Package
+ * @author   Arjay Angeles <aqangeles@gmail.com>
+ */
 class CollectionEngine extends BaseEngine
 {
     /**
      * Collection object
      *
-     * @var Collection
+     * @var \Illuminate\Support\Collection
      */
     public $collection;
 
     /**
      * Collection object
      *
-     * @var Collection
+     * @var \Illuminate\Support\Collection
      */
     public $original_collection;
 
     /**
-     * @param Collection $collection
+     * CollectionEngine constructor.
+     *
+     * @param \Illuminate\Support\Collection $collection
      * @param \Yajra\Datatables\Request $request
      */
     public function __construct(Collection $collection, Request $request)
@@ -57,7 +58,11 @@ class CollectionEngine extends BaseEngine
     }
 
     /**
-     * @inheritdoc
+     * Set auto filter off and run your own filter.
+     * Overrides global search.
+     *
+     * @param \Closure $callback
+     * @return $this
      */
     public function filter(Closure $callback)
     {
@@ -67,7 +72,10 @@ class CollectionEngine extends BaseEngine
     }
 
     /**
-     * @inheritdoc
+     * Append debug parameters on output.
+     *
+     * @param  array $output
+     * @return array
      */
     public function showDebugger(array $output)
     {
@@ -77,7 +85,9 @@ class CollectionEngine extends BaseEngine
     }
 
     /**
-     * @inheritdoc
+     * Count total items.
+     *
+     * @return integer
      */
     public function totalCount()
     {
@@ -85,7 +95,9 @@ class CollectionEngine extends BaseEngine
     }
 
     /**
-     * @inheritdoc
+     * Count results.
+     *
+     * @return integer
      */
     public function count()
     {
@@ -93,7 +105,9 @@ class CollectionEngine extends BaseEngine
     }
 
     /**
-     * @inheritdoc
+     * Perform sorting of columns.
+     *
+     * @return void
      */
     public function ordering()
     {
@@ -120,7 +134,9 @@ class CollectionEngine extends BaseEngine
     }
 
     /**
-     * @inheritdoc
+     * Perform global search.
+     *
+     * @return void
      */
     public function filtering()
     {
@@ -151,7 +167,9 @@ class CollectionEngine extends BaseEngine
     }
 
     /**
-     * @inheritdoc
+     * Perform column search.
+     *
+     * @return void
      */
     public function columnSearch()
     {
@@ -181,7 +199,9 @@ class CollectionEngine extends BaseEngine
     }
 
     /**
-     * @inheritdoc
+     * Perform pagination.
+     *
+     * @return void
      */
     public function paging()
     {
@@ -192,7 +212,9 @@ class CollectionEngine extends BaseEngine
     }
 
     /**
-     * @inheritdoc
+     * Get results.
+     *
+     * @return mixed
      */
     public function results()
     {
@@ -200,7 +222,11 @@ class CollectionEngine extends BaseEngine
     }
 
     /**
-     * @inheritdoc
+     * Organizes works.
+     *
+     * @param bool $mDataSupport
+     * @param bool $orderFirst
+     * @return \Illuminate\Http\JsonResponse
      */
     public function make($mDataSupport = false, $orderFirst = true)
     {

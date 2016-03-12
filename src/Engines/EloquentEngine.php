@@ -2,6 +2,9 @@
 
 namespace Yajra\Datatables\Engines;
 
+use Illuminate\Database\Eloquent\Builder;
+use Yajra\Datatables\Request;
+
 /**
  * Laravel Datatables Eloquent Engine
  *
@@ -9,10 +12,6 @@ namespace Yajra\Datatables\Engines;
  * @category Package
  * @author   Arjay Angeles <aqangeles@gmail.com>
  */
-
-use Illuminate\Database\Eloquent\Builder;
-use Yajra\Datatables\Request;
-
 class EloquentEngine extends QueryBuilderEngine
 {
     /**

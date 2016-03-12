@@ -5,14 +5,14 @@ namespace Yajra\Datatables\Contracts;
 interface DataTableEngineContract
 {
     /**
-     * Get results
+     * Get results.
      *
      * @return mixed
      */
     public function results();
 
     /**
-     * Count results
+     * Count results.
      *
      * @return integer
      */
@@ -27,7 +27,7 @@ interface DataTableEngineContract
 
     /**
      * Set auto filter off and run your own filter.
-     * Overrides global search
+     * Overrides global search.
      *
      * @param \Closure $callback
      * @return $this
@@ -35,38 +35,39 @@ interface DataTableEngineContract
     public function filter(\Closure $callback);
 
     /**
-     * Perform global search
+     * Perform global search.
      *
      * @return void
      */
     public function filtering();
 
     /**
-     * Perform column search
+     * Perform column search.
      *
      * @return void
      */
     public function columnSearch();
 
     /**
-     * Perform pagination
+     * Perform pagination.
      *
      * @return void
      */
     public function paging();
 
     /**
-     * Perform sorting of columns
+     * Perform sorting of columns.
      *
      * @return void
      */
     public function ordering();
 
     /**
-     * Organizes works
+     * Organizes works.
      *
      * @param bool $mDataSupport
+     * @param bool $orderFirst
      * @return \Illuminate\Http\JsonResponse
      */
-    public function make($mDataSupport = false);
+    public function make($mDataSupport = false, $orderFirst = false);
 }
