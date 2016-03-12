@@ -71,8 +71,8 @@ class DatatablesServiceProvider extends ServiceProvider
 
         $this->registerRequiredProviders();
 
-        $this->app->singleton('datatables', function ($app) {
-            return new Datatables($app->make(Request::class));
+        $this->app->singleton('datatables', function () {
+            return new Datatables($this->app->make(Request::class));
         });
 
         $this->registerAliases();
@@ -104,7 +104,7 @@ class DatatablesServiceProvider extends ServiceProvider
     {
         if (class_exists('Illuminate\Foundation\AliasLoader')) {
             $loader = \Illuminate\Foundation\AliasLoader::getInstance();
-            $loader->alias('Datatables', \Yajra\Datatables\Datatables::class);
+            $loader->alias('Datatables', \Yajra\Datatables\Facades\Datatables::class);
         }
     }
 
