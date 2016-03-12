@@ -6,11 +6,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Yajra\Datatables\Request;
 
 /**
- * Laravel Datatables Eloquent Engine
+ * Class EloquentEngine.
  *
- * @package  Laravel
- * @category Package
- * @author   Arjay Angeles <aqangeles@gmail.com>
+ * @package Yajra\Datatables\Engines
+ * @author  Arjay Angeles <aqangeles@gmail.com>
  */
 class EloquentEngine extends QueryBuilderEngine
 {

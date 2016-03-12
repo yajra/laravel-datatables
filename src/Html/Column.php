@@ -5,10 +5,11 @@ namespace Yajra\Datatables\Html;
 use Illuminate\Support\Fluent;
 
 /**
- * Class Column
+ * Class Column.
  *
  * @package Yajra\Datatables\Html
  * @see     https://datatables.net/reference/option/ for possible columns option
+ * @author  Arjay Angeles <aqangeles@gmail.com>
  */
 class Column extends Fluent
 {

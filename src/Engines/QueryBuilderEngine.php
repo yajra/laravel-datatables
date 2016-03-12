@@ -9,11 +9,10 @@ use Yajra\Datatables\Helper;
 use Yajra\Datatables\Request;
 
 /**
- * Laravel Datatables Query Builder Engine
+ * Class QueryBuilderEngine.
  *
- * @package  Laravel
- * @category Package
- * @author   Arjay Angeles <aqangeles@gmail.com>
+ * @package Yajra\Datatables\Engines
+ * @author  Arjay Angeles <aqangeles@gmail.com>
  */
 class QueryBuilderEngine extends BaseEngine
 {

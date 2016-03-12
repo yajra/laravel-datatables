@@ -11,9 +11,10 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 /**
- * Class Builder
+ * Class Builder.
  *
  * @package Yajra\Datatables\Html
+ * @author  Arjay Angeles <aqangeles@gmail.com>
  */
 class Builder
 {

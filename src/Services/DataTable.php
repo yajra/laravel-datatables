@@ -11,6 +11,12 @@ use Yajra\Datatables\Contracts\DataTableScopeContract;
 use Yajra\Datatables\Datatables;
 use Yajra\Datatables\Transformers\DataTransformer;
 
+/**
+ * Class DataTable.
+ *
+ * @package Yajra\Datatables\Services
+ * @author  Arjay Angeles <aqangeles@gmail.com>
+ */
 abstract class DataTable implements DataTableContract, DataTableButtonsContract
 {
     /**

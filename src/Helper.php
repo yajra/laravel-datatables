@@ -8,6 +8,12 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Illuminate\View\Compilers\BladeCompiler;
 
+/**
+ * Class Helper.
+ *
+ * @package Yajra\Datatables
+ * @author  Arjay Angeles <aqangeles@gmail.com>
+ */
 class Helper
 {
     /**

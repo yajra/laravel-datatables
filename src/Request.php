@@ -6,7 +6,11 @@ use Exception;
 use Illuminate\Http\Request as IlluminateRequest;
 
 /**
+ * Class Request.
+ *
  * @property array columns
+ * @package Yajra\Datatables
+ * @author  Arjay Angeles <aqangeles@gmail.com>
  */
 class Request extends IlluminateRequest
 {

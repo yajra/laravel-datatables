@@ -2,15 +2,6 @@
 
 namespace Yajra\Datatables;
 
-/**
- * Laravel Datatables Package
- * This Package is created to handle server-side works of DataTables Jquery Plugin (http://datatables.net)
- *
- * @package  Laravel
- * @category Package
- * @author   Arjay Angeles <aqangeles@gmail.com>
- */
-
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use Yajra\Datatables\Engines\CollectionEngine;
@@ -18,12 +9,13 @@ use Yajra\Datatables\Engines\EloquentEngine;
 use Yajra\Datatables\Engines\QueryBuilderEngine;
 
 /**
- * Class Datatables
+ * Class Datatables.
  *
  * @package Yajra\Datatables
  * @method  EloquentEngine eloquent($builder)
  * @method  CollectionEngine collection(Collection $builder)
  * @method  QueryBuilderEngine queryBuilder(QueryBuilder $builder)
+ * @author  Arjay Angeles <aqangeles@gmail.com>
  */
 class Datatables
 {
@@ -42,7 +34,7 @@ class Datatables
     public $builder;
 
     /**
-     * Class Constructor
+     * Datatables constructor.
      *
      * @param \Yajra\Datatables\Request $request
      */
@@ -52,7 +44,7 @@ class Datatables
     }
 
     /**
-     * Gets query and returns instance of class
+     * Gets query and returns instance of class.
      *
      * @param  mixed $builder
      * @return mixed
@@ -94,6 +86,17 @@ class Datatables
     }
 
     /**
+     * Datatables using Eloquent.
+     *
+     * @param  mixed $builder
+     * @return \Yajra\Datatables\Engines\EloquentEngine
+     */
+    public function usingEloquent($builder)
+    {
+        return new EloquentEngine($builder, $this->request);
+    }
+
+    /**
      * Allows api call without the "using" word.
      *
      * @param  string $name
@@ -109,17 +112,6 @@ class Datatables
         }
 
         return trigger_error('Call to undefined method ' . __CLASS__ . '::' . $name . '()', E_USER_ERROR);
-    }
-
-    /**
-     * Datatables using Eloquent
-     *
-     * @param  mixed $builder
-     * @return \Yajra\Datatables\Engines\EloquentEngine
-     */
-    public function usingEloquent($builder)
-    {
-        return new EloquentEngine($builder, $this->request);
     }
 
     /**

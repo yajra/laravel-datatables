@@ -10,11 +10,10 @@ use Illuminate\Support\Str;
 use Yajra\Datatables\Request;
 
 /**
- * Laravel Datatables Collection Engine
+ * Class CollectionEngine.
  *
- * @package  Laravel
- * @category Package
- * @author   Arjay Angeles <aqangeles@gmail.com>
+ * @package Yajra\Datatables\Engines
+ * @author  Arjay Angeles <aqangeles@gmail.com>
  */
 class CollectionEngine extends BaseEngine
 {

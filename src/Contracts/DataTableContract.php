@@ -2,6 +2,12 @@
 
 namespace Yajra\Datatables\Contracts;
 
+/**
+ * Interface DataTableContract
+ *
+ * @package Yajra\Datatables\Contracts
+ * @author  Arjay Angeles <aqangeles@gmail.com>
+ */
 interface DataTableContract
 {
     /**

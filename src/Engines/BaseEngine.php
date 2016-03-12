@@ -2,14 +2,6 @@
 
 namespace Yajra\Datatables\Engines;
 
-/*
- * Laravel Datatables Base Engine
- *
- * @package  Laravel
- * @category Package
- * @author   Arjay Angeles <aqangeles@gmail.com>
- */
-
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
@@ -20,6 +12,12 @@ use Yajra\Datatables\Contracts\DataTableEngineContract;
 use Yajra\Datatables\Helper;
 use Yajra\Datatables\Processors\DataProcessor;
 
+/**
+ * Class BaseEngine.
+ *
+ * @package Yajra\Datatables\Engines
+ * @author  Arjay Angeles <aqangeles@gmail.com>
+ */
 abstract class BaseEngine implements DataTableEngineContract
 {
     /**

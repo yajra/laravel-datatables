@@ -4,6 +4,12 @@ namespace Yajra\Datatables\Generators;
 
 use Illuminate\Console\GeneratorCommand;
 
+/**
+ * Class DataTablesScopeCommand.
+ *
+ * @package Yajra\Datatables\Generators
+ * @author  Arjay Angeles <aqangeles@gmail.com>
+ */
 class DataTablesScopeCommand extends GeneratorCommand
 {
     /**

@@ -6,9 +6,10 @@ use Illuminate\Support\Arr;
 use Yajra\Datatables\Helper;
 
 /**
- * Class RowProcessor
+ * Class RowProcessor.
  *
  * @package Yajra\Datatables
+ * @author  Arjay Angeles <aqangeles@gmail.com>
  */
 class RowProcessor
 {

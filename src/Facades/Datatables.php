@@ -4,6 +4,12 @@ namespace Yajra\Datatables\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
+/**
+ * Class Datatables.
+ *
+ * @package Yajra\Datatables\Facades
+ * @author  Arjay Angeles <aqangeles@gmail.com>
+ */
 class Datatables extends Facade
 {
     /**
