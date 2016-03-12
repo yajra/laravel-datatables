@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v6.9.1 - 2016-03-11
+    - Add default array value when getting columns. Fix #448
+    
 ###v6.9.0 - 2016-03-11
     - Re-implement facade.
     - Add blacklist and whitelist feature.
