@@ -13,6 +13,7 @@
     - Add blacklist and whitelist feature.
     - Fix string casting for object values.
     - Add missing doc block for getSearchKeyword.
+    - Fix eloquent engine missing parent constructor.
     
 ###v6.8.0 - 2016-03-11
     - Added Closure support for filterColumn method.
