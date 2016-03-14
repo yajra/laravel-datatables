@@ -27,7 +27,7 @@ return Datatables::of(DB::table('users'))->make(true);
 return Datatables::of(User::all())->make(true);
 ```
 
-## Requirements:
+## Requirements
 - PHP 5.5.9 or later.
 - Laravel 5.0 or later.
 - [DataTables jQuery Plugin](http://datatables.net/) v1.10.x
