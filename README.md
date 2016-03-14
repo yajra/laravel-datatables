@@ -27,36 +27,6 @@ return Datatables::of(DB::table('users'))->make(true);
 return Datatables::of(User::all())->make(true);
 ```
 
-## Feature Overview
-- Supports the following data source
-    - **Eloquent ORM**
-    - **Fluent Query Builder**
-    - **Collection** [available on v5.x and later]
-- [DataTable Service Implementation (v6.x)](https://github.com/yajra/laravel-datatables/blob/6.0/CHANGELOG.md#v600---datatable-service-implementation). 
-- Adding or editing content of columns and removing columns
-- Modify column values via Blade Template Engine or by using Closure
-- Works with **ALL the DATABASE** supported by Laravel
-- Works with **Oracle Database** using [Laravel-OCI8](https://github.com/yajra/laravel-oci8) package
-- Works with [DataTables](http://datatables.net) v1.10++.
-    - **Note:** DT Legacy code is not supported on v5.x
-- Works with [DataTables](http://datatables.net) v1.9 and v1.10 legacy code.
-    - **Note:** Use [v4.x](https://github.com/yajra/laravel-datatables-oracle/tree/v4.3.2) for Laravel 5 and [v3.x](https://github.com/yajra/laravel-datatables-oracle/tree/L4) for Laravel 4
-- Extended column filtering via `filterColumn` API.
-- Extended column ordering via `orderColumn` API.
-- Extended Query Builder functionality allowing you to filter using Datatables class directly.
-- Decorate your data output using [`league\fractal`](https://github.com/thephpleague/fractal) Transformer with Serializer support.
-- Works with Laravel Dependency Injection and IoC Container.
-- Provides a [DataTable Html Builder](http://datatables.yajrabox.com/html) to help you use the package with less code.
-- Provides XSS filtering function to optionally escape all or specified column values using `escapeColumns('*'\['column'])` method.
-- Provides Query Logging when application is in debug state. 
-    **Important: Make sure that debug is set to false when your code is in production**
-- Easily attach a resource on json response via `->with()` method.
-- Built-in support for exporting to CSV, EXCEL and PDF using [Laravel-Excel](https://github.com/Maatwebsite/Laravel-Excel).
-- Built-in printer friendly view or create your own by overriding `printPreview()` method.
-- Provides an artisan command for generating a DataTable service and scope.
-- Provides **WHITELIST** and **BLACKLIST** feature to explicitly allow/deny columns from searching/sorting. 
-- See [change logs](https://github.com/yajra/laravel-datatables/blob/6.0/CHANGELOG.md) for more details.
-    
 ## Requirements:
 - PHP 5.5.9 or later.
 - Laravel 5.0 or later.
@@ -104,8 +74,8 @@ If you discover any security related issues, please email [aqangeles@gmail.com](
 
 ## Credits
 
-- [Arjay Angeles](https://github.com/yajra).
-- [bllim/laravel4-datatables-package](https://github.com/bllim/laravel4-datatables-package).
+- [Arjay Angeles](https://github.com/yajra)
+- [bllim/laravel4-datatables-package](https://github.com/bllim/laravel4-datatables-package)
 - [All Contributors](https://github.com/yajra/laravel-datatables/graphs/contributors)
 
 ## License
