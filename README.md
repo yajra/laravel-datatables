@@ -32,12 +32,6 @@ return Datatables::of(User::all())->make(true);
 - Laravel 5.0 or later.
 - [DataTables jQuery Plugin](http://datatables.net/) v1.10.x
 
-## Laravel 4.2 & DataTables v1.9.x Users
-Most of the latest updates/features are not available on these versions. Please check [L4 Branch](https://github.com/yajra/laravel-datatables/tree/L4) and [L5 DT1.9](https://github.com/yajra/laravel-datatables/tree/L5-DT1.9) for old documentations of its features.
-
-## Buy me a beer
-<a href='https://pledgie.com/campaigns/29515'><img alt='Click here to lend your support to: Laravel Datatables and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/29515.png?skin_name=chrome' border='0' ></a>
-
 ## Documentations
 - You will find user friendly and updated documentation in the wiki here: [Laravel Datatables Wiki](https://github.com/yajra/laravel-datatables/wiki)
 - You will find the API Documentation here: [Laravel Datatables API](http://yajra.github.io/laravel-datatables/api/)
@@ -50,7 +44,7 @@ Most of the latest updates/features are not available on these versions. Please 
 `Yajra\Datatables\DatatablesServiceProvider::class`
 
 #### Facade
-`Datatables` facade are automatically registered as an alias for `Yajra\Datatables\Facades\Datatables` class. 
+`Datatables` facade is automatically registered as an alias for `Yajra\Datatables\Facades\Datatables` class. 
 
 #### Configuration and Assets
 `$ php artisan vendor:publish --tag=datatables`
@@ -81,3 +75,6 @@ If you discover any security related issues, please email [aqangeles@gmail.com](
 ## License
 
 The MIT License (MIT). Please see [License File](https://github.com/yajra/laravel-datatables/blob/master/LICENSE.md) for more information.
+
+## Buy me a beer
+<a href='https://pledgie.com/campaigns/29515'><img alt='Click here to lend your support to: Laravel Datatables and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/29515.png?skin_name=chrome' border='0' ></a>
