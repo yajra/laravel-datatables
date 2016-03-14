@@ -1,4 +1,4 @@
 /vendor
+/coverage
 composer.phar
 composer.lock
-/coverage
