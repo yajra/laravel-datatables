@@ -96,7 +96,7 @@ And that's it! Start building out some awesome DataTables!
 
 ## Contributing
 
-Please see [CONTRIBUTING](https://github.com/yajra/laravel-datatables/blob/master/CONTRIBUTING.md) for details.
+Please see [CONTRIBUTING](https://github.com/yajra/laravel-datatables/blob/master/.github/CONTRIBUTING.md) for details.
 
 ## Security
 
