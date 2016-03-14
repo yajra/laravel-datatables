@@ -30,7 +30,7 @@ return Datatables::of(User::all())->make(true);
 ## Requirements
 - [PHP 5.5.9 or later](http://php.net/)
 - [Laravel 5.0 or later](https://github.com/laravel/framework)
-- [DataTables jQuery Plugin](http://datatables.net/) v1.10.x
+- [DataTables jQuery Plugin](http://datatables.net/) **Version 1.10.xx**
 
 ## Documentations
 - You will find user friendly and updated documentation in the wiki here: [Laravel Datatables Wiki](https://github.com/yajra/laravel-datatables/wiki)
