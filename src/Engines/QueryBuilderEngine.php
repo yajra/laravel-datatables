@@ -256,14 +256,18 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function compileGlobalSearch($query, $column, $keyword)
     {
-        $column = $this->castColumn($column);
-        $sql    = $column . ' LIKE ?';
-        if ($this->isCaseInsensitive()) {
-            $sql     = 'LOWER(' . $column . ') LIKE ?';
-            $keyword = Str::lower($keyword);
-        }
+        if ($this->isSmartSearch()) {
+            $column = $this->castColumn($column);
+            $sql    = $column . ' LIKE ?';
+            if ($this->isCaseInsensitive()) {
+                $sql     = 'LOWER(' . $column . ') LIKE ?';
+                $keyword = Str::lower($keyword);
+            }
 
-        $query->orWhereRaw($sql, [$keyword]);
+            $query->orWhereRaw($sql, [$keyword]);
+        } else {
+            $query->orWhere($column, 'like', $keyword);
+        }
     }
 
     /**
@@ -318,15 +322,15 @@ class QueryBuilderEngine extends BaseEngine
                     );
                 }
             } else {
-                $column  = $this->castColumn($column);
-                $keyword = $this->getSearchKeyword($index);
+                $column          = $this->castColumn($column);
+                $keyword         = $this->getSearchKeyword($index);
+                $caseInsensitive = $this->isCaseInsensitive();
 
-                if ($this->isCaseInsensitive()) {
-                    $this->compileColumnSearch($index, $column, $keyword, false);
-                } else {
-                    $col = strstr($column, '(') ? $this->connection->raw($column) : $column;
-                    $this->compileColumnSearch($index, $col, $keyword, true);
+                if (! $caseInsensitive) {
+                    $column = strstr($column, '(') ? $this->connection->raw($column) : $column;
                 }
+
+                $this->compileColumnSearch($index, $column, $keyword, $caseInsensitive);
             }
 
             $this->isFilterApplied = true;
@@ -362,10 +366,12 @@ class QueryBuilderEngine extends BaseEngine
     {
         if ($this->request->isRegex($i)) {
             $this->regexColumnSearch($column, $keyword, $caseSensitive);
-        } else {
+        } elseif ($this->isSmartSearch()) {
             $sql     = $caseSensitive ? $column . ' LIKE ?' : 'LOWER(' . $column . ') LIKE ?';
             $keyword = $caseSensitive ? $keyword : Str::lower($keyword);
             $this->query->whereRaw($sql, [$keyword]);
+        } else {
+            $this->query->where($column, 'like', $keyword);
         }
     }
 
