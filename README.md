@@ -104,7 +104,8 @@ If you discover any security related issues, please email [aqangeles@gmail.com](
 
 ## Credits
 
-- This project is used to be a fork from [bllim/laravel4-datatables-package](https://github.com/bllim/laravel4-datatables-package).
+- [Arjay Angeles](https://github.com/yajra).
+- [bllim/laravel4-datatables-package](https://github.com/bllim/laravel4-datatables-package).
 - [All Contributors](https://github.com/yajra/laravel-datatables/graphs/contributors)
 
 ## License
