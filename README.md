@@ -28,8 +28,8 @@ return Datatables::of(User::all())->make(true);
 ```
 
 ## Requirements
-- PHP 5.5.9 or later.
-- Laravel 5.0 or later.
+- [PHP 5.5.9 or later](http://php.net/)
+- [Laravel 5.0 or later](https://github.com/laravel/framework)
 - [DataTables jQuery Plugin](http://datatables.net/) v1.10.x
 
 ## Documentations
