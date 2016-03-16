@@ -265,8 +265,8 @@ class QueryBuilderEngine extends BaseEngine
             }
 
             $query->orWhereRaw($sql, [$keyword]);
-        } else {
-            $query->orWhere($column, 'like', $keyword);
+        } else { // exact match
+            $query->orWhereRaw("$column like ?", $keyword);
         }
     }
 
@@ -370,8 +370,8 @@ class QueryBuilderEngine extends BaseEngine
             $sql     = $caseSensitive ? $column . ' LIKE ?' : 'LOWER(' . $column . ') LIKE ?';
             $keyword = $caseSensitive ? $keyword : Str::lower($keyword);
             $this->query->whereRaw($sql, [$keyword]);
-        } else {
-            $this->query->where($column, 'like', $keyword);
+        } else { // exact match
+            $this->query->whereRaw("$column LIKE ?", $keyword);
         }
     }
 
