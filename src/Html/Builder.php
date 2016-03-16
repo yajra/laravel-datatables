@@ -307,7 +307,7 @@ class Builder
     public function columns(array $columns)
     {
         foreach ($columns as $key => $value) {
-            if(!is_a($value, Column::class)) {
+            if (! is_a($value, Column::class)) {
                 if (is_array($value)) {
                     $attributes = array_merge(['name' => $key, 'data' => $key], $this->setTitle($key, $value));
                 } else {

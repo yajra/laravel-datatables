@@ -43,12 +43,12 @@ class Column extends Fluent
     public function parseRender($value)
     {
         /** @var \Illuminate\Contracts\View\Factory $view */
-        $view = app('view');
+        $view       = app('view');
         $parameters = [];
 
-        if(is_array($value)) {
+        if (is_array($value)) {
             $parameters = array_except($value, 0);
-            $value = $value[0];
+            $value      = $value[0];
         }
 
         if (is_callable($value)) {
