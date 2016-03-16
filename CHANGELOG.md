@@ -8,6 +8,12 @@
 
 ##Change Log
 
+###v6.9.3 - 2016-03-17
+    - Adds an option to pass parameters to column render.
+    - Allows passing instance of Column into Builder columns.
+    - Fix security issue as reported in #460.
+    - Credits to @vladkucherov for this changes.
+
 ###v6.9.2 - 2016-03-16
     - Pull-up isOracleSQL and fix condition using oci8.
     
