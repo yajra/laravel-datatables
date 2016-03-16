@@ -44,11 +44,17 @@ class Column extends Fluent
     {
         /** @var \Illuminate\Contracts\View\Factory $view */
         $view = app('view');
+        $parameters = [];
+
+        if(is_array($value)) {
+            $parameters = array_except($value, 0);
+            $value = $value[0];
+        }
 
         if (is_callable($value)) {
-            return value($value);
+            return $value($parameters);
         } elseif ($view->exists($value)) {
-            return $view->make($value)->render();
+            return $view->make($value)->with($parameters)->render();
         }
 
         return $value ? $this->parseRenderAsString($value) : null;
