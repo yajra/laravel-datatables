@@ -90,7 +90,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
             return $this->ajax();
         }
 
-        if ($action = $this->request()->get('action')) {
+        if ($action = $this->request()->get('action') AND in_array($action, ['print', 'csv', 'excel', 'pdf'])) {
             if ($action == 'print') {
                 return $this->printPreview();
             }
