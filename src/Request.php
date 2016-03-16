@@ -23,7 +23,7 @@ class Request extends IlluminateRequest
     {
         if (! $this->get('draw') && $this->get('sEcho')) {
             throw new Exception('DataTables legacy code is not supported! Please use DataTables 1.10++ coding convention.');
-        } elseif (! $this->get('draw') && ! $this->get('columns')) {
+        } elseif (! $this->get('draw') && ! $this->get('columns') && ! $this->get('search')) {
             throw new Exception('Insufficient parameters');
         }
     }
@@ -35,29 +35,29 @@ class Request extends IlluminateRequest
      */
     public function isSearchable()
     {
-        return $this->get('search')['value'] != '';
+        return $this->get('search.0.value') != '';
     }
 
     /**
      * Get column's search value.
      *
-     * @param integer $index
+     * @param integer $i
      * @return string
      */
-    public function columnKeyword($index)
+    public function columnKeyword($i)
     {
-        return $this->columns[$index]['search']['value'];
+        return $this->get("columns.$i.search.value");
     }
 
     /**
      * Check if Datatables must uses regular expressions
      *
-     * @param integer $index
+     * @param integer $i
      * @return string
      */
-    public function isRegex($index)
+    public function isRegex($i)
     {
-        return $this->columns[$index]['search']['regex'] === 'true';
+        return $this->get("columns.$i.search.regex") === 'true';
     }
 
     /**
@@ -72,9 +72,9 @@ class Request extends IlluminateRequest
         }
 
         $orderable = [];
-        for ($i = 0, $c = count($this->get('order')); $i < $c; $i++) {
-            $order_col = (int) $this->get('order')[$i]['column'];
-            $order_dir = $this->get('order')[$i]['dir'];
+        for ($i = 0, $c = count($this->get('order', [])); $i < $c; $i++) {
+            $order_col = (int) $this->get("order.$i.column");
+            $order_dir = $this->get("order.$i.dir");
             if ($this->isColumnOrderable($order_col)) {
                 $orderable[] = ['column' => $order_col, 'direction' => $order_dir];
             }
@@ -96,12 +96,12 @@ class Request extends IlluminateRequest
     /**
      * Check if a column is orderable.
      *
-     * @param  integer $index
+     * @param  integer $i
      * @return bool
      */
-    public function isColumnOrderable($index)
+    public function isColumnOrderable($i)
     {
-        return $this->get('columns')[$index]['orderable'] == 'true';
+        return $this->get("columns.$i.orderable") === "true";
     }
 
     /**
@@ -112,7 +112,7 @@ class Request extends IlluminateRequest
     public function searchableColumnIndex()
     {
         $searchable = [];
-        for ($i = 0, $c = count($this->get('columns')); $i < $c; $i++) {
+        for ($i = 0, $c = count($this->get('columns', [])); $i < $c; $i++) {
             if ($this->isColumnSearchable($i, false)) {
                 $searchable[] = $i;
             }
@@ -130,12 +130,11 @@ class Request extends IlluminateRequest
      */
     public function isColumnSearchable($i, $column_search = true)
     {
-        $columns = $this->get('columns');
         if ($column_search) {
-            return $columns[$i]['searchable'] == 'true' && $columns[$i]['search']['value'] != '';
+            return $this->get("columns.$i.searchable") == 'true' && $this->get("columns.$i.search.value") != '';
         }
 
-        return $columns[$i]['searchable'] == 'true';
+        return $this->get("columns.$i.searchable") == 'true';
     }
 
     /**
@@ -145,7 +144,7 @@ class Request extends IlluminateRequest
      */
     public function keyword()
     {
-        return $this->get('search')['value'];
+        return $this->get("search.0.value");
     }
 
     /**
@@ -156,7 +155,7 @@ class Request extends IlluminateRequest
      */
     public function columnName($i)
     {
-        $column = $this->get('columns')[$i];
+        $column = $this->get("columns.$i");
 
         return isset($column['name']) && $column['name'] <> '' ? $column['name'] : $column['data'];
     }
