@@ -1,13 +1,14 @@
 <?php
 
-use yajra\Datatables\Datatables;
-use yajra\Datatables\Html\Builder;
-use yajra\Datatables\Request;
+use Yajra\Datatables\Datatables;
+use Yajra\Datatables\Html\Builder;
+use Yajra\Datatables\Request;
 use Mockery as m;
 
-function app($instance) {
+function app($instance)
+{
     switch ($instance) {
-        case 'yajra\Datatables\Html\Builder':
+        case 'Yajra\Datatables\Html\Builder':
             return new Builder(
                 m::mock('Illuminate\Contracts\Config\Repository'),
                 m::mock('Illuminate\Contracts\View\Factory'),
@@ -15,13 +16,18 @@ function app($instance) {
                 m::mock('Illuminate\Routing\UrlGenerator'),
                 m::mock('Collective\Html\FormBuilder')
             );
+        case 'view':
+            return m::mock('Illuminate\Contracts\View\Factory', function($mock) {
+                $mock->shouldReceive('exists')->andReturn(false);
+            });
     }
 
-	return new Datatables(Request::capture());
+    return new Datatables(Request::capture());
 }
 
-function view($view = null, array $data = []) {
-    if ( ! $view) {
+function view($view = null, array $data = [])
+{
+    if (! $view) {
         return new BladeView();
     }
 

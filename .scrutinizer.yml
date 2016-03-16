@@ -7,3 +7,4 @@ filter:
     excluded_paths:
         - 'tests/*'
         - 'vendor/*'
+        - '.github/*'

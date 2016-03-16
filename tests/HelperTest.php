@@ -2,11 +2,10 @@
 
 
 use Carbon\Carbon;
-use yajra\Datatables\Helper;
+use Yajra\Datatables\Helper;
 
 class HelperTest extends PHPUnit_Framework_TestCase
 {
-
     public function test_include_in_array()
     {
         $data = ['id' => 1];
@@ -41,6 +40,27 @@ class HelperTest extends PHPUnit_Framework_TestCase
             'id'   => 1,
             'user' => 'John',
             'foo'  => 'bar',
+        ];
+        $this->assertEquals($expected, $data);
+    }
+
+    public function test_include_in_array_with_order_outside_of_array_length()
+    {
+        $data = [
+            'id'  => 1,
+            'foo' => 'bar',
+        ];
+        $item = [
+            'name'    => 'user',
+            'content' => 'John',
+            'order'   => 2,
+        ];
+
+        $data     = Helper::includeInArray($item, $data);
+        $expected = [
+            'id'   => 1,
+            'foo'  => 'bar',
+            'user' => 'John',
         ];
         $this->assertEquals($expected, $data);
     }
@@ -263,5 +283,4 @@ class HelperTest extends PHPUnit_Framework_TestCase
         $result  = Helper::replacePatternWithKeyword($subject, $keyword, '$1');
         $this->assertEquals(['foo in ?', ['bar']], $result);
     }
-
 }

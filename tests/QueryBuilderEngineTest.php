@@ -3,8 +3,8 @@
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Config;
 use Mockery as m;
-use yajra\Datatables\Datatables;
-use yajra\Datatables\Request;
+use Yajra\Datatables\Datatables;
+use Yajra\Datatables\Request;
 
 require_once 'helper.php';
 
@@ -113,7 +113,7 @@ class TestDatatablesQueryBuilderEngine extends PHPUnit_Framework_TestCase
         $builder->shouldReceive('get')->once()->andReturn($data);
 
         // pagination
-        if ( ! $showAllRecords) {
+        if (! $showAllRecords) {
             $builder->shouldReceive('skip')->once()->andReturn($builder);
             $builder->shouldReceive('take')->once()->andReturn($builder);
         }
