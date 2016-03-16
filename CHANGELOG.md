@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v6.9.2 - 2016-03-16
+    - Pull-up isOracleSQL and fix condition using oci8.
+    
 ###v6.9.1 - 2016-03-11
     - Add default array value when getting columns. Fix #448
     

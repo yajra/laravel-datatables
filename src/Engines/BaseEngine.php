@@ -873,4 +873,14 @@ abstract class BaseEngine implements DataTableEngineContract
 
         return $str;
     }
+
+    /**
+     * Check if the current sql language is based on oracle syntax.
+     *
+     * @return bool
+     */
+    protected function isOracleSql()
+    {
+        return in_array($this->database, ['oracle', 'oci8']);
+    }
 }
