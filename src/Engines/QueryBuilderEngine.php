@@ -318,6 +318,16 @@ class QueryBuilderEngine extends BaseEngine
                     );
                 }
             } else {
+                if (count(explode('.', $column)) > 1) {
+                    $eagerLoads     = $this->getEagerLoads();
+                    $parts          = explode('.', $column);
+                    $relationColumn = array_pop($parts);
+                    $relation       = implode('.', $parts);
+                    if (in_array($relation, $eagerLoads)) {
+                        $column = $this->joinEagerLoadedColumn($relation, $relationColumn);
+                    }
+                }
+
                 $column  = $this->castColumn($column);
                 $keyword = $this->getSearchKeyword($index);
 
