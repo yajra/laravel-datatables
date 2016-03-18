@@ -22,6 +22,7 @@ class Column extends Fluent
         $attributes['searchable'] = isset($attributes['searchable']) ? $attributes['searchable'] : true;
         $attributes['exportable'] = isset($attributes['exportable']) ? $attributes['exportable'] : true;
         $attributes['printable']  = isset($attributes['printable']) ? $attributes['printable'] : true;
+        $attributes['footer']     = isset($attributes['footer']) ? $attributes['footer'] : '';
 
         // Allow methods override attribute value
         foreach ($attributes as $attribute => $value) {

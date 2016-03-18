@@ -182,6 +182,7 @@ class Builder
         foreach ($parameters['columns'] as $i => $column) {
             unset($parameters['columns'][$i]['exportable']);
             unset($parameters['columns'][$i]['printable']);
+            unset($parameters['columns'][$i]['footer']);
 
             if (isset($column['render'])) {
                 $columnFunctions[$i]                 = $column['render'];
@@ -396,6 +397,7 @@ class Builder
             'searchable'     => false,
             'exportable'     => false,
             'printable'      => true,
+            'footer'         => '&nbsp;',
         ], $attributes);
         $this->collection->push(new Column($attributes));
 
@@ -419,13 +421,25 @@ class Builder
      * Generate DataTable's table html.
      *
      * @param  array $attributes
+     * @param bool $footer
      * @return string
      */
-    public function table(array $attributes = [])
+    public function table(array $attributes = [], $footer = false)
     {
         $this->tableAttributes = array_merge($this->tableAttributes, $attributes);
 
-        return '<table ' . $this->html->attributes($this->tableAttributes) . '></table>';
+        $footerHtml = '';
+        if ($footer) {
+            $footerHtml = '<tfoot>';
+            $footerHtml .= '<tr>';
+            foreach ($this->collection->all() as $column) {
+                $footerHtml .= '<td>' . $column->footer . '</td>';
+            }
+            $footerHtml .= '</tr>';
+            $footerHtml .= '</tfoot>';
+        }
+
+        return '<table ' . $this->html->attributes($this->tableAttributes) . '>' . $footerHtml . '</table>';
     }
 
     /**
