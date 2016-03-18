@@ -395,43 +395,40 @@ class Datatables
         }
 
         if (! empty($this->input['search']['value'])) {
-            $this->query->where(function ($query) use ($columns, $input) {
-                for ($i = 0, $c = count($columns); $i < $c; $i++) {
-                    if ($columns[$i]['searchable'] == "true" and ! empty($columns[$i]['name'])) {
-                        $column = $columns[$i]['name'];
+            for ($i = 0, $c = count($columns); $i < $c; $i++) {
+                if ($columns[$i]['searchable'] == "true" and !empty($columns[$i]['name'])) {
+                    $column = $columns[$i]['name'];
+                    if (stripos($column, ' AS ') !== false) {
+                        $column = $this->getColumnName($column);
+                    }
 
-                        if (stripos($column, ' AS ') !== false) {
-                            $column = $this->getColumnName($column);
-                        }
+                    // there's no need to put the prefix unless the column name is prefixed with the table name.
+                    $column = $this->prefixColumn($column);
 
-                        // there's no need to put the prefix unless the column name is prefixed with the table name.
-                        $column = $this->prefixColumn($column);
+                    $keyword = '%' . $input['search']['value'] . '%';
+                    if ($this->isWildcard()) {
+                        $keyword = $this->wildcardLikeString($input['search']['value']);
+                    }
 
-                        $keyword = '%' . $input['search']['value'] . '%';
-                        if ($this->isWildcard()) {
-                            $keyword = $this->wildcardLikeString($input['search']['value']);
-                        }
-
-                        // Check if the database driver is PostgreSQL
-                        // If it is, cast the current column to TEXT datatype
-                        $cast_begin = null;
-                        $cast_end = null;
-                        if ($this->databaseDriver() === 'pgsql') {
-                            $cast_begin = "CAST(";
-                            $cast_end = " as TEXT)";
-                        }
-
-                        // wrap column possibly allow reserved words to be used as column
-                        $column = $this->wrapColumn($column);
-                        if ($this->isCaseInsensitive()) {
-                            $query->orWhereRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?',
-                                [strtolower($keyword)]);
-                        } else {
-                            $query->orWhereRaw($cast_begin . $column . $cast_end . ' LIKE ?', [$keyword]);
-                        }
+                    // Check if the database driver is PostgreSQL
+                    // If it is, cast the current column to TEXT datatype
+                    $cast_begin = null;
+                    $cast_end = null;
+                    if ($this->databaseDriver() === 'pgsql') {
+                        $cast_begin = "CAST(";
+                        $cast_end = " as TEXT)";
+                    }
+                    // wrap column possibly allow reserved words to be used as column
+                    $column = $this->wrapColumn($column);
+                    if ($this->isCaseInsensitive()) {
+                        $this->query->orHavingRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?',
+                            [strtolower($keyword)]);
+                    } else {
+                        $having_query[] = $this->query->orHavingRaw($cast_begin . $column . $cast_end . ' LIKE ?',
+                            [$keyword]);
                     }
                 }
-            });
+            }
         }
     }
 
