@@ -421,11 +421,15 @@ class Datatables
                     // wrap column possibly allow reserved words to be used as column
                     $column = $this->wrapColumn($column);
                     if ($this->isCaseInsensitive()) {
-                        $this->query->orHavingRaw('LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?',
-                            [strtolower($keyword)]);
+                        $this->query->orHavingRaw(
+                            'LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?',
+                            [strtolower($keyword)]
+                        );
                     } else {
-                        $having_query[] = $this->query->orHavingRaw($cast_begin . $column . $cast_end . ' LIKE ?',
-                            [$keyword]);
+                        $this->query->orHavingRaw(
+                            $cast_begin . $column . $cast_end . ' LIKE ?',
+                            [$keyword]
+                        );
                     }
                 }
             }
