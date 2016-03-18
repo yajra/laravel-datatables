@@ -8,6 +8,10 @@
 
 ##Change Log
 
+###v6.9.4 - 2016-03-18
+    - Use full namespace in app() helper. 
+    - PR #465, credits to @ligne13.
+
 ###v6.9.3 - 2016-03-17
     - Adds an option to pass parameters to column render.
     - Allows passing instance of Column into Builder columns.
