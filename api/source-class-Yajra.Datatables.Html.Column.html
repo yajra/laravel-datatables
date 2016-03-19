@@ -197,29 +197,35 @@
 </span><span id="43" class="l"><a href="#43">43: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> parseRender(<span class="php-var">$value</span>)
 </span><span id="44" class="l"><a href="#44">44: </a>    {
 </span><span id="45" class="l"><a href="#45">45: </a>        <span class="php-comment">/** @var \Illuminate\Contracts\View\Factory $view */</span>
-</span><span id="46" class="l"><a href="#46">46: </a>        <span class="php-var">$view</span> = app(<span class="php-quote">'view'</span>);
-</span><span id="47" class="l"><a href="#47">47: </a>
-</span><span id="48" class="l"><a href="#48">48: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">is_callable</span>(<span class="php-var">$value</span>)) {
-</span><span id="49" class="l"><a href="#49">49: </a>            <span class="php-keyword1">return</span> value(<span class="php-var">$value</span>);
-</span><span id="50" class="l"><a href="#50">50: </a>        } <span class="php-keyword1">elseif</span> (<span class="php-var">$view</span>-&gt;exists(<span class="php-var">$value</span>)) {
-</span><span id="51" class="l"><a href="#51">51: </a>            <span class="php-keyword1">return</span> <span class="php-var">$view</span>-&gt;make(<span class="php-var">$value</span>)-&gt;render();
+</span><span id="46" class="l"><a href="#46">46: </a>        <span class="php-var">$view</span>       = app(<span class="php-quote">'view'</span>);
+</span><span id="47" class="l"><a href="#47">47: </a>        <span class="php-var">$parameters</span> = [];
+</span><span id="48" class="l"><a href="#48">48: </a>
+</span><span id="49" class="l"><a href="#49">49: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">is_array</span>(<span class="php-var">$value</span>)) {
+</span><span id="50" class="l"><a href="#50">50: </a>            <span class="php-var">$parameters</span> = array_except(<span class="php-var">$value</span>, <span class="php-num">0</span>);
+</span><span id="51" class="l"><a href="#51">51: </a>            <span class="php-var">$value</span>      = <span class="php-var">$value</span>[<span class="php-num">0</span>];
 </span><span id="52" class="l"><a href="#52">52: </a>        }
 </span><span id="53" class="l"><a href="#53">53: </a>
-</span><span id="54" class="l"><a href="#54">54: </a>        <span class="php-keyword1">return</span> <span class="php-var">$value</span> ? <span class="php-var">$this</span>-&gt;parseRenderAsString(<span class="php-var">$value</span>) : <span class="php-keyword1">null</span>;
-</span><span id="55" class="l"><a href="#55">55: </a>    }
-</span><span id="56" class="l"><a href="#56">56: </a>
-</span><span id="57" class="l"><a href="#57">57: </a>    <span class="php-comment">/**
-</span></span><span id="58" class="l"><a href="#58">58: </a><span class="php-comment">     * Display render value as is.
-</span></span><span id="59" class="l"><a href="#59">59: </a><span class="php-comment">     *
-</span></span><span id="60" class="l"><a href="#60">60: </a><span class="php-comment">     * @param mixed $value
-</span></span><span id="61" class="l"><a href="#61">61: </a><span class="php-comment">     * @return string
-</span></span><span id="62" class="l"><a href="#62">62: </a><span class="php-comment">     */</span>
-</span><span id="63" class="l"><a href="#63">63: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">function</span> parseRenderAsString(<span class="php-var">$value</span>)
-</span><span id="64" class="l"><a href="#64">64: </a>    {
-</span><span id="65" class="l"><a href="#65">65: </a>        <span class="php-keyword1">return</span> <span class="php-quote">&quot;function(data,type,full,meta){return </span><span class="php-var">$value</span><span class="php-quote">;}&quot;</span>;
-</span><span id="66" class="l"><a href="#66">66: </a>    }
-</span><span id="67" class="l"><a href="#67">67: </a>}
-</span><span id="68" class="l"><a href="#68">68: </a></span></code></pre>
+</span><span id="54" class="l"><a href="#54">54: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">is_callable</span>(<span class="php-var">$value</span>)) {
+</span><span id="55" class="l"><a href="#55">55: </a>            <span class="php-keyword1">return</span> <span class="php-var">$value</span>(<span class="php-var">$parameters</span>);
+</span><span id="56" class="l"><a href="#56">56: </a>        } <span class="php-keyword1">elseif</span> (<span class="php-var">$view</span>-&gt;exists(<span class="php-var">$value</span>)) {
+</span><span id="57" class="l"><a href="#57">57: </a>            <span class="php-keyword1">return</span> <span class="php-var">$view</span>-&gt;make(<span class="php-var">$value</span>)-&gt;with(<span class="php-var">$parameters</span>)-&gt;render();
+</span><span id="58" class="l"><a href="#58">58: </a>        }
+</span><span id="59" class="l"><a href="#59">59: </a>
+</span><span id="60" class="l"><a href="#60">60: </a>        <span class="php-keyword1">return</span> <span class="php-var">$value</span> ? <span class="php-var">$this</span>-&gt;parseRenderAsString(<span class="php-var">$value</span>) : <span class="php-keyword1">null</span>;
+</span><span id="61" class="l"><a href="#61">61: </a>    }
+</span><span id="62" class="l"><a href="#62">62: </a>
+</span><span id="63" class="l"><a href="#63">63: </a>    <span class="php-comment">/**
+</span></span><span id="64" class="l"><a href="#64">64: </a><span class="php-comment">     * Display render value as is.
+</span></span><span id="65" class="l"><a href="#65">65: </a><span class="php-comment">     *
+</span></span><span id="66" class="l"><a href="#66">66: </a><span class="php-comment">     * @param mixed $value
+</span></span><span id="67" class="l"><a href="#67">67: </a><span class="php-comment">     * @return string
+</span></span><span id="68" class="l"><a href="#68">68: </a><span class="php-comment">     */</span>
+</span><span id="69" class="l"><a href="#69">69: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">function</span> parseRenderAsString(<span class="php-var">$value</span>)
+</span><span id="70" class="l"><a href="#70">70: </a>    {
+</span><span id="71" class="l"><a href="#71">71: </a>        <span class="php-keyword1">return</span> <span class="php-quote">&quot;function(data,type,full,meta){return </span><span class="php-var">$value</span><span class="php-quote">;}&quot;</span>;
+</span><span id="72" class="l"><a href="#72">72: </a>    }
+</span><span id="73" class="l"><a href="#73">73: </a>}
+</span><span id="74" class="l"><a href="#74">74: </a></span></code></pre>
 
 	<div id="footer">
 		 API documentation generated by <a href="http://apigen.org">ApiGen</a>
