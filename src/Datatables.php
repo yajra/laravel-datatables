@@ -49,7 +49,7 @@ class Datatables
      * @param  mixed $builder
      * @return mixed
      */
-    public function of($builder)
+    public static function of($builder)
     {
         $datatables          = (isset($this) ? $this : app('Yajra\Datatables\Datatables')); # call statically?
         $datatables->builder = $builder;
