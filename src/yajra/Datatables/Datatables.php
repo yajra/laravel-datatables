@@ -21,6 +21,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Illuminate\View\Compilers\BladeCompiler;
+use DB;
 
 class Datatables
 {
@@ -424,12 +425,12 @@ class Datatables
                         $this->query->orHavingRaw(
                             'LOWER(' . $cast_begin . $column . $cast_end . ') LIKE ?',
                             [strtolower($keyword)]
-                        );
+                        )->groupBy(DB::raw($column));
                     } else {
                         $this->query->orHavingRaw(
                             $cast_begin . $column . $cast_end . ' LIKE ?',
                             [$keyword]
-                        );
+                        )->groupBy(DB::raw($column));
                     }
                 }
             }
