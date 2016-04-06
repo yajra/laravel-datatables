@@ -189,14 +189,28 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function setupKeyword($value)
     {
-        $keyword = '%' . $value . '%';
-        if ($this->isWildcard()) {
-            $keyword = $this->wildcardLikeString($value);
-        }
-        // remove escaping slash added on js script request
-        $keyword = str_replace('\\', '%', $keyword);
+        if ($this->isSmartSearch()) {
+            $keyword = '%' . $value . '%';
+            if ($this->isWildcard()) {
+                $keyword = $this->wildcardLikeString($value);
+            }
+            // remove escaping slash added on js script request
+            $keyword = str_replace('\\', '%', $keyword);
 
-        return $keyword;
+            return $keyword;
+        }
+
+        return $value;
+    }
+
+    /**
+     * Check if DataTables uses smart search.
+     *
+     * @return bool
+     */
+    protected function isSmartSearch()
+    {
+        return Config::get('datatables.search.smart', true);
     }
 
     /**
@@ -765,6 +779,19 @@ abstract class BaseEngine implements DataTableEngineContract
     public function whitelist($whitelist = '*')
     {
         $this->columnDef['whitelist'] = $whitelist;
+
+        return $this;
+    }
+
+    /**
+     * Set smart search config at runtime.
+     *
+     * @param bool $bool
+     * @return $this
+     */
+    public function smart($bool = true)
+    {
+        Config::set('datatables.search.smart', $bool);
 
         return $this;
     }
