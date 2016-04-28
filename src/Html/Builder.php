@@ -425,7 +425,14 @@ class Builder
     {
         $this->tableAttributes = array_merge($this->tableAttributes, $attributes);
 
-        return '<table ' . $this->html->attributes($this->tableAttributes) . '></table>';
+        $th = [];
+        foreach ($this->collection->only(['class', 'id', 'width', 'style']) as $row) {
+            $th[] = '<th ' . $this->html->attributes($row) . '">' . $row['title'] . '</th>';
+        }
+
+        $htmlAttr = $this->html->attributes($this->tableAttributes);
+
+        return '<table ' . $htmlAttr . '><thead><tr>' . implode('', $th) . '</tr></thead></table>';
     }
 
     /**
