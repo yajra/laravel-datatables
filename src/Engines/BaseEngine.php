@@ -323,7 +323,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * Add column in collection.
      *
      * @param string $name
-     * @param string $content
+     * @param string|callable $content
      * @param bool|int $order
      * @return $this
      */
@@ -340,7 +340,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * Edit column's content.
      *
      * @param string $name
-     * @param string $content
+     * @param string|callable $content
      * @return $this
      */
     public function editColumn($name, $content)
