@@ -427,7 +427,9 @@ class Builder
 
         $th = [];
         foreach ($this->collection->toArray() as $row) {
-            $thAttr = $this->html->attributes(array_only($row, ['class', 'id', 'width', 'style']));
+            $thAttr = $this->html->attributes(
+                array_only($row, ['class', 'id', 'width', 'style', 'data-class', 'data-hide'])
+            );
             $th[]   = '<th ' . $thAttr . '">' . $row['title'] . '</th>';
         }
 
