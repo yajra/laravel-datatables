@@ -420,26 +420,59 @@ class Builder
     /**
      * Generate DataTable's table html.
      *
-     * @param  array $attributes
-     * @param bool $footer
+     * @param array $attributes
+     * @param bool $drawFooter
      * @return string
      */
-    public function table(array $attributes = [], $footer = false)
+    public function table(array $attributes = [], $drawFooter = false)
     {
         $this->tableAttributes = array_merge($this->tableAttributes, $attributes);
 
-        $footerHtml = '';
-        if ($footer) {
-            $footerHtml = '<tfoot>';
-            $footerHtml .= '<tr>';
-            foreach ($this->collection->all() as $column) {
-                $footerHtml .= '<td>' . $column->footer . '</td>';
-            }
-            $footerHtml .= '</tr>';
-            $footerHtml .= '</tfoot>';
+        $th       = $this->compileTableHeaders();
+        $htmlAttr = $this->html->attributes($this->tableAttributes);
+
+        $tableHtml = '<table ' . $htmlAttr . '>';
+        $tableHtml .= '<thead><tr>' . implode('', $th) . '</tr></thead>';
+        if ($drawFooter) {
+            $tf = $this->compileTableFooter();
+            $tableHtml .= '<tfoot><tr>' . implode('', $tf) . '</tr></tfoot>';
+        }
+        $tableHtml .= '</table>';
+
+        return $tableHtml;
+    }
+
+    /**
+     * Compile table headers and to support responsive extension.
+     *
+     * @return array
+     */
+    private function compileTableHeaders()
+    {
+        $th = [];
+        foreach ($this->collection->toArray() as $row) {
+            $thAttr = $this->html->attributes(
+                array_only($row, ['class', 'id', 'width', 'style', 'data-class', 'data-hide'])
+            );
+            $th[]   = '<th ' . $thAttr . '>' . $row['title'] . '</th>';
         }
 
-        return '<table ' . $this->html->attributes($this->tableAttributes) . '>' . $footerHtml . '</table>';
+        return $th;
+    }
+
+    /**
+     * Compile table footer contents.
+     *
+     * @return array
+     */
+    private function compileTableFooter()
+    {
+        $footer = [];
+        foreach ($this->collection->toArray() as $row) {
+            $footer[] = '<td>' . $row['footer'] . '</td>';
+        }
+
+        return $footer;
     }
 
     /**

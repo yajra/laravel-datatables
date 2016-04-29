@@ -8,8 +8,16 @@
 
 ##Change Log
 
+###v6.10.1 - 2016-03-22
+    - Fix eager loading column search. PR #469.
+    - Fix issue #443.
+
+###v6.10.0 - 2016-03-19
+    - Add feature to enable/disable smart search via config or during runtime. Fix #423
+    - See PR #452 for details.
+
 ###v6.9.4 - 2016-03-18
-    - Use full namespace in app() helper. 
+    - Use full namespace in app() helper.
     - PR #465, credits to @ligne13.
 
 ###v6.9.3 - 2016-03-17
