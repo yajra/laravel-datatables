@@ -430,7 +430,7 @@ class Builder
             $thAttr = $this->html->attributes(
                 array_only($row, ['class', 'id', 'width', 'style', 'data-class', 'data-hide'])
             );
-            $th[]   = '<th ' . $thAttr . '">' . $row['title'] . '</th>';
+            $th[]   = '<th ' . $thAttr . '>' . $row['title'] . '</th>';
         }
 
         $htmlAttr = $this->html->attributes($this->tableAttributes);
