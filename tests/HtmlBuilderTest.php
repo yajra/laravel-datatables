@@ -74,6 +74,7 @@ class HtmlBuilderTest extends PHPUnit_Framework_TestCase
         $expected = '(function(window,$){window.LaravelDataTables=window.LaravelDataTables||{};window.LaravelDataTables["foo"]=$("#foo").DataTable({"serverSide":true,"processing":true,"ajax":"ajax-url","columns":[{"defaultContent":"<input type=\"checkbox\" id=\"foo\"\/>","title":"<input type=\"checkbox \"id\"=\"dataTablesCheckbox\"\/>","data":"checkbox","name":"checkbox","orderable":false,"searchable":false,"width":"10px","id":"foo"},{"name":"foo","data":"foo","title":"Foo","orderable":true,"searchable":true},{"name":"bar","data":"foo","title":"Bar","orderable":true,"searchable":true},{"name":"id","data":"id","title":"Id","orderable":true,"searchable":true},{"name":"a","data":"a","title":"A","orderable":true,"searchable":true},{"defaultContent":"","data":"action","name":"action","title":"Options","render":null,"orderable":false,"searchable":false}],"bFilter":false});})(window,jQuery);';
         $this->assertEquals($expected, $builder->generateScripts());
     }
+
     public function test_generate_table_html_with_footer_content()
     {
         $builder = app(Builder::class);
