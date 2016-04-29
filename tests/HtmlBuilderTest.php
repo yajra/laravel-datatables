@@ -12,7 +12,7 @@ class HtmlBuilderTest extends PHPUnit_Framework_TestCase
     public function test_generate_table_html()
     {
         $builder = app(Builder::class);
-        $builder->html->shouldReceive('attributes')->times(2)->andReturn('id="foo"');
+        $builder->html->shouldReceive('attributes')->times(8)->andReturn('id="foo"');
         $builder->form->shouldReceive('checkbox')
                       ->once()
                       ->andReturn('<input type="checkbox "id"="dataTablesCheckbox"/>');
@@ -25,7 +25,8 @@ class HtmlBuilderTest extends PHPUnit_Framework_TestCase
                 ->ajax('ajax-url')
                 ->parameters(['bFilter' => false]);
         $table = $builder->table(['id' => 'foo']);
-        $this->assertEquals('<table id="foo"></table>', $table);
+        $expected = '<table id="foo"><thead><tr><th id="foo"><input type="checkbox "id"="dataTablesCheckbox"/></th><th id="foo">Foo</th><th id="foo">Bar</th><th id="foo">Id</th><th id="foo">A</th><th id="foo">Options</th></tr></thead></table>';
+        $this->assertEquals($expected, $table);
 
         $builder->view->shouldReceive('make')->times(2)->andReturn($builder->view);
         $builder->config->shouldReceive('get')->times(2)->andReturn('datatables::script');

@@ -425,7 +425,28 @@ class Builder
     {
         $this->tableAttributes = array_merge($this->tableAttributes, $attributes);
 
-        return '<table ' . $this->html->attributes($this->tableAttributes) . '></table>';
+        $th       = $this->compileTableHeaders();
+        $htmlAttr = $this->html->attributes($this->tableAttributes);
+
+        return '<table ' . $htmlAttr . '><thead><tr>' . implode('', $th) . '</tr></thead></table>';
+    }
+
+    /**
+     * Compile table headers and to support responsive extension.
+     *
+     * @return array
+     */
+    private function compileTableHeaders()
+    {
+        $th = [];
+        foreach ($this->collection->toArray() as $row) {
+            $thAttr = $this->html->attributes(
+                array_only($row, ['class', 'id', 'width', 'style', 'data-class', 'data-hide'])
+            );
+            $th[]   = '<th ' . $thAttr . '>' . $row['title'] . '</th>';
+        }
+
+        return $th;
     }
 
     /**
