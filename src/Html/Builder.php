@@ -397,7 +397,7 @@ class Builder
             'searchable'     => false,
             'exportable'     => false,
             'printable'      => true,
-            'footer'         => '&nbsp;',
+            'footer'         => '',
         ], $attributes);
         $this->collection->push(new Column($attributes));
 
