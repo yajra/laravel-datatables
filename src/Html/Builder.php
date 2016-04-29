@@ -469,7 +469,7 @@ class Builder
     {
         $footer = [];
         foreach ($this->collection->toArray() as $row) {
-            $footer[] = '<td>' . $row['footer'] . '</td>';
+            $footer[] = '<th>' . $row['footer'] . '</th>';
         }
 
         return $footer;
