@@ -182,6 +182,7 @@ class Builder
         foreach ($parameters['columns'] as $i => $column) {
             unset($parameters['columns'][$i]['exportable']);
             unset($parameters['columns'][$i]['printable']);
+            unset($parameters['columns'][$i]['footer']);
 
             if (isset($column['render'])) {
                 $columnFunctions[$i]                 = $column['render'];
@@ -396,6 +397,7 @@ class Builder
             'searchable'     => false,
             'exportable'     => false,
             'printable'      => true,
+            'footer'         => '',
         ], $attributes);
         $this->collection->push(new Column($attributes));
 
@@ -418,17 +420,26 @@ class Builder
     /**
      * Generate DataTable's table html.
      *
-     * @param  array $attributes
+     * @param array $attributes
+     * @param bool $drawFooter
      * @return string
      */
-    public function table(array $attributes = [])
+    public function table(array $attributes = [], $drawFooter = false)
     {
         $this->tableAttributes = array_merge($this->tableAttributes, $attributes);
 
         $th       = $this->compileTableHeaders();
         $htmlAttr = $this->html->attributes($this->tableAttributes);
 
-        return '<table ' . $htmlAttr . '><thead><tr>' . implode('', $th) . '</tr></thead></table>';
+        $tableHtml = '<table ' . $htmlAttr . '>';
+        $tableHtml .= '<thead><tr>' . implode('', $th) . '</tr></thead>';
+        if ($drawFooter) {
+            $tf = $this->compileTableFooter();
+            $tableHtml .= '<tfoot><tr>' . implode('', $tf) . '</tr></tfoot>';
+        }
+        $tableHtml .= '</table>';
+
+        return $tableHtml;
     }
 
     /**
@@ -447,6 +458,21 @@ class Builder
         }
 
         return $th;
+    }
+
+    /**
+     * Compile table footer contents.
+     *
+     * @return array
+     */
+    private function compileTableFooter()
+    {
+        $footer = [];
+        foreach ($this->collection->toArray() as $row) {
+            $footer[] = '<th>' . $row['footer'] . '</th>';
+        }
+
+        return $footer;
     }
 
     /**
