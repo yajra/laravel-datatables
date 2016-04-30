@@ -8,6 +8,12 @@
 
 ##Change Log
 
+###v6.11.0 - 2016-04-30
+    - Patch phpdoc to fix #531. PR #534
+    - Fix eager loading ordering for belongsToMany relationship. Fix #461, PR #490
+    - Add support for responsive extension. Fix #526, PR #533
+    - Add option to create a table footer from builder defined via column def. PR #471
+
 ###v6.10.1 - 2016-03-22
     - Fix eager loading column search. PR #469.
     - Fix issue #443.
