@@ -40,7 +40,7 @@ class DatatablesServiceProvider extends ServiceProvider
     /**
      * Publish datatables assets.
      */
-    private function publishAssets()
+    protected function publishAssets()
     {
         $this->publishes([
             __DIR__ . '/config/config.php' => config_path('datatables.php'),
@@ -58,7 +58,7 @@ class DatatablesServiceProvider extends ServiceProvider
     /**
      * Register datatables commands.
      */
-    private function registerCommands()
+    protected function registerCommands()
     {
         $this->commands(DataTablesMakeCommand::class);
         $this->commands(DataTablesScopeCommand::class);
@@ -89,7 +89,7 @@ class DatatablesServiceProvider extends ServiceProvider
      *
      * @return bool
      */
-    private function isLumen()
+    protected function isLumen()
     {
         return str_contains($this->app->version(), 'Lumen');
     }
@@ -97,7 +97,7 @@ class DatatablesServiceProvider extends ServiceProvider
     /**
      * Register 3rd party providers.
      */
-    private function registerRequiredProviders()
+    protected function registerRequiredProviders()
     {
         $this->app->register(HtmlServiceProvider::class);
         $this->app->register(ExcelServiceProvider::class);
@@ -106,7 +106,7 @@ class DatatablesServiceProvider extends ServiceProvider
     /**
      * Create aliases for the dependency.
      */
-    private function registerAliases()
+    protected function registerAliases()
     {
         if (class_exists('Illuminate\Foundation\AliasLoader')) {
             $loader = \Illuminate\Foundation\AliasLoader::getInstance();
