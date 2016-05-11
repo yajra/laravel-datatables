@@ -8,6 +8,10 @@
 
 ##Change Log
 
+###v6.11.1 - 2016-05-11
+    - Use Str class helper instead of strlen for better unicode support.
+    - Change method from private to protected as requested on #544.
+
 ###v6.11.0 - 2016-04-30
     - Patch phpdoc to fix #531. PR #534
     - Fix eager loading ordering for belongsToMany relationship. Fix #461, PR #490
