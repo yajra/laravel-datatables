@@ -387,7 +387,7 @@
 </span><span id="233" class="l"><a href="#233">233: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> wildcardLikeString(<span class="php-var">$str</span>, <span class="php-var">$lowercase</span> = <span class="php-keyword1">true</span>)
 </span><span id="234" class="l"><a href="#234">234: </a>    {
 </span><span id="235" class="l"><a href="#235">235: </a>        <span class="php-var">$wild</span>   = <span class="php-quote">'%'</span>;
-</span><span id="236" class="l"><a href="#236">236: </a>        <span class="php-var">$length</span> = <span class="php-keyword2">strlen</span>(<span class="php-var">$str</span>);
+</span><span id="236" class="l"><a href="#236">236: </a>        <span class="php-var">$length</span> = Str::length(<span class="php-var">$str</span>);
 </span><span id="237" class="l"><a href="#237">237: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$length</span>) {
 </span><span id="238" class="l"><a href="#238">238: </a>            <span class="php-keyword1">for</span> (<span class="php-var">$i</span> = <span class="php-num">0</span>; <span class="php-var">$i</span> &lt; <span class="php-var">$length</span>; <span class="php-var">$i</span>++) {
 </span><span id="239" class="l"><a href="#239">239: </a>                <span class="php-var">$wild</span> .= <span class="php-var">$str</span>[<span class="php-var">$i</span>] . <span class="php-quote">'%'</span>;

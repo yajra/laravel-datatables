@@ -194,7 +194,7 @@
 </span><span id="40" class="l"><a href="#40"> 40: </a>    <span class="php-comment">/**
 </span></span><span id="41" class="l"><a href="#41"> 41: </a><span class="php-comment">     * Publish datatables assets.
 </span></span><span id="42" class="l"><a href="#42"> 42: </a><span class="php-comment">     */</span>
-</span><span id="43" class="l"><a href="#43"> 43: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">function</span> publishAssets()
+</span><span id="43" class="l"><a href="#43"> 43: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> publishAssets()
 </span><span id="44" class="l"><a href="#44"> 44: </a>    {
 </span><span id="45" class="l"><a href="#45"> 45: </a>        <span class="php-var">$this</span>-&gt;publishes([
 </span><span id="46" class="l"><a href="#46"> 46: </a>            __DIR__ . <span class="php-quote">'/config/config.php'</span> =&gt; config_path(<span class="php-quote">'datatables.php'</span>),
@@ -212,7 +212,7 @@
 </span><span id="58" class="l"><a href="#58"> 58: </a>    <span class="php-comment">/**
 </span></span><span id="59" class="l"><a href="#59"> 59: </a><span class="php-comment">     * Register datatables commands.
 </span></span><span id="60" class="l"><a href="#60"> 60: </a><span class="php-comment">     */</span>
-</span><span id="61" class="l"><a href="#61"> 61: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">function</span> registerCommands()
+</span><span id="61" class="l"><a href="#61"> 61: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> registerCommands()
 </span><span id="62" class="l"><a href="#62"> 62: </a>    {
 </span><span id="63" class="l"><a href="#63"> 63: </a>        <span class="php-var">$this</span>-&gt;commands(DataTablesMakeCommand::<span class="php-keyword1">class</span>);
 </span><span id="64" class="l"><a href="#64"> 64: </a>        <span class="php-var">$this</span>-&gt;commands(DataTablesScopeCommand::<span class="php-keyword1">class</span>);
@@ -243,7 +243,7 @@
 </span></span><span id="89" class="l"><a href="#89"> 89: </a><span class="php-comment">     *
 </span></span><span id="90" class="l"><a href="#90"> 90: </a><span class="php-comment">     * @return bool
 </span></span><span id="91" class="l"><a href="#91"> 91: </a><span class="php-comment">     */</span>
-</span><span id="92" class="l"><a href="#92"> 92: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">function</span> isLumen()
+</span><span id="92" class="l"><a href="#92"> 92: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> isLumen()
 </span><span id="93" class="l"><a href="#93"> 93: </a>    {
 </span><span id="94" class="l"><a href="#94"> 94: </a>        <span class="php-keyword1">return</span> str_contains(<span class="php-var">$this</span>-&gt;app-&gt;version(), <span class="php-quote">'Lumen'</span>);
 </span><span id="95" class="l"><a href="#95"> 95: </a>    }
@@ -251,7 +251,7 @@
 </span><span id="97" class="l"><a href="#97"> 97: </a>    <span class="php-comment">/**
 </span></span><span id="98" class="l"><a href="#98"> 98: </a><span class="php-comment">     * Register 3rd party providers.
 </span></span><span id="99" class="l"><a href="#99"> 99: </a><span class="php-comment">     */</span>
-</span><span id="100" class="l"><a href="#100">100: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">function</span> registerRequiredProviders()
+</span><span id="100" class="l"><a href="#100">100: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> registerRequiredProviders()
 </span><span id="101" class="l"><a href="#101">101: </a>    {
 </span><span id="102" class="l"><a href="#102">102: </a>        <span class="php-var">$this</span>-&gt;app-&gt;register(HtmlServiceProvider::<span class="php-keyword1">class</span>);
 </span><span id="103" class="l"><a href="#103">103: </a>        <span class="php-var">$this</span>-&gt;app-&gt;register(ExcelServiceProvider::<span class="php-keyword1">class</span>);
@@ -260,7 +260,7 @@
 </span><span id="106" class="l"><a href="#106">106: </a>    <span class="php-comment">/**
 </span></span><span id="107" class="l"><a href="#107">107: </a><span class="php-comment">     * Create aliases for the dependency.
 </span></span><span id="108" class="l"><a href="#108">108: </a><span class="php-comment">     */</span>
-</span><span id="109" class="l"><a href="#109">109: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">function</span> registerAliases()
+</span><span id="109" class="l"><a href="#109">109: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> registerAliases()
 </span><span id="110" class="l"><a href="#110">110: </a>    {
 </span><span id="111" class="l"><a href="#111">111: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">class_exists</span>(<span class="php-quote">'Illuminate\Foundation\AliasLoader'</span>)) {
 </span><span id="112" class="l"><a href="#112">112: </a>            <span class="php-var">$loader</span> = \Illuminate\Foundation\AliasLoader::getInstance();
