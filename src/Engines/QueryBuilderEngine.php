@@ -283,6 +283,9 @@ class QueryBuilderEngine extends BaseEngine
         if ($this->database === 'pgsql') {
             $column = 'CAST(' . $column . ' as TEXT)';
         }
+        elseif ($this->database === 'firebird') {
+            $column = 'CAST(' . $column . ' as VARCHAR(255))';
+        }
 
         return $column;
     }
