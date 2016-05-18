@@ -8,6 +8,9 @@
 
 ##Change Log
 
+###v6.11.2 - 2016-05-18
+    - Add CAST for Firebird #552.
+
 ###v6.11.1 - 2016-05-11
     - Use Str class helper instead of strlen for better unicode support.
     - Change method from private to protected as requested on #544.
