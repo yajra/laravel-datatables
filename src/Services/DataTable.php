@@ -350,15 +350,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
             'order'   => [[0, 'desc']],
             'buttons' => [
                 'create',
-                [
-                    'extend'  => 'collection',
-                    'text'    => '<i class="fa fa-download"></i> Export',
-                    'buttons' => [
-                        'csv',
-                        'excel',
-                        'pdf',
-                    ],
-                ],
+                'export',
                 'print',
                 'reset',
                 'reload',

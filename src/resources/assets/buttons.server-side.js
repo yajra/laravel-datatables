@@ -22,6 +22,18 @@
         }
     };
 
+    DataTable.ext.buttons.export = {
+        extend: 'collection',
+
+        className: 'buttons-export',
+
+        text: function (dt) {
+            return '<i class="fa fa-download"></i> ' + dt.i18n('buttons.export', 'Export') + '&nbsp;<span class="caret"/>';
+        },
+
+        buttons: ['csv', 'excel', 'pdf']
+    };
+
     DataTable.ext.buttons.csv = {
         className: 'buttons-csv',
 
