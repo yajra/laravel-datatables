@@ -8,6 +8,10 @@
 
 ##Change Log
 
+###v6.11.3 - 2016-05-20
+    - Add export button collection. #568
+    - Fix default print preview view path. #569
+
 ###v6.11.2 - 2016-05-18
     - Add CAST for Firebird #552.
 
