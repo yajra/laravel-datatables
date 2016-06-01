@@ -8,6 +8,9 @@
 
 ##Change Log
 
+### v6.11.5 - 2016-06-01
+    - Fix HasOne relation which uses different methods to get foreign and other key. #585
+    
 ###v6.11.4 - 2016-05-30
     - Remove media screen to fix styles when printing. #583
     
