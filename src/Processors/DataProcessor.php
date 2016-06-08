@@ -53,11 +53,16 @@ class DataProcessor
     private $templates;
 
     /**
+     * @var int
+     */
+    private $start;
+
+    /**
      * @param mixed $results
      * @param array $columnDef
      * @param array $templates
      */
-    public function __construct($results, array $columnDef, array $templates)
+    public function __construct($results, array $columnDef, array $templates, $start)
     {
         $this->results       = $results;
         $this->appendColumns = $columnDef['append'];
@@ -65,6 +70,7 @@ class DataProcessor
         $this->excessColumns = $columnDef['excess'];
         $this->escapeColumns = $columnDef['escape'];
         $this->templates     = $templates;
+        $this->start         = $start;
     }
 
     /**
@@ -82,6 +88,10 @@ class DataProcessor
             $value = $this->editColumns($value, $row);
             $value = $this->setupRowVariables($value, $row);
             $value = $this->removeExcessColumns($value);
+
+            if(isset($value['index'])) {
+                $value['index'] = ++$this->start;
+            }
 
             $this->output[] = $object ? $value : $this->flatten($value);
         }
