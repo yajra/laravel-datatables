@@ -34,7 +34,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      *
      * @var string
      */
-    protected $printPreview;
+    protected $printPreview = 'datatables::print';
 
     /**
      * List of columns to be exported.
@@ -119,9 +119,8 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     public function printPreview()
     {
         $data = $this->getDataForPrint();
-        $view = $this->printPreview ?: 'datatables::print';
 
-        return $this->viewFactory->make($view, compact('data'));
+        return $this->viewFactory->make($this->printPreview, compact('data'));
     }
 
     /**
@@ -350,15 +349,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
             'order'   => [[0, 'desc']],
             'buttons' => [
                 'create',
-                [
-                    'extend'  => 'collection',
-                    'text'    => '<i class="fa fa-download"></i> Export',
-                    'buttons' => [
-                        'csv',
-                        'excel',
-                        'pdf',
-                    ],
-                ],
+                'export',
                 'print',
                 'reset',
                 'reload',

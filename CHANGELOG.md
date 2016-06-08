@@ -8,6 +8,23 @@
 
 ##Change Log
 
+### v6.11.5 - 2016-06-01
+    - Fix HasOne relation which uses different methods to get foreign and other key. #585
+    
+###v6.11.4 - 2016-05-30
+    - Remove media screen to fix styles when printing. #583
+    
+###v6.11.3 - 2016-05-20
+    - Add export button collection. #568
+    - Fix default print preview view path. #569
+
+###v6.11.2 - 2016-05-18
+    - Add CAST for Firebird #552.
+
+###v6.11.1 - 2016-05-11
+    - Use Str class helper instead of strlen for better unicode support.
+    - Change method from private to protected as requested on #544.
+
 ###v6.11.0 - 2016-04-30
     - Patch phpdoc to fix #531. PR #534
     - Fix eager loading ordering for belongsToMany relationship. Fix #461, PR #490

@@ -233,7 +233,7 @@ abstract class BaseEngine implements DataTableEngineContract
     public function wildcardLikeString($str, $lowercase = true)
     {
         $wild   = '%';
-        $length = strlen($str);
+        $length = Str::length($str);
         if ($length) {
             for ($i = 0; $i < $length; $i++) {
                 $wild .= $str[$i] . '%';
