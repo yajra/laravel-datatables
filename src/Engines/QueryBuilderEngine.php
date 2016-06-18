@@ -95,12 +95,22 @@ class QueryBuilderEngine extends BaseEngine
         // if its a normal query ( no union, having and distinct word )
         // replace the select with static text to improve performance
         if (! Str::contains(Str::lower($myQuery->toSql()), ['union', 'having', 'distinct', 'order by', 'group by'])) {
-            $row_count = $this->connection->getQueryGrammar()->wrap('row_count');
+            $row_count = $this->wrap('row_count');
             $myQuery->select($this->connection->raw("'1' as {$row_count}"));
         }
 
         return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
                                 ->setBindings($myQuery->getBindings())->count();
+    }
+
+    /**
+     * Wrap column with DB grammar.
+     *
+     * @param string $column
+     * @return string
+     */
+    protected function wrap($column) {
+        return $this->connection->getQueryGrammar()->wrap($column);
     }
 
     /**
@@ -241,10 +251,11 @@ class QueryBuilderEngine extends BaseEngine
     {
         $myQuery = clone $this->query;
         $myQuery->orWhereHas($relation, function ($q) use ($column, $keyword, $query) {
-            $sql = $q->select($this->connection->raw('count(1)'))
-                     ->where($column, 'like', $keyword)
-                     ->toSql();
-            $sql = "($sql) >= 1";
+            $column = $this->castColumn($column);
+            $sql    = $q->select($this->connection->raw('count(1)'))
+                        ->where($column, 'like', $keyword)
+                        ->toSql();
+            $sql    = "($sql) >= 1";
             $query->orWhereRaw($sql, [$keyword]);
         });
     }
@@ -258,8 +269,8 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function compileGlobalSearch($query, $column, $keyword)
     {
+        $column = $this->castColumn($column);
         if ($this->isSmartSearch()) {
-            $column = $this->castColumn($column);
             $sql    = $column . ' LIKE ?';
             if ($this->isCaseInsensitive()) {
                 $sql     = 'LOWER(' . $column . ') LIKE ?';
@@ -280,7 +291,7 @@ class QueryBuilderEngine extends BaseEngine
      */
     public function castColumn($column)
     {
-        $column = $this->connection->getQueryGrammar()->wrap($column);
+        $column = $this->wrap($column);
         if ($this->database === 'pgsql') {
             $column = 'CAST(' . $column . ' as TEXT)';
         } elseif ($this->database === 'firebird') {
