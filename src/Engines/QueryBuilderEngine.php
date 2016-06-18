@@ -387,13 +387,12 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function compileColumnSearch($i, $column, $keyword)
     {
-
         if ($this->request->isRegex($i)) {
             $column = strstr($column, '(') ? $this->connection->raw($column) : $column;
             $this->regexColumnSearch($column, $keyword);
+        } else {
+            $this->compileQuerySearch($this->query, $column, $keyword, '');
         }
-
-        $this->compileQuerySearch($this->query, $column, $keyword, '');
     }
 
     /**
