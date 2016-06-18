@@ -167,10 +167,10 @@ class QueryBuilderEngine extends BaseEngine
                                     $globalKeyword
                                 );
                             } else {
-                                $this->compileGlobalSearch($queryBuilder, $columnName, $globalKeyword);
+                                $this->compileQuerySearch($queryBuilder, $columnName, $globalKeyword);
                             }
                         } else {
-                            $this->compileGlobalSearch($queryBuilder, $columnName, $globalKeyword);
+                            $this->compileQuerySearch($queryBuilder, $columnName, $globalKeyword);
                         }
                     }
 
@@ -250,37 +250,43 @@ class QueryBuilderEngine extends BaseEngine
     protected function compileRelationSearch($query, $relation, $column, $keyword)
     {
         $myQuery = clone $this->query;
-        $myQuery->orWhereHas($relation, function ($q) use ($column, $keyword, $query) {
-            $column = $this->castColumn($column);
-            $sql    = $q->select($this->connection->raw('count(1)'))
-                        ->where($column, 'like', $keyword)
-                        ->toSql();
-            $sql    = "($sql) >= 1";
-            $query->orWhereRaw($sql, [$keyword]);
+        $myQuery->orWhereHas($relation, function ($builder) use ($column, $keyword, $query) {
+            $builder->select($this->connection->raw('count(1)'));
+            $this->compileQuerySearch($builder, $column, $keyword, '');
+            $builder = "({$builder->toSql()}) >= 1";
+
+            $query->orWhereRaw($builder, [$keyword]);
         });
     }
 
     /**
-     * Add a query on global search.
+     * Compile query builder where clause depending on configurations.
      *
      * @param mixed $query
      * @param string $column
      * @param string $keyword
+     * @param string $relation
      */
-    protected function compileGlobalSearch($query, $column, $keyword)
+    protected function compileQuerySearch($query, $column, $keyword, $relation = 'or')
     {
+        $column = strstr($column, '(') ? $this->connection->raw($column) : $column;
         $column = $this->castColumn($column);
-        if ($this->isSmartSearch()) {
-            $sql    = $column . ' LIKE ?';
-            if ($this->isCaseInsensitive()) {
-                $sql     = 'LOWER(' . $column . ') LIKE ?';
-                $keyword = Str::lower($keyword);
-            }
+        $sql    = $column . ' LIKE ?';
 
-            $query->orWhereRaw($sql, [$keyword]);
-        } else { // exact match
-            $query->orWhereRaw("$column like ?", [$keyword]);
+        if ($this->isCaseInsensitive()) {
+            $sql     = 'LOWER(' . $column . ') LIKE ?';
+            $keyword = Str::lower($keyword);
         }
+
+        if ($this->isWildcard()) {
+            $keyword = $this->wildcardLikeString($keyword);
+        }
+
+        if ($this->isSmartSearch()) {
+            $keyword = "%$keyword%";
+        }
+
+        $query->{$relation .'WhereRaw'}($sql, [$keyword]);
     }
 
     /**
@@ -347,15 +353,8 @@ class QueryBuilderEngine extends BaseEngine
                     }
                 }
 
-                $column          = $this->castColumn($column);
-                $keyword         = $this->getSearchKeyword($index);
-                $caseInsensitive = $this->isCaseInsensitive();
-
-                if (! $caseInsensitive) {
-                    $column = strstr($column, '(') ? $this->connection->raw($column) : $column;
-                }
-
-                $this->compileColumnSearch($index, $column, $keyword, $caseInsensitive);
+                $keyword = $this->getSearchKeyword($index);
+                $this->compileColumnSearch($index, $column, $keyword);
             }
 
             $this->isFilterApplied = true;
@@ -385,19 +384,16 @@ class QueryBuilderEngine extends BaseEngine
      * @param int $i
      * @param mixed $column
      * @param string $keyword
-     * @param bool $caseSensitive
      */
-    protected function compileColumnSearch($i, $column, $keyword, $caseSensitive = true)
+    protected function compileColumnSearch($i, $column, $keyword)
     {
+
         if ($this->request->isRegex($i)) {
-            $this->regexColumnSearch($column, $keyword, $caseSensitive);
-        } elseif ($this->isSmartSearch()) {
-            $sql     = $caseSensitive ? $column . ' LIKE ?' : 'LOWER(' . $column . ') LIKE ?';
-            $keyword = $caseSensitive ? $keyword : Str::lower($keyword);
-            $this->query->whereRaw($sql, [$keyword]);
-        } else { // exact match
-            $this->query->whereRaw("$column LIKE ?", [$keyword]);
+            $column = strstr($column, '(') ? $this->connection->raw($column) : $column;
+            $this->regexColumnSearch($column, $keyword);
         }
+
+        $this->compileQuerySearch($this->query, $column, $keyword, '');
     }
 
     /**
@@ -405,15 +401,14 @@ class QueryBuilderEngine extends BaseEngine
      *
      * @param mixed $column
      * @param string $keyword
-     * @param bool $caseSensitive
      */
-    protected function regexColumnSearch($column, $keyword, $caseSensitive = true)
+    protected function regexColumnSearch($column, $keyword)
     {
         if ($this->isOracleSql()) {
-            $sql = $caseSensitive ? 'REGEXP_LIKE( ' . $column . ' , ? )' : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
+            $sql = ! $this->isCaseInsensitive() ? 'REGEXP_LIKE( ' . $column . ' , ? )' : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
             $this->query->whereRaw($sql, [$keyword]);
         } else {
-            $sql = $caseSensitive ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
+            $sql = ! $this->isCaseInsensitive() ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
             $this->query->whereRaw($sql, [Str::lower($keyword)]);
         }
     }
