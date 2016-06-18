@@ -8,12 +8,16 @@
 
 ##Change Log
 
+### v6.11.6 - 2016-06-18
+    - Fix searching based on configurations. #607
+    - Fix column wrapping when smart search is disable. #606
+
 ### v6.11.5 - 2016-06-01
     - Fix HasOne relation which uses different methods to get foreign and other key. #585
-    
+
 ###v6.11.4 - 2016-05-30
     - Remove media screen to fix styles when printing. #583
-    
+
 ###v6.11.3 - 2016-05-20
     - Add export button collection. #568
     - Fix default print preview view path. #569
@@ -51,10 +55,10 @@
 
 ###v6.9.2 - 2016-03-16
     - Pull-up isOracleSQL and fix condition using oci8.
-    
+
 ###v6.9.1 - 2016-03-11
     - Add default array value when getting columns. Fix #448
-    
+
 ###v6.9.0 - 2016-03-11
     - Re-implement facade.
     - Add blacklist and whitelist feature.
@@ -62,7 +66,7 @@
     - Add missing doc block for getSearchKeyword.
     - Fix eloquent engine missing parent constructor.
     - Add/Update class doc blocks.
-    
+
 ###v6.8.0 - 2016-03-11
     - Added Closure support for filterColumn method.
     - PR #440. Credits to @codewizz.
@@ -75,13 +79,13 @@
 
 ###v6.7.2 - 2016-02-28
     - Fix collection engine sorting and sorting function.
-    - Fix #413 and #415. 
+    - Fix #413 and #415.
 
 ###v6.7.1 - 2016-02-26
-    - Fix multiple column sorting when using eager loaded models. Fix #410 
+    - Fix multiple column sorting when using eager loaded models. Fix #410
 
 ###v6.7.0 - 2016-02-26
-    - Add support for sorting on eager loaded models. 
+    - Add support for sorting on eager loaded models.
     - PR #409 - Credits to @ikerasLT.
 
 ###v6.6.1 - 2016-02-20
@@ -107,11 +111,11 @@
 
 ###v6.4.5 - 2016-02-18
     - Allow edit columns for nested arrays. PR #399 - credits to @ramilexe
-    - Fix flag for case insensitive search. PR #400 - credits to @ansient 
-    
+    - Fix flag for case insensitive search. PR #400 - credits to @ansient
+
 ###v6.4.4 - 2016-02-13
     - Fix filtering in nested columns of Collections. PR #392
-    
+
 ###v6.4.3 - 2016-02-11
     - Random cs and doc block fix.
     - Code refactoring to reduce complexity.
@@ -174,7 +178,7 @@
 
 ###v6.1.2
     - Fix possible conflict with Laravel helpers.php file auto-loading. Fix #330.
-    - Update dataTable service class stub. 
+    - Update dataTable service class stub.
 
 ###v6.1.1
     - Fix ordering when using basic array response. Fix #322.
