@@ -25,7 +25,7 @@ class DummyClass extends DataTable
     /**
      * Get the query object to be processed by datatables.
      *
-     * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder|\Illuminate\Support\Collection
      */
     public function query()
     {
@@ -53,7 +53,7 @@ class DummyClass extends DataTable
      *
      * @return array
      */
-    private function getColumns()
+    protected function getColumns()
     {
         return [
             'id',
