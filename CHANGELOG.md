@@ -8,9 +8,9 @@
 
 ##Change Log
 
-### v6.11.6 - 2016-06-18
-    - Fix searching based on configurations. #607
-    - Fix column wrapping when smart search is disable. #606
+### v6.12.0 - 2016-06-23
+    - Add support for ajax data function. #613
+    - Update dataTable service query return docblock and stub.
 
 ### v6.11.5 - 2016-06-01
     - Fix HasOne relation which uses different methods to get foreign and other key. #585
