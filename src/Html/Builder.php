@@ -159,15 +159,34 @@ class Builder
     {
         $parameters = (new Parameters($attributes))->toArray();
 
+        list($ajaxDataFunction, $parameters) = $this->encodeAjaxDataFunction($parameters);
         list($columnFunctions, $parameters) = $this->encodeColumnFunctions($parameters);
         list($callbackFunctions, $parameters) = $this->encodeCallbackFunctions($parameters);
 
         $json = json_encode($parameters);
 
+        $json = $this->decodeAjaxDataFunction($ajaxDataFunction, $json);
         $json = $this->decodeColumnFunctions($columnFunctions, $json);
         $json = $this->decodeCallbackFunctions($callbackFunctions, $json);
 
         return $json;
+    }
+
+    /**
+     * Encode ajax data function param.
+     *
+     * @param array $parameters
+     * @return mixed
+     */
+    protected function encodeAjaxDataFunction($parameters)
+    {
+        $ajaxData = '';
+        if (isset($parameters['ajax']['data'])) {
+            $ajaxData                   = $parameters['ajax']['data'];
+            $parameters['ajax']['data'] = "#ajax_data#";
+        }
+
+        return [$ajaxData, $parameters];
     }
 
     /**
@@ -227,6 +246,18 @@ class Builder
         }
 
         return $callback;
+    }
+
+    /**
+     * Decode ajax data method.
+     *
+     * @param string $function
+     * @param string $json
+     * @return string
+     */
+    protected function decodeAjaxDataFunction($function, $json)
+    {
+        return str_replace("\"#ajax_data#\"", $function, $json);
     }
 
     /**
