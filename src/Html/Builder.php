@@ -181,7 +181,7 @@ class Builder
     protected function encodeAjaxDataFunction($parameters)
     {
         $ajaxData = '';
-        if ($parameters['ajax']['data']) {
+        if (isset($parameters['ajax']['data'])) {
             $ajaxData                   = $parameters['ajax']['data'];
             $parameters['ajax']['data'] = "#ajax_data#";
         }
@@ -257,8 +257,6 @@ class Builder
      */
     protected function decodeAjaxDataFunction($function, $json)
     {
-        $function = $this->compileCallback($function);
-
         return str_replace("\"#ajax_data#\"", $function, $json);
     }
 
