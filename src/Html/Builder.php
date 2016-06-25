@@ -412,10 +412,11 @@ class Builder
      */
     public function addIndex(array $attributes = [])
     {
-        $attributes = array_merge([
+        $indexColumn = config('datatables.index_column', 'DT_Row_Index');
+        $attributes  = array_merge([
             'defaultContent' => '',
-            'data'           => 'index',
-            'name'           => 'index',
+            'data'           => $indexColumn,
+            'name'           => $indexColumn,
             'title'          => '',
             'render'         => null,
             'orderable'      => false,
