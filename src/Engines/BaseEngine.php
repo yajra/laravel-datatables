@@ -924,4 +924,17 @@ abstract class BaseEngine implements DataTableEngineContract
     {
         return in_array($this->database, ['oracle', 'oci8']);
     }
+
+    /**
+     * Set total records manually.
+     *
+     * @param int $total
+     * @return $this
+     */
+    public function setTotalRecords($total)
+    {
+        $this->totalRecords = $total;
+
+        return $this;
+    }
 }
