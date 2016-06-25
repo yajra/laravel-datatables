@@ -8,6 +8,11 @@
 
 ##Change Log
 
+### v6.13.1 - 2016-06-23
+    - Add option to manually set the total records.
+        -New method: ->setTotalRecords(int total)
+    - Addresses count queries performance issue like #578.
+
 ### v6.13.0 - 2016-06-23
     - Add Auto-Index Column. #597
     - Add method 'addIndexColumn()' to compliment PR#597.
