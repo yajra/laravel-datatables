@@ -61,6 +61,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * @var array
      */
     protected $columnDef = [
+        'index'     => false,
         'append'    => [],
         'edit'      => [],
         'excess'    => ['rn', 'row_num'],
@@ -332,6 +333,18 @@ abstract class BaseEngine implements DataTableEngineContract
         $this->extraColumns[] = $name;
 
         $this->columnDef['append'][] = ['name' => $name, 'content' => $content, 'order' => $order];
+
+        return $this;
+    }
+
+    /**
+     * Add DT row index column on response.
+     *
+     * @return $this
+     */
+    public function addIndexColumn()
+    {
+        $this->columnDef['index'] = true;
 
         return $this;
     }
@@ -669,7 +682,8 @@ abstract class BaseEngine implements DataTableEngineContract
         $processor = new DataProcessor(
             $this->results(),
             $this->columnDef,
-            $this->templates
+            $this->templates,
+            $this->request['start']
         );
 
         return $processor->process($object);

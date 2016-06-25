@@ -436,6 +436,32 @@ class Builder
     }
 
     /**
+     * Add a index column.
+     *
+     * @param  array $attributes
+     * @return $this
+     */
+    public function addIndex(array $attributes = [])
+    {
+        $indexColumn = config('datatables.index_column', 'DT_Row_Index');
+        $attributes  = array_merge([
+            'defaultContent' => '',
+            'data'           => $indexColumn,
+            'name'           => $indexColumn,
+            'title'          => '',
+            'render'         => null,
+            'orderable'      => false,
+            'searchable'     => false,
+            'exportable'     => false,
+            'printable'      => true,
+            'footer'         => '',
+        ], $attributes);
+        $this->collection->push(new Column($attributes));
+
+        return $this;
+    }
+
+    /**
      * Setup ajax parameter
      *
      * @param  string|array $attributes
