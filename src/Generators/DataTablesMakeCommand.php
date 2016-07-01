@@ -126,7 +126,7 @@ class DataTablesMakeCommand extends GeneratorCommand
     protected function getOptions()
     {
         return [
-            ['model', null, InputOption::VALUE_NONE, 'Use the give name as the model.', null],
+            ['model', null, InputOption::VALUE_NONE, 'Use the provided name as the model.', null],
         ];
     }
 
