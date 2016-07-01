@@ -67,13 +67,14 @@ class QueryBuilderEngine extends BaseEngine
      *
      * @param bool $mDataSupport
      * @param bool $orderFirst
+     * @param null|int $count
      * @return \Illuminate\Http\JsonResponse
      */
-    public function make($mDataSupport = false, $orderFirst = false)
+    public function make($mDataSupport = false, $orderFirst = false, $count = null)
     {
-        return parent::make($mDataSupport, $orderFirst);
+        return parent::make($mDataSupport, $orderFirst, $count);
     }
-
+    
     /**
      * Count total items.
      *
@@ -109,7 +110,8 @@ class QueryBuilderEngine extends BaseEngine
      * @param string $column
      * @return string
      */
-    protected function wrap($column) {
+    protected function wrap($column)
+    {
         return $this->connection->getQueryGrammar()->wrap($column);
     }
 

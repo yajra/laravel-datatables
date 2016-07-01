@@ -225,10 +225,11 @@ class CollectionEngine extends BaseEngine
      *
      * @param bool $mDataSupport
      * @param bool $orderFirst
+     * @param null|int $count
      * @return \Illuminate\Http\JsonResponse
      */
-    public function make($mDataSupport = false, $orderFirst = true)
+    public function make($mDataSupport = false, $orderFirst = true, $count = null)
     {
-        return parent::make($mDataSupport, $orderFirst);
+        return parent::make($mDataSupport, $orderFirst, $count);
     }
 }
