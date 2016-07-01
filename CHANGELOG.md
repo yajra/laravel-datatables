@@ -8,6 +8,11 @@
 
 ##Change Log
 
+### v6.14.0 - 2016-07-01
+    - Add model option to dataTable command. #620
+    - Make generator namespace configurable.
+    - Add filename in generator with timestamps.
+
 ### v6.13.1 - 2016-06-23
     - Add option to manually set the total records.
         -New method: ->setTotalRecords(int total)
