@@ -4,7 +4,7 @@ return [
     /**
      * DataTables search options.
      */
-    'search' => [
+    'search'          => [
         /**
          * Smart search will enclose search keyword with wildcard string "%keyword%".
          * SQL: column LIKE "%keyword%"
@@ -27,7 +27,7 @@ return [
     /**
      * DataTables default fractal serializer.
      */
-    'fractal' => [
+    'fractal'         => [
         'serializer' => 'League\Fractal\Serializer\DataArraySerializer',
     ],
 
@@ -39,5 +39,32 @@ return [
     /**
      * DataTables internal index id response column name.
      */
-    'index_column' => 'DT_Row_Index',
+    'index_column'    => 'DT_Row_Index',
+
+    /**
+     * Namespaces used by the generator.
+     */
+    'namespace'       => [
+        /**
+         * Base namespace/directory to create the new file.
+         * This is appended on default Laravel namespace.
+         *
+         * Usage: php artisan datatables:make User
+         * Output: App\DataTables\UserDataTable
+         * With Model: App\User (default model)
+         * Export filename: users_timestamp
+         */
+        'base'  => 'DataTables',
+
+        /**
+         * Base namespace/directory where your model's are located.
+         * This is appended on default Laravel namespace.
+         *
+         * Usage: php artisan datatables:make Post --model
+         * Output: App\DataTables\PostDataTable
+         * With Model: App\Post
+         * Export filename: posts_timestamp
+         */
+        'model' => '',
+    ],
 ];
