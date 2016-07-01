@@ -21,7 +21,7 @@ class DummyClass extends DataTable
     }
 
     /**
-     * Get the query object to be processed by datatables.
+     * Get the query object to be processed by dataTables.
      *
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder|\Illuminate\Support\Collection
      */
