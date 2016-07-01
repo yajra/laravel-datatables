@@ -27,9 +27,9 @@ class DummyClass extends DataTable
      */
     public function query()
     {
-        $users = ModelName::query();
+        $query = ModelName::query();
 
-        return $this->applyScopes($users);
+        return $this->applyScopes($query);
     }
 
     /**
