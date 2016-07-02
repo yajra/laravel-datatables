@@ -13,7 +13,7 @@
         </style>
     </head>
     <body>
-        <table class="table table-bordered table-condensed">
+        <table class="table table-bordered table-condensed table-striped">
             @foreach($data as $row)
                 @if ($row == reset($data)) 
                     <tr>
