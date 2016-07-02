@@ -24,8 +24,10 @@
                 @endif
                 <tr>
                     @foreach($row as $key => $value)
-                        @if (is_string($value) || trim($value)==='' || is_numeric($value))
+                        @if(is_string($value) || is_numeric($value))
                             <td>{!! $value !!}</td>
+                        @else
+                            <td></td>
                         @endif
                     @endforeach
                 </tr>
