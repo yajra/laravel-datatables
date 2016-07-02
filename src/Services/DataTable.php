@@ -308,7 +308,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      */
     public function pdf()
     {
-        if ('snappy' == Config::get('datatables.pdf_generator')) {
+        if ('snappy' == Config::get('datatables.pdf_generator', 'excel')) {
             return $this->snappyPdf();
         } else {
             $this->buildExcelFile()->download('pdf');
