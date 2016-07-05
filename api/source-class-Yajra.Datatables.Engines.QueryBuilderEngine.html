@@ -235,7 +235,7 @@
 </span></span><span id="81" class="l"><a href="#81"> 81: </a><span class="php-comment">     */</span>
 </span><span id="82" class="l"><a href="#82"> 82: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> totalCount()
 </span><span id="83" class="l"><a href="#83"> 83: </a>    {
-</span><span id="84" class="l"><a href="#84"> 84: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;<span class="php-keyword2">count</span>();
+</span><span id="84" class="l"><a href="#84"> 84: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;totalRecords ? <span class="php-var">$this</span>-&gt;totalRecords : <span class="php-var">$this</span>-&gt;<span class="php-keyword2">count</span>();
 </span><span id="85" class="l"><a href="#85"> 85: </a>    }
 </span><span id="86" class="l"><a href="#86"> 86: </a>
 </span><span id="87" class="l"><a href="#87"> 87: </a>    <span class="php-comment">/**

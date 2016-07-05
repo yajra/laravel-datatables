@@ -161,7 +161,7 @@ Illuminate\Console\GeneratorCommand
 
 				<b>Author:</b>
 				Arjay Angeles <a href="&#x6d;&#x61;&#105;&#108;&#x74;&#x6f;&#58;&#97;q&#x61;&#x6e;&#103;&#101;&#x6c;&#x65;&#115;&#64;g&#x6d;&#x61;&#105;&#108;&#x2e;&#x63;&#111;&#109;">&#97;q&#x61;&#x6e;&#103;&#101;&#x6c;&#x65;&#115;&#64;g&#x6d;&#x61;&#105;&#108;&#x2e;&#x63;&#111;&#109;</a><br>
-			<b>Located at</b> <a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#7-56" title="Go to source code">Generators/DataTablesMakeCommand.php</a>
+			<b>Located at</b> <a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#9-208" title="Go to source code">Generators/DataTablesMakeCommand.php</a>
 		<br>
 	</div>
 
@@ -169,7 +169,7 @@ Illuminate\Console\GeneratorCommand
 
 	<table class="summary methods" id="methods">
 	<caption>Methods summary</caption>
-	<tr data-order="getDefaultNamespace" id="_getDefaultNamespace">
+	<tr data-order="buildClass" id="_buildClass">
 
 		<td class="attributes"><code>
 			 protected 
@@ -180,20 +180,20 @@ Illuminate\Console\GeneratorCommand
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_getDefaultNamespace">#</a>
-		<code><a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#36-45" title="Go to source code">getDefaultNamespace</a>( <span>string <var>$rootNamespace</var></span> )</code>
+		<a class="anchor" href="#_buildClass">#</a>
+		<code><a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#52-64" title="Go to source code">buildClass</a>( <span>string <var>$name</var></span> )</code>
 
 		<div class="description short">
-			<p>Get the default namespace for the class.</p>
+			<p>Build the class with the given name.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Get the default namespace for the class.</p>
+			<p>Build the class with the given name.</p>
 
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$rootNamespace</var></dt>
+					<dt><var>$name</var></dt>
 					<dd></dd>
 				</dl></div>
 
@@ -220,7 +220,7 @@ Illuminate\Console\GeneratorCommand
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getStub">#</a>
-		<code><a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#47-55" title="Go to source code">getStub</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#66-74" title="Go to source code">getStub</a>( )</code>
 
 		<div class="description short">
 			<p>Get the stub file for the generator.</p>
@@ -235,6 +235,344 @@ Illuminate\Console\GeneratorCommand
 				<div class="list">
 					string
 				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="replaceModel" id="_replaceModel">
+
+		<td class="attributes"><code>
+			 protected 
+
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_replaceModel">#</a>
+		<code><a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#76-89" title="Go to source code">replaceModel</a>( <span>string <var>&amp; $stub</var></span> )</code>
+
+		<div class="description short">
+			<p>Replace model name.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Replace model name.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$stub</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					mixed
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="replaceModelImport" id="_replaceModelImport">
+
+		<td class="attributes"><code>
+			 protected 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_replaceModelImport">#</a>
+		<code><a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#91-104" title="Go to source code">replaceModelImport</a>( <span>string <var>&amp; $stub</var></span> )</code>
+
+		<div class="description short">
+			<p>Replace model import.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Replace model import.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$stub</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<br>$this
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="replaceFilename" id="_replaceFilename">
+
+		<td class="attributes"><code>
+			 protected 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_replaceFilename">#</a>
+		<code><a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#106-119" title="Go to source code">replaceFilename</a>( <span>string <var>&amp; $stub</var></span> )</code>
+
+		<div class="description short">
+			<p>Replace the filename.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Replace the filename.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$stub</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getOptions" id="_getOptions">
+
+		<td class="attributes"><code>
+			 protected 
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getOptions">#</a>
+		<code><a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#121-131" title="Go to source code">getOptions</a>( )</code>
+
+		<div class="description short">
+			<p>Get the console command options.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get the console command options.</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					array
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="alreadyExists" id="_alreadyExists">
+
+		<td class="attributes"><code>
+			 protected 
+
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_alreadyExists">#</a>
+		<code><a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#133-147" title="Go to source code">alreadyExists</a>( <span>string <var>$rawName</var></span> )</code>
+
+		<div class="description short">
+			<p>Determine if the class already exists.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Determine if the class already exists.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$rawName</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					boolean
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="parseName" id="_parseName">
+
+		<td class="attributes"><code>
+			 protected 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_parseName">#</a>
+		<code><a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#149-172" title="Go to source code">parseName</a>( <span>string <var>$name</var></span> )</code>
+
+		<div class="description short">
+			<p>Parse the name and format according to the root namespace.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Parse the name and format according to the root namespace.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getDefaultNamespace" id="_getDefaultNamespace">
+
+		<td class="attributes"><code>
+			 protected 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getDefaultNamespace">#</a>
+		<code><a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#174-183" title="Go to source code">getDefaultNamespace</a>( <span>string <var>$rootNamespace</var></span> )</code>
+
+		<div class="description short">
+			<p>Get the default namespace for the class.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get the default namespace for the class.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$rootNamespace</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setModel" id="_setModel">
+
+		<td class="attributes"><code>
+			 protected 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setModel">#</a>
+		<code><a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#185-197" title="Go to source code">setModel</a>( <span>string <var>$name</var></span> )</code>
+
+		<div class="description short">
+			<p>Set the model to be used.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Set the model to be used.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd></dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setFilename" id="_setFilename">
+
+		<td class="attributes"><code>
+			 protected 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setFilename">#</a>
+		<code><a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#199-207" title="Go to source code">setFilename</a>( <span>string <var>$name</var></span> )</code>
+
+		<div class="description short">
+			<p>Set the filename for export.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Set the filename for export.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd></dd>
+				</dl></div>
+
 
 
 
@@ -264,7 +602,7 @@ Illuminate\Console\GeneratorCommand
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#15-20" title="Go to source code"><var>$name</var></a>
+				<a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#17-22" title="Go to source code"><var>$name</var></a>
 
 			<div class="description short">
 				<p>The console command name.</p>
@@ -289,7 +627,7 @@ Illuminate\Console\GeneratorCommand
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#22-27" title="Go to source code"><var>$description</var></a>
+				<a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#24-29" title="Go to source code"><var>$description</var></a>
 
 			<div class="description short">
 				<p>The console command description.</p>
@@ -303,7 +641,7 @@ Illuminate\Console\GeneratorCommand
 		<td class="value">
 			<div>
 				<a href="#$description" class="anchor">#</a>
-				<code><span class="php-quote">'Create a new DataTable Service class.'</span></code>
+				<code><span class="php-quote">'Create a new DataTable service class.'</span></code>
 			</div>
 		</td>
 	</tr>
@@ -314,7 +652,7 @@ Illuminate\Console\GeneratorCommand
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#29-34" title="Go to source code"><var>$type</var></a>
+				<a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#31-36" title="Go to source code"><var>$type</var></a>
 
 			<div class="description short">
 				<p>The type of class being generated.</p>
@@ -329,6 +667,56 @@ Illuminate\Console\GeneratorCommand
 			<div>
 				<a href="#$type" class="anchor">#</a>
 				<code><span class="php-quote">'DataTable'</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="model" id="$model">
+		<td class="attributes"><code>
+			protected  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#38-43" title="Go to source code"><var>$model</var></a>
+
+			<div class="description short">
+				<p>The model class to be used by dataTable.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>The model class to be used by dataTable.</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$model" class="anchor">#</a>
+				<code></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="filename" id="$filename">
+		<td class="attributes"><code>
+			protected  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Yajra.Datatables.Generators.DataTablesMakeCommand.html#45-50" title="Go to source code"><var>$filename</var></a>
+
+			<div class="description short">
+				<p>DataTable export filename.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>DataTable export filename.</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$filename" class="anchor">#</a>
+				<code></code>
 			</div>
 		</td>
 	</tr>
