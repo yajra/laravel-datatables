@@ -333,7 +333,11 @@ class Datatables
             $myQuery->select($this->connection->raw("'1' as row_count"));
         }
         
-        $bindings = $myQuery->getRawBindings();
+        if ($myQuery instanceof QueryBuilder) {
+            $bindings = $myQuery->getRawBindings();
+        } else {
+            $bindings = $myQuery->getQuery()->getRawBindings();
+        }
         unset($bindings['select']);
         $bindings = array_flatten($bindings);
 
