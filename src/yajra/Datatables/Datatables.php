@@ -334,8 +334,8 @@ class Datatables
         }
         
         $bindings = $myQuery->getRawBindings();
-		unset($bindings['select']);
-		$bindings = array_flatten($bindings);
+        unset($bindings['select']);
+        $bindings = array_flatten($bindings);
 
         return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
             ->setBindings($bindings)->count();
