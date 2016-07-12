@@ -164,9 +164,9 @@ abstract class BaseEngine implements DataTableEngineContract
     /**
      * Fractal serializer class.
      *
-     * @var string
+     * @var string|null
      */
-    protected $serializer;
+    protected $serializer = null;
 
     /**
      * Custom ordering callback.
@@ -634,13 +634,11 @@ abstract class BaseEngine implements DataTableEngineContract
         ], $this->appends);
 
         if (isset($this->transformer)) {
-            $fractal = new Manager();
-            if ($this->request->get('include')) {
-                $fractal->parseIncludes($this->request->get('include'));
-            }
+            $fractal = app('datatables.fractal');
 
-            $serializer = $this->serializer ?: Config::get('datatables.fractal.serializer', DataArraySerializer::class);
-            $fractal->setSerializer(new $serializer);
+            if ($this->serializer) {
+                $fractal->setSerializer(new $this->serializer);
+            }
 
             //Get transformer reflection
             //Firs method parameter should be data/object to transform
