@@ -8,6 +8,10 @@
 
 ##Change Log
 
+### v6.15.1 - 2016-07-13
+- Decouple fractal for better integration. #636
+- Fractal manager instance can be accessed via app('datatables.fractal').
+
 ### v6.15.0 - 2016-07-05
 - Add support for snappy pdf via config.
 - Add laravel-snappy on suggested packages.
