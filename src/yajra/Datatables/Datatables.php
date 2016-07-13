@@ -332,9 +332,17 @@ class Datatables
         if ( ! Str::contains(Str::lower($myQuery->toSql()), ['union', 'having', 'distinct'])) {
             $myQuery->select($this->connection->raw("'1' as row_count"));
         }
+        
+        if ($myQuery instanceof QueryBuilder) {
+            $bindings = $myQuery->getRawBindings();
+        } else {
+            $bindings = $myQuery->getQuery()->getRawBindings();
+        }
+        unset($bindings['select']);
+        $bindings = array_flatten($bindings);
 
         return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
-            ->setBindings($myQuery->getBindings())->count();
+            ->setBindings($bindings)->count();
     }
 
     /**

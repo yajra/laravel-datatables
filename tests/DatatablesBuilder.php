@@ -199,7 +199,7 @@ class DatatablesBuilderTest extends PHPUnit_Framework_TestCase  {
 		$builder->getConnection()->shouldReceive('raw')->andReturn('(select id, name from users) count_row_table');
 		$builder->shouldReceive('select')->once()->andReturn($builder);
 		$builder->getConnection()->shouldReceive('table')->times(2)->andReturn($builder);
-		$builder->shouldReceive('getBindings')->times(2)->andReturn(array());
+		$builder->shouldReceive('getRawBindings')->times(2)->andReturn(array());
 		$builder->shouldReceive('setBindings')->times(2)->with(array())->andReturn($builder);
 		if ( ! $showAllRecords) {
 			$builder->shouldReceive('skip')->once()->andReturn($builder);
