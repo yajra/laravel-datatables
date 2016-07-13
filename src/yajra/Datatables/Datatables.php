@@ -7,7 +7,7 @@
  * @package    Laravel
  * @category   Package
  * @author     Arjay Angeles <aqangeles@gmail.com>
- * @version    3.6.12
+ * @version    3.6.13
  */
 
 use Closure;
@@ -332,7 +332,7 @@ class Datatables
         if ( ! Str::contains(Str::lower($myQuery->toSql()), ['union', 'having', 'distinct'])) {
             $myQuery->select($this->connection->raw("'1' as row_count"));
         }
-        
+
         if ($myQuery instanceof QueryBuilder) {
             $bindings = $myQuery->getRawBindings();
         } else {
