@@ -19,8 +19,8 @@ class Helper
     /**
      * Places item of extra columns into results by care of their order.
      *
-     * @param  $item
-     * @param  $array
+     * @param array $item
+     * @param array $array
      * @return array
      */
     public static function includeInArray($item, $array)
@@ -109,6 +109,8 @@ class Helper
     }
 
     /**
+     * Get a mixed value of custom data and the parameters.
+     *
      * @param  array $data
      * @param  mixed $param
      * @return array
@@ -127,7 +129,9 @@ class Helper
     }
 
     /**
-     * @param $param
+     * Cast the parameter into an array.
+     *
+     * @param mixed $param
      * @return array
      */
     public static function castToArray($param)
@@ -136,6 +140,10 @@ class Helper
             $param = (array) $param;
 
             return $param;
+        }
+
+        if ($param instanceof Arrayable) {
+            return $param->toArray();
         }
 
         return $param;
@@ -175,7 +183,7 @@ class Helper
     }
 
     /**
-     * Database column wrapper
+     * Database column wrapper.
      *
      * @param string $database
      * @param string $key
@@ -235,8 +243,10 @@ class Helper
     }
 
     /**
-     * @param $row
-     * @return mixed
+     * Transform row data into an array.
+     *
+     * @param mixed $row
+     * @return array
      */
     protected static function transformRow($row)
     {
