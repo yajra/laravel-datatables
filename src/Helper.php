@@ -138,6 +138,10 @@ class Helper
             return $param;
         }
 
+        if ($param instanceof Arrayable) {
+            return $param->toArray();
+        }
+
         return $param;
     }
 
