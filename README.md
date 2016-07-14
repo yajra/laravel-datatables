@@ -60,6 +60,11 @@ And that's it! Start building out some awesome DataTables!
   - Update package version on your composer.json and use `yajra/laravel-datatables-oracle: ~6.0`
   - Uncomment the provider `Yajra\Datatables\DatatablesServiceProvider`. 
 
+## Debugging Mode
+To enable debugging mode, just set `APP_DEBUG=true` and the package will include the queries and inputs used when processing the table.
+
+**IMPORTANT:** Please make sure that APP_DEBUG is set to false when your app is on production.
+
 ## Contributing
 
 Please see [CONTRIBUTING](https://github.com/yajra/laravel-datatables/blob/master/.github/CONTRIBUTING.md) for details.
