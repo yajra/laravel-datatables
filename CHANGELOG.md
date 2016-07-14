@@ -8,6 +8,12 @@
 
 ##Change Log
 
+### v6.15.2 - 2016-07-14
+- Fix the issue where a record is being deleted by LDT when column name used is delete.
+- Fix helper doc blocks.
+- Fix #565 and #640.
+- Allow travis-ci failure on HHVM. Mostly due to execution timestamp.
+
 ### v6.15.1 - 2016-07-13
 - Decouple fractal for better integration. #636
 - Fractal manager instance can be accessed via app('datatables.fractal').
