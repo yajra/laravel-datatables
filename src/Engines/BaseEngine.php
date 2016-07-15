@@ -597,10 +597,10 @@ abstract class BaseEngine implements DataTableEngineContract
     {
         if ($this->autoFilter && $this->request->isSearchable()) {
             $this->filtering();
-        } else {
-            if (is_callable($this->filterCallback)) {
-                call_user_func($this->filterCallback, $this->filterCallbackParameters);
-            }
+        }
+
+        if (is_callable($this->filterCallback)) {
+            call_user_func($this->filterCallback, $this->filterCallbackParameters);
         }
 
         $this->columnSearch();
@@ -716,11 +716,11 @@ abstract class BaseEngine implements DataTableEngineContract
      *
      * @param  \Closure $callback
      * @param  mixed $parameters
-     * @return void
+     * @param  bool $autoFilter
      */
-    public function overrideGlobalSearch(\Closure $callback, $parameters)
+    public function overrideGlobalSearch(\Closure $callback, $parameters, $autoFilter = false)
     {
-        $this->autoFilter               = false;
+        $this->autoFilter               = $autoFilter;
         $this->isFilterApplied          = true;
         $this->filterCallback           = $callback;
         $this->filterCallbackParameters = $parameters;
