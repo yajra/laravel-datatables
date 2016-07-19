@@ -53,11 +53,12 @@ class QueryBuilderEngine extends BaseEngine
      * Overrides global search
      *
      * @param \Closure $callback
+     * @param bool $globalSearch
      * @return $this
      */
-    public function filter(Closure $callback)
+    public function filter(Closure $callback, $globalSearch = false)
     {
-        $this->overrideGlobalSearch($callback, $this->query);
+        $this->overrideGlobalSearch($callback, $this->query, $globalSearch);
 
         return $this;
     }
