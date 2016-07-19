@@ -5,9 +5,7 @@ namespace Yajra\Datatables\Engines;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
-use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
-use League\Fractal\Serializer\DataArraySerializer;
 use Yajra\Datatables\Contracts\DataTableEngineContract;
 use Yajra\Datatables\Helper;
 use Yajra\Datatables\Processors\DataProcessor;
@@ -670,7 +668,7 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Get or create transformer instance
+     * Get or create transformer instance.
      *
      * @return \League\Fractal\TransformerAbstract
      */
