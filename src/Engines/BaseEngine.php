@@ -648,11 +648,11 @@ abstract class BaseEngine implements DataTableEngineContract
             //If parameter is class assuming it requires object
             //Else just pass array by default
             if ($parameter->getClass()) {
-                $resource = new Collection($this->results(), new $this->transformer());
+                $resource = new Collection($this->results(), $this->createTransformer());
             } else {
                 $resource = new Collection(
                     $this->getProcessedData($object),
-                    new $this->transformer()
+                    $this->createTransformer()
                 );
             }
 
@@ -667,6 +667,20 @@ abstract class BaseEngine implements DataTableEngineContract
         }
 
         return new JsonResponse($output);
+    }
+
+    /**
+     * Get or create transformer instance
+     *
+     * @return \League\Fractal\TransformerAbstract
+     */
+    protected function createTransformer()
+    {
+        if ($this->transformer instanceof \League\Fractal\TransformerAbstract) {
+            return $this->transformer;
+        }
+
+        return new $this->transformer();
     }
 
     /**
