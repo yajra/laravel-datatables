@@ -8,6 +8,11 @@
 
 ##Change Log
 
+### v6.16.0 - 2016-07-19
+- Allow global search to work with custom filter callback. #644
+- Transformer instance is kept, otherwise new instance is created. #649
+- Remove unused import and fix cs.
+
 ### v6.15.2 - 2016-07-14
 - Fix the issue where a record is being deleted by LDT when column name used is delete.
 - Fix helper doc blocks.
