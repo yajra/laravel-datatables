@@ -190,48 +190,49 @@
 </span></span><span id="36" class="l"><a href="#36">36: </a><span class="php-comment">     * Overrides global search.
 </span></span><span id="37" class="l"><a href="#37">37: </a><span class="php-comment">     *
 </span></span><span id="38" class="l"><a href="#38">38: </a><span class="php-comment">     * @param \Closure $callback
-</span></span><span id="39" class="l"><a href="#39">39: </a><span class="php-comment">     * @return $this
-</span></span><span id="40" class="l"><a href="#40">40: </a><span class="php-comment">     */</span>
-</span><span id="41" class="l"><a href="#41">41: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> filter(\Closure <span class="php-var">$callback</span>);
-</span><span id="42" class="l"><a href="#42">42: </a>
-</span><span id="43" class="l"><a href="#43">43: </a>    <span class="php-comment">/**
-</span></span><span id="44" class="l"><a href="#44">44: </a><span class="php-comment">     * Perform global search.
-</span></span><span id="45" class="l"><a href="#45">45: </a><span class="php-comment">     *
-</span></span><span id="46" class="l"><a href="#46">46: </a><span class="php-comment">     * @return void
-</span></span><span id="47" class="l"><a href="#47">47: </a><span class="php-comment">     */</span>
-</span><span id="48" class="l"><a href="#48">48: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> filtering();
-</span><span id="49" class="l"><a href="#49">49: </a>
-</span><span id="50" class="l"><a href="#50">50: </a>    <span class="php-comment">/**
-</span></span><span id="51" class="l"><a href="#51">51: </a><span class="php-comment">     * Perform column search.
-</span></span><span id="52" class="l"><a href="#52">52: </a><span class="php-comment">     *
-</span></span><span id="53" class="l"><a href="#53">53: </a><span class="php-comment">     * @return void
-</span></span><span id="54" class="l"><a href="#54">54: </a><span class="php-comment">     */</span>
-</span><span id="55" class="l"><a href="#55">55: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> columnSearch();
-</span><span id="56" class="l"><a href="#56">56: </a>
-</span><span id="57" class="l"><a href="#57">57: </a>    <span class="php-comment">/**
-</span></span><span id="58" class="l"><a href="#58">58: </a><span class="php-comment">     * Perform pagination.
-</span></span><span id="59" class="l"><a href="#59">59: </a><span class="php-comment">     *
-</span></span><span id="60" class="l"><a href="#60">60: </a><span class="php-comment">     * @return void
-</span></span><span id="61" class="l"><a href="#61">61: </a><span class="php-comment">     */</span>
-</span><span id="62" class="l"><a href="#62">62: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> paging();
-</span><span id="63" class="l"><a href="#63">63: </a>
-</span><span id="64" class="l"><a href="#64">64: </a>    <span class="php-comment">/**
-</span></span><span id="65" class="l"><a href="#65">65: </a><span class="php-comment">     * Perform sorting of columns.
-</span></span><span id="66" class="l"><a href="#66">66: </a><span class="php-comment">     *
-</span></span><span id="67" class="l"><a href="#67">67: </a><span class="php-comment">     * @return void
-</span></span><span id="68" class="l"><a href="#68">68: </a><span class="php-comment">     */</span>
-</span><span id="69" class="l"><a href="#69">69: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> ordering();
-</span><span id="70" class="l"><a href="#70">70: </a>
-</span><span id="71" class="l"><a href="#71">71: </a>    <span class="php-comment">/**
-</span></span><span id="72" class="l"><a href="#72">72: </a><span class="php-comment">     * Organizes works.
-</span></span><span id="73" class="l"><a href="#73">73: </a><span class="php-comment">     *
-</span></span><span id="74" class="l"><a href="#74">74: </a><span class="php-comment">     * @param bool $mDataSupport
-</span></span><span id="75" class="l"><a href="#75">75: </a><span class="php-comment">     * @param bool $orderFirst
-</span></span><span id="76" class="l"><a href="#76">76: </a><span class="php-comment">     * @return \Illuminate\Http\JsonResponse
-</span></span><span id="77" class="l"><a href="#77">77: </a><span class="php-comment">     */</span>
-</span><span id="78" class="l"><a href="#78">78: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> make(<span class="php-var">$mDataSupport</span> = <span class="php-keyword1">false</span>, <span class="php-var">$orderFirst</span> = <span class="php-keyword1">false</span>);
-</span><span id="79" class="l"><a href="#79">79: </a>}
-</span><span id="80" class="l"><a href="#80">80: </a></span></code></pre>
+</span></span><span id="39" class="l"><a href="#39">39: </a><span class="php-comment">     * @param bool $globalSearch
+</span></span><span id="40" class="l"><a href="#40">40: </a><span class="php-comment">     * @return $this
+</span></span><span id="41" class="l"><a href="#41">41: </a><span class="php-comment">     */</span>
+</span><span id="42" class="l"><a href="#42">42: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> filter(\Closure <span class="php-var">$callback</span>, <span class="php-var">$globalSearch</span> = <span class="php-keyword1">false</span>);
+</span><span id="43" class="l"><a href="#43">43: </a>
+</span><span id="44" class="l"><a href="#44">44: </a>    <span class="php-comment">/**
+</span></span><span id="45" class="l"><a href="#45">45: </a><span class="php-comment">     * Perform global search.
+</span></span><span id="46" class="l"><a href="#46">46: </a><span class="php-comment">     *
+</span></span><span id="47" class="l"><a href="#47">47: </a><span class="php-comment">     * @return void
+</span></span><span id="48" class="l"><a href="#48">48: </a><span class="php-comment">     */</span>
+</span><span id="49" class="l"><a href="#49">49: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> filtering();
+</span><span id="50" class="l"><a href="#50">50: </a>
+</span><span id="51" class="l"><a href="#51">51: </a>    <span class="php-comment">/**
+</span></span><span id="52" class="l"><a href="#52">52: </a><span class="php-comment">     * Perform column search.
+</span></span><span id="53" class="l"><a href="#53">53: </a><span class="php-comment">     *
+</span></span><span id="54" class="l"><a href="#54">54: </a><span class="php-comment">     * @return void
+</span></span><span id="55" class="l"><a href="#55">55: </a><span class="php-comment">     */</span>
+</span><span id="56" class="l"><a href="#56">56: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> columnSearch();
+</span><span id="57" class="l"><a href="#57">57: </a>
+</span><span id="58" class="l"><a href="#58">58: </a>    <span class="php-comment">/**
+</span></span><span id="59" class="l"><a href="#59">59: </a><span class="php-comment">     * Perform pagination.
+</span></span><span id="60" class="l"><a href="#60">60: </a><span class="php-comment">     *
+</span></span><span id="61" class="l"><a href="#61">61: </a><span class="php-comment">     * @return void
+</span></span><span id="62" class="l"><a href="#62">62: </a><span class="php-comment">     */</span>
+</span><span id="63" class="l"><a href="#63">63: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> paging();
+</span><span id="64" class="l"><a href="#64">64: </a>
+</span><span id="65" class="l"><a href="#65">65: </a>    <span class="php-comment">/**
+</span></span><span id="66" class="l"><a href="#66">66: </a><span class="php-comment">     * Perform sorting of columns.
+</span></span><span id="67" class="l"><a href="#67">67: </a><span class="php-comment">     *
+</span></span><span id="68" class="l"><a href="#68">68: </a><span class="php-comment">     * @return void
+</span></span><span id="69" class="l"><a href="#69">69: </a><span class="php-comment">     */</span>
+</span><span id="70" class="l"><a href="#70">70: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> ordering();
+</span><span id="71" class="l"><a href="#71">71: </a>
+</span><span id="72" class="l"><a href="#72">72: </a>    <span class="php-comment">/**
+</span></span><span id="73" class="l"><a href="#73">73: </a><span class="php-comment">     * Organizes works.
+</span></span><span id="74" class="l"><a href="#74">74: </a><span class="php-comment">     *
+</span></span><span id="75" class="l"><a href="#75">75: </a><span class="php-comment">     * @param bool $mDataSupport
+</span></span><span id="76" class="l"><a href="#76">76: </a><span class="php-comment">     * @param bool $orderFirst
+</span></span><span id="77" class="l"><a href="#77">77: </a><span class="php-comment">     * @return \Illuminate\Http\JsonResponse
+</span></span><span id="78" class="l"><a href="#78">78: </a><span class="php-comment">     */</span>
+</span><span id="79" class="l"><a href="#79">79: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> make(<span class="php-var">$mDataSupport</span> = <span class="php-keyword1">false</span>, <span class="php-var">$orderFirst</span> = <span class="php-keyword1">false</span>);
+</span><span id="80" class="l"><a href="#80">80: </a>}
+</span><span id="81" class="l"><a href="#81">81: </a></span></code></pre>
 
 	<div id="footer">
 		 API documentation generated by <a href="http://apigen.org">ApiGen</a>
