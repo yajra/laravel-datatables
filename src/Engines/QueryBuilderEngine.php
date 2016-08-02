@@ -283,7 +283,7 @@ class QueryBuilderEngine extends BaseEngine
             $keyword = $this->wildcardLikeString($keyword);
         }
 
-        if ($this->isSmartSearch()) {
+        if (!$this->isSmartSearch()) {
             $keyword = "%$keyword%";
         }
 
