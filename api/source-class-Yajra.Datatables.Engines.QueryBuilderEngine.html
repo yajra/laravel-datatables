@@ -277,7 +277,7 @@
 </span><span id="123" class="l"><a href="#123">123: </a>    {
 </span><span id="124" class="l"><a href="#124">124: </a>        <span class="php-var">$this</span>-&gt;query-&gt;where(
 </span><span id="125" class="l"><a href="#125">125: </a>            <span class="php-keyword1">function</span> (<span class="php-var">$query</span>) {
-</span><span id="126" class="l"><a href="#126">126: </a>                <span class="php-var">$globalKeyword</span> = <span class="php-var">$this</span>-&gt;setupKeyword(<span class="php-var">$this</span>-&gt;request-&gt;keyword());
+</span><span id="126" class="l"><a href="#126">126: </a>                <span class="php-var">$globalKeyword</span> = <span class="php-var">$this</span>-&gt;request-&gt;keyword();
 </span><span id="127" class="l"><a href="#127">127: </a>                <span class="php-var">$queryBuilder</span>  = <span class="php-var">$this</span>-&gt;getQueryBuilder(<span class="php-var">$query</span>);
 </span><span id="128" class="l"><a href="#128">128: </a>
 </span><span id="129" class="l"><a href="#129">129: </a>                <span class="php-keyword1">foreach</span> (<span class="php-var">$this</span>-&gt;request-&gt;searchableColumnIndex() <span class="php-keyword1">as</span> <span class="php-var">$index</span>) {
@@ -297,7 +297,7 @@
 </span><span id="143" class="l"><a href="#143">143: </a>
 </span><span id="144" class="l"><a href="#144">144: </a>                        <span class="php-keyword1">if</span> (<span class="php-var">$columnDef</span>[<span class="php-quote">'method'</span>] <span class="php-keyword1">instanceof</span> Closure) {
 </span><span id="145" class="l"><a href="#145">145: </a>                            <span class="php-var">$whereQuery</span> = <span class="php-var">$queryBuilder</span>-&gt;newQuery();
-</span><span id="146" class="l"><a href="#146">146: </a>                            <span class="php-keyword2">call_user_func_array</span>(<span class="php-var">$columnDef</span>[<span class="php-quote">'method'</span>], [<span class="php-var">$whereQuery</span>, <span class="php-var">$this</span>-&gt;request-&gt;keyword()]);
+</span><span id="146" class="l"><a href="#146">146: </a>                            <span class="php-keyword2">call_user_func_array</span>(<span class="php-var">$columnDef</span>[<span class="php-quote">'method'</span>], [<span class="php-var">$whereQuery</span>, <span class="php-var">$globalKeyword</span>]);
 </span><span id="147" class="l"><a href="#147">147: </a>                            <span class="php-var">$queryBuilder</span>-&gt;addNestedWhereQuery(<span class="php-var">$whereQuery</span>, <span class="php-quote">'or'</span>);
 </span><span id="148" class="l"><a href="#148">148: </a>                        } <span class="php-keyword1">else</span> {
 </span><span id="149" class="l"><a href="#149">149: </a>                            <span class="php-var">$this</span>-&gt;compileColumnQuery(
@@ -305,7 +305,7 @@
 </span><span id="151" class="l"><a href="#151">151: </a>                                Helper::getOrMethod(<span class="php-var">$columnDef</span>[<span class="php-quote">'method'</span>]),
 </span><span id="152" class="l"><a href="#152">152: </a>                                <span class="php-var">$columnDef</span>[<span class="php-quote">'parameters'</span>],
 </span><span id="153" class="l"><a href="#153">153: </a>                                <span class="php-var">$columnName</span>,
-</span><span id="154" class="l"><a href="#154">154: </a>                                <span class="php-var">$this</span>-&gt;request-&gt;keyword()
+</span><span id="154" class="l"><a href="#154">154: </a>                                <span class="php-var">$globalKeyword</span>
 </span><span id="155" class="l"><a href="#155">155: </a>                            );
 </span><span id="156" class="l"><a href="#156">156: </a>                        }
 </span><span id="157" class="l"><a href="#157">157: </a>                    } <span class="php-keyword1">else</span> {
