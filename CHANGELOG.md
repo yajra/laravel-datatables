@@ -8,6 +8,10 @@
 
 ##Change Log
 
+### v6.16.1 - 2016-08-03
+- Add orderColumns api helper. PR #679
+- Fix double percent sign in query. PR #678
+
 ### v6.16.0 - 2016-07-19
 - Allow global search to work with custom filter callback. #644
 - Transformer instance is kept, otherwise new instance is created. #649
