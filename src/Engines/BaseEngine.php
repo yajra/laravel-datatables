@@ -511,6 +511,23 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
+     * Order each given columns versus the given custom sql.
+     *
+     * @param array $columns
+     * @param string $sql
+     * @param array $bindings
+     * @return $this
+     */
+    public function orderColumns(array $columns, $sql, $bindings = [])
+    {
+        foreach ($columns as $column) {
+            $this->orderColumn($column, str_replace(':column', $column, $sql), $bindings);
+        }
+
+        return $this;
+    }
+
+    /**
      * Override default column ordering.
      *
      * @param string $column
