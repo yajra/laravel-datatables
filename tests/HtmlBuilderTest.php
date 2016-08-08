@@ -108,6 +108,34 @@ class HtmlBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $builder->generateScripts());
     }
 
+    public function test_setting_table_attribute()
+    {
+        $builder = app(Builder::class);
+
+        $builder->setTableAttribute('attr', 'val');
+
+        $this->assertEquals('val', $builder->getTableAttribute('attr'));
+    }
+
+    public function test_settings_multiple_table_attributes()
+    {
+        $builder = app(Builder::class);
+
+        $builder->setTableAttribute(['prop1' => 'val1', 'prop2' => 'val2']);
+
+        $this->assertEquals('val1', $builder->getTableAttribute('prop1'));
+        $this->assertEquals('val2', $builder->getTableAttribute('prop2'));
+    }
+
+    public function test_getting_inexistent_table_attribute_throws()
+    {
+        $this->setExpectedExceptionRegExp(\Exception::class, '/Table attribute \'.+?\' does not exist\./');
+
+        $builder = app(Builder::class);
+
+        $builder->getTableAttribute('boohoo');
+    }
+
     /**
      * @return \Yajra\Datatables\Datatables
      */
