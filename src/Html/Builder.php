@@ -129,6 +129,59 @@ class Builder
     }
 
     /**
+     * Sets HTML table attribute(s).
+     *
+     * @param string|array $attribute
+     * @param mixed $value
+     *
+     * @return $this
+     */
+    public function setTableAttribute($attribute, $value = null)
+    {
+        if (is_array($attribute)) {
+            $this->setTableAttributes($attribute);
+        } else {
+            $this->tableAttributes[$attribute] = $value;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Retrieves HTML table attribute value.
+     *
+     * @param string $attribute
+     *
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getTableAttribute($attribute)
+    {
+        if (!array_key_exists($attribute, $this->tableAttributes)) {
+            throw new \Exception("Table attribute '{$attribute}' does not exist.");
+        }
+
+        return $this->tableAttributes[$attribute];
+    }
+
+    /**
+     * Sets multiple HTML table at once.
+     *
+     * @param array $attributes
+     *
+     * @return $this
+     */
+    public function setTableAttributes(array $attributes)
+    {
+        foreach ($attributes as $attribute => $value) {
+            $this->setTableAttribute($attribute, $value);
+        }
+
+        return $this;
+    }
+
+
+    /**
      * Get generated raw scripts.
      *
      * @return string
