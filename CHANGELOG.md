@@ -8,6 +8,10 @@
 
 ##Change Log
 
+### v6.17.0 - 2016-08-10
+- Add setter and getter for table attributes.
+- PR #688, credits to @ssipos90.
+
 ### v6.16.1 - 2016-08-03
 - Add orderColumns api helper. PR #679
 - Fix double percent sign in query. PR #678
