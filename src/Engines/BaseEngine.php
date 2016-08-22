@@ -186,9 +186,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * @var array
      */
     private $appends = [];
-
-
-
+    
     /**
      * Setup search keyword.
      *
