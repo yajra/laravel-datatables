@@ -91,7 +91,7 @@ class CollectionEngine extends BaseEngine
      */
     public function totalCount()
     {
-        return $this->totalRecords ? $this->totalRecords : $this->count();
+        return $this->totalRecords ? $this->totalRecords : $this->collection->count();
     }
 
     /**
@@ -101,7 +101,7 @@ class CollectionEngine extends BaseEngine
      */
     public function count()
     {
-        return $this->collection->count();
+        return $this->collection->count() > $this->totalRecords ? $this->totalRecords : $this->collection->count();
     }
 
     /**
