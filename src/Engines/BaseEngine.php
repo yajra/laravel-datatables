@@ -174,12 +174,19 @@ abstract class BaseEngine implements DataTableEngineContract
     protected $orderCallback;
 
     /**
+     * Custom rewriting totals
+     *
+     * @var bool
+     */
+    protected $rewriteTotals = false;
+
+    /**
      * Array of data to append on json response.
      *
      * @var array
      */
     private $appends = [];
-
+    
     /**
      * Setup search keyword.
      *
@@ -960,6 +967,8 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function setTotalRecords($total)
     {
+        $this->rewriteTotals = true;
+
         $this->totalRecords = $total;
 
         return $this;

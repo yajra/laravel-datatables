@@ -101,7 +101,7 @@ class CollectionEngine extends BaseEngine
      */
     public function count()
     {
-        return $this->collection->count();
+        return $this->totalRecords ? $this->totalRecords : $this->collection->count();
     }
 
     /**
@@ -205,10 +205,12 @@ class CollectionEngine extends BaseEngine
      */
     public function paging()
     {
-        $this->collection = $this->collection->slice(
-            $this->request['start'],
-            (int) $this->request['length'] > 0 ? $this->request['length'] : 10
-        );
+        if(!$this->rewriteTotals) {
+            $this->collection = $this->collection->slice(
+                $this->request['start'],
+                (int)$this->request['length'] > 0 ? $this->request['length'] : 10
+            );
+        }
     }
 
     /**
