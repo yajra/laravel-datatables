@@ -8,6 +8,10 @@
 
 ##Change Log
 
+### v6.17.1 - 2016-08-23
+- Use dompdf v0.7.x.
+- Implement/fix setTotalRecords on collection engine.
+
 ### v6.17.0 - 2016-08-10
 - Add setter and getter for table attributes.
 - PR #688, credits to @ssipos90.
