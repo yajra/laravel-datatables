@@ -174,11 +174,11 @@ abstract class BaseEngine implements DataTableEngineContract
     protected $orderCallback;
 
     /**
-     * Custom rewriting totals
+     * Skip paginate when it need.
      *
      * @var bool
      */
-    protected $rewriteTotals = false;
+    protected $skipPaging = false;
 
     /**
      * Array of data to append on json response.
@@ -636,7 +636,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function paginate()
     {
-        if ($this->request->isPaginationable()) {
+        if ($this->request->isPaginationable() && !$this->skipPaging) {
             $this->paging();
         }
     }
@@ -967,9 +967,16 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function setTotalRecords($total)
     {
-        $this->rewriteTotals = true;
-
         $this->totalRecords = $total;
+
+        return $this;
+    }
+
+    /**
+     * Skipping paging when we need
+     */
+    public function skipPaging(){
+        $this->skipPaging = true;
 
         return $this;
     }

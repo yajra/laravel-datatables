@@ -205,12 +205,10 @@ class CollectionEngine extends BaseEngine
      */
     public function paging()
     {
-        if(!$this->rewriteTotals) {
-            $this->collection = $this->collection->slice(
-                $this->request['start'],
-                (int)$this->request['length'] > 0 ? $this->request['length'] : 10
-            );
-        }
+        $this->collection = $this->collection->slice(
+            $this->request['start'],
+            (int)$this->request['length'] > 0 ? $this->request['length'] : 10
+        );
     }
 
     /**
