@@ -174,7 +174,7 @@ abstract class BaseEngine implements DataTableEngineContract
     protected $orderCallback;
 
     /**
-     * Skip paginate when it need.
+     * Skip paginate as needed.
      *
      * @var bool
      */
@@ -636,7 +636,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function paginate()
     {
-        if ($this->request->isPaginationable() && !$this->skipPaging) {
+        if ($this->request->isPaginationable() && ! $this->skipPaging) {
             $this->paging();
         }
     }
@@ -845,6 +845,29 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
+     * Set total records manually.
+     *
+     * @param int $total
+     * @return $this
+     */
+    public function setTotalRecords($total)
+    {
+        $this->totalRecords = $total;
+
+        return $this;
+    }
+
+    /**
+     * Skip pagination as needed.
+     */
+    public function skipPaging()
+    {
+        $this->skipPaging = true;
+
+        return $this;
+    }
+
+    /**
      * Check if column is blacklisted.
      *
      * @param string $column
@@ -957,27 +980,5 @@ abstract class BaseEngine implements DataTableEngineContract
     protected function isOracleSql()
     {
         return in_array($this->database, ['oracle', 'oci8']);
-    }
-
-    /**
-     * Set total records manually.
-     *
-     * @param int $total
-     * @return $this
-     */
-    public function setTotalRecords($total)
-    {
-        $this->totalRecords = $total;
-
-        return $this;
-    }
-
-    /**
-     * Skipping paging when we need
-     */
-    public function skipPaging(){
-        $this->skipPaging = true;
-
-        return $this;
     }
 }
