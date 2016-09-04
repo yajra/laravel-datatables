@@ -5,6 +5,7 @@ namespace Yajra\Datatables\Engines;
 use Closure;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Str;
 use Yajra\Datatables\Helper;
@@ -428,7 +429,7 @@ class QueryBuilderEngine extends BaseEngine
             }
         } else {
             $table = $model->getRelated()->getTable();
-            if ($model instanceof HasOne) {
+            if ($model instanceof HasOne || $model instanceof HasMany) {
                 $foreign = $model->getForeignKey();
                 $other   = $model->getQualifiedParentKeyName();
             } else {
