@@ -155,6 +155,7 @@ class CollectionEngine extends BaseEngine
                     }
 
                     if ($this->isCaseInsensitive()) {
+                        $value = is_array($value) ? json_decode(json_encode($value), true) : $value;
                         $found[] = Str::contains(Str::lower($value), Str::lower($keyword));
                     } else {
                         $found[] = Str::contains($value, $keyword);
@@ -188,6 +189,7 @@ class CollectionEngine extends BaseEngine
                         $value = Arr::get($data, $column);
 
                         if ($this->isCaseInsensitive()) {
+                            $value = is_array($value) ? json_decode(json_encode($value), true) : $value;
                             return strpos(Str::lower($value), Str::lower($keyword)) !== false;
                         } else {
                             return strpos($value, $keyword) !== false;
