@@ -51,7 +51,7 @@ class Datatables
      */
     public static function of($builder)
     {
-        $datatables          = app('Yajra\Datatables\Datatables');
+        $datatables          = (isset($this) ? $this : app('Yajra\Datatables\Datatables')); # call statically?
         $datatables->builder = $builder;
 
         if ($builder instanceof QueryBuilder) {
