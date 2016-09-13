@@ -322,17 +322,22 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      */
     public function snappyPdf()
     {
-        $data   = $this->getDataForPrint();
+        /** @var \Barryvdh\Snappy\PdfWrapper $snappy */
         $snappy = app('snappy.pdf.wrapper');
-        $snappy->setOptions([
+
+        $options     = Config::get('datatables.snappy.options', [
             'no-outline'    => true,
             'margin-left'   => '0',
             'margin-right'  => '0',
             'margin-top'    => '10mm',
             'margin-bottom' => '10mm',
-        ])->setOrientation('landscape');
+        ]);
+        $orientation = Config::get('datatables.snappy.orientation', 'landscape');
 
-        return $snappy->loadView($this->printPreview, compact('data'))
+        $snappy->setOptions($options)
+               ->setOrientation($orientation);
+
+        return $snappy->loadHTML($this->printPreview())
                       ->download($this->getFilename() . ".pdf");
     }
 
