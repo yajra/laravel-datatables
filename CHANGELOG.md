@@ -8,6 +8,10 @@
 
 ##Change Log
 
+### v6.18.2 - 2016-09-13
+- Make snappy pdf generation configurable via datatables config file.
+- Fix loading of printPreview using loadHTML.
+
 ### v6.18.1 - 2016-09-05
 - Fix to allow join of eager loaded column based on a HasMany-relationship.
 - Fix #732, PR #733 credits to @SRautila.
