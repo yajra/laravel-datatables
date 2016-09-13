@@ -188,7 +188,12 @@ class CollectionEngine extends BaseEngine
                         $value = Arr::get($data, $column);
 
                         if ($this->isCaseInsensitive()) {
-                            return strpos(Str::lower($value), Str::lower($keyword)) !== false;
+                            // If ^ and $ present at the beginnning and end of the keyword then do the full match instead of partial match for dorpdown filter
+							if(!empty($keyword) && strlen($keyword) >= 3 && substr($keyword, 0, 1) == '^' && substr($keyword, strlen($keyword)-1, 1) == '$' ) {
+								return (Str::lower($value) == Str::lower(substr($keyword, 1, strlen($keyword)-2)));
+							} else {
+                            	return strpos(Str::lower($value), Str::lower($keyword)) !== false;
+							}
                         } else {
                             return strpos($value, $keyword) !== false;
                         }
