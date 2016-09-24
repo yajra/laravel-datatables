@@ -8,6 +8,10 @@
 
 ##Change Log
 
+### v6.19.0 - 2016-09-24
+- Support regex column searches when using CollectionEngine.
+- PR #765, credits to @cadenzajon.
+
 ### v6.18.2 - 2016-09-13
 - Make snappy pdf generation configurable via datatables config file.
 - Fix loading of printPreview using loadHTML.
