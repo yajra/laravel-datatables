@@ -177,20 +177,29 @@ class CollectionEngine extends BaseEngine
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($this->request->isColumnSearchable($i)) {
                 $this->isFilterApplied = true;
+                $regex = $this->request->isRegex($i);
 
                 $column  = $this->getColumnName($i);
                 $keyword = $this->request->columnKeyword($i);
 
                 $this->collection = $this->collection->filter(
-                    function ($row) use ($column, $keyword) {
+                    function ($row) use ($column, $keyword, $regex) {
                         $data = $this->serialize($row);
 
                         $value = Arr::get($data, $column);
 
                         if ($this->isCaseInsensitive()) {
-                            return strpos(Str::lower($value), Str::lower($keyword)) !== false;
+                            if ($regex) {
+                                return preg_match('/' . $keyword . '/i', $value) == 1;
+                            } else {
+                                return strpos(Str::lower($value), Str::lower($keyword)) !== false;
+                            }
                         } else {
-                            return strpos($value, $keyword) !== false;
+                            if ($regex) {
+                                return preg_match('/' . $keyword . '/', $value) == 1;
+                            } else {
+                                return strpos($value, $keyword) !== false;
+                            }
                         }
                     }
                 );
