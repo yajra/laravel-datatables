@@ -189,13 +189,13 @@ class CollectionEngine extends BaseEngine
                         $value = Arr::get($data, $column);
 
                         if ($this->isCaseInsensitive()) {
-                            if($regex) {
-                                return preg_match('/' . Str::lower($keyword) . '/', Str::lower($value)) == 1;
+                            if ($regex) {
+                                return preg_match('/' . $keyword . '/i', $value) == 1;
                             } else {
                                 return strpos(Str::lower($value), Str::lower($keyword)) !== false;
                             }
                         } else {
-                            if($regex) {
+                            if ($regex) {
                                 return preg_match('/' . $keyword . '/', $value) == 1;
                             } else {
                                 return strpos($value, $keyword) !== false;
