@@ -100,6 +100,11 @@ class QueryBuilderEngine extends BaseEngine
             $row_count = $this->wrap('row_count');
             $myQuery->select($this->connection->raw("'1' as {$row_count}"));
         }
+    
+        // check for select soft deleted records
+        if (!$this->withTrashed && $this->modelUseSoftDeletes()) {
+            $myQuery->whereNull($myQuery->getModel()->getTable().'.deleted_at');
+        }
 
         return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
                                 ->setBindings($myQuery->getBindings())->count();
@@ -394,7 +399,28 @@ class QueryBuilderEngine extends BaseEngine
 
         return $this->setupKeyword($keyword);
     }
-
+    
+    /**
+     * Check if model use SoftDeletes trait
+     *
+     * @return boolean
+     */
+    private function modelUseSoftDeletes()
+    {
+        $app = app();
+        
+        //check for laravel version
+        //in 4 and 5 versions SoftDeletes trait has a different names
+        //we can check only first number
+        if (strpos($app::VERSION, '5') === 0) {
+            $class = 'Illuminate\Database\Eloquent\SoftDeletes';
+        } else {
+            $class = 'Illuminate\Database\Eloquent\SoftDeletingTrait';
+        }
+        
+        return in_array($class, class_uses($this->query->getModel()));
+    }
+    
     /**
      * Join eager loaded relation and get the related column name.
      *
