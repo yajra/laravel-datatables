@@ -102,7 +102,7 @@ class QueryBuilderEngine extends BaseEngine
         }
     
         // check for select soft deleted records
-        if (!$this->withTrashed && $this->modelUseSoftDeletes()) {
+        if (! $this->withTrashed && $this->modelUseSoftDeletes()) {
             $myQuery->whereNull($myQuery->getModel()->getTable().'.deleted_at');
         }
 
@@ -407,18 +407,7 @@ class QueryBuilderEngine extends BaseEngine
      */
     private function modelUseSoftDeletes()
     {
-        $app = app();
-        
-        //check for laravel version
-        //in 4 and 5 versions SoftDeletes trait has a different names
-        //we can check only first number
-        if (strpos($app::VERSION, '5') === 0) {
-            $class = 'Illuminate\Database\Eloquent\SoftDeletes';
-        } else {
-            $class = 'Illuminate\Database\Eloquent\SoftDeletingTrait';
-        }
-        
-        return in_array($class, class_uses($this->query->getModel()));
+        return in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->query->getModel()));
     }
     
     /**
