@@ -407,7 +407,11 @@ class QueryBuilderEngine extends BaseEngine
      */
     private function modelUseSoftDeletes()
     {
-        return in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->query->getModel()));
+        if ($this->query_type == 'eloquent') {
+            return in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->query->getModel()));
+        }
+        
+        return false;
     }
     
     /**
