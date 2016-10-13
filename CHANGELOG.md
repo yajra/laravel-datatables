@@ -8,6 +8,10 @@
 
 ##Change Log
 
+### v6.20.0 - 2016-10-13
+- Support of using soft deletes trait in models.
+- PR #786, credits to @DDiimmkkaass.
+
 ### v6.19.0 - 2016-09-24
 - Support regex column searches when using CollectionEngine.
 - PR #765, credits to @cadenzajon.
