@@ -166,7 +166,7 @@
 
 				<b>Author:</b>
 				Arjay Angeles <a href="&#x6d;&#x61;&#105;&#108;&#x74;&#x6f;&#58;&#97;q&#x61;&#x6e;&#103;&#101;&#x6c;&#x65;&#115;&#64;g&#x6d;&#x61;&#105;&#108;&#x2e;&#x63;&#111;&#109;">&#97;q&#x61;&#x6e;&#103;&#101;&#x6c;&#x65;&#115;&#64;g&#x6d;&#x61;&#105;&#108;&#x2e;&#x63;&#111;&#109;</a><br>
-			<b>Located at</b> <a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#12-235" title="Go to source code">Engines/CollectionEngine.php</a>
+			<b>Located at</b> <a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#12-244" title="Go to source code">Engines/CollectionEngine.php</a>
 		<br>
 	</div>
 
@@ -474,7 +474,7 @@ Overrides global search.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_columnSearch">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#169-199" title="Go to source code">columnSearch</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#169-208" title="Go to source code">columnSearch</a>( )</code>
 
 		<div class="description short">
 			<p>Perform column search.</p>
@@ -504,7 +504,7 @@ Overrides global search.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_paging">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#201-212" title="Go to source code">paging</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#210-221" title="Go to source code">paging</a>( )</code>
 
 		<div class="description short">
 			<p>Perform pagination.</p>
@@ -534,7 +534,7 @@ Overrides global search.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_results">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#214-222" title="Go to source code">results</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#223-231" title="Go to source code">results</a>( )</code>
 
 		<div class="description short">
 			<p>Get results.</p>
@@ -568,7 +568,7 @@ Overrides global search.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_make">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#224-234" title="Go to source code">make</a>( <span>boolean <var>$mDataSupport</var> = <span class="php-keyword1">false</span></span>, <span>boolean <var>$orderFirst</var> = <span class="php-keyword1">true</span></span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#233-243" title="Go to source code">make</a>( <span>boolean <var>$mDataSupport</var> = <span class="php-keyword1">false</span></span>, <span>boolean <var>$orderFirst</var> = <span class="php-keyword1">true</span></span> )</code>
 
 		<div class="description short">
 			<p>Organizes works.</p>
@@ -646,11 +646,13 @@ Overrides global search.</p>
 			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#_setTotalRecords">setTotalRecords()</a>, 
 			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#_setTransformer">setTransformer()</a>, 
 			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#_setupKeyword">setupKeyword()</a>, 
+			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#_skipPaging">skipPaging()</a>, 
 			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#_smart">smart()</a>, 
 			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#_tableNames">tableNames()</a>, 
 			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#_whitelist">whitelist()</a>, 
 			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#_wildcardLikeString">wildcardLikeString()</a>, 
-			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#_with">with()</a>
+			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#_with">with()</a>, 
+			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#_withTrashed">withTrashed()</a>
 		</code></td>
 	</tr>
 	</table>
@@ -740,9 +742,11 @@ Overrides global search.</p>
 			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#$query_type"><var>$query_type</var></a>, 
 			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#$request"><var>$request</var></a>, 
 			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#$serializer"><var>$serializer</var></a>, 
+			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#$skipPaging"><var>$skipPaging</var></a>, 
 			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#$templates"><var>$templates</var></a>, 
 			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#$totalRecords"><var>$totalRecords</var></a>, 
-			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#$transformer"><var>$transformer</var></a>
+			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#$transformer"><var>$transformer</var></a>, 
+			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#$withTrashed"><var>$withTrashed</var></a>
 		</code></td>
 	</tr>
 	</table>

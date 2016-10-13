@@ -476,68 +476,73 @@
 </span></span><span id="322" class="l"><a href="#322">322: </a><span class="php-comment">     */</span>
 </span><span id="323" class="l"><a href="#323">323: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> snappyPdf()
 </span><span id="324" class="l"><a href="#324">324: </a>    {
-</span><span id="325" class="l"><a href="#325">325: </a>        <span class="php-var">$data</span>   = <span class="php-var">$this</span>-&gt;getDataForPrint();
+</span><span id="325" class="l"><a href="#325">325: </a>        <span class="php-comment">/** @var \Barryvdh\Snappy\PdfWrapper $snappy */</span>
 </span><span id="326" class="l"><a href="#326">326: </a>        <span class="php-var">$snappy</span> = app(<span class="php-quote">'snappy.pdf.wrapper'</span>);
-</span><span id="327" class="l"><a href="#327">327: </a>        <span class="php-var">$snappy</span>-&gt;setOptions([
-</span><span id="328" class="l"><a href="#328">328: </a>            <span class="php-quote">'no-outline'</span>    =&gt; <span class="php-keyword1">true</span>,
-</span><span id="329" class="l"><a href="#329">329: </a>            <span class="php-quote">'margin-left'</span>   =&gt; <span class="php-quote">'0'</span>,
-</span><span id="330" class="l"><a href="#330">330: </a>            <span class="php-quote">'margin-right'</span>  =&gt; <span class="php-quote">'0'</span>,
-</span><span id="331" class="l"><a href="#331">331: </a>            <span class="php-quote">'margin-top'</span>    =&gt; <span class="php-quote">'10mm'</span>,
-</span><span id="332" class="l"><a href="#332">332: </a>            <span class="php-quote">'margin-bottom'</span> =&gt; <span class="php-quote">'10mm'</span>,
-</span><span id="333" class="l"><a href="#333">333: </a>        ])-&gt;setOrientation(<span class="php-quote">'landscape'</span>);
-</span><span id="334" class="l"><a href="#334">334: </a>
-</span><span id="335" class="l"><a href="#335">335: </a>        <span class="php-keyword1">return</span> <span class="php-var">$snappy</span>-&gt;loadView(<span class="php-var">$this</span>-&gt;printPreview, <span class="php-keyword2">compact</span>(<span class="php-quote">'data'</span>))
-</span><span id="336" class="l"><a href="#336">336: </a>                      -&gt;download(<span class="php-var">$this</span>-&gt;getFilename() . <span class="php-quote">&quot;.pdf&quot;</span>);
-</span><span id="337" class="l"><a href="#337">337: </a>    }
-</span><span id="338" class="l"><a href="#338">338: </a>
-</span><span id="339" class="l"><a href="#339">339: </a>    <span class="php-comment">/**
-</span></span><span id="340" class="l"><a href="#340">340: </a><span class="php-comment">     * Add basic array query scopes.
-</span></span><span id="341" class="l"><a href="#341">341: </a><span class="php-comment">     *
-</span></span><span id="342" class="l"><a href="#342">342: </a><span class="php-comment">     * @param \Yajra\Datatables\Contracts\DataTableScopeContract $scope
-</span></span><span id="343" class="l"><a href="#343">343: </a><span class="php-comment">     * @return $this
-</span></span><span id="344" class="l"><a href="#344">344: </a><span class="php-comment">     */</span>
-</span><span id="345" class="l"><a href="#345">345: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> addScope(DataTableScopeContract <span class="php-var">$scope</span>)
-</span><span id="346" class="l"><a href="#346">346: </a>    {
-</span><span id="347" class="l"><a href="#347">347: </a>        <span class="php-var">$this</span>-&gt;scopes[] = <span class="php-var">$scope</span>;
-</span><span id="348" class="l"><a href="#348">348: </a>
-</span><span id="349" class="l"><a href="#349">349: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>;
-</span><span id="350" class="l"><a href="#350">350: </a>    }
-</span><span id="351" class="l"><a href="#351">351: </a>
-</span><span id="352" class="l"><a href="#352">352: </a>    <span class="php-comment">/**
-</span></span><span id="353" class="l"><a href="#353">353: </a><span class="php-comment">     * Apply query scopes.
-</span></span><span id="354" class="l"><a href="#354">354: </a><span class="php-comment">     *
-</span></span><span id="355" class="l"><a href="#355">355: </a><span class="php-comment">     * @param \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder $query
-</span></span><span id="356" class="l"><a href="#356">356: </a><span class="php-comment">     * @return mixed
-</span></span><span id="357" class="l"><a href="#357">357: </a><span class="php-comment">     */</span>
-</span><span id="358" class="l"><a href="#358">358: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> applyScopes(<span class="php-var">$query</span>)
-</span><span id="359" class="l"><a href="#359">359: </a>    {
-</span><span id="360" class="l"><a href="#360">360: </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$this</span>-&gt;scopes <span class="php-keyword1">as</span> <span class="php-var">$scope</span>) {
-</span><span id="361" class="l"><a href="#361">361: </a>            <span class="php-var">$scope</span>-&gt;apply(<span class="php-var">$query</span>);
-</span><span id="362" class="l"><a href="#362">362: </a>        }
-</span><span id="363" class="l"><a href="#363">363: </a>
-</span><span id="364" class="l"><a href="#364">364: </a>        <span class="php-keyword1">return</span> <span class="php-var">$query</span>;
-</span><span id="365" class="l"><a href="#365">365: </a>    }
-</span><span id="366" class="l"><a href="#366">366: </a>
-</span><span id="367" class="l"><a href="#367">367: </a>    <span class="php-comment">/**
-</span></span><span id="368" class="l"><a href="#368">368: </a><span class="php-comment">     * Get default builder parameters.
-</span></span><span id="369" class="l"><a href="#369">369: </a><span class="php-comment">     *
-</span></span><span id="370" class="l"><a href="#370">370: </a><span class="php-comment">     * @return array
-</span></span><span id="371" class="l"><a href="#371">371: </a><span class="php-comment">     */</span>
-</span><span id="372" class="l"><a href="#372">372: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> getBuilderParameters()
-</span><span id="373" class="l"><a href="#373">373: </a>    {
-</span><span id="374" class="l"><a href="#374">374: </a>        <span class="php-keyword1">return</span> [
-</span><span id="375" class="l"><a href="#375">375: </a>            <span class="php-quote">'order'</span>   =&gt; [[<span class="php-num">0</span>, <span class="php-quote">'desc'</span>]],
-</span><span id="376" class="l"><a href="#376">376: </a>            <span class="php-quote">'buttons'</span> =&gt; [
-</span><span id="377" class="l"><a href="#377">377: </a>                <span class="php-quote">'create'</span>,
-</span><span id="378" class="l"><a href="#378">378: </a>                <span class="php-quote">'export'</span>,
-</span><span id="379" class="l"><a href="#379">379: </a>                <span class="php-quote">'print'</span>,
-</span><span id="380" class="l"><a href="#380">380: </a>                <span class="php-quote">'reset'</span>,
-</span><span id="381" class="l"><a href="#381">381: </a>                <span class="php-quote">'reload'</span>,
-</span><span id="382" class="l"><a href="#382">382: </a>            ],
-</span><span id="383" class="l"><a href="#383">383: </a>        ];
-</span><span id="384" class="l"><a href="#384">384: </a>    }
-</span><span id="385" class="l"><a href="#385">385: </a>}
-</span><span id="386" class="l"><a href="#386">386: </a></span></code></pre>
+</span><span id="327" class="l"><a href="#327">327: </a>
+</span><span id="328" class="l"><a href="#328">328: </a>        <span class="php-var">$options</span>     = Config::get(<span class="php-quote">'datatables.snappy.options'</span>, [
+</span><span id="329" class="l"><a href="#329">329: </a>            <span class="php-quote">'no-outline'</span>    =&gt; <span class="php-keyword1">true</span>,
+</span><span id="330" class="l"><a href="#330">330: </a>            <span class="php-quote">'margin-left'</span>   =&gt; <span class="php-quote">'0'</span>,
+</span><span id="331" class="l"><a href="#331">331: </a>            <span class="php-quote">'margin-right'</span>  =&gt; <span class="php-quote">'0'</span>,
+</span><span id="332" class="l"><a href="#332">332: </a>            <span class="php-quote">'margin-top'</span>    =&gt; <span class="php-quote">'10mm'</span>,
+</span><span id="333" class="l"><a href="#333">333: </a>            <span class="php-quote">'margin-bottom'</span> =&gt; <span class="php-quote">'10mm'</span>,
+</span><span id="334" class="l"><a href="#334">334: </a>        ]);
+</span><span id="335" class="l"><a href="#335">335: </a>        <span class="php-var">$orientation</span> = Config::get(<span class="php-quote">'datatables.snappy.orientation'</span>, <span class="php-quote">'landscape'</span>);
+</span><span id="336" class="l"><a href="#336">336: </a>
+</span><span id="337" class="l"><a href="#337">337: </a>        <span class="php-var">$snappy</span>-&gt;setOptions(<span class="php-var">$options</span>)
+</span><span id="338" class="l"><a href="#338">338: </a>               -&gt;setOrientation(<span class="php-var">$orientation</span>);
+</span><span id="339" class="l"><a href="#339">339: </a>
+</span><span id="340" class="l"><a href="#340">340: </a>        <span class="php-keyword1">return</span> <span class="php-var">$snappy</span>-&gt;loadHTML(<span class="php-var">$this</span>-&gt;printPreview())
+</span><span id="341" class="l"><a href="#341">341: </a>                      -&gt;download(<span class="php-var">$this</span>-&gt;getFilename() . <span class="php-quote">&quot;.pdf&quot;</span>);
+</span><span id="342" class="l"><a href="#342">342: </a>    }
+</span><span id="343" class="l"><a href="#343">343: </a>
+</span><span id="344" class="l"><a href="#344">344: </a>    <span class="php-comment">/**
+</span></span><span id="345" class="l"><a href="#345">345: </a><span class="php-comment">     * Add basic array query scopes.
+</span></span><span id="346" class="l"><a href="#346">346: </a><span class="php-comment">     *
+</span></span><span id="347" class="l"><a href="#347">347: </a><span class="php-comment">     * @param \Yajra\Datatables\Contracts\DataTableScopeContract $scope
+</span></span><span id="348" class="l"><a href="#348">348: </a><span class="php-comment">     * @return $this
+</span></span><span id="349" class="l"><a href="#349">349: </a><span class="php-comment">     */</span>
+</span><span id="350" class="l"><a href="#350">350: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> addScope(DataTableScopeContract <span class="php-var">$scope</span>)
+</span><span id="351" class="l"><a href="#351">351: </a>    {
+</span><span id="352" class="l"><a href="#352">352: </a>        <span class="php-var">$this</span>-&gt;scopes[] = <span class="php-var">$scope</span>;
+</span><span id="353" class="l"><a href="#353">353: </a>
+</span><span id="354" class="l"><a href="#354">354: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>;
+</span><span id="355" class="l"><a href="#355">355: </a>    }
+</span><span id="356" class="l"><a href="#356">356: </a>
+</span><span id="357" class="l"><a href="#357">357: </a>    <span class="php-comment">/**
+</span></span><span id="358" class="l"><a href="#358">358: </a><span class="php-comment">     * Apply query scopes.
+</span></span><span id="359" class="l"><a href="#359">359: </a><span class="php-comment">     *
+</span></span><span id="360" class="l"><a href="#360">360: </a><span class="php-comment">     * @param \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder $query
+</span></span><span id="361" class="l"><a href="#361">361: </a><span class="php-comment">     * @return mixed
+</span></span><span id="362" class="l"><a href="#362">362: </a><span class="php-comment">     */</span>
+</span><span id="363" class="l"><a href="#363">363: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> applyScopes(<span class="php-var">$query</span>)
+</span><span id="364" class="l"><a href="#364">364: </a>    {
+</span><span id="365" class="l"><a href="#365">365: </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$this</span>-&gt;scopes <span class="php-keyword1">as</span> <span class="php-var">$scope</span>) {
+</span><span id="366" class="l"><a href="#366">366: </a>            <span class="php-var">$scope</span>-&gt;apply(<span class="php-var">$query</span>);
+</span><span id="367" class="l"><a href="#367">367: </a>        }
+</span><span id="368" class="l"><a href="#368">368: </a>
+</span><span id="369" class="l"><a href="#369">369: </a>        <span class="php-keyword1">return</span> <span class="php-var">$query</span>;
+</span><span id="370" class="l"><a href="#370">370: </a>    }
+</span><span id="371" class="l"><a href="#371">371: </a>
+</span><span id="372" class="l"><a href="#372">372: </a>    <span class="php-comment">/**
+</span></span><span id="373" class="l"><a href="#373">373: </a><span class="php-comment">     * Get default builder parameters.
+</span></span><span id="374" class="l"><a href="#374">374: </a><span class="php-comment">     *
+</span></span><span id="375" class="l"><a href="#375">375: </a><span class="php-comment">     * @return array
+</span></span><span id="376" class="l"><a href="#376">376: </a><span class="php-comment">     */</span>
+</span><span id="377" class="l"><a href="#377">377: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> getBuilderParameters()
+</span><span id="378" class="l"><a href="#378">378: </a>    {
+</span><span id="379" class="l"><a href="#379">379: </a>        <span class="php-keyword1">return</span> [
+</span><span id="380" class="l"><a href="#380">380: </a>            <span class="php-quote">'order'</span>   =&gt; [[<span class="php-num">0</span>, <span class="php-quote">'desc'</span>]],
+</span><span id="381" class="l"><a href="#381">381: </a>            <span class="php-quote">'buttons'</span> =&gt; [
+</span><span id="382" class="l"><a href="#382">382: </a>                <span class="php-quote">'create'</span>,
+</span><span id="383" class="l"><a href="#383">383: </a>                <span class="php-quote">'export'</span>,
+</span><span id="384" class="l"><a href="#384">384: </a>                <span class="php-quote">'print'</span>,
+</span><span id="385" class="l"><a href="#385">385: </a>                <span class="php-quote">'reset'</span>,
+</span><span id="386" class="l"><a href="#386">386: </a>                <span class="php-quote">'reload'</span>,
+</span><span id="387" class="l"><a href="#387">387: </a>            ],
+</span><span id="388" class="l"><a href="#388">388: </a>        ];
+</span><span id="389" class="l"><a href="#389">389: </a>    }
+</span><span id="390" class="l"><a href="#390">390: </a>}
+</span><span id="391" class="l"><a href="#391">391: </a></span></code></pre>
 
 	<div id="footer">
 		 API documentation generated by <a href="http://apigen.org">ApiGen</a>
