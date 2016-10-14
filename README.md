@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/yajra/laravel-datatables](https://badges.gitter.im/yajra/laravel-datatables.svg)](https://gitter.im/yajra/laravel-datatables?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![Laravel 4.2|5.0|5.1|5.2](https://img.shields.io/badge/Laravel-4.2|5.0|5.1|5.2-orange.svg)](http://laravel.com)
+[![Laravel 4.2|5.0|5.1|5.2|5.3](https://img.shields.io/badge/Laravel-4.2|5.0|5.1|5.2|5.3-orange.svg)](http://laravel.com)
 [![Latest Stable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/stable)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![Build Status](https://travis-ci.org/yajra/laravel-datatables.svg?branch=master)](https://travis-ci.org/yajra/laravel-datatables)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/yajra/laravel-datatables/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/yajra/laravel-datatables/?branch=master)
