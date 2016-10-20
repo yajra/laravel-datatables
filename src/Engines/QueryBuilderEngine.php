@@ -273,7 +273,7 @@ class QueryBuilderEngine extends BaseEngine
     {
         $myQuery = clone $this->query;
         $relationType = $myQuery->getModel()->{$relation}();
-        $myQuery->orWhereHas($relation, function ($builder) use ($column, $keyword, $query) {
+        $myQuery->orWhereHas($relation, function ($builder) use ($column, $keyword, $query, $relationType) {
             $builder->select($this->connection->raw('count(1)'));
             $this->compileQuerySearch($builder, $column, $keyword, '');
             $builder = "({$builder->toSql()}) >= 1";
