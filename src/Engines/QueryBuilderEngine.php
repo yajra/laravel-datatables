@@ -3,6 +3,7 @@
 namespace Yajra\Datatables\Engines;
 
 use Closure;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Query\Builder;
@@ -271,12 +272,18 @@ class QueryBuilderEngine extends BaseEngine
     protected function compileRelationSearch($query, $relation, $column, $keyword)
     {
         $myQuery = clone $this->query;
+        $relationType = $myQuery->getModel()->{$relation}();
         $myQuery->orWhereHas($relation, function ($builder) use ($column, $keyword, $query) {
             $builder->select($this->connection->raw('count(1)'));
             $this->compileQuerySearch($builder, $column, $keyword, '');
             $builder = "({$builder->toSql()}) >= 1";
 
-            $query->orWhereRaw($builder, [$this->prepareKeyword($keyword)]);
+            if($relationType instanceof MorphToMany){
+                $query->orWhereRaw($builder, [$relationType->getMorphClass(),$this->prepareKeyword($keyword)]);
+            }
+            else{
+                $query->orWhereRaw($builder, [$this->prepareKeyword($keyword)]);
+            }
         });
     }
 
