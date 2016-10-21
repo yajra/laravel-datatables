@@ -537,6 +537,7 @@ class QueryBuilderEngine extends BaseEngine
                     $orderable['direction']
                 );
             } else {
+                $valid = 1;
                 if (count(explode('.', $column)) > 1) {
                     $eagerLoads     = $this->getEagerLoads();
                     $parts          = explode('.', $column);
@@ -544,11 +545,18 @@ class QueryBuilderEngine extends BaseEngine
                     $relation       = implode('.', $parts);
 
                     if (in_array($relation, $eagerLoads)) {
-                        $column = $this->joinEagerLoadedColumn($relation, $relationColumn);
+                        $relationship = $this->query->getRelation($relation);
+                        if(!($relationship instanceof MorphToMany)){
+                            $column = $this->joinEagerLoadedColumn($relation, $relationColumn);
+                        } else {
+                            $valid = 0;
+                        }
                     }
                 }
 
-                $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
+                if($valid == 1){
+                    $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
+                }
             }
         }
     }
