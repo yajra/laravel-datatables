@@ -3,6 +3,7 @@
 namespace Yajra\Datatables\Engines;
 
 use Closure;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Query\Builder;
@@ -271,12 +272,18 @@ class QueryBuilderEngine extends BaseEngine
     protected function compileRelationSearch($query, $relation, $column, $keyword)
     {
         $myQuery = clone $this->query;
-        $myQuery->orWhereHas($relation, function ($builder) use ($column, $keyword, $query) {
+        $relationType = $myQuery->getModel()->{$relation}();
+        $myQuery->orWhereHas($relation, function ($builder) use ($column, $keyword, $query, $relationType) {
             $builder->select($this->connection->raw('count(1)'));
             $this->compileQuerySearch($builder, $column, $keyword, '');
             $builder = "({$builder->toSql()}) >= 1";
 
-            $query->orWhereRaw($builder, [$this->prepareKeyword($keyword)]);
+            if($relationType instanceof MorphToMany){
+                $query->orWhereRaw($builder, [$relationType->getMorphClass(),$this->prepareKeyword($keyword)]);
+            }
+            else{
+                $query->orWhereRaw($builder, [$this->prepareKeyword($keyword)]);
+            }
         });
     }
 
@@ -530,6 +537,7 @@ class QueryBuilderEngine extends BaseEngine
                     $orderable['direction']
                 );
             } else {
+                $valid = 1;
                 if (count(explode('.', $column)) > 1) {
                     $eagerLoads     = $this->getEagerLoads();
                     $parts          = explode('.', $column);
@@ -537,11 +545,18 @@ class QueryBuilderEngine extends BaseEngine
                     $relation       = implode('.', $parts);
 
                     if (in_array($relation, $eagerLoads)) {
-                        $column = $this->joinEagerLoadedColumn($relation, $relationColumn);
+                        $relationship = $this->query->getRelation($relation);
+                        if(!($relationship instanceof MorphToMany)){
+                            $column = $this->joinEagerLoadedColumn($relation, $relationColumn);
+                        } else {
+                            $valid = 0;
+                        }
                     }
                 }
 
-                $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
+                if($valid == 1){
+                    $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
+                }
             }
         }
     }
