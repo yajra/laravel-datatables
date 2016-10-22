@@ -8,6 +8,12 @@
 
 ##Change Log
 
+### v6.21.0 - 2016-10-22
+- Support to morphToMany. PR #804, credits to @pcastrotigre
+- Update fractal to ~0.14. Credits to @tyloo
+- Refactor HasOneOrMany as suggested in #733
+- Fix CS.
+
 ### v6.20.0 - 2016-10-13
 - Support of using soft deletes trait in models.
 - PR #786, credits to @DDiimmkkaass.
