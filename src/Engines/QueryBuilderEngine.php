@@ -3,9 +3,9 @@
 namespace Yajra\Datatables\Engines;
 
 use Closure;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Str;
 use Yajra\Datatables\Helper;
@@ -271,17 +271,16 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function compileRelationSearch($query, $relation, $column, $keyword)
     {
-        $myQuery = clone $this->query;
+        $myQuery      = clone $this->query;
         $relationType = $myQuery->getModel()->{$relation}();
         $myQuery->orWhereHas($relation, function ($builder) use ($column, $keyword, $query, $relationType) {
             $builder->select($this->connection->raw('count(1)'));
             $this->compileQuerySearch($builder, $column, $keyword, '');
             $builder = "({$builder->toSql()}) >= 1";
 
-            if($relationType instanceof MorphToMany){
-                $query->orWhereRaw($builder, [$relationType->getMorphClass(),$this->prepareKeyword($keyword)]);
-            }
-            else{
+            if ($relationType instanceof MorphToMany) {
+                $query->orWhereRaw($builder, [$relationType->getMorphClass(), $this->prepareKeyword($keyword)]);
+            } else {
                 $query->orWhereRaw($builder, [$this->prepareKeyword($keyword)]);
             }
         });
@@ -546,7 +545,7 @@ class QueryBuilderEngine extends BaseEngine
 
                     if (in_array($relation, $eagerLoads)) {
                         $relationship = $this->query->getRelation($relation);
-                        if(!($relationship instanceof MorphToMany)){
+                        if (! ($relationship instanceof MorphToMany)) {
                             $column = $this->joinEagerLoadedColumn($relation, $relationColumn);
                         } else {
                             $valid = 0;
@@ -554,7 +553,7 @@ class QueryBuilderEngine extends BaseEngine
                     }
                 }
 
-                if($valid == 1){
+                if ($valid == 1) {
                     $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
                 }
             }
