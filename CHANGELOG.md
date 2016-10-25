@@ -8,6 +8,9 @@
 
 ##Change Log
 
+### v6.21.1 - 2016-10-25
+- Do not convert column to raw statement. Thanks to Nick Howell for pointing the issue.
+
 ### v6.21.0 - 2016-10-22
 - Support to morphToMany. PR #804, credits to @pcastrotigre
 - Update fractal to ~0.14. Credits to @tyloo
