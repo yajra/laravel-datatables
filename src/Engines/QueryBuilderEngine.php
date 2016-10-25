@@ -296,7 +296,6 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function compileQuerySearch($query, $column, $keyword, $relation = 'or')
     {
-        $column = strstr($column, '(') ? $this->connection->raw($column) : $column;
         $column = $this->castColumn($column);
         $sql    = $column . ' LIKE ?';
 
