@@ -23,14 +23,14 @@ class Datatables
      *
      * @var \Yajra\Datatables\Request
      */
-    public $request;
+    protected $request;
 
     /**
      * Datatables builder.
      *
      * @var \Yajra\Datatables\Html\Builder
      */
-    public $builder;
+    protected $builder;
 
     /**
      * Datatables constructor.
@@ -45,24 +45,26 @@ class Datatables
     /**
      * Gets query and returns instance of class.
      *
-     * @param  mixed $builder
+     * @param  mixed $object
      * @return mixed
      * @throws \Exception
      */
-    public static function of($builder)
+    public static function of($object)
     {
         $datatables = app('datatables');
 
-        $engines = Config::get('datatables.engines');
-        $key     = get_class($builder);
+        $engines  = Config::get('datatables.engines');
+        $builders = Config::get('datatables.builders');
+        $builder  = get_class($object);
 
-        if (array_key_exists($key, $engines)) {
-            $engine = $engines[$key];
+        if (array_key_exists($builder, $builders)) {
+            $engine = $builders[$builder];
+            $class  = $engines[$engine];
 
-            return new $engine($builder, $datatables->getRequest());
+            return new $class($object, $datatables->getRequest());
         }
 
-        throw new \Exception('No available engine for ' . $key);
+        throw new \Exception('No available engine for ' . $builder);
     }
 
     /**

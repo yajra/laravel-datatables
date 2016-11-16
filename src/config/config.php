@@ -40,13 +40,22 @@ return [
     ],
 
     /**
-     * Datatables class mapping to available engines.
+     * Datatables list of available engines.
      * This is where you can register your custom datatables engine.
      */
     'engines' => [
-        Illuminate\Database\Eloquent\Relations\HasMany::class => Yajra\Datatables\Engines\EloquentEngine::class,
-        Illuminate\Database\Eloquent\Builder::class           => Yajra\Datatables\Engines\EloquentEngine::class,
-        Illuminate\Database\Query\Builder::class              => Yajra\Datatables\Engines\QueryBuilderEngine::class,
-        Illuminate\Support\Collection::class                  => Yajra\Datatables\Engines\CollectionEngine::class,
+        'eloquent'   => Yajra\Datatables\Engines\EloquentEngine::class,
+        'query'      => Yajra\Datatables\Engines\QueryBuilderEngine::class,
+        'collection' => Yajra\Datatables\Engines\CollectionEngine::class,
+    ],
+
+    /**
+     * Datatables accepted builder to engine mapping.
+     */
+    'builders' => [
+        Illuminate\Database\Eloquent\Relations\HasMany::class => 'eloquent',
+        Illuminate\Database\Eloquent\Builder::class           => 'eloquent',
+        Illuminate\Database\Query\Builder::class              => 'query',
+        Illuminate\Support\Collection::class                  => 'collection',
     ],
 ];
