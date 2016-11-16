@@ -36,7 +36,7 @@ return [
         /**
          * Default fractal serializer.
          */
-        'serializer' => 'League\Fractal\Serializer\DataArraySerializer',
+        'serializer' => League\Fractal\Serializer\DataArraySerializer::class,
     ],
 
     /**
