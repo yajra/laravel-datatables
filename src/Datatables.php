@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Yajra\Datatables\Engines\CollectionEngine;
 use Yajra\Datatables\Engines\EloquentEngine;
 use Yajra\Datatables\Engines\QueryBuilderEngine;
+use Yajra\Datatables\Html\Builder as HtmlBuilder;
 
 /**
  * Class Datatables.
@@ -29,7 +30,7 @@ class Datatables
     /**
      * Datatables builder.
      *
-     * @var mixed
+     * @var \Yajra\Datatables\Html\Builder
      */
     public $builder;
 
@@ -51,7 +52,7 @@ class Datatables
      */
     public static function of($builder)
     {
-        $datatables          = app(\Yajra\Datatables\Datatables::class);
+        $datatables          = app(Datatables::class);
         $datatables->builder = $builder;
 
         if ($builder instanceof QueryBuilder) {
@@ -121,13 +122,17 @@ class Datatables
      */
     public function getHtmlBuilder()
     {
-        return app(\Yajra\Datatables\Html\Builder::class);
+        if (is_null($this->builder)) {
+            return app(HtmlBuilder::class);
+        }
+
+        return $this->builder;
     }
 
     /**
      * Get request object.
      *
-     * @return \Yajra\Datatables\Request|static
+     * @return \Yajra\Datatables\Request
      */
     public function getRequest()
     {

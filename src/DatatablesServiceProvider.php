@@ -6,9 +6,6 @@ use Collective\Html\HtmlServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use League\Fractal\Manager;
 use League\Fractal\Serializer\DataArraySerializer;
-use Maatwebsite\Excel\ExcelServiceProvider;
-use Yajra\Datatables\Generators\DataTablesMakeCommand;
-use Yajra\Datatables\Generators\DataTablesScopeCommand;
 
 /**
  * Class DatatablesServiceProvider.
@@ -35,8 +32,6 @@ class DatatablesServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__ . '/resources/views', 'datatables');
 
         $this->publishAssets();
-
-        $this->registerCommands();
     }
 
     /**
@@ -49,21 +44,8 @@ class DatatablesServiceProvider extends ServiceProvider
         ], 'datatables');
 
         $this->publishes([
-            __DIR__ . '/resources/assets/buttons.server-side.js' => public_path('vendor/datatables/buttons.server-side.js'),
-        ], 'datatables');
-
-        $this->publishes([
             __DIR__ . '/resources/views' => base_path('/resources/views/vendor/datatables'),
         ], 'datatables');
-    }
-
-    /**
-     * Register datatables commands.
-     */
-    protected function registerCommands()
-    {
-        $this->commands(DataTablesMakeCommand::class);
-        $this->commands(DataTablesScopeCommand::class);
     }
 
     /**
@@ -118,7 +100,6 @@ class DatatablesServiceProvider extends ServiceProvider
     protected function registerRequiredProviders()
     {
         $this->app->register(HtmlServiceProvider::class);
-        $this->app->register(ExcelServiceProvider::class);
     }
 
     /**
