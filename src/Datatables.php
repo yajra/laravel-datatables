@@ -51,7 +51,7 @@ class Datatables
      */
     public static function of($builder)
     {
-        $datatables          = app('Yajra\Datatables\Datatables');
+        $datatables          = app(\Yajra\Datatables\Datatables::class);
         $datatables->builder = $builder;
 
         if ($builder instanceof QueryBuilder) {
@@ -121,7 +121,7 @@ class Datatables
      */
     public function getHtmlBuilder()
     {
-        return app('Yajra\Datatables\Html\Builder');
+        return app(\Yajra\Datatables\Html\Builder::class);
     }
 
     /**
