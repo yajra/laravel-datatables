@@ -2,6 +2,7 @@
 
 namespace Yajra\Datatables;
 
+use Config;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use Yajra\Datatables\Engines\CollectionEngine;
@@ -13,9 +14,6 @@ use Yajra\Datatables\Html\Builder as HtmlBuilder;
  * Class Datatables.
  *
  * @package Yajra\Datatables
- * @method  EloquentEngine eloquent($builder)
- * @method  CollectionEngine collection(Collection $builder)
- * @method  QueryBuilderEngine queryBuilder(QueryBuilder $builder)
  * @author  Arjay Angeles <aqangeles@gmail.com>
  */
 class Datatables
@@ -49,19 +47,32 @@ class Datatables
      *
      * @param  mixed $builder
      * @return mixed
+     * @throws \Exception
      */
     public static function of($builder)
     {
-        $datatables          = app(Datatables::class);
-        $datatables->builder = $builder;
+        $datatables = app('datatables');
 
-        if ($builder instanceof QueryBuilder) {
-            $ins = $datatables->usingQueryBuilder($builder);
-        } else {
-            $ins = $builder instanceof Collection ? $datatables->usingCollection($builder) : $datatables->usingEloquent($builder);
+        $engines = Config::get('datatables.engines');
+        $key     = get_class($builder);
+
+        if (array_key_exists($key, $engines)) {
+            $engine = $engines[$key];
+
+            return new $engine($builder, $datatables->getRequest());
         }
 
-        return $ins;
+        throw new \Exception('No available engine for ' . $key);
+    }
+
+    /**
+     * Get request object.
+     *
+     * @return \Yajra\Datatables\Request
+     */
+    public function getRequest()
+    {
+        return $this->request;
     }
 
     /**
@@ -70,9 +81,20 @@ class Datatables
      * @param \Illuminate\Database\Query\Builder $builder
      * @return \Yajra\Datatables\Engines\QueryBuilderEngine
      */
-    public function usingQueryBuilder(QueryBuilder $builder)
+    public function queryBuilder(QueryBuilder $builder)
     {
         return new QueryBuilderEngine($builder, $this->request);
+    }
+
+    /**
+     * Datatables using Eloquent.
+     *
+     * @param mixed $builder
+     * @return \Yajra\Datatables\Engines\EloquentEngine
+     */
+    public function eloquent($builder)
+    {
+        return new EloquentEngine($builder, $this->request);
     }
 
     /**
@@ -81,38 +103,9 @@ class Datatables
      * @param \Illuminate\Support\Collection $builder
      * @return \Yajra\Datatables\Engines\CollectionEngine
      */
-    public function usingCollection(Collection $builder)
+    public function collection(Collection $builder)
     {
         return new CollectionEngine($builder, $this->request);
-    }
-
-    /**
-     * Datatables using Eloquent.
-     *
-     * @param  mixed $builder
-     * @return \Yajra\Datatables\Engines\EloquentEngine
-     */
-    public function usingEloquent($builder)
-    {
-        return new EloquentEngine($builder, $this->request);
-    }
-
-    /**
-     * Allows api call without the "using" word.
-     *
-     * @param  string $name
-     * @param  mixed $arguments
-     * @return $this|mixed
-     */
-    public function __call($name, $arguments)
-    {
-        $name = 'using' . ucfirst($name);
-
-        if (method_exists($this, $name)) {
-            return call_user_func_array([$this, $name], $arguments);
-        }
-
-        return trigger_error('Call to undefined method ' . __CLASS__ . '::' . $name . '()', E_USER_ERROR);
     }
 
     /**
@@ -127,15 +120,5 @@ class Datatables
         }
 
         return $this->builder;
-    }
-
-    /**
-     * Get request object.
-     *
-     * @return \Yajra\Datatables\Request
-     */
-    public function getRequest()
-    {
-        return $this->request;
     }
 }

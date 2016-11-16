@@ -4,7 +4,7 @@ return [
     /**
      * DataTables search options.
      */
-    'search'          => [
+    'search'  => [
         /**
          * Smart search will enclose search keyword with wildcard string "%keyword%".
          * SQL: column LIKE "%keyword%"
@@ -27,7 +27,7 @@ return [
     /**
      * DataTables fractal configurations.
      */
-    'fractal'         => [
+    'fractal' => [
         /**
          * Request key name to parse includes on fractal.
          */
@@ -37,5 +37,16 @@ return [
          * Default fractal serializer.
          */
         'serializer' => 'League\Fractal\Serializer\DataArraySerializer',
+    ],
+
+    /**
+     * Datatables class mapping to available engines.
+     * This is where you can register your custom datatables engine.
+     */
+    'engines' => [
+        Illuminate\Database\Eloquent\Relations\HasMany::class => Yajra\Datatables\Engines\EloquentEngine::class,
+        Illuminate\Database\Eloquent\Builder::class           => Yajra\Datatables\Engines\EloquentEngine::class,
+        Illuminate\Database\Query\Builder::class              => Yajra\Datatables\Engines\QueryBuilderEngine::class,
+        Illuminate\Support\Collection::class                  => Yajra\Datatables\Engines\CollectionEngine::class,
     ],
 ];

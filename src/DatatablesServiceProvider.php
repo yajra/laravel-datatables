@@ -61,8 +61,8 @@ class DatatablesServiceProvider extends ServiceProvider
 
         $this->registerRequiredProviders();
 
-        $this->app->singleton('datatables', function () {
-            return new Datatables($this->app->make(Request::class));
+        $this->app->bind('datatables.html', function () {
+            return $this->app->make(Html\Builder::class);
         });
 
         $this->app->singleton('datatables.fractal', function () {
@@ -79,6 +79,10 @@ class DatatablesServiceProvider extends ServiceProvider
             $fractal->setSerializer(new $serializer);
 
             return $fractal;
+        });
+
+        $this->app->singleton('datatables', function () {
+            return new Datatables($this->app->make(Request::class));
         });
 
         $this->registerAliases();
