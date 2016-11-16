@@ -118,7 +118,7 @@ class Datatables
     public function getHtmlBuilder()
     {
         if (is_null($this->builder)) {
-            return app(HtmlBuilder::class);
+            return app('datatables.html');
         }
 
         return $this->builder;
