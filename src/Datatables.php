@@ -2,8 +2,6 @@
 
 namespace Yajra\Datatables;
 
-use Config;
-
 /**
  * Class Datatables.
  *
@@ -46,10 +44,10 @@ class Datatables
     public static function of($object)
     {
         $datatables = app('datatables');
-
-        $engines  = Config::get('datatables.engines');
-        $builders = Config::get('datatables.builders');
-        $builder  = get_class($object);
+        $config     = app('config');
+        $engines    = $config->get('datatables.engines');
+        $builders   = $config->get('datatables.builders');
+        $builder    = get_class($object);
 
         if (array_key_exists($builder, $builders)) {
             $engine = $builders[$builder];

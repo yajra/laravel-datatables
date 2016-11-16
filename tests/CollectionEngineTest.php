@@ -48,7 +48,7 @@ class TestDatatablesCollectionEngine extends PHPUnit_Framework_TestCase
 
         $datatables = new Datatables(Request::capture());
 
-        $response = $datatables->usingCollection($builder)->make();
+        $response = $datatables->collection($builder)->make();
 
         $actual   = $response->getContent();
         $expected = '{"draw":1,"recordsTotal":2,"recordsFiltered":2,"data":[[1,"foo"],[2,"bar"]]}';
@@ -93,7 +93,7 @@ class TestDatatablesCollectionEngine extends PHPUnit_Framework_TestCase
 
         $datatables = new Datatables(Request::capture());
 
-        $response = $datatables->usingCollection($builder)->make(true);
+        $response = $datatables->collection($builder)->make(true);
         $actual   = $response->getContent();
         $expected = '{"draw":1,"recordsTotal":2,"recordsFiltered":2,"data":[{"id":1,"name":"foo"},{"id":2,"name":"bar"}]}';
 

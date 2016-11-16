@@ -1,7 +1,6 @@
 <?php
 
 use Yajra\Datatables\Datatables;
-use Yajra\Datatables\Html\Builder;
 use Yajra\Datatables\Html\Column;
 use Yajra\Datatables\Request;
 
@@ -11,7 +10,7 @@ class HtmlBuilderTest extends PHPUnit_Framework_TestCase
 {
     public function test_generate_table_html()
     {
-        $builder = app(Builder::class);
+        $builder = $this->getHtmlBuilder();
         $builder->html->shouldReceive('attributes')->times(8)->andReturn('id="foo"');
         $builder->form->shouldReceive('checkbox')
                       ->once()
@@ -24,7 +23,7 @@ class HtmlBuilderTest extends PHPUnit_Framework_TestCase
                 ->addAction(['title' => 'Options'])
                 ->ajax('ajax-url')
                 ->parameters(['bFilter' => false]);
-        $table = $builder->table(['id' => 'foo']);
+        $table    = $builder->table(['id' => 'foo']);
         $expected = '<table id="foo"><thead><tr><th id="foo"><input type="checkbox "id"="dataTablesCheckbox"/></th><th id="foo">Foo</th><th id="foo">Bar</th><th id="foo">Id</th><th id="foo">A</th><th id="foo">Options</th></tr></thead></table>';
         $this->assertEquals($expected, $table);
 
@@ -42,9 +41,19 @@ class HtmlBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $builder->generateScripts());
     }
 
+    /**
+     * @return \Mockery\MockInterface|\Yajra\Datatables\Datatables|\Yajra\Datatables\Html\Builder
+     */
+    protected function getHtmlBuilder()
+    {
+        $builder = app('datatables.html');
+
+        return $builder;
+    }
+
     public function test_generate_table_html_with_empty_footer()
     {
-        $builder = app(Builder::class);
+        $builder = $this->getHtmlBuilder();
         $builder->html->shouldReceive('attributes')->times(8)->andReturn('id="foo"');
         $builder->form->shouldReceive('checkbox')
                       ->once()
@@ -57,7 +66,7 @@ class HtmlBuilderTest extends PHPUnit_Framework_TestCase
                 ->addAction(['title' => 'Options'])
                 ->ajax('ajax-url')
                 ->parameters(['bFilter' => false]);
-        $table = $builder->table(['id' => 'foo'], true);
+        $table    = $builder->table(['id' => 'foo'], true);
         $expected = '<table id="foo"><thead><tr><th id="foo"><input type="checkbox "id"="dataTablesCheckbox"/></th><th id="foo">Foo</th><th id="foo">Bar</th><th id="foo">Id</th><th id="foo">A</th><th id="foo">Options</th></tr></thead><tfoot><tr><th></th><th></th><th></th><th></th><th></th><th></th></tr></tfoot></table>';
         $this->assertEquals($expected, $table);
 
@@ -77,7 +86,7 @@ class HtmlBuilderTest extends PHPUnit_Framework_TestCase
 
     public function test_generate_table_html_with_footer_content()
     {
-        $builder = app(Builder::class);
+        $builder = $this->getHtmlBuilder();
         $builder->html->shouldReceive('attributes')->times(8)->andReturn('id="foo"');
         $builder->form->shouldReceive('checkbox')
                       ->once()
@@ -90,7 +99,7 @@ class HtmlBuilderTest extends PHPUnit_Framework_TestCase
                 ->addAction(['title' => 'Options'])
                 ->ajax('ajax-url')
                 ->parameters(['bFilter' => false]);
-        $table = $builder->table(['id' => 'foo'], true);
+        $table    = $builder->table(['id' => 'foo'], true);
         $expected = '<table id="foo"><thead><tr><th id="foo"><input type="checkbox "id"="dataTablesCheckbox"/></th><th id="foo">Foo</th><th id="foo">Bar</th><th id="foo">Id</th><th id="foo">A</th><th id="foo">Options</th></tr></thead><tfoot><tr><th>test</th><th></th><th></th><th></th><th></th><th></th></tr></tfoot></table>';
         $this->assertEquals($expected, $table);
 
@@ -110,7 +119,7 @@ class HtmlBuilderTest extends PHPUnit_Framework_TestCase
 
     public function test_setting_table_attribute()
     {
-        $builder = app(Builder::class);
+        $builder = $this->getHtmlBuilder();
 
         $builder->setTableAttribute('attr', 'val');
 
@@ -119,7 +128,7 @@ class HtmlBuilderTest extends PHPUnit_Framework_TestCase
 
     public function test_settings_multiple_table_attributes()
     {
-        $builder = app(Builder::class);
+        $builder = $this->getHtmlBuilder();
 
         $builder->setTableAttribute(['prop1' => 'val1', 'prop2' => 'val2']);
 
@@ -131,7 +140,7 @@ class HtmlBuilderTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedExceptionRegExp(\Exception::class, '/Table attribute \'.+?\' does not exist\./');
 
-        $builder = app(Builder::class);
+        $builder = $this->getHtmlBuilder();
 
         $builder->getTableAttribute('boohoo');
     }
