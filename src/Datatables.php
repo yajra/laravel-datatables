@@ -3,12 +3,6 @@
 namespace Yajra\Datatables;
 
 use Config;
-use Illuminate\Database\Query\Builder as QueryBuilder;
-use Illuminate\Support\Collection;
-use Yajra\Datatables\Engines\CollectionEngine;
-use Yajra\Datatables\Engines\EloquentEngine;
-use Yajra\Datatables\Engines\QueryBuilderEngine;
-use Yajra\Datatables\Html\Builder as HtmlBuilder;
 
 /**
  * Class Datatables.
@@ -80,34 +74,34 @@ class Datatables
     /**
      * Datatables using Query Builder.
      *
-     * @param \Illuminate\Database\Query\Builder $builder
+     * @param \Illuminate\Database\Query\Builder|mixed $builder
      * @return \Yajra\Datatables\Engines\QueryBuilderEngine
      */
-    public function queryBuilder(QueryBuilder $builder)
+    public function queryBuilder($builder)
     {
-        return new QueryBuilderEngine($builder, $this->request);
+        return new Engines\QueryBuilderEngine($builder, $this->request);
     }
 
     /**
-     * Datatables using Eloquent.
+     * Datatables using Eloquent Builder.
      *
-     * @param mixed $builder
+     * @param \Illuminate\Database\Eloquent\Builder|mixed $builder
      * @return \Yajra\Datatables\Engines\EloquentEngine
      */
     public function eloquent($builder)
     {
-        return new EloquentEngine($builder, $this->request);
+        return new Engines\EloquentEngine($builder, $this->request);
     }
 
     /**
      * Datatables using Collection.
      *
-     * @param \Illuminate\Support\Collection $builder
+     * @param \Illuminate\Support\Collection|mixed $builder
      * @return \Yajra\Datatables\Engines\CollectionEngine
      */
-    public function collection(Collection $builder)
+    public function collection($builder)
     {
-        return new CollectionEngine($builder, $this->request);
+        return new Engines\CollectionEngine($builder, $this->request);
     }
 
     /**
