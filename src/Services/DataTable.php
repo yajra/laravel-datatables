@@ -59,6 +59,13 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     protected $scopes = [];
 
     /**
+     * Html builder.
+     *
+     * @var \Yajra\Datatables\Html\Builder
+     */
+    protected $htmlBuilder;
+
+    /**
      * Export filename.
      *
      * @var string
@@ -173,7 +180,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      */
     public function builder()
     {
-        return $this->datatables->getHtmlBuilder();
+        return $this->htmlBuilder ?: $this->htmlBuilder = $this->datatables->getHtmlBuilder();
     }
 
     /**
