@@ -124,6 +124,6 @@ class DatatablesServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['datatables'];
+        return ['datatables.html', 'datatables.fractal', 'datatables'];
     }
 }
