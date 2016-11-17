@@ -116,7 +116,7 @@ abstract class BaseEngine implements DataTableEngineContract
     /**
      * Callback to override global search.
      *
-     * @var \Closure
+     * @var callable
      */
     protected $filterCallback;
 
@@ -177,7 +177,7 @@ abstract class BaseEngine implements DataTableEngineContract
     /**
      * Custom ordering callback.
      *
-     * @var \Closure
+     * @var callable
      */
     protected $orderCallback;
 
@@ -416,7 +416,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * Override default column filter search.
      *
      * @param string $column
-     * @param string|Closure $method
+     * @param string|callable $method
      * @return $this
      * @internal param $mixed ...,... All the individual parameters required for specified $method
      * @internal string $1 Special variable that returns the requested search keyword.
@@ -706,10 +706,10 @@ abstract class BaseEngine implements DataTableEngineContract
     /**
      * Override default ordering method with a closure callback.
      *
-     * @param \Closure $closure
+     * @param callable $closure
      * @return $this
      */
-    public function order(\Closure $closure)
+    public function order(callable $closure)
     {
         $this->orderCallback = $closure;
 
@@ -856,11 +856,11 @@ abstract class BaseEngine implements DataTableEngineContract
     /**
      * Update flags to disable global search
      *
-     * @param  \Closure $callback
+     * @param  callable $callback
      * @param  mixed $parameters
      * @param  bool $autoFilter
      */
-    protected function overrideGlobalSearch(\Closure $callback, $parameters, $autoFilter = false)
+    protected function overrideGlobalSearch(callable $callback, $parameters, $autoFilter = false)
     {
         $this->autoFilter               = $autoFilter;
         $this->isFilterApplied          = true;
