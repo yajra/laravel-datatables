@@ -104,7 +104,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * @var bool
      */
     protected $autoFilter = true;
-    
+
     /**
      * Select trashed records in count function for models with soft deletes trait.
      * By default we do not select soft deleted records
@@ -196,100 +196,6 @@ abstract class BaseEngine implements DataTableEngineContract
     protected $appends = [];
 
     /**
-     * Setup search keyword.
-     *
-     * @param  string $value
-     * @return string
-     */
-    protected function setupKeyword($value)
-    {
-        if ($this->isSmartSearch()) {
-            $keyword = '%' . $value . '%';
-            if ($this->isWildcard()) {
-                $keyword = $this->wildcardLikeString($value);
-            }
-            // remove escaping slash added on js script request
-            $keyword = str_replace('\\', '%', $keyword);
-
-            return $keyword;
-        }
-
-        return $value;
-    }
-
-    /**
-     * Check if DataTables uses smart search.
-     *
-     * @return bool
-     */
-    public function isSmartSearch()
-    {
-        return Config::get('datatables.search.smart', true);
-    }
-
-    /**
-     * Get config use wild card status.
-     *
-     * @return bool
-     */
-    public function isWildcard()
-    {
-        return Config::get('datatables.search.use_wildcards', false);
-    }
-
-    /**
-     * Adds % wildcards to the given string.
-     *
-     * @param string $str
-     * @param bool $lowercase
-     * @return string
-     */
-    protected function wildcardLikeString($str, $lowercase = true)
-    {
-        $wild   = '%';
-        $length = Str::length($str);
-        if ($length) {
-            for ($i = 0; $i < $length; $i++) {
-                $wild .= $str[$i] . '%';
-            }
-        }
-        if ($lowercase) {
-            $wild = Str::lower($wild);
-        }
-
-        return $wild;
-    }
-
-    /**
-     * Get Query Builder object.
-     *
-     * @param mixed $instance
-     * @return mixed
-     */
-    public function getQueryBuilder($instance = null)
-    {
-        if (! $instance) {
-            $instance = $this->query;
-        }
-
-        if ($this->isQueryBuilder()) {
-            return $instance;
-        }
-
-        return $instance->getQuery();
-    }
-
-    /**
-     * Check query type is a builder.
-     *
-     * @return bool
-     */
-    public function isQueryBuilder()
-    {
-        return $this->query_type == 'builder';
-    }
-
-    /**
      * Add column in collection.
      *
      * @param string $name
@@ -357,7 +263,7 @@ abstract class BaseEngine implements DataTableEngineContract
 
         return $this;
     }
-    
+
     /**
      * Change withTrashed flag value.
      *
@@ -367,7 +273,7 @@ abstract class BaseEngine implements DataTableEngineContract
     public function withTrashed($withTrashed = true)
     {
         $this->withTrashed = $withTrashed;
-        
+
         return $this;
     }
 
@@ -392,6 +298,35 @@ abstract class BaseEngine implements DataTableEngineContract
         }
 
         return $this;
+    }
+
+    /**
+     * Get Query Builder object.
+     *
+     * @param mixed $instance
+     * @return mixed
+     */
+    public function getQueryBuilder($instance = null)
+    {
+        if (! $instance) {
+            $instance = $this->query;
+        }
+
+        if ($this->isQueryBuilder()) {
+            return $instance;
+        }
+
+        return $instance->getQuery();
+    }
+
+    /**
+     * Check query type is a builder.
+     *
+     * @return bool
+     */
+    public function isQueryBuilder()
+    {
+        return $this->query_type == 'builder';
     }
 
     /**
@@ -725,21 +660,6 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Update flags to disable global search
-     *
-     * @param  \Closure $callback
-     * @param  mixed $parameters
-     * @param  bool $autoFilter
-     */
-    protected function overrideGlobalSearch(\Closure $callback, $parameters, $autoFilter = false)
-    {
-        $this->autoFilter               = $autoFilter;
-        $this->isFilterApplied          = true;
-        $this->filterCallback           = $callback;
-        $this->filterCallbackParameters = $parameters;
-    }
-
-    /**
      * Get config is case insensitive status.
      *
      * @return bool
@@ -845,6 +765,96 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
+     * Check if the current sql language is based on oracle syntax.
+     *
+     * @return bool
+     */
+    public function isOracleSql()
+    {
+        return in_array($this->database, ['oracle', 'oci8']);
+    }
+
+    /**
+     * Setup search keyword.
+     *
+     * @param  string $value
+     * @return string
+     */
+    protected function setupKeyword($value)
+    {
+        if ($this->isSmartSearch()) {
+            $keyword = '%' . $value . '%';
+            if ($this->isWildcard()) {
+                $keyword = $this->wildcardLikeString($value);
+            }
+            // remove escaping slash added on js script request
+            $keyword = str_replace('\\', '%', $keyword);
+
+            return $keyword;
+        }
+
+        return $value;
+    }
+
+    /**
+     * Check if DataTables uses smart search.
+     *
+     * @return bool
+     */
+    public function isSmartSearch()
+    {
+        return Config::get('datatables.search.smart', true);
+    }
+
+    /**
+     * Get config use wild card status.
+     *
+     * @return bool
+     */
+    public function isWildcard()
+    {
+        return Config::get('datatables.search.use_wildcards', false);
+    }
+
+    /**
+     * Adds % wildcards to the given string.
+     *
+     * @param string $str
+     * @param bool $lowercase
+     * @return string
+     */
+    protected function wildcardLikeString($str, $lowercase = true)
+    {
+        $wild   = '%';
+        $length = Str::length($str);
+        if ($length) {
+            for ($i = 0; $i < $length; $i++) {
+                $wild .= $str[$i] . '%';
+            }
+        }
+        if ($lowercase) {
+            $wild = Str::lower($wild);
+        }
+
+        return $wild;
+    }
+
+    /**
+     * Update flags to disable global search
+     *
+     * @param  \Closure $callback
+     * @param  mixed $parameters
+     * @param  bool $autoFilter
+     */
+    protected function overrideGlobalSearch(\Closure $callback, $parameters, $autoFilter = false)
+    {
+        $this->autoFilter               = $autoFilter;
+        $this->isFilterApplied          = true;
+        $this->filterCallback           = $callback;
+        $this->filterCallbackParameters = $parameters;
+    }
+
+    /**
      * Check if column is blacklisted.
      *
      * @param string $column
@@ -918,7 +928,7 @@ abstract class BaseEngine implements DataTableEngineContract
      *
      * @return bool
      */
-    protected function isEloquent()
+    public function isEloquent()
     {
         return $this->query_type === 'eloquent';
     }
@@ -947,15 +957,5 @@ abstract class BaseEngine implements DataTableEngineContract
         }
 
         return $str;
-    }
-
-    /**
-     * Check if the current sql language is based on oracle syntax.
-     *
-     * @return bool
-     */
-    public function isOracleSql()
-    {
-        return in_array($this->database, ['oracle', 'oci8']);
     }
 }
