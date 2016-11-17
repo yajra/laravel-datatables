@@ -30,13 +30,13 @@ return Datatables::of(User::all())->make(true);
 ```
 
 ## Requirements
-- [PHP 5.5.9 or later](http://php.net/)
-- [Laravel 5.0 or later](https://github.com/laravel/framework)
-- [DataTables jQuery Plugin](http://datatables.net/) **Version 1.10.xx**
+- [PHP >=5.5.9](http://php.net/)
+- [Laravel 5.x](https://github.com/laravel/framework)
+- [jQuery DataTables v1.10.x](http://datatables.net/)
 
 ## Documentations
-- You will find user friendly and updated documentation in the wiki here: [Laravel Datatables Wiki](https://github.com/yajra/laravel-datatables/wiki)
-- You will find the API Documentation here: [Laravel Datatables API](http://yajra.github.io/laravel-datatables/api/)
+- [Laravel Datatables Documentation](https://yajrabox.com/docs/laravel-datatables/6.0)
+- [Laravel Datatables API](http://yajra.github.io/laravel-datatables/api/6.0)
 - [Demo Application](http://datatables.yajrabox.com) is available for artisan's reference.
 
 ## Quick Installation
@@ -46,19 +46,12 @@ return Datatables::of(User::all())->make(true);
 `Yajra\Datatables\DatatablesServiceProvider::class`
 
 #### Facade
-`Datatables` facade is automatically registered as an alias for `Yajra\Datatables\Facades\Datatables` class. 
+`Datatables` facade is automatically registered as an alias for `Yajra\Datatables\Facades\Datatables` class.
 
 #### Configuration and Assets
 `$ php artisan vendor:publish --tag=datatables`
 
 And that's it! Start building out some awesome DataTables!
-
-## Upgrading from v5.x to v6.x
-  - Change all occurrences of `yajra\Datatables` to `Yajra\Datatables`. (Use Sublime's find and replace all for faster update). 
-  - Remove `Datatables` facade registration.
-  - Temporarily comment out `Yajra\Datatables\DatatablesServiceProvider`.
-  - Update package version on your composer.json and use `yajra/laravel-datatables-oracle: ~6.0`
-  - Uncomment the provider `Yajra\Datatables\DatatablesServiceProvider`. 
 
 ## Debugging Mode
 To enable debugging mode, just set `APP_DEBUG=true` and the package will include the queries and inputs used when processing the table.
