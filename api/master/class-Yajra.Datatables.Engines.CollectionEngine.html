@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>Class Yajra\Datatables\Engines\QueryBuilderEngine</title>
+	<title>Class Yajra\Datatables\Engines\CollectionEngine</title>
 
 	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
 
@@ -86,9 +86,9 @@
 			<h3>Classes</h3>
 			<ul>
 				<li><a href="class-Yajra.Datatables.Engines.BaseEngine.html">BaseEngine</a></li>
-				<li><a href="class-Yajra.Datatables.Engines.CollectionEngine.html">CollectionEngine</a></li>
+				<li class="active"><a href="class-Yajra.Datatables.Engines.CollectionEngine.html">CollectionEngine</a></li>
 				<li><a href="class-Yajra.Datatables.Engines.EloquentEngine.html">EloquentEngine</a></li>
-				<li class="active"><a href="class-Yajra.Datatables.Engines.QueryBuilderEngine.html">QueryBuilderEngine</a></li>
+				<li><a href="class-Yajra.Datatables.Engines.QueryBuilderEngine.html">QueryBuilderEngine</a></li>
 			</ul>
 
 
@@ -127,11 +127,11 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class QueryBuilderEngine</h1>
+	<h1>Class CollectionEngine</h1>
 
 
 	<div class="description">
-	<p>Class QueryBuilderEngine.</p>
+	<p>Class CollectionEngine.</p>
 	</div>
 
 	<dl class="tree">
@@ -145,17 +145,13 @@
 		</dd>
 		<dd style="padding-left:30px">
 			<img src="resources/inherit.png" alt="Extended by">
-<b><span>Yajra\Datatables\Engines\QueryBuilderEngine</span></b>			
+<b><span>Yajra\Datatables\Engines\CollectionEngine</span></b>			
 			
 			
 		</dd>
 	</dl>
 
 
-	<div>
-		<h4>Direct known subclasses</h4>
-			<a href="class-Yajra.Datatables.Engines.EloquentEngine.html">Yajra\Datatables\Engines\EloquentEngine</a>
-	</div>
 
 
 
@@ -170,7 +166,7 @@
 
 				<b>Author:</b>
 				Arjay Angeles <a href="&#x6d;&#x61;&#105;&#108;&#x74;&#x6f;&#58;&#97;q&#x61;&#x6e;&#103;&#101;&#x6c;&#x65;&#115;&#64;g&#x6d;&#x61;&#105;&#108;&#x2e;&#x63;&#111;&#109;">&#97;q&#x61;&#x6e;&#103;&#101;&#x6c;&#x65;&#115;&#64;g&#x6d;&#x61;&#105;&#108;&#x2e;&#x63;&#111;&#109;</a><br>
-			<b>Located at</b> <a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#14-570" title="Go to source code">Engines/QueryBuilderEngine.php</a>
+			<b>Located at</b> <a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#12-244" title="Go to source code">Engines/CollectionEngine.php</a>
 		<br>
 	</div>
 
@@ -190,19 +186,19 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#22-30" title="Go to source code">__construct</a>( <span>Illuminate\Database\Query\Builder <var>$builder</var></span>, <span><code><a href="class-Yajra.Datatables.Request.html">Yajra\Datatables\Request</a></code> <var>$request</var></span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#34-46" title="Go to source code">__construct</a>( <span>Illuminate\Support\Collection <var>$collection</var></span>, <span><code><a href="class-Yajra.Datatables.Request.html">Yajra\Datatables\Request</a></code> <var>$request</var></span> )</code>
 
 		<div class="description short">
-			
+			<p>CollectionEngine constructor.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			
+			<p>CollectionEngine constructor.</p>
 
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$builder</var></dt>
+					<dt><var>$collection</var></dt>
 					<dd></dd>
 					<dt><var>$request</var></dt>
 					<dd></dd>
@@ -215,38 +211,38 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="init" id="_init">
+	<tr data-order="serialize" id="_serialize">
 
 		<td class="attributes"><code>
 			 protected 
 
-			
+			mixed|null
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_init">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#32-50" title="Go to source code">init</a>( <span><code><a href="class-Yajra.Datatables.Request.html">Yajra\Datatables\Request</a></code> <var>$request</var></span>, <span>Illuminate\Database\Query\Builder <var>$builder</var></span>, <span>string <var>$type</var> = <span class="php-quote">'builder'</span></span> )</code>
+		<a class="anchor" href="#_serialize">#</a>
+		<code><a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#48-57" title="Go to source code">serialize</a>( <span>mixed <var>$collection</var></span> )</code>
 
 		<div class="description short">
-			<p>Initialize attributes.</p>
+			<p>Serialize collection</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Initialize attributes.</p>
+			<p>Serialize collection</p>
 
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$request</var></dt>
-					<dd></dd>
-					<dt><var>$builder</var></dt>
-					<dd></dd>
-					<dt><var>$type</var></dt>
+					<dt><var>$collection</var></dt>
 					<dd></dd>
 				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					mixed|null
+				</div>
 
 
 
@@ -266,16 +262,16 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_filter">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#52-65" title="Go to source code">filter</a>( <span>Closure <var>$callback</var></span>, <span>boolean <var>$globalSearch</var> = <span class="php-keyword1">false</span></span> )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#59-72" title="Go to source code">filter</a>( <span>Closure <var>$callback</var></span>, <span>boolean <var>$globalSearch</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			<p>Set auto filter off and run your own filter.
-Overrides global search</p>
+Overrides global search.</p>
 		</div>
 
 		<div class="description detailed hidden">
 			<p>Set auto filter off and run your own filter.
-Overrides global search</p>
+Overrides global search.</p>
 
 
 				<h4>Parameters</h4>
@@ -297,45 +293,43 @@ Overrides global search</p>
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="make" id="_make">
+	<tr data-order="showDebugger" id="_showDebugger">
 
 		<td class="attributes"><code>
 			 public 
 
-			Illuminate\Http\JsonResponse
+			array
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_make">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#67-77" title="Go to source code">make</a>( <span>boolean <var>$mDataSupport</var> = <span class="php-keyword1">false</span></span>, <span>boolean <var>$orderFirst</var> = <span class="php-keyword1">false</span></span> )</code>
+		<a class="anchor" href="#_showDebugger">#</a>
+		<code><a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#74-85" title="Go to source code">showDebugger</a>( <span>array <var>$output</var></span> )</code>
 
 		<div class="description short">
-			<p>Organizes works</p>
+			<p>Append debug parameters on output.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Organizes works</p>
+			<p>Append debug parameters on output.</p>
 
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$mDataSupport</var></dt>
-					<dd></dd>
-					<dt><var>$orderFirst</var></dt>
+					<dt><var>$output</var></dt>
 					<dd></dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					Illuminate\Http\JsonResponse
+					array
 				</div>
 
 
 
 				<h4>Overrides</h4>
-				<div class="list"><code><a href="class-Yajra.Datatables.Engines.BaseEngine.html#_make">Yajra\Datatables\Engines\BaseEngine::make()</a></code></div>
+				<div class="list"><code><a href="class-Yajra.Datatables.Engines.BaseEngine.html#_showDebugger">Yajra\Datatables\Engines\BaseEngine::showDebugger()</a></code></div>
 
 		</div>
 		</div></td>
@@ -352,7 +346,7 @@ Overrides global search</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_totalCount">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#79-87" title="Go to source code">totalCount</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#87-95" title="Go to source code">totalCount</a>( )</code>
 
 		<div class="description short">
 			<p>Count total items.</p>
@@ -386,14 +380,14 @@ Overrides global search</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_count">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#89-111" title="Go to source code">count</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#97-105" title="Go to source code">count</a>( )</code>
 
 		<div class="description short">
-			<p>Counts current query.</p>
+			<p>Count results.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Counts current query.</p>
+			<p>Count results.</p>
 
 
 
@@ -401,493 +395,6 @@ Overrides global search</p>
 				<div class="list">
 					integer
 				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="wrap" id="_wrap">
-
-		<td class="attributes"><code>
-			 protected 
-
-			string
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_wrap">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#113-122" title="Go to source code">wrap</a>( <span>string <var>$column</var></span> )</code>
-
-		<div class="description short">
-			<p>Wrap column with DB grammar.</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Wrap column with DB grammar.</p>
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$column</var></dt>
-					<dd></dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					string
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="filtering" id="_filtering">
-
-		<td class="attributes"><code>
-			 public 
-
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_filtering">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#124-189" title="Go to source code">filtering</a>( )</code>
-
-		<div class="description short">
-			<p>Perform global search.</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Perform global search.</p>
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="compileColumnQuery" id="_compileColumnQuery">
-
-		<td class="attributes"><code>
-			 protected 
-
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_compileColumnQuery">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#191-219" title="Go to source code">compileColumnQuery</a>( <span>mixed <var>$query</var></span>, <span>string|Closure <var>$method</var></span>, <span>mixed <var>$parameters</var></span>, <span>string <var>$column</var></span>, <span>string <var>$keyword</var></span> )</code>
-
-		<div class="description short">
-			<p>Perform filter column on selected field.</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Perform filter column on selected field.</p>
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$query</var></dt>
-					<dd></dd>
-					<dt><var>$method</var></dt>
-					<dd></dd>
-					<dt><var>$parameters</var></dt>
-					<dd></dd>
-					<dt><var>$column</var></dt>
-					<dd></dd>
-					<dt><var>$keyword</var></dt>
-					<dd></dd>
-				</dl></div>
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="parameterize" id="_parameterize">
-
-		<td class="attributes"><code>
-			 protected 
-
-			array
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_parameterize">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#221-234" title="Go to source code">parameterize</a>( )</code>
-
-		<div class="description short">
-			<p>Build Query Builder Parameters.</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Build Query Builder Parameters.</p>
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					array
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="getEagerLoads" id="_getEagerLoads">
-
-		<td class="attributes"><code>
-			 protected 
-
-			array
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_getEagerLoads">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#236-248" title="Go to source code">getEagerLoads</a>( )</code>
-
-		<div class="description short">
-			<p>Get eager loads keys if eloquent.</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Get eager loads keys if eloquent.</p>
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					array
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="compileRelationSearch" id="_compileRelationSearch">
-
-		<td class="attributes"><code>
-			 protected 
-
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_compileRelationSearch">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#250-268" title="Go to source code">compileRelationSearch</a>( <span>mixed <var>$query</var></span>, <span>string <var>$relation</var></span>, <span>string <var>$column</var></span>, <span>string <var>$keyword</var></span> )</code>
-
-		<div class="description short">
-			<p>Add relation query on global search.</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Add relation query on global search.</p>
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$query</var></dt>
-					<dd></dd>
-					<dt><var>$relation</var></dt>
-					<dd></dd>
-					<dt><var>$column</var></dt>
-					<dd></dd>
-					<dt><var>$keyword</var></dt>
-					<dd></dd>
-				</dl></div>
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="compileQuerySearch" id="_compileQuerySearch">
-
-		<td class="attributes"><code>
-			 protected 
-
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_compileQuerySearch">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#270-289" title="Go to source code">compileQuerySearch</a>( <span>mixed <var>$query</var></span>, <span>string <var>$column</var></span>, <span>string <var>$keyword</var></span>, <span>string <var>$relation</var> = <span class="php-quote">'or'</span></span> )</code>
-
-		<div class="description short">
-			<p>Compile query builder where clause depending on configurations.</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Compile query builder where clause depending on configurations.</p>
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$query</var></dt>
-					<dd></dd>
-					<dt><var>$column</var></dt>
-					<dd></dd>
-					<dt><var>$keyword</var></dt>
-					<dd></dd>
-					<dt><var>$relation</var></dt>
-					<dd></dd>
-				</dl></div>
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="castColumn" id="_castColumn">
-
-		<td class="attributes"><code>
-			 public 
-
-			string
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_castColumn">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#291-307" title="Go to source code">castColumn</a>( <span>string <var>$column</var></span> )</code>
-
-		<div class="description short">
-			<p>Wrap a column and cast in pgsql.</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Wrap a column and cast in pgsql.</p>
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$column</var></dt>
-					<dd></dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					string
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="prepareKeyword" id="_prepareKeyword">
-
-		<td class="attributes"><code>
-			 protected 
-
-			string
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_prepareKeyword">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#309-330" title="Go to source code">prepareKeyword</a>( <span>string <var>$keyword</var></span> )</code>
-
-		<div class="description short">
-			<p>Prepare search keyword based on configurations.</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Prepare search keyword based on configurations.</p>
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$keyword</var></dt>
-					<dd></dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					string
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="columnSearch" id="_columnSearch">
-
-		<td class="attributes"><code>
-			 public 
-
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_columnSearch">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#332-384" title="Go to source code">columnSearch</a>( )</code>
-
-		<div class="description short">
-			<p>Perform column search.</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Perform column search.</p>
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="joinEagerLoadedColumn" id="_joinEagerLoadedColumn">
-
-		<td class="attributes"><code>
-			 protected 
-
-			string
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_joinEagerLoadedColumn">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#417-467" title="Go to source code">joinEagerLoadedColumn</a>( <span>string <var>$relation</var></span>, <span>string <var>$relationColumn</var></span> )</code>
-
-		<div class="description short">
-			<p>Join eager loaded relation and get the related column name.</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Join eager loaded relation and get the related column name.</p>
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$relation</var></dt>
-					<dd></dd>
-					<dt><var>$relationColumn</var></dt>
-					<dd></dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					string
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="compileColumnSearch" id="_compileColumnSearch">
-
-		<td class="attributes"><code>
-			 protected 
-
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_compileColumnSearch">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#469-484" title="Go to source code">compileColumnSearch</a>( <span>integer <var>$i</var></span>, <span>mixed <var>$column</var></span>, <span>string <var>$keyword</var></span> )</code>
-
-		<div class="description short">
-			<p>Compile queries for column search.</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Compile queries for column search.</p>
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$i</var></dt>
-					<dd></dd>
-					<dt><var>$column</var></dt>
-					<dd></dd>
-					<dt><var>$keyword</var></dt>
-					<dd></dd>
-				</dl></div>
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="regexColumnSearch" id="_regexColumnSearch">
-
-		<td class="attributes"><code>
-			 protected 
-
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_regexColumnSearch">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#486-501" title="Go to source code">regexColumnSearch</a>( <span>mixed <var>$column</var></span>, <span>string <var>$keyword</var></span> )</code>
-
-		<div class="description short">
-			<p>Compile regex query column search.</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Compile regex query column search.</p>
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$column</var></dt>
-					<dd></dd>
-					<dt><var>$keyword</var></dt>
-					<dd></dd>
-				</dl></div>
-
 
 
 
@@ -907,7 +414,7 @@ Overrides global search</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_ordering">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#503-548" title="Go to source code">ordering</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#107-134" title="Go to source code">ordering</a>( )</code>
 
 		<div class="description short">
 			<p>Perform sorting of columns.</p>
@@ -915,6 +422,66 @@ Overrides global search</p>
 
 		<div class="description detailed hidden">
 			<p>Perform sorting of columns.</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="filtering" id="_filtering">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_filtering">#</a>
+		<code><a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#136-167" title="Go to source code">filtering</a>( )</code>
+
+		<div class="description short">
+			<p>Perform global search.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Perform global search.</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="columnSearch" id="_columnSearch">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_columnSearch">#</a>
+		<code><a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#169-208" title="Go to source code">columnSearch</a>( )</code>
+
+		<div class="description short">
+			<p>Perform column search.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Perform column search.</p>
 
 
 
@@ -937,14 +504,14 @@ Overrides global search</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_paging">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#550-559" title="Go to source code">paging</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#210-221" title="Go to source code">paging</a>( )</code>
 
 		<div class="description short">
-			<p>Perform pagination</p>
+			<p>Perform pagination.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Perform pagination</p>
+			<p>Perform pagination.</p>
 
 
 
@@ -960,31 +527,74 @@ Overrides global search</p>
 		<td class="attributes"><code>
 			 public 
 
-			array|static[]
+			mixed
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_results">#</a>
-		<code><a href="source-class-Yajra.Datatables.Engines.QueryBuilderEngine.html#561-569" title="Go to source code">results</a>( )</code>
+		<code><a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#223-231" title="Go to source code">results</a>( )</code>
 
 		<div class="description short">
-			<p>Get results</p>
+			<p>Get results.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Get results</p>
+			<p>Get results.</p>
 
 
 
 				<h4>Returns</h4>
 				<div class="list">
-					array|static[]
+					mixed
 				</div>
 
 
 
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="make" id="_make">
+
+		<td class="attributes"><code>
+			 public 
+
+			Illuminate\Http\JsonResponse
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_make">#</a>
+		<code><a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#233-243" title="Go to source code">make</a>( <span>boolean <var>$mDataSupport</var> = <span class="php-keyword1">false</span></span>, <span>boolean <var>$orderFirst</var> = <span class="php-keyword1">true</span></span> )</code>
+
+		<div class="description short">
+			<p>Organizes works.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Organizes works.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$mDataSupport</var></dt>
+					<dd></dd>
+					<dt><var>$orderFirst</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					Illuminate\Http\JsonResponse
+				</div>
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Yajra.Datatables.Engines.BaseEngine.html#_make">Yajra\Datatables\Engines\BaseEngine::make()</a></code></div>
 
 		</div>
 		</div></td>
@@ -1036,7 +646,6 @@ Overrides global search</p>
 			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#_setTotalRecords">setTotalRecords()</a>, 
 			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#_setTransformer">setTransformer()</a>, 
 			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#_setupKeyword">setupKeyword()</a>, 
-			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#_showDebugger">showDebugger()</a>, 
 			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#_skipPaging">skipPaging()</a>, 
 			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#_smart">smart()</a>, 
 			<a href="class-Yajra.Datatables.Engines.BaseEngine.html#_tableNames">tableNames()</a>, 
@@ -1058,6 +667,59 @@ Overrides global search</p>
 
 
 
+	<table class="summary properties" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="collection" id="$collection">
+		<td class="attributes"><code>
+			public  
+			Illuminate\Support\Collection
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#20-25" title="Go to source code"><var>$collection</var></a>
+
+			<div class="description short">
+				<p>Collection object</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Collection object</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$collection" class="anchor">#</a>
+				<code></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="original_collection" id="$original_collection">
+		<td class="attributes"><code>
+			public  
+			Illuminate\Support\Collection
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Yajra.Datatables.Engines.CollectionEngine.html#27-32" title="Go to source code"><var>$original_collection</var></a>
+
+			<div class="description short">
+				<p>Collection object</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Collection object</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$original_collection" class="anchor">#</a>
+				<code></code>
+			</div>
+		</td>
+	</tr>
+	</table>
 
 	<table class="summary inherited">
 	<caption>Properties inherited from <a href="class-Yajra.Datatables.Engines.BaseEngine.html#properties">Yajra\Datatables\Engines\BaseEngine</a></caption>
