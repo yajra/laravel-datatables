@@ -63,4 +63,10 @@ return [
         Illuminate\Database\Query\Builder::class              => 'query',
         Illuminate\Support\Collection::class                  => 'collection',
     ],
+
+    /**
+     * Nulls last sql pattern for Posgresql & Oracle.
+     * For MySQL, use '-%s %s'
+     */
+    'nulls_last_sql' => '%s %s NULLS LAST',
 ];

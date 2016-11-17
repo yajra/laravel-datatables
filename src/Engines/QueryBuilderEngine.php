@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Yajra\Datatables\Helper;
 use Yajra\Datatables\Request;
@@ -553,10 +554,28 @@ class QueryBuilderEngine extends BaseEngine
                 }
 
                 if ($valid == 1) {
-                    $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
+                    if ($this->nullsLast) {
+                        $this->getQueryBuilder()->orderByRaw($this->getNullsLastSql($column, $orderable['direction']));
+                    } else {
+                        $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
+                    }
                 }
             }
         }
+    }
+
+    /**
+     * Get NULLS LAST SQL.
+     *
+     * @param  string $column
+     * @param  string $direction
+     * @return string
+     */
+    protected function getNullsLastSql($column, $direction)
+    {
+        $sql = Config::get('datatables.nulls_last_sql', '%s %s NULLS LAST');
+
+        return sprintf($sql, $column, $direction);
     }
 
     /**

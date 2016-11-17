@@ -196,6 +196,13 @@ abstract class BaseEngine implements DataTableEngineContract
     protected $appends = [];
 
     /**
+     * Flag for ordering NULLS LAST option.
+     *
+     * @var bool
+     */
+    protected $nullsLast = false;
+
+    /**
      * Add column in collection.
      *
      * @param string $name
@@ -770,6 +777,8 @@ abstract class BaseEngine implements DataTableEngineContract
 
     /**
      * Skip pagination as needed.
+     *
+     * @return $this
      */
     public function skipPaging()
     {
@@ -786,6 +795,18 @@ abstract class BaseEngine implements DataTableEngineContract
     public function isOracleSql()
     {
         return in_array($this->database, ['oracle', 'oci8']);
+    }
+
+    /**
+     * Set datatables to do ordering with NULLS LAST option.
+     *
+     * @return $this
+     */
+    public function orderByNullsLast()
+    {
+        $this->nullsLast = true;
+
+        return $this;
     }
 
     /**
