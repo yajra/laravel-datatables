@@ -261,50 +261,6 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Will prefix column if needed.
-     *
-     * @param string $column
-     * @return string
-     */
-    protected function prefixColumn($column)
-    {
-        $table_names = $this->tableNames();
-        if (count(
-            array_filter($table_names, function ($value) use (&$column) {
-                return strpos($column, $value . '.') === 0;
-            })
-        )) {
-            // the column starts with one of the table names
-            $column = $this->prefix . $column;
-        }
-
-        return $column;
-    }
-
-    /**
-     * Will look through the query and all it's joins to determine the table names.
-     *
-     * @return array
-     */
-    protected function tableNames()
-    {
-        $names          = [];
-        $query          = $this->getQueryBuilder();
-        $names[]        = $query->from;
-        $joins          = $query->joins ?: [];
-        $databasePrefix = $this->prefix;
-        foreach ($joins as $join) {
-            $table   = preg_split('/ as /i', $join->table);
-            $names[] = $table[0];
-            if (isset($table[1]) && ! empty($databasePrefix) && strpos($table[1], $databasePrefix) == 0) {
-                $names[] = preg_replace('/^' . $databasePrefix . '/', '', $table[1]);
-            }
-        }
-
-        return $names;
-    }
-
-    /**
      * Get Query Builder object.
      *
      * @param mixed $instance
