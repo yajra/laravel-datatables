@@ -193,7 +193,7 @@ abstract class BaseEngine implements DataTableEngineContract
      *
      * @var array
      */
-    private $appends = [];
+    protected $appends = [];
 
     /**
      * Setup search keyword.
@@ -201,7 +201,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * @param  string $value
      * @return string
      */
-    public function setupKeyword($value)
+    protected function setupKeyword($value)
     {
         if ($this->isSmartSearch()) {
             $keyword = '%' . $value . '%';
@@ -222,7 +222,7 @@ abstract class BaseEngine implements DataTableEngineContract
      *
      * @return bool
      */
-    protected function isSmartSearch()
+    public function isSmartSearch()
     {
         return Config::get('datatables.search.smart', true);
     }
@@ -244,7 +244,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * @param bool $lowercase
      * @return string
      */
-    public function wildcardLikeString($str, $lowercase = true)
+    protected function wildcardLikeString($str, $lowercase = true)
     {
         $wild   = '%';
         $length = Str::length($str);
@@ -266,7 +266,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * @param string $column
      * @return string
      */
-    public function prefixColumn($column)
+    protected function prefixColumn($column)
     {
         $table_names = $this->tableNames();
         if (count(
@@ -286,7 +286,7 @@ abstract class BaseEngine implements DataTableEngineContract
      *
      * @return array
      */
-    public function tableNames()
+    protected function tableNames()
     {
         $names          = [];
         $query          = $this->getQueryBuilder();
@@ -624,7 +624,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * @param  boolean $skip
      * @return void
      */
-    public function orderRecords($skip)
+    protected function orderRecords($skip)
     {
         if (! $skip) {
             $this->ordering();
@@ -636,7 +636,7 @@ abstract class BaseEngine implements DataTableEngineContract
      *
      * @return void
      */
-    public function filterRecords()
+    protected function filterRecords()
     {
         if ($this->autoFilter && $this->request->isSearchable()) {
             $this->filtering();
@@ -655,7 +655,7 @@ abstract class BaseEngine implements DataTableEngineContract
      *
      * @return void
      */
-    public function paginate()
+    protected function paginate()
     {
         if ($this->request->isPaginationable() && ! $this->skipPaging) {
             $this->paging();
@@ -668,7 +668,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * @param bool $object
      * @return \Illuminate\Http\JsonResponse
      */
-    public function render($object = false)
+    protected function render($object = false)
     {
         $output = array_merge([
             'draw'            => (int) $this->request['draw'],
@@ -732,7 +732,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * @param bool|false $object
      * @return array
      */
-    private function getProcessedData($object = false)
+    protected function getProcessedData($object = false)
     {
         $processor = new DataProcessor(
             $this->results(),
@@ -760,7 +760,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * @param  array $output
      * @return array
      */
-    public function showDebugger(array $output)
+    protected function showDebugger(array $output)
     {
         $output['queries'] = $this->connection->getQueryLog();
         $output['input']   = $this->request->all();
@@ -775,7 +775,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * @param  mixed $parameters
      * @param  bool $autoFilter
      */
-    public function overrideGlobalSearch(\Closure $callback, $parameters, $autoFilter = false)
+    protected function overrideGlobalSearch(\Closure $callback, $parameters, $autoFilter = false)
     {
         $this->autoFilter               = $autoFilter;
         $this->isFilterApplied          = true;
@@ -998,7 +998,7 @@ abstract class BaseEngine implements DataTableEngineContract
      *
      * @return bool
      */
-    protected function isOracleSql()
+    public function isOracleSql()
     {
         return in_array($this->database, ['oracle', 'oci8']);
     }
