@@ -140,11 +140,11 @@ abstract class BaseEngine implements DataTableEngineContract
     ];
 
     /**
-     * Output transformer.
+     * Output transformers.
      *
-     * @var \League\Fractal\TransformerAbstract
+     * @var \League\Fractal\TransformerAbstract[]
      */
-    protected $transformer = null;
+    protected $transformers = [];
 
     /**
      * Database prefix
@@ -579,8 +579,20 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function setTransformer($transformer)
     {
-        $this->transformer = $transformer;
+        $this->addTransformer($transformer);
 
+        return $this;
+    }
+
+    /**
+     * Add data output transformer.
+     *
+     * @param \League\Fractal\TransformerAbstract $transformer
+     * @return $this
+     */
+    public function addTransformer($transformer)
+    {
+        $this->transformers[] = $transformer;
         return $this;
     }
 
@@ -676,31 +688,26 @@ abstract class BaseEngine implements DataTableEngineContract
             'recordsFiltered' => $this->filteredRecords,
         ], $this->appends);
 
-        if (isset($this->transformer)) {
+        if (count($this->transformers)>0) {
             $fractal = app('datatables.fractal');
 
             if ($this->serializer) {
                 $fractal->setSerializer($this->createSerializer());
             }
 
-            //Get transformer reflection
-            //Firs method parameter should be data/object to transform
-            $reflection = new \ReflectionMethod($this->transformer, 'transform');
-            $parameter  = $reflection->getParameters()[0];
-
-            //If parameter is class assuming it requires object
-            //Else just pass array by default
-            if ($parameter->getClass()) {
-                $resource = new Collection($this->results(), $this->createTransformer());
-            } else {
-                $resource = new Collection(
-                    $this->getProcessedData($object),
-                    $this->createTransformer()
-                );
+            $collector = [];
+            foreach ($this->transformers as $transformer) {
+                $resource = $this->applyTransformer($object, $transformer);
+                $collection = $fractal->createData($resource)->toArray();
+                $transformed = $collection['data'];
+                $collector = array_map(function ($item_collector, $item_transformed) {
+                    if ($item_collector===null) {
+                        $item_collector = [];
+                    }
+                    return array_merge($item_collector, $item_transformed);
+                }, $collector, $transformed);
             }
-
-            $collection     = $fractal->createData($resource)->toArray();
-            $output['data'] = $collection['data'];
+            $output['data'] = $collector;
         } else {
             $output['data'] = Helper::transform($this->getProcessedData($object));
         }
@@ -710,6 +717,34 @@ abstract class BaseEngine implements DataTableEngineContract
         }
 
         return new JsonResponse($output);
+    }
+
+    /**
+     * Apply transformer on results
+     *
+     * @param $object
+     * @param \League\Fractal\TransformerAbstract $transformer
+     * @return Collection
+     */
+    protected function applyTransformer($object, $transformer)
+    {
+        //Get transformer reflection
+        //Firs method parameter should be data/object to transform
+        $reflection = new \ReflectionMethod($transformer, 'transform');
+        $parameter  = $reflection->getParameters()[0];
+
+        //If parameter is class assuming it requires object
+        //Else just pass array by default
+        if ($parameter->getClass()) {
+            $resource = new Collection($this->results(), $this->createTransformer($transformer));
+        } else {
+            $resource = new Collection(
+                $this->getProcessedData($object),
+                $this->createTransformer($transformer)
+            );
+        }
+
+        return $resource;
     }
 
     /**
@@ -729,15 +764,16 @@ abstract class BaseEngine implements DataTableEngineContract
     /**
      * Get or create transformer instance.
      *
+     * @param \League\Fractal\TransformerAbstract $transformer
      * @return \League\Fractal\TransformerAbstract
      */
-    protected function createTransformer()
+    protected function createTransformer($transformer)
     {
-        if ($this->transformer instanceof \League\Fractal\TransformerAbstract) {
-            return $this->transformer;
+        if ($transformer instanceof \League\Fractal\TransformerAbstract) {
+            return $transformer;
         }
 
-        return new $this->transformer();
+        return new $transformer();
     }
 
     /**
