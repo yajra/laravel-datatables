@@ -680,7 +680,7 @@ abstract class BaseEngine implements DataTableEngineContract
             $fractal = app('datatables.fractal');
 
             if ($this->serializer) {
-                $fractal->setSerializer(new $this->serializer);
+                $fractal->setSerializer($this->createSerializer());
             }
 
             //Get transformer reflection
@@ -710,6 +710,20 @@ abstract class BaseEngine implements DataTableEngineContract
         }
 
         return new JsonResponse($output);
+    }
+
+    /**
+     * Get or create transformer serializer instance.
+     *
+     * @return \League\Fractal\Serializer\SerializerAbstract
+     */
+    protected function createSerializer()
+    {
+        if ($this->serializer instanceof \League\Fractal\Serializer\SerializerAbstract) {
+            return $this->serializer;
+        }
+
+        return new $this->serializer();
     }
 
     /**
