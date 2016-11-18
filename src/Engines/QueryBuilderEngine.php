@@ -332,10 +332,11 @@ class QueryBuilderEngine extends BaseEngine
         $relationChunk = array_reverse($relationChunk, true);
 
         /**
-         * Create valuable for use in check last relation (reverse order)
+         * Create valuable for use in check last relation
          */
-        $totalRelation = count($relationChunk);
-        $processed = 1;
+        end($relationChunk);
+        $lastRelation = key($relationChunk);
+        reset($relationChunk);
 
         /**
          * Walking ...
@@ -348,7 +349,7 @@ class QueryBuilderEngine extends BaseEngine
             $builder = "({$builder->toSql()}) >= 1";
 
             // Check if it last relation we will use orWhereRaw
-            if ($totalRelation === $processed) {
+            if ($lastRelation == $relation) {
                 $relationMethod = "orWhereRaw";
             } else {
                 // For case parent relation of nested relation.
@@ -361,7 +362,6 @@ class QueryBuilderEngine extends BaseEngine
             } else {
                 $query->{$relationMethod}($builder, [$this->prepareKeyword($keyword)]);
             }
-            $processed++;
         }
     }
 
