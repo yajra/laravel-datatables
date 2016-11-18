@@ -592,7 +592,9 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function addTransformer($transformer)
     {
-        $this->transformers[] = $transformer;
+        if ($transformer!=null) {
+            $this->transformers[] = $transformer;
+        }
         return $this;
     }
 
