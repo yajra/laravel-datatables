@@ -611,7 +611,7 @@ class Builder
     /**
      * Get collection of columns.
      *
-     * @return Collection
+     * @return \Illuminate\Support\Collection
      */
     public function getColumns()
     {
