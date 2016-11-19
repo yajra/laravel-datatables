@@ -3,7 +3,7 @@
   "description": "jQuery DataTables API for Laravel 4|5",
   "keywords": [
     "laravel",
-    "datatables",
+    "dataTables",
     "jquery"
   ],
   "license": "MIT",
@@ -15,17 +15,17 @@
   ],
   "require": {
     "php": ">=5.5.9",
-    "illuminate/support": "~5.0",
-    "illuminate/database": "~5.0",
-    "illuminate/view": "~5.0",
-    "illuminate/http": "~5.0",
-    "illuminate/filesystem": "~5.0",
-    "laravelcollective/html": "~5.0",
-    "league/fractal": "~0.14"
+    "illuminate/support": "^5.0",
+    "illuminate/database": "^5.0",
+    "illuminate/view": "^5.0",
+    "illuminate/http": "^5.0",
+    "illuminate/filesystem": "^5.0",
+    "laravelcollective/html": "^5.0",
+    "league/fractal": "^0.14"
   },
   "require-dev": {
-    "mockery/mockery": "~0.9",
-    "phpunit/phpunit": "~4.0"
+    "mockery/mockery": "^0.9",
+    "phpunit/phpunit": "^4.0"
   },
   "suggest": {
     "yajra/laravel-datatables-buttons": "Plugin for server-side exporting of dataTable."
