@@ -272,18 +272,97 @@ class QueryBuilderEngine extends BaseEngine
     protected function compileRelationSearch($query, $relation, $column, $keyword)
     {
         $myQuery      = clone $this->query;
-        $relationType = $myQuery->getModel()->{$relation}();
-        $myQuery->orWhereHas($relation, function ($builder) use ($column, $keyword, $query, $relationType) {
-            $builder->select($this->connection->raw('count(1)'));
-            $this->compileQuerySearch($builder, $column, $keyword, '');
+
+        /**
+         * For compile nested relation, we need store all nested relation as array
+         * and reverse order to apply where query.
+         *
+         * With this method we can create nested sub query with properly relation.
+         */
+
+        /**
+         * Store all relation data that require in next step
+         */
+        $relationChunk = [];
+
+        /**
+         * Store last eloquent query builder for get next relation.
+         */
+        $lastQuery = $query;
+
+        $relations = explode('.', $relation);
+        $lastRelation = end($relations);
+        foreach ($relations as $relation) {
+            $relationType = $myQuery->getModel()->{$relation}();
+            $myQuery->orWhereHas($relation, function ($builder) use (
+                $column,
+                $keyword,
+                $query,
+                $relationType,
+                $relation,
+                $lastRelation,
+                &$relationChunk,
+                &$lastQuery
+            ) {
+                $builder->select($this->connection->raw('count(1)'));
+
+                // We will perform search on last relation only.
+                if ($relation == $lastRelation) {
+                    $this->compileQuerySearch($builder, $column, $keyword, '');
+                }
+
+                // Put require object to next step!!
+                $relationChunk[$relation] = [
+                    'builder' => $builder,
+                    'relationType' => $relationType,
+                    'query' => $lastQuery
+                ];
+
+                // This is trick make sub query.
+                $lastQuery = $builder;
+            });
+
+            // This is trick to make nested relation by pass previous relation to be next query eloquent builder
+            $myQuery = $relationType;
+        }
+
+        /**
+         * Reverse them all
+         */
+        $relationChunk = array_reverse($relationChunk, true);
+
+        /**
+         * Create valuable for use in check last relation
+         */
+        end($relationChunk);
+        $lastRelation = key($relationChunk);
+        reset($relationChunk);
+
+        /**
+         * Walking ...
+         */
+        foreach ($relationChunk as $relation => $chunk) {
+            // Prepare variables
+            $builder = $chunk['builder'];
+            $relationType = $chunk['relationType'];
+            $query = $chunk['query'];
             $builder = "({$builder->toSql()}) >= 1";
 
-            if ($relationType instanceof MorphToMany) {
-                $query->orWhereRaw($builder, [$relationType->getMorphClass(), $this->prepareKeyword($keyword)]);
+            // Check if it last relation we will use orWhereRaw
+            if ($lastRelation == $relation) {
+                $relationMethod = "orWhereRaw";
             } else {
-                $query->orWhereRaw($builder, [$this->prepareKeyword($keyword)]);
+                // For case parent relation of nested relation.
+                // We must use and for properly query and get correct result
+                $relationMethod = "whereRaw";
             }
-        });
+
+            if ($relationType instanceof MorphToMany) {
+                $query->{$relationMethod}($builder, [$relationType->getMorphClass(), $this->prepareKeyword($keyword)]);
+            } else {
+                $query->{$relationMethod}($builder, [$this->prepareKeyword($keyword)]);
+            }
+        }
     }
 
     /**
