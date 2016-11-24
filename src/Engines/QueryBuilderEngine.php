@@ -385,6 +385,7 @@ class QueryBuilderEngine extends BaseEngine
          * Ambiguous field error will appear
          * when query use join table and search with keyword.
          */
+        // Remove backtick that appear from MYSQL query.
         $column = str_replace('`', '', $column);
 
         // check . in field name for protect don't add table again
@@ -401,8 +402,8 @@ class QueryBuilderEngine extends BaseEngine
             // get table from query and add it.
             $column = $q->from.'.'.$column;
         }
-        // Add ` cover table and field name.
-        $column = '`' . str_replace('.', '`.`', $column) . '`';
+        // Add wrap cover table and field name.
+        $column = $this->wrap($column);
 
         /* end fix */
         
