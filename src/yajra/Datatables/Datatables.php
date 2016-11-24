@@ -144,6 +144,13 @@ class Datatables
     protected $autoFilter = true;
 
     /**
+     * Flag for ordering NULLS LAST option.
+     *
+     * @var boolean
+     */
+    protected $nullsLast = false;
+
+    /**
      * Flag for DT version
      *
      * @var boolean
@@ -345,6 +352,13 @@ class Datatables
             ->setBindings($bindings)->count();
     }
 
+    public function orderByNullsLast()
+    {
+        $this->nullsLast = true;
+
+        return $this;
+    }
+
     /**
      * Organizes works
      *
@@ -356,7 +370,7 @@ class Datatables
         // set mData support flag
         $this->mDataSupport = $mDataSupport;
 
-        // check if auto filtering was overidden
+        // check if auto filtering was overridden
         if ($this->autoFilter) {
             $this->doFiltering();
         }
@@ -529,6 +543,31 @@ class Datatables
     }
 
     /**
+     * Get config ordering nulls last
+     *
+     * @return boolean
+     */
+    public function isNullsLast()
+    {
+        return $this->nullsLast;
+    }
+
+    /**
+     * Get NULLS LAST SQL.
+     *
+     * @param $column
+     * @param $direction
+     * @return string
+     */
+    private function getNullsLastSql($column, $direction)
+    {
+        $sql = Config::get('datatables::order.nulls_last_sql', '%s %s NULLS LAST');
+
+        return sprintf($sql, $column, $direction);
+    }
+
+
+    /**
      * Clean columns name
      *
      * @param array $cols
@@ -687,17 +726,31 @@ class Datatables
                     $column = $this->input['columns'][$order_col];
                     if ($column['orderable'] == "true") {
                         if (! empty($column['name'])) {
-                            $this->query->orderBy($column['name'], $order_dir);
+                            if($this->isNullsLast()){
+                                $this->query->orderByRaw($this->getNullsLastSql($column['name'], $order_dir));
+
+                            }else{
+                                $this->query->orderBy($column['name'], $order_dir);
+                            }
                         } elseif (isset($this->columns[$order_col])) {
                             $column_name = $this->getColumnName($this->columns[$order_col]);
-                            $this->query->orderBy($column_name, $order_dir);
+                            if($this->isNullsLast()){
+                                $this->query->orderByRaw($this->getNullsLastSql($column_name, $order_dir));
+                            }else{
+                                $this->query->orderBy($column_name, $order_dir);
+                            }
+
                         }
                     }
                 } else {
                     if (isset($this->columns[$order_col])) {
                         if ($this->input['columns'][$order_col]['orderable'] == "true") {
                             $column_name = $this->getColumnName($this->columns[$order_col]);
-                            $this->query->orderBy($column_name, $order_dir);
+                            if($this->isNullsLast()){
+                                $this->query->orderByRaw($this->getNullsLastSql($column_name, $order_dir));
+                            }else{
+                                $this->query->orderBy($column_name, $order_dir);
+                            }
                         }
                     }
                 }
@@ -987,12 +1040,13 @@ class Datatables
      * Set auto filter off and run your own filter
      *
      * @param callable $callback
+     * @param $disable_auto_filter
      * @return Datatables
      * @internal param $Closure
      */
-    public function filter(Closure $callback)
+    public function filter(Closure $callback, $disable_auto_filter = false)
     {
-        $this->autoFilter = false;
+        $this->autoFilter = $disable_auto_filter;
 
         $query = $this->query;
         call_user_func($callback, $query);
