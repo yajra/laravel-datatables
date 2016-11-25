@@ -385,8 +385,9 @@ class QueryBuilderEngine extends BaseEngine
          * Ambiguous field error will appear
          * when query use join table and search with keyword.
          */
-        // Remove backtick that appear from MYSQL query.
-        $column = str_replace('`', '', $column);
+        // Remove delimiter of column that appear from MYSQL query.
+        $column = str_replace(['`', '"', '[', ']'], '', $column);
+
 
         // check . in field name for protect don't add table again
         // but as far as I tested, this function has single field name only.
