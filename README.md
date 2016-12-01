@@ -76,6 +76,6 @@ If you discover any security related issues, please email [aqangeles@gmail.com](
 
 The MIT License (MIT). Please see [License File](https://github.com/yajra/laravel-datatables/blob/master/LICENSE.md) for more information.
 
-## Buy me a beer
+## Buy me a coffee
 - <a href='https://pledgie.com/campaigns/29515'><img alt='Click here to lend your support to: Laravel Datatables and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/29515.png?skin_name=chrome' border='0' ></a>
-- [Become a patron](https://www.patreon.com/bePatron?u=4521203)
+- <a href='https://www.patreon.com/bePatron?u=4521203'><img alt='Become a Patron' src='https://s3.amazonaws.com/patreon_public_assets/toolbox/patreon.png' border='0' ></a>
