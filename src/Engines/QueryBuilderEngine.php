@@ -433,7 +433,7 @@ class QueryBuilderEngine extends BaseEngine
      */
     public function columnSearch()
     {
-        $columns = $this->request->get('columns', []);
+        $columns = (array) $this->request->input('columns');
 
         foreach ($columns as $index => $column) {
             if (! $this->request->isColumnSearchable($index)) {
@@ -645,8 +645,8 @@ class QueryBuilderEngine extends BaseEngine
      */
     public function paging()
     {
-        $this->query->skip($this->request['start'])
-                    ->take((int) $this->request['length'] > 0 ? $this->request['length'] : 10);
+        $this->query->skip($this->request->input('start'))
+                    ->take((int) $this->request->input('length') > 0 ? $this->request->input('length') : 10);
     }
 
     /**
