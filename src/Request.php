@@ -61,7 +61,7 @@ class Request extends IlluminateRequest
 
         $orderable = [];
         for ($i = 0, $c = count($this->input('order')); $i < $c; $i++) {
-            $order_col = $this->input("order.$i.column");
+            $order_col = (int) $this->input("order.$i.column");
             $order_dir = $this->input("order.$i.dir");
             if ($this->isColumnOrderable($order_col)) {
                 $orderable[] = ['column' => $order_col, 'direction' => $order_dir];
