@@ -118,7 +118,6 @@ class Request extends IlluminateRequest
      */
     public function isColumnSearchable($i, $column_search = true)
     {
-        $columns = $this->input('columns');
         if ($column_search) {
             return $this->input("columns.$i.searchable") === 'true' && $this->columnKeyword($i) != '';
         }
