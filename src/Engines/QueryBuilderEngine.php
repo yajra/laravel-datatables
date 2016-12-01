@@ -378,6 +378,35 @@ class QueryBuilderEngine extends BaseEngine
         $column = $this->castColumn($column);
         $sql    = $column . ' LIKE ?';
 
+        /**
+         * Patch for fix about ambiguous field
+         *
+         * Ambiguous field error will appear
+         * when query use join table and search with keyword.
+         */
+        // Remove delimiter of column that appear from MYSQL query.
+        $column = str_replace(['`', '"', '[', ']'], '', $column);
+
+
+        // check . in field name for protect don't add table again
+        // but as far as I tested, this function has single field name only.
+        if (strpos($column, '.') === false) {
+            // Alternative method to check
+            // instanceof \Illuminate\Database\Eloquent\Builder
+            if (method_exists($query, 'getQuery')) {
+                $q = $query->getQuery();
+            } else {
+                $q = $query;
+            }
+
+            // get table from query and add it.
+            $column = $q->from.'.'.$column;
+        }
+        // Add wrap cover table and field name.
+        $column = $this->wrap($column);
+
+        /* end fix */
+        
         if ($this->isCaseInsensitive()) {
             $sql = 'LOWER(' . $column . ') LIKE ?';
         }
