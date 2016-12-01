@@ -8,6 +8,10 @@
 
 ##Change Log
 
+### v6.22.1 - 2016-12-01
+- Patch request class and use input array access to get the values. #868
+- Fix Error 500 Illegal string offset issues: #857, #657, #395.
+
 ### v6.22.0 - 2016-11-19
 - Add support for searching of nested relationships.
 - PR #841 & #844. Credits to @ethaizone
