@@ -104,7 +104,7 @@ class QueryBuilderEngine extends BaseEngine
 
         // check for select soft deleted records
         if (! $this->withTrashed && $this->modelUseSoftDeletes()) {
-            $myQuery->whereNull($myQuery->getModel()->getTable() . '.deleted_at');
+            $myQuery->whereNull($myQuery->getModel()->getQualifiedDeletedAtColumn());
         }
 
         return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
