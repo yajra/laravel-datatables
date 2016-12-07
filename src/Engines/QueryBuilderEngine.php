@@ -395,9 +395,6 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function addTablePrefix($query, $column)
     {
-        // Remove column delimiters that appear from DB query.
-        $column = str_replace(['`', '"', '[', ']'], '', $column);
-
         // Check if field does not have a table prefix
         if (strpos($column, '.') === false) {
             // Alternative method to check instanceof \Illuminate\Database\Eloquent\Builder
@@ -411,10 +408,7 @@ class QueryBuilderEngine extends BaseEngine
             $column = $q->from . '.' . $column;
         }
 
-        // Add wrap cover table and field name.
-        $column = $this->wrap($column);
-
-        return $column;
+        return $this->wrap($column);
     }
 
     /**
@@ -425,7 +419,6 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function castColumn($column)
     {
-        $column = $this->wrap($column);
         if ($this->database === 'pgsql') {
             $column = 'CAST(' . $column . ' as TEXT)';
         } elseif ($this->database === 'firebird') {
