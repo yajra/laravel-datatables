@@ -8,6 +8,9 @@
 
 ##Change Log
 
+### v6.22.4 - 2016-12-07
+- Fix double wrapping of column name.
+
 ### v6.22.3 - 2016-12-07
 - Fix adding of table prefix before casting the column. PR #876
 - Fix #871, #873
