@@ -8,6 +8,12 @@
 
 ##Change Log
 
+### v6.22.3 - 2016-12-07
+- Fix adding of table prefix before casting the column. PR #876
+- Fix #871, #873
+- Custom soft delete column support. PR #878, credits to @Huracan88
+- Fix #875
+
 ### v6.22.2 - 2016-12-01
 - Patch for ambiguous field error for relations issues.
 - PR #849, credits to @ethaizone.
