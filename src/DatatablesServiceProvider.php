@@ -83,6 +83,8 @@ class DatatablesServiceProvider extends ServiceProvider
             return new Datatables($this->app->make(Request::class));
         });
 
+        $this->app->alias('datatables', Datatables::class);
+
         $this->app->singleton('datatables.fractal', function () {
             $fractal = new Manager;
             $config  = $this->app['config'];
