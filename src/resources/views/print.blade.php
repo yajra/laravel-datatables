@@ -14,12 +14,14 @@
     </head>
     <body>
         <table class="table table-bordered table-condensed table-striped">
+            @php ($flag = true)
             @foreach($data as $row)
-                @if ($row == reset($data)) 
+                @if ($row == reset($data) && $flag)
                     <tr>
                         @foreach($row as $key => $value)
                             <th>{!! $key !!}</th>
                         @endforeach
+                        @php ($flag = false)
                     </tr>
                 @endif
                 <tr>
