@@ -861,12 +861,14 @@ abstract class BaseEngine implements DataTableEngineContract
     protected function wildcardLikeString($str, $lowercase = true)
     {
         $wild   = '%';
-        $length = Str::length($str);
-        if ($length) {
-            for ($i = 0; $i < $length; $i++) {
-                $wild .= $str[$i] . '%';
+        $chars = preg_split('//u', $str, -1, PREG_SPLIT_NO_EMPTY);
+
+        if (count($chars) > 0) {
+            foreach ($chars as $char) {
+                $wild .= $char . '%';
             }
         }
+
         if ($lowercase) {
             $wild = Str::lower($wild);
         }
