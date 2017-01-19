@@ -8,6 +8,10 @@
 
 ##Change Log
 
+### v6.22.8 - 2017-01-19
+- Support for UTF8 characters when creating wildcard query.
+- PR #926, credits to @Rhincodon.
+
 ### v6.22.7 - 2017-01-04
 - Add datatables alias to fix singleton. PR #903, credits to @ElfSundae
 - Use static class name instead FQCN. PR #902, credits to @ElfSundae
