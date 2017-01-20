@@ -35,5 +35,10 @@
       "Yajra\\Datatables\\": "src/"
     }
   },
-  "minimum-stability": "dev"
+  "config": {
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
