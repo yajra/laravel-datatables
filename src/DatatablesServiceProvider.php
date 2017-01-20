@@ -31,6 +31,8 @@ class DatatablesServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__ . '/resources/views', 'datatables');
 
+        $this->mergeConfigFrom(__DIR__ . '/config/config.php', 'datatables');
+
         $this->publishAssets();
     }
 
