@@ -558,7 +558,7 @@ class QueryBuilderEngine extends BaseEngine
         } else {
             $table = $model->getRelated()->getTable();
             if ($model instanceof HasOneOrMany) {
-                $foreign = $model->getForeignKey();
+                $foreign = $model->getForeignKeyName();
                 $other   = $model->getQualifiedParentKeyName();
             } else {
                 $foreign = $model->getQualifiedForeignKey();
