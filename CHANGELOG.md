@@ -8,6 +8,10 @@
 
 ##Change Log
 
+### v6.22.9 - 2017-01-20
+- Do not append table name if instance is expression. #933
+- Fix #927 and possible fix for #873.
+
 ### v6.22.8 - 2017-01-19
 - Support for UTF8 characters when creating wildcard query.
 - PR #926, credits to @Rhincodon.
