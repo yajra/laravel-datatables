@@ -46,6 +46,7 @@ class Config
         $keys               = explode('.', $key);
         $config             = require __DIR__ . '/../src/config/datatables.php';
         $config['builders'] = array_add($config['builders'], 'Mockery_3_Illuminate_Database_Query_Builder', 'query');
+        $config['builders'] = array_add($config['builders'], 'Mockery_4_Illuminate_Database_Query_Builder', 'query');
 
         return $config[$keys[1]];
     }
