@@ -27,7 +27,8 @@
   },
   "suggest": {
     "yajra/laravel-datatables-buttons": "Plugin for server-side exporting of dataTable.",
-    "league/fractal": "Transform your response in a better format."
+    "yajra/laravel-datatables-html": "Plugin for server-side HTML builder of dataTable.",
+    "league/fractal": "Transform your api response into something you won't hate."
   },
   "autoload": {
     "psr-4": {
