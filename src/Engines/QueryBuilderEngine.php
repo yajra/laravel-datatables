@@ -513,7 +513,7 @@ class QueryBuilderEngine extends BaseEngine
      * @param bool $raw
      * @return string
      */
-    private function getSearchKeyword($i, $raw = false)
+    protected function getSearchKeyword($i, $raw = false)
     {
         $keyword = $this->request->columnKeyword($i);
         if ($raw || $this->request->isRegex($i)) {
@@ -532,47 +532,55 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function joinEagerLoadedColumn($relation, $relationColumn)
     {
+        $model = $this->query->getRelation($relation);
+        switch (true) {
+            case $model instanceof BelongsToMany:
+                $pivot   = $model->getTable();
+                $pivotPK = $model->getExistenceCompareKey();
+                $pivotFK = $model->getQualifiedParentKeyName();
+                $this->performJoin($pivot, $pivotPK, $pivotFK);
+
+                $related = $model->getRelated();
+                $table   = $related->getTable();
+                $tablePK = $related->getForeignKey();
+                $foreign = $pivot . '.' . $tablePK;
+                $other   = $related->getQualifiedKeyName();
+                break;
+
+            case $model instanceof HasOneOrMany:
+                $table   = $model->getRelated()->getTable();
+                $foreign = $model->getQualifiedForeignKeyName();
+                $other   = $model->getQualifiedParentKeyName();
+                break;
+
+            default:
+                $table   = $model->getRelated()->getTable();
+                $foreign = $model->getQualifiedForeignKey();
+                $other   = $model->getQualifiedOtherKeyName();
+        }
+
+        $this->performJoin($table, $foreign, $other);
+
+        return $table . '.' . $relationColumn;
+    }
+
+    /**
+     * Perform join query.
+     *
+     * @param string $table
+     * @param string $foreign
+     * @param string $other
+     */
+    protected function performJoin($table, $foreign, $other)
+    {
         $joins = [];
         foreach ((array) $this->getQueryBuilder()->joins as $key => $join) {
             $joins[] = $join->table;
         }
 
-        $model = $this->query->getRelation($relation);
-        if ($model instanceof BelongsToMany) {
-            $pivot   = $model->getTable();
-            $pivotPK = $model->getForeignKey();
-            $pivotFK = $model->getQualifiedParentKeyName();
-
-            if (! in_array($pivot, $joins)) {
-                $this->getQueryBuilder()->leftJoin($pivot, $pivotPK, '=', $pivotFK);
-            }
-
-            $related = $model->getRelated();
-            $table   = $related->getTable();
-            $tablePK = $related->getForeignKey();
-            $tableFK = $related->getQualifiedKeyName();
-
-            if (! in_array($table, $joins)) {
-                $this->getQueryBuilder()->leftJoin($table, $pivot . '.' . $tablePK, '=', $tableFK);
-            }
-        } else {
-            $table = $model->getRelated()->getTable();
-            if ($model instanceof HasOneOrMany) {
-                $foreign = $model->getForeignKeyName();
-                $other   = $model->getQualifiedParentKeyName();
-            } else {
-                $foreign = $model->getQualifiedForeignKey();
-                $other   = $model->getQualifiedOtherKeyName();
-            }
-
-            if (! in_array($table, $joins)) {
-                $this->getQueryBuilder()->leftJoin($table, $foreign, '=', $other);
-            }
+        if (! in_array($table, $joins)) {
+            $this->getQueryBuilder()->join($table, $foreign, '=', $other);
         }
-
-        $column = $table . '.' . $relationColumn;
-
-        return $column;
     }
 
     /**
