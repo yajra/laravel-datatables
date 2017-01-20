@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Yajra\Datatables\Helper;
@@ -405,8 +406,10 @@ class QueryBuilderEngine extends BaseEngine
                 $q = $query;
             }
 
-            // Get table from query and add it.
-            $column = $q->from . '.' . $column;
+            if (! $q->from instanceof Expression) {
+                // Get table from query and add it.
+                $column = $q->from . '.' . $column;
+            }
         }
 
         return $this->wrap($column);
