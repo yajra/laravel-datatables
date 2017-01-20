@@ -29,10 +29,10 @@ class DatatablesServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->mergeConfigFrom(__DIR__ . '/config/datatables.php.php', 'datatables');
+        $this->mergeConfigFrom(__DIR__ . '/config/datatables.php', 'datatables');
 
         $this->publishes([
-            __DIR__ . '/config/datatables.php.php' => config_path('datatables.php'),
+            __DIR__ . '/config/datatables.php' => config_path('datatables.php'),
         ], 'datatables');
     }
 
