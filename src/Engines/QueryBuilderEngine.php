@@ -604,6 +604,9 @@ class QueryBuilderEngine extends BaseEngine
         if ($this->isOracleSql()) {
             $sql = ! $this->isCaseInsensitive() ? 'REGEXP_LIKE( ' . $column . ' , ? )' : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
             $this->query->whereRaw($sql, [$keyword]);
+        } elseif ($this->database == 'pgsql') {
+            $sql = ! $this->isCaseInsensitive() ? $column . ' ~ ?' : $column . ' ~* ? ';
+            $this->query->whereRaw($sql, [$keyword]);
         } else {
             $sql = ! $this->isCaseInsensitive() ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
             $this->query->whereRaw($sql, [Str::lower($keyword)]);
