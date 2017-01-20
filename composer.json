@@ -35,6 +35,11 @@
       "Yajra\\Datatables\\": "src/"
     }
   },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "7.0-dev"
+    }
+  },
   "config": {
     "preferred-install": "dist",
     "sort-packages": true
