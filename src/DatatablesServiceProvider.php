@@ -29,24 +29,10 @@ class DatatablesServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__ . '/resources/views', 'datatables');
-
         $this->mergeConfigFrom(__DIR__ . '/config/config.php', 'datatables');
 
-        $this->publishAssets();
-    }
-
-    /**
-     * Publish datatables assets.
-     */
-    protected function publishAssets()
-    {
         $this->publishes([
             __DIR__ . '/config/config.php' => config_path('datatables.php'),
-        ], 'datatables');
-
-        $this->publishes([
-            __DIR__ . '/resources/views' => base_path('/resources/views/vendor/datatables'),
         ], 'datatables');
     }
 
@@ -60,14 +46,6 @@ class DatatablesServiceProvider extends ServiceProvider
         if ($this->isLumen()) {
             require_once 'fallback.php';
         }
-
-        $this->registerRequiredProviders();
-
-        $this->app->bind('datatables.html', function () {
-            return $this->app->make(Html\Builder::class);
-        });
-
-        $this->app->alias('datatables', Datatables::class);
 
         $this->app->singleton('datatables.fractal', function () {
             $fractal = new Manager;
@@ -85,6 +63,7 @@ class DatatablesServiceProvider extends ServiceProvider
             return $fractal;
         });
 
+        $this->app->alias('datatables', Datatables::class);
         $this->app->singleton('datatables', function () {
             return new Datatables($this->app->make(Request::class));
         });
@@ -100,14 +79,6 @@ class DatatablesServiceProvider extends ServiceProvider
     protected function isLumen()
     {
         return str_contains($this->app->version(), 'Lumen');
-    }
-
-    /**
-     * Register 3rd party providers.
-     */
-    protected function registerRequiredProviders()
-    {
-        $this->app->register(HtmlServiceProvider::class);
     }
 
     /**
@@ -128,6 +99,6 @@ class DatatablesServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['datatables.html', 'datatables.fractal', 'datatables'];
+        return ['datatables', 'datatables.fractal'];
     }
 }

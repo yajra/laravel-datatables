@@ -18,13 +18,6 @@ class Datatables
     protected $request;
 
     /**
-     * Datatables builder.
-     *
-     * @var \Yajra\Datatables\Html\Builder
-     */
-    protected $builder;
-
-    /**
      * Datatables constructor.
      *
      * @param \Yajra\Datatables\Request $request
@@ -100,19 +93,5 @@ class Datatables
     public function collection($builder)
     {
         return new Engines\CollectionEngine($builder, $this->request);
-    }
-
-    /**
-     * Get html builder class.
-     *
-     * @return \Yajra\Datatables\Html\Builder
-     */
-    public function getHtmlBuilder()
-    {
-        if (is_null($this->builder)) {
-            return app('datatables.html');
-        }
-
-        return $this->builder;
     }
 }

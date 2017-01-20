@@ -19,8 +19,7 @@
     "illuminate/database": "5.4.*",
     "illuminate/view": "5.4.*",
     "illuminate/http": "5.4.*",
-    "illuminate/filesystem": "5.4.*",
-    "laravelcollective/html": "5.4.*"
+    "illuminate/filesystem": "5.4.*"
   },
   "require-dev": {
     "mockery/mockery": "0.9.*",
