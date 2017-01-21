@@ -3,6 +3,7 @@
 namespace Yajra\Datatables\Engines;
 
 use Closure;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -554,6 +555,12 @@ class QueryBuilderEngine extends BaseEngine
                 $table   = $model->getRelated()->getTable();
                 $foreign = $model->getQualifiedForeignKeyName();
                 $other   = $model->getQualifiedParentKeyName();
+                break;
+
+            case $model instanceof BelongsTo:
+                $table   = $model->getRelated()->getTable();
+                $foreign = $model->getQualifiedForeignKey();
+                $other   = $model->getQualifiedOwnerKeyName();
                 break;
 
             default:
