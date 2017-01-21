@@ -572,7 +572,7 @@ class QueryBuilderEngine extends BaseEngine
         }
 
         if (! in_array($table, $joins)) {
-            $this->getQueryBuilder()->join($table, $foreign, '=', $other);
+            $this->getQueryBuilder()->leftJoin($table, $foreign, '=', $other);
         }
     }
 
