@@ -104,11 +104,6 @@ class QueryBuilderEngine extends BaseEngine
             $myQuery->select($this->connection->raw("'1' as {$row_count}"));
         }
 
-        // check for select soft deleted records
-        if (! $this->withTrashed && $this->modelUseSoftDeletes()) {
-            $myQuery->whereNull($myQuery->getModel()->getQualifiedDeletedAtColumn());
-        }
-
         return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
                                 ->setBindings($myQuery->getBindings())->count();
     }
@@ -122,20 +117,6 @@ class QueryBuilderEngine extends BaseEngine
     protected function wrap($column)
     {
         return $this->connection->getQueryGrammar()->wrap($column);
-    }
-
-    /**
-     * Check if model use SoftDeletes trait
-     *
-     * @return boolean
-     */
-    private function modelUseSoftDeletes()
-    {
-        if ($this->query_type == 'eloquent') {
-            return in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->query->getModel()));
-        }
-
-        return false;
     }
 
     /**
