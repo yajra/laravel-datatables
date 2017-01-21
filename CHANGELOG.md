@@ -8,6 +8,10 @@
 
 ##Change Log
 
+### v6.23.0 - 2017-01-21
+- Add support for onlyTrashed model scope. Fix #928
+- Move withTrashed method to Eloquent engine.
+
 ### v6.22.9 - 2017-01-20
 - Do not append table name if instance is expression. #933
 - Fix #927 and possible fix for #873.
