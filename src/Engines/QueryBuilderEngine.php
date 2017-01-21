@@ -530,6 +530,8 @@ class QueryBuilderEngine extends BaseEngine
                 $tablePK = $related->getForeignKey();
                 $foreign = $pivot . '.' . $tablePK;
                 $other   = $related->getQualifiedKeyName();
+
+                $this->query->addSelect($table . '.' . $relationColumn);
                 break;
 
             case $model instanceof HasOneOrMany:
