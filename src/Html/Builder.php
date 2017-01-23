@@ -160,11 +160,29 @@ class Builder
     {
         $parameters = (new Parameters($attributes))->toArray();
 
+        $values = [];
+        $replacements = [];
+        foreach($parameters as $key => &$value){
+            if (!is_array($value)) {
+                if (strpos($value, '$.') === 0)
+                {
+                    // Store function string.
+                    $values[] = $value;
+                    // Replace function string in $foo with a 'unique' special key.
+                    $value = '%' . $key . '%';
+                    // Later on, we'll look for the value, and replace it.
+                    $replacements[] = '"' . $value . '"';
+                }
+            }
+        }
+
         list($ajaxDataFunction, $parameters) = $this->encodeAjaxDataFunction($parameters);
         list($columnFunctions, $parameters) = $this->encodeColumnFunctions($parameters);
         list($callbackFunctions, $parameters) = $this->encodeCallbackFunctions($parameters);
 
         $json = json_encode($parameters);
+
+        $json = str_replace($replacements, $values, $json);
 
         $json = $this->decodeAjaxDataFunction($ajaxDataFunction, $json);
         $json = $this->decodeColumnFunctions($columnFunctions, $json);
@@ -507,6 +525,20 @@ class Builder
             'footer'         => '',
         ], $attributes);
         $this->collection->push(new Column($attributes));
+
+        return $this;
+    }
+
+    /**
+     * Setup ajax parameter for datatables pipeline plugin
+     *
+     * @param  string $url
+     * @param  string $pages
+     * @return $this
+     */
+    public function pipeline($url, $pages)
+    {
+        $this->ajax = "$.fn.dataTable.pipeline({ url: '{$url}', pages: {$pages} })";
 
         return $this;
     }
