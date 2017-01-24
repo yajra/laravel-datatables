@@ -8,6 +8,10 @@
 
 ##Change Log
 
+### v6.24.1 - 2017-01-24
+- Fix regex query for pgsql.
+- PR #934, credits to @alfa6661.
+
 ### v6.24.0 - 2017-01-24
 - Datatables Pipeline Plugin support (Basic).
 - PR #938, credits to @OzanKurt.
