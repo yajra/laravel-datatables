@@ -8,6 +8,10 @@
 
 ##Change Log
 
+### v6.24.0 - 2017-01-24
+- Datatables Pipeline Plugin support (Basic).
+- PR #938, credits to @OzanKurt.
+
 ### v6.23.0 - 2017-01-21
 - Add support for onlyTrashed model scope. Fix #928
 - Move withTrashed method to Eloquent engine.
