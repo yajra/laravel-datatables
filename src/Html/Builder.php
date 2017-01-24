@@ -530,7 +530,7 @@ class Builder
     }
 
     /**
-     * Setup ajax parameter for datatables pipeline plugin
+     * Setup ajax parameter for datatables pipeline plugin.
      *
      * @param  string $url
      * @param  string $pages
