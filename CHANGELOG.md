@@ -11,6 +11,7 @@
 ### v7.0.0 - UNRELEASED
 - Features are split across packages. #832
     - Buttons service approach extracted to own plugin.
+        - Add fluent way to send variables to DataTable class. #845
     - Html builder extracted to own plugin.
 - DataTable Engines are now pluggable. #544
 - Added option to order by nulls last. #794
@@ -19,6 +20,5 @@
 
 ### TODO
 - Fix IE compatibility by using POST method when exporting/printing. #826
-- Add fluent way to send variables to DataTable class. #845
 - Enhance/Fix nested relations support. #789
 - Export Selected Rows Datatables Service Provider. #829 #850
