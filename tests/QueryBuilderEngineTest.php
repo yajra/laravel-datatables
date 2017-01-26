@@ -148,7 +148,7 @@ class TestDatatablesQueryBuilderEngine extends PHPUnit_Framework_TestCase
 
         $response = $datatables->queryBuilder($builder)->make(true);
         $actual   = $response->getContent();
-        $expected = '{"draw":1,"recordsTotal":2,"recordsFiltered":2,"data":[{"id":1,"name":"foo"},{"id":2,"name":"bar"}]}';
+        $expected = '{"draw":1,"recordsTotal":2,"recordsFiltered":2,"data":[{"id":"1","name":"foo"},{"id":"2","name":"bar"}]}';
 
         $this->assertInstanceOf('Illuminate\Http\JsonResponse', $response);
         $this->assertEquals($expected, $actual);
