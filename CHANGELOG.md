@@ -14,9 +14,10 @@
     - Html builder extracted to own plugin.
 - DataTable Engines are now pluggable. #544
 - Added option to order by nulls last. #794
+- Escape all columns by default for XSS protection. Fix #909
+- Add rawColumns method for unescaped columns. https://github.com/yajra/laravel-datatables/commit/81adef8555195795189853f91e326dd056e40bb0
 
 ### TODO
-- Escape all columns by default. #909
 - Fix IE compatibility by using POST method when exporting/printing. #826
 - Add fluent way to send variables to DataTable class. #845
 - Enhance/Fix nested relations support. #789
