@@ -65,7 +65,8 @@ abstract class BaseEngine implements DataTableEngineContract
         'excess'    => ['rn', 'row_num'],
         'filter'    => [],
         'order'     => [],
-        'escape'    => [],
+        'escape'    => '*',
+        'raw'       => ['action'],
         'blacklist' => ['password', 'remember_token'],
         'whitelist' => '*',
     ];
@@ -259,6 +260,19 @@ abstract class BaseEngine implements DataTableEngineContract
     public function escapeColumns($columns = '*')
     {
         $this->columnDef['escape'] = $columns;
+
+        return $this;
+    }
+
+    /**
+     * Set columns that should not be escaped.
+     *
+     * @param array $columns
+     * @return $this
+     */
+    public function rawColumns(array $columns)
+    {
+        $this->columnDef['raw'] = $columns;
 
         return $this;
     }
@@ -839,7 +853,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     protected function wildcardLikeString($str, $lowercase = true)
     {
-        $wild   = '%';
+        $wild  = '%';
         $chars = preg_split('//u', $str, -1, PREG_SPLIT_NO_EMPTY);
 
         if (count($chars) > 0) {

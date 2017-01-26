@@ -64,6 +64,11 @@ class DataProcessor
     protected $includeIndex;
 
     /**
+     * @var array
+     */
+    protected $rawColumns;
+
+    /**
      * @param mixed $results
      * @param array $columnDef
      * @param array $templates
@@ -77,6 +82,7 @@ class DataProcessor
         $this->excessColumns = $columnDef['excess'];
         $this->escapeColumns = $columnDef['escape'];
         $this->includeIndex  = $columnDef['index'];
+        $this->rawColumns    = $columnDef['raw'];
         $this->templates     = $templates;
         $this->start         = $start;
     }
@@ -209,10 +215,10 @@ class DataProcessor
     {
         return array_map(function ($row) {
             if ($this->escapeColumns == '*') {
-                $row = $this->escapeRow($row, $this->escapeColumns);
+                $row = $this->escapeRow($row);
             } else {
                 foreach ($this->escapeColumns as $key) {
-                    if (array_get($row, $key)) {
+                    if (array_get($row, $key) && ! in_array($key, $this->rawColumns)) {
                         array_set($row, $key, e(array_get($row, $key)));
                     }
                 }
@@ -226,16 +232,17 @@ class DataProcessor
      * Escape all values of row.
      *
      * @param array $row
-     * @param string|array $escapeColumns
      * @return array
      */
-    protected function escapeRow(array $row, $escapeColumns)
+    protected function escapeRow(array $row)
     {
         foreach ($row as $key => $value) {
             if (is_array($value)) {
-                $row[$key] = $this->escapeRow($value, $escapeColumns);
+                $row[$key] = $this->escapeRow($value);
             } else {
-                $row[$key] = e($value);
+                if (! in_array($key, $this->rawColumns)) {
+                    $row[$key] = e($value);
+                }
             }
         }
 
