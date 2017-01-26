@@ -8,6 +8,10 @@
 
 ##Change Log
 
+### v6.24.2 - 2017-01-26
+- Lock v6.x to support Laravel 5.0 - 5.3 only.
+- Fix #942.
+
 ### v6.24.1 - 2017-01-24
 - Fix regex query for pgsql.
 - PR #934, credits to @alfa6661.
