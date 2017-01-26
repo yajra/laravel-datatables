@@ -40,7 +40,7 @@ return Datatables::of(User::all())->make(true);
 - [Demo Application](http://datatables.yajrabox.com) is available for artisan's reference.
 
 ## Quick Installation
-`composer require yajra/laravel-datatables-oracle:dev-master`
+`composer require yajra/laravel-datatables-oracle:7.*`
 
 #### Service Provider
 `Yajra\Datatables\DatatablesServiceProvider::class`
