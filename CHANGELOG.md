@@ -13,6 +13,13 @@
 - Enhance/Fix nested relations support. #789
 - Export Selected Rows Datatables Service Provider. #829 #850
 
+### v7.0.1 - 01-27-2017
+- Revert getHtmlBuilder method for backward compatibility.
+- Add html builder test.
+- Rename Test class name.
+- Add eloquent engine test.
+
+
 ### v7.0.0 - 01-27-2017
 - Features are split across packages. #832
     - Buttons service approach extracted to own plugin.
