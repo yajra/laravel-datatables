@@ -2,6 +2,8 @@
 
 namespace Yajra\Datatables;
 
+use Yajra\Datatables\Html\Builder;
+
 /**
  * Class Datatables.
  *
@@ -16,6 +18,13 @@ class Datatables
      * @var \Yajra\Datatables\Request
      */
     protected $request;
+
+    /**
+     * HTML builder instance.
+     *
+     * @var \Yajra\Datatables\Html\Builder
+     */
+    protected $html;
 
     /**
      * Datatables constructor.
@@ -93,5 +102,20 @@ class Datatables
     public function collection($builder)
     {
         return new Engines\CollectionEngine($builder, $this->request);
+    }
+
+    /**
+     * Get html builder instance.
+     *
+     * @return \Yajra\Datatables\Html\Builder
+     * @throws \Exception
+     */
+    public function getHtmlBuilder()
+    {
+        if (! class_exists('Yajra\Datatables\Html\Builder')) {
+            throw new \Exception('Please install yajra/laravel-datatables-html to be able to use this function.');
+        }
+
+        return $this->html ?: app('datatables.html');
     }
 }
