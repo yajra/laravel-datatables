@@ -23,6 +23,14 @@ class DatatablesTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Yajra\Datatables\Request', $request);
     }
 
+    /** @test */
+    public function it_expects_thrown_exception()
+    {
+        $this->expectException(\Exception::class);
+        $datatables = $this->createDataTable();
+        $datatables->getHtmlBuilder();
+    }
+
     /**
      * @return \Yajra\Datatables\Datatables
      */

@@ -8,7 +8,7 @@ use Yajra\Datatables\Request;
 
 require_once 'helper.php';
 
-class TestDatatablesCollectionEngine extends PHPUnit_Framework_TestCase
+class CollectionEngineTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
