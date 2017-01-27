@@ -8,13 +8,12 @@
 
 ## Change Log
 
-### v7.0.0 - UNRELEASED
 ### TODO
 - Fix IE compatibility by using POST method when exporting/printing. #826
 - Enhance/Fix nested relations support. #789
 - Export Selected Rows Datatables Service Provider. #829 #850
 
-### v7.0.0-alpha - 01-27-2017
+### v7.0.0 - 01-27-2017
 - Features are split across packages. #832
     - Buttons service approach extracted to own plugin.
         - Add fluent way to send variables to DataTable class. #845
