@@ -35,9 +35,10 @@ return Datatables::of(User::all())->make(true);
 - [jQuery DataTables v1.10.x](http://datatables.net/)
 
 ## Documentations
-- [Laravel Datatables Documentation](http://datatables.yajrabox.com/docs/laravel-datatables)
+- [Laravel Datatables Documentation](http://yajrabox.com/docs/laravel-datatables)
 - [Laravel Datatables API](http://yajra.github.io/laravel-datatables/api/)
-- [Demo Application](http://datatables.yajrabox.com) is available for artisan's reference.
+- [Laravel 5.0 - 5.3 Demo Application](http://datatables.yajrabox.com).
+- [Laravel 5.4 Demo Application](http://dt54.yajrabox.com).
 
 ## Quick Installation
 `composer require yajra/laravel-datatables-oracle:7.*`
