@@ -8,7 +8,7 @@ use Yajra\Datatables\Request;
 
 require_once 'helper.php';
 
-class TestDatatablesQueryBuilderEngine extends PHPUnit_Framework_TestCase
+class QueryBuilderEngineTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
