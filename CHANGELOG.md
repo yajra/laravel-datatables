@@ -13,6 +13,9 @@
 - Enhance/Fix nested relations support. #789
 - Export Selected Rows Datatables Service Provider. #829 #850
 
+### v7.0.2 - 01-29-2017
+- Map all model relations to eloquent engine. Fix #950
+
 ### v7.0.1 - 01-27-2017
 - Revert getHtmlBuilder method for backward compatibility.
 - Add html builder test.
