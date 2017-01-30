@@ -29,7 +29,7 @@ class Datatables
     /**
      * Datatables constructor.
      *
-     * @param \Yajra\Datatables\Request|\Illuminate\Http\Request $request
+     * @param \Yajra\Datatables\Request $request
      */
     public function __construct(Request $request)
     {
