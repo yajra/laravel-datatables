@@ -15,11 +15,12 @@
   ],
   "require": {
     "php": ">=5.6.4",
-    "illuminate/support": "5.4.*",
     "illuminate/database": "5.4.*",
-    "illuminate/view": "5.4.*",
+    "illuminate/filesystem": "5.4.*",
     "illuminate/http": "5.4.*",
-    "illuminate/filesystem": "5.4.*"
+    "illuminate/support": "5.4.*",
+    "illuminate/view": "5.4.*",
+    "orchestra/testbench": "^3.4"
   },
   "require-dev": {
     "mockery/mockery": "0.9.*",
@@ -33,6 +34,11 @@
   "autoload": {
     "psr-4": {
       "Yajra\\Datatables\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Test\\": "tests/"
     }
   },
   "extra": {

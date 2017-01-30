@@ -1,10 +1,13 @@
 <?php
 
+namespace Test\Unit;
 
 use Carbon\Carbon;
+use stdClass;
+use Test\TestCase;
 use Yajra\Datatables\Helper;
 
-class HelperTest extends PHPUnit_Framework_TestCase
+class HelperTest extends TestCase
 {
     public function test_include_in_array()
     {
@@ -222,11 +225,11 @@ class HelperTest extends PHPUnit_Framework_TestCase
             'name'   => 'John',
             'posts'  => [
                 'id'    => 1,
-                'title' => 'Demo'
+                'title' => 'Demo',
             ],
             'author' => [
-                'name' => 'Billy'
-            ]
+                'name' => 'Billy',
+            ],
         ];
         $this->assertEquals($expected, $result);
     }
@@ -237,12 +240,12 @@ class HelperTest extends PHPUnit_Framework_TestCase
             [
                 'id'         => 1,
                 'author'     => 'John',
-                'created_at' => Carbon::createFromFormat('Y-m-d H:i:s', '2015-1-1 00:00:00')
+                'created_at' => Carbon::createFromFormat('Y-m-d H:i:s', '2015-1-1 00:00:00'),
             ],
             [
                 'id'         => 2,
                 'author'     => 'Billy',
-                'created_at' => Carbon::createFromFormat('Y-m-d H:i:s', '2015-1-1 00:00:00')
+                'created_at' => Carbon::createFromFormat('Y-m-d H:i:s', '2015-1-1 00:00:00'),
             ],
         ];
         $result   = Helper::transform($data);
@@ -260,7 +263,7 @@ class HelperTest extends PHPUnit_Framework_TestCase
         $expected = [
             'whereIn',
             'foo',
-            ['y', 'x']
+            ['y', 'x'],
         ];
         $this->assertEquals($expected, $result);
     }
@@ -269,7 +272,7 @@ class HelperTest extends PHPUnit_Framework_TestCase
     {
         $args     = [['where', 'foo'], 'keyword'];
         $result   = Helper::buildParameters($args);
-        $expected = ['where','foo'];
+        $expected = ['where', 'foo'];
         $this->assertEquals($expected, $result);
     }
 
@@ -277,7 +280,7 @@ class HelperTest extends PHPUnit_Framework_TestCase
     {
         $subject = [
             'foo in ?',
-            ['$1']
+            ['$1'],
         ];
         $keyword = 'bar';
         $result  = Helper::replacePatternWithKeyword($subject, $keyword, '$1');

@@ -6,8 +6,6 @@ use Mockery as m;
 use Yajra\Datatables\Datatables;
 use Yajra\Datatables\Request;
 
-require_once 'helper.php';
-
 class QueryBuilderEngineTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()

@@ -1,12 +1,13 @@
 <?php
 
+namespace Test\Unit;
+
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Mockery as m;
+use PHPUnit_Framework_TestCase;
 use Yajra\Datatables\Datatables;
 use Yajra\Datatables\Request;
-
-require_once 'helper.php';
 
 class CollectionEngineTest extends PHPUnit_Framework_TestCase
 {
