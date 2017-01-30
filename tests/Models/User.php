@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Models;
+namespace Yajra\Datatables\Tests\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

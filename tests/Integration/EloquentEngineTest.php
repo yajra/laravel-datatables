@@ -1,13 +1,13 @@
 <?php
 
-namespace Test\Integration;
+namespace Yajra\Datatables\Tests\Integration;
 
 use Illuminate\Http\JsonResponse;
-use Test\Models\User;
-use Test\TestCase;
 use Yajra\Datatables\Datatables;
 use Yajra\Datatables\Engines\EloquentEngine;
 use Yajra\Datatables\Facades\Datatables as DatatablesFacade;
+use Yajra\Datatables\Tests\Models\User;
+use Yajra\Datatables\Tests\TestCase;
 
 class EloquentEngineTest extends TestCase
 {

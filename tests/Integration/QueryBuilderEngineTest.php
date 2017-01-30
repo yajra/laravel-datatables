@@ -1,13 +1,13 @@
 <?php
 
-namespace Test\Integration;
+namespace Yajra\Datatables\Tests\Integration;
 
 use DB;
 use Illuminate\Http\JsonResponse;
-use Test\TestCase;
 use Yajra\Datatables\Datatables;
 use Yajra\Datatables\Engines\QueryBuilderEngine;
 use Yajra\Datatables\Facades\Datatables as DatatablesFacade;
+use Yajra\Datatables\Tests\TestCase;
 
 class QueryBuilderEngineTest extends TestCase
 {

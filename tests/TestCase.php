@@ -1,10 +1,9 @@
 <?php
 
-namespace Test;
+namespace Yajra\Datatables\Tests;
 
 use Illuminate\Database\Schema\Blueprint;
-use Test\Models\User;
-use Yajra\Datatables\Request;
+use Yajra\Datatables\Tests\Models\User;
 
 abstract class TestCase extends \Orchestra\Testbench\TestCase
 {
