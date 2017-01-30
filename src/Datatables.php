@@ -29,11 +29,11 @@ class Datatables
     /**
      * Datatables constructor.
      *
-     * @param \Yajra\Datatables\Request $request
+     * @param \Yajra\Datatables\Request|\Illuminate\Http\Request $request
      */
     public function __construct(Request $request)
     {
-        $this->request = $request->request->count() ? $request : Request::capture();
+        $this->request = $request;
     }
 
     /**

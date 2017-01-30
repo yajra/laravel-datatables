@@ -444,7 +444,7 @@ class QueryBuilderEngine extends BaseEngine
      */
     public function columnSearch()
     {
-        $columns = (array) $this->request->input('columns');
+        $columns = $this->request->columns();
 
         foreach ($columns as $index => $column) {
             if (! $this->request->isColumnSearchable($index)) {
