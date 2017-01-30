@@ -140,7 +140,7 @@ class CollectionEngine extends BaseEngine
      */
     public function filtering()
     {
-        $columns          = $this->request['columns'];
+        $columns          = $this->request->columns();
         $this->collection = $this->collection->filter(
             function ($row) use ($columns) {
                 $data                  = $this->serialize($row);
