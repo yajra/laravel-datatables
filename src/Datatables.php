@@ -39,26 +39,26 @@ class Datatables
     /**
      * Gets query and returns instance of class.
      *
-     * @param  mixed $object
+     * @param  mixed $builder
      * @return mixed
      * @throws \Exception
      */
-    public static function of($object)
+    public static function of($builder)
     {
         $datatables = app('datatables');
         $config     = app('config');
         $engines    = $config->get('datatables.engines');
         $builders   = $config->get('datatables.builders');
-        $builder    = get_class($object);
 
-        if (array_key_exists($builder, $builders)) {
-            $engine = $builders[$builder];
-            $class  = $engines[$engine];
+        foreach ($builders as $class => $engine) {
+            if ($builder instanceof $class) {
+                $class = $engines[$engine];
 
-            return new $class($object, $datatables->getRequest());
+                return new $class($builder, $datatables->getRequest());
+            }
         }
 
-        throw new \Exception('No available engine for ' . $builder);
+        throw new \Exception('No available engine for ' . get_class($builder));
     }
 
     /**
