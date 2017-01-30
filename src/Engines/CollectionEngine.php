@@ -215,8 +215,8 @@ class CollectionEngine extends BaseEngine
     public function paging()
     {
         $this->collection = $this->collection->slice(
-            $this->request['start'],
-            (int)$this->request['length'] > 0 ? $this->request['length'] : 10
+            $this->request->input('start'),
+            (int)$this->request->input('length') > 0 ? $this->request->input('length') : 10
         );
     }
 
