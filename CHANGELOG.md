@@ -33,6 +33,7 @@
 - Add eloquent engine test.
 
 ### v7.0.0 - 01-27-2017
+- Support for Laravel 5.4.
 - Features are split across packages. #832
     - Buttons service approach extracted to own plugin.
         - Add fluent way to send variables to DataTable class. #845
