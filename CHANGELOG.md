@@ -13,9 +13,6 @@
 - Enhance/Fix nested relations support. #789
 - Export Selected Rows Datatables Service Provider. #829 #850
 
-### v7.0.2 - 01-29-2017
-- Map all model relations to eloquent engine. Fix #950
-
 ### v7.1.1 - 01-30-2017
 - Fix doc block.
 - Fix request class usage on collection engine.
@@ -26,12 +23,14 @@
 - Use Laravel config helper instead of using the facade.
 - Enhance Request class to make it testable using phpunit. Address issue [#901](https://github.com/yajra/laravel-datatables/issues/901)
 
+### v7.0.2 - 01-29-2017
+- Map all model relations to eloquent engine. Fix #950
+
 ### v7.0.1 - 01-27-2017
 - Revert getHtmlBuilder method for backward compatibility.
 - Add html builder test.
 - Rename Test class name.
 - Add eloquent engine test.
-
 
 ### v7.0.0 - 01-27-2017
 - Features are split across packages. #832
