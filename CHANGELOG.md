@@ -16,6 +16,10 @@
 ### v7.0.2 - 01-29-2017
 - Map all model relations to eloquent engine. Fix #950
 
+### v7.1.1 - 01-30-2017
+- Fix doc block.
+- Fix request class usage on collection engine.
+
 ### v7.1.0 - 01-30-2017
 - Use orchestra testbench to test the package.
 - Enhance identification of proper engine to use for a given builder. Fix [#954](https://github.com/yajra/laravel-datatables/issues/954).
