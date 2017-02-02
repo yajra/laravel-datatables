@@ -2,6 +2,8 @@
 
 namespace Yajra\Datatables;
 
+use Yajra\Datatables\Html\Builder;
+
 /**
  * Class Datatables.
  *
@@ -18,38 +20,45 @@ class Datatables
     protected $request;
 
     /**
+     * HTML builder instance.
+     *
+     * @var \Yajra\Datatables\Html\Builder
+     */
+    protected $html;
+
+    /**
      * Datatables constructor.
      *
      * @param \Yajra\Datatables\Request $request
      */
     public function __construct(Request $request)
     {
-        $this->request = $request->request->count() ? $request : Request::capture();
+        $this->request = $request;
     }
 
     /**
      * Gets query and returns instance of class.
      *
-     * @param  mixed $object
+     * @param  mixed $builder
      * @return mixed
      * @throws \Exception
      */
-    public static function of($object)
+    public static function of($builder)
     {
         $datatables = app('datatables');
         $config     = app('config');
         $engines    = $config->get('datatables.engines');
         $builders   = $config->get('datatables.builders');
-        $builder    = get_class($object);
 
-        if (array_key_exists($builder, $builders)) {
-            $engine = $builders[$builder];
-            $class  = $engines[$engine];
+        foreach ($builders as $class => $engine) {
+            if ($builder instanceof $class) {
+                $class = $engines[$engine];
 
-            return new $class($object, $datatables->getRequest());
+                return new $class($builder, $datatables->getRequest());
+            }
         }
 
-        throw new \Exception('No available engine for ' . $builder);
+        throw new \Exception('No available engine for ' . get_class($builder));
     }
 
     /**
@@ -93,5 +102,20 @@ class Datatables
     public function collection($builder)
     {
         return new Engines\CollectionEngine($builder, $this->request);
+    }
+
+    /**
+     * Get html builder instance.
+     *
+     * @return \Yajra\Datatables\Html\Builder
+     * @throws \Exception
+     */
+    public function getHtmlBuilder()
+    {
+        if (! class_exists('\Yajra\Datatables\Html\Builder')) {
+            throw new \Exception('Please install yajra/laravel-datatables-html to be able to use this function.');
+        }
+
+        return $this->html ?: $this->html = app('datatables.html');
     }
 }

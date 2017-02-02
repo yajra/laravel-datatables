@@ -4,7 +4,7 @@ return [
     /**
      * DataTables search options.
      */
-    'search'  => [
+    'search'         => [
         /**
          * Smart search will enclose search keyword with wildcard string "%keyword%".
          * SQL: column LIKE "%keyword%"
@@ -27,12 +27,12 @@ return [
     /**
      * DataTables internal index id response column name.
      */
-    'index_column' => 'DT_Row_Index',
+    'index_column'   => 'DT_Row_Index',
 
     /**
      * DataTables fractal configurations.
      */
-    'fractal' => [
+    'fractal'        => [
         /**
          * Request key name to parse includes on fractal.
          */
@@ -48,7 +48,7 @@ return [
      * Datatables list of available engines.
      * This is where you can register your custom datatables engine.
      */
-    'engines' => [
+    'engines'        => [
         'eloquent'   => Yajra\Datatables\Engines\EloquentEngine::class,
         'query'      => Yajra\Datatables\Engines\QueryBuilderEngine::class,
         'collection' => Yajra\Datatables\Engines\CollectionEngine::class,
@@ -57,11 +57,11 @@ return [
     /**
      * Datatables accepted builder to engine mapping.
      */
-    'builders' => [
-        Illuminate\Database\Eloquent\Relations\HasMany::class => 'eloquent',
-        Illuminate\Database\Eloquent\Builder::class           => 'eloquent',
-        Illuminate\Database\Query\Builder::class              => 'query',
-        Illuminate\Support\Collection::class                  => 'collection',
+    'builders'       => [
+        Illuminate\Database\Eloquent\Relations\Relation::class => 'eloquent',
+        Illuminate\Database\Eloquent\Builder::class            => 'eloquent',
+        Illuminate\Database\Query\Builder::class               => 'query',
+        Illuminate\Support\Collection::class                   => 'collection',
     ],
 
     /**

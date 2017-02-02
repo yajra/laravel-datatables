@@ -3,7 +3,6 @@
 namespace Yajra\Datatables\Engines;
 
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use League\Fractal\Resource\Collection;
 use Yajra\Datatables\Contracts\DataTableEngineContract;
@@ -562,7 +561,7 @@ abstract class BaseEngine implements DataTableEngineContract
     protected function render($object = false)
     {
         $output = array_merge([
-            'draw'            => (int) $this->request['draw'],
+            'draw'            => (int) $this->request->input('draw'),
             'recordsTotal'    => $this->totalRecords,
             'recordsFiltered' => $this->filteredRecords,
         ], $this->appends);
@@ -643,7 +642,7 @@ abstract class BaseEngine implements DataTableEngineContract
             $this->results(),
             $this->columnDef,
             $this->templates,
-            $this->request['start']
+            $this->request->input('start')
         );
 
         return $processor->process($object);
@@ -656,7 +655,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function isDebugging()
     {
-        return Config::get('app.debug', false);
+        return !! config('app.debug', false);
     }
 
     /**
@@ -680,7 +679,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function isCaseInsensitive()
     {
-        return Config::get('datatables.search.case_insensitive', false);
+        return !! config('datatables.search.case_insensitive', false);
     }
 
     /**
@@ -750,7 +749,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function smart($bool = true)
     {
-        Config::set('datatables.search.smart', $bool);
+        config(['datatables.search.smart' => $bool]);
 
         return $this;
     }
@@ -831,7 +830,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function isSmartSearch()
     {
-        return Config::get('datatables.search.smart', true);
+        return !! config('datatables.search.smart', true);
     }
 
     /**
@@ -841,7 +840,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function isWildcard()
     {
-        return Config::get('datatables.search.use_wildcards', false);
+        return !! config('datatables.search.use_wildcards', false);
     }
 
     /**
