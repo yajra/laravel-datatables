@@ -329,6 +329,7 @@ class QueryBuilderEngine extends BaseEngine
             $builder      = $chunk['builder'];
             $relationType = $chunk['relationType'];
             $query        = $chunk['query'];
+            $bindings     = $builder->getBindings();
             $builder      = "({$builder->toSql()}) >= 1";
 
             // Check if it last relation we will use orWhereRaw
@@ -340,10 +341,13 @@ class QueryBuilderEngine extends BaseEngine
                 $relationMethod = "whereRaw";
             }
 
+            //owerwrite the first element of the binding - we expect the keyword to be located there
+            $bindings[0]  = $this->prepareKeyword($keyword);
+            
             if ($relationType instanceof MorphToMany) {
                 $query->{$relationMethod}($builder, [$relationType->getMorphClass(), $this->prepareKeyword($keyword)]);
             } else {
-                $query->{$relationMethod}($builder, [$this->prepareKeyword($keyword)]);
+                $query->{$relationMethod}($builder, $bindings);
             }
         }
     }
