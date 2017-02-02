@@ -341,7 +341,7 @@ class QueryBuilderEngine extends BaseEngine
                 $relationMethod = "whereRaw";
             }
 
-            //owerwrite the first element of the binding - we expect the keyword to be located there
+            //overwrite the first element of the binding - we expect the keyword to be located there
             $bindings[0]  = $this->prepareKeyword($keyword);
             
             if ($relationType instanceof MorphToMany) {
