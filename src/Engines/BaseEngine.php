@@ -470,6 +470,8 @@ abstract class BaseEngine implements DataTableEngineContract
     public function setTransformer($transformer)
     {
         $this->transformer = $transformer;
+        // Do not escape columns when using transformer.
+        $this->columnDef['escape'] = [];
 
         return $this;
     }
@@ -655,7 +657,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function isDebugging()
     {
-        return !! config('app.debug', false);
+        return ! ! config('app.debug', false);
     }
 
     /**
@@ -679,7 +681,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function isCaseInsensitive()
     {
-        return !! config('datatables.search.case_insensitive', false);
+        return ! ! config('datatables.search.case_insensitive', false);
     }
 
     /**
@@ -830,7 +832,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function isSmartSearch()
     {
-        return !! config('datatables.search.smart', true);
+        return ! ! config('datatables.search.smart', true);
     }
 
     /**
@@ -840,7 +842,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function isWildcard()
     {
-        return !! config('datatables.search.use_wildcards', false);
+        return ! ! config('datatables.search.use_wildcards', false);
     }
 
     /**
