@@ -324,10 +324,10 @@ class QueryBuilderEngine extends BaseEngine
          */
         foreach ($relationChunk as $relation => $chunk) {
             // Prepare variables
-            $builder      = $chunk['builder'];
-            $relationType = $chunk['relationType'];
-            $query        = $chunk['query'];
-            $builder      = "({$builder->toSql()}) >= 1";
+            $builder  = $chunk['builder'];
+            $query    = $chunk['query'];
+            $bindings = $builder->getBindings();
+            $sql      = "({$builder->toSql()}) >= 1";
 
             // Check if it last relation we will use orWhereRaw
             if ($lastRelation == $relation) {
@@ -338,11 +338,7 @@ class QueryBuilderEngine extends BaseEngine
                 $relationMethod = "whereRaw";
             }
 
-            if ($relationType instanceof MorphToMany) {
-                $query->{$relationMethod}($builder, [$relationType->getMorphClass(), $this->prepareKeyword($keyword)]);
-            } else {
-                $query->{$relationMethod}($builder, [$this->prepareKeyword($keyword)]);
-            }
+            $query->{$relationMethod}($sql, $bindings);
         }
     }
 
