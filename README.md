@@ -1,6 +1,8 @@
 # jQuery DataTables API for Laravel 4|5
 
 [![Join the chat at https://gitter.im/yajra/laravel-datatables](https://badges.gitter.im/yajra/laravel-datatables.svg)](https://gitter.im/yajra/laravel-datatables?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Donate](https://img.shields.io/badge/donate-paypal-blue.svg)](https://www.paypal.me/yajra)
+[![Donate](https://img.shields.io/badge/donate-patreon-blue.svg)](https://www.patreon.com/bePatron?u=4521203)
 
 [![Laravel 4.2|5.x](https://img.shields.io/badge/Laravel-4.2|5.x-orange.svg)](http://laravel.com)
 [![Latest Stable Version](https://img.shields.io/packagist/v/yajra/laravel-datatables-oracle.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
@@ -40,6 +42,17 @@ return Datatables::of(User::all())->make(true);
 - [Laravel 5.0 - 5.3 Demo Application](http://datatables.yajrabox.com).
 - [Laravel 5.4 Demo Application](http://dt54.yajrabox.com).
 
+## Laravel Version Compatibility
+
+ Laravel  | Package
+:---------|:----------
+ 4.2.x    | 3.x
+ 5.0.x    | 6.x
+ 5.1.x    | 6.x
+ 5.2.x    | 6.x
+ 5.3.x    | 6.x
+ 5.4.x    | 7.x
+
 ## Quick Installation
 `composer require yajra/laravel-datatables-oracle:7.*`
 
@@ -78,5 +91,4 @@ If you discover any security related issues, please email [aqangeles@gmail.com](
 The MIT License (MIT). Please see [License File](https://github.com/yajra/laravel-datatables/blob/master/LICENSE.md) for more information.
 
 ## Buy me a coffee
-- <a href='https://pledgie.com/campaigns/29515'><img alt='Click here to lend your support to: Laravel Datatables and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/29515.png?skin_name=chrome' border='0' ></a>
-- <a href='https://www.patreon.com/bePatron?u=4521203'><img alt='Become a Patron' src='https://s3.amazonaws.com/patreon_public_assets/toolbox/patreon.png' border='0' width='200px' ></a>
+<a href='https://pledgie.com/campaigns/29515'><img alt='Click here to lend your support to: Laravel Datatables and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/29515.png?skin_name=chrome' border='0' ></a>
