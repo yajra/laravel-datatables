@@ -41,15 +41,5 @@
       "Yajra\\Datatables\\Tests\\": "tests/"
     }
   },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "7.0-dev"
-    }
-  },
-  "config": {
-    "preferred-install": "dist",
-    "sort-packages": true
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true
+  "minimum-stability": "stable"
 }
