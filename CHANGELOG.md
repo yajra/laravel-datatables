@@ -13,6 +13,10 @@
 - Enhance/Fix nested relations support. #789
 - Export Selected Rows Datatables Service Provider. #829 #850
 
+### v7.1.3 - 02-06-2017
+- Use stable packages. 
+- Fix [#977](https://github.com/yajra/laravel-datatables/issues/977).
+
 ### v7.1.2 - 02-06-2017
 - Add bindings from relation. [#979](https://github.com/yajra/laravel-datatables/pull/979)
 - Fix [#960](https://github.com/yajra/laravel-datatables/issues/960).
