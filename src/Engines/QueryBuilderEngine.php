@@ -327,7 +327,6 @@ class QueryBuilderEngine extends BaseEngine
         foreach ($relationChunk as $relation => $chunk) {
             // Prepare variables
             $builder      = $chunk['builder'];
-            $relationType = $chunk['relationType'];
             $query        = $chunk['query'];
             $bindings     = $builder->getBindings();
             $builder      = "({$builder->toSql()}) >= 1";
@@ -341,14 +340,7 @@ class QueryBuilderEngine extends BaseEngine
                 $relationMethod = "whereRaw";
             }
 
-            //overwrite the first element of the binding - we expect the keyword to be located there
-            $bindings[0]  = $this->prepareKeyword($keyword);
-            
-            if ($relationType instanceof MorphToMany) {
-                $query->{$relationMethod}($builder, [$relationType->getMorphClass(), $this->prepareKeyword($keyword)]);
-            } else {
-                $query->{$relationMethod}($builder, $bindings);
-            }
+            $query->{$relationMethod}($builder, $bindings);
         }
     }
 
