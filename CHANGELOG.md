@@ -8,6 +8,10 @@
 
 ##Change Log
 
+### v6.24.3 - 2017-02-08
+- Add bindings from relations. #981
+- Implementation from PR #962 to fix #960.
+
 ### v6.24.2 - 2017-01-26
 - Lock v6.x to support Laravel 5.0 - 5.3 only.
 - Fix #942.
