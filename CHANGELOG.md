@@ -13,6 +13,10 @@
 - Enhance/Fix nested relations support. #789
 - Export Selected Rows Datatables Service Provider. #829 #850
 
+### v7.1.4 - 02-09-2017
+- Fix collection case insensitive ordering.
+- Fix [#945](https://github.com/yajra/laravel-datatables/issues/945).
+
 ### v7.1.3 - 02-06-2017
 - Use stable packages. 
 - Fix [#977](https://github.com/yajra/laravel-datatables/issues/977).
