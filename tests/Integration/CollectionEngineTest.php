@@ -86,6 +86,48 @@ class CollectionEngineTest extends TestCase
     }
 
     /** @test */
+    public function it_can_sort_case_insensitive_strings()
+    {
+        config()->set('app.debug', false);
+        request()->merge([
+            'columns' => [
+                ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
+            ],
+            'order'   => [["column" => 0, "dir" => "asc"]],
+            'start'   => 0,
+            'length'  => 10,
+            'draw'    => 1,
+        ]);
+
+        $collection = collect([
+            ['name' => 'ABC'],
+            ['name' => 'BCD'],
+            ['name' => 'ZXY'],
+            ['name' => 'aaa'],
+            ['name' => 'bbb'],
+            ['name' => 'zzz'],
+        ]);
+
+        $dataTable = app('datatables')->collection($collection);
+        /** @var JsonResponse $response */
+        $response = $dataTable->make('true');
+
+        $this->assertEquals([
+            'draw'            => 1,
+            'recordsTotal'    => 6,
+            'recordsFiltered' => 6,
+            'data'            => [
+                ['name' => 'aaa'],
+                ['name' => 'ABC'],
+                ['name' => 'bbb'],
+                ['name' => 'BCD'],
+                ['name' => 'ZXY'],
+                ['name' => 'zzz'],
+            ],
+        ], $response->getData(true));
+    }
+
+    /** @test */
     public function it_accepts_a_model_using_ioc_container_factory()
     {
         $dataTable = app('datatables')->of(User::all());

@@ -118,14 +118,18 @@ class CollectionEngine extends BaseEngine
         }
 
         foreach ($this->request->orderableColumns() as $orderable) {
-            $column           = $this->getColumnName($orderable['column']);
-            $this->collection = $this->collection->sortBy(
-                function ($row) use ($column) {
-                    $data = $this->serialize($row);
+            $column = $this->getColumnName($orderable['column']);
 
-                    return Arr::get($data, $column);
-                }
-            );
+            $options = SORT_NATURAL;
+            if ($this->isCaseInsensitive()) {
+                $options = SORT_NATURAL | SORT_FLAG_CASE;
+            }
+
+            $this->collection = $this->collection->sortBy(function ($row) use ($column) {
+                $data = $this->serialize($row);
+
+                return Arr::get($data, $column);
+            }, $options);
 
             if ($orderable['direction'] == 'desc') {
                 $this->collection = $this->collection->reverse();
@@ -216,7 +220,7 @@ class CollectionEngine extends BaseEngine
     {
         $this->collection = $this->collection->slice(
             $this->request->input('start'),
-            (int)$this->request->input('length') > 0 ? $this->request->input('length') : 10
+            (int) $this->request->input('length') > 0 ? $this->request->input('length') : 10
         );
     }
 
