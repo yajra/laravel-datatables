@@ -105,6 +105,48 @@ class Datatables
     }
 
     /**
+     * Process dataTables needed render output.
+     *
+     * @param array $tables
+     * @param string $view
+     * @param array $data
+     * @param array $mergeData
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
+     */
+    public function renderMultiple(array $tables, $view, $data = [], $mergeData = [])
+    {
+        $tableId = $this->request->input('tableId');
+
+        if ($this->request->ajax() && $this->request->wantsJson()) {
+            return $this->getTableFromId($tables, $tableId)->ajax();
+        }
+
+        $action = $this->request->get('action');
+
+        if (in_array($action, ['print', 'csv', 'excel', 'pdf'])) {
+            if ($action == 'print') {
+                return $this->getTableFromId($tables, $tableId)->printPreview();
+            }
+
+            return call_user_func_array([$this->getTableFromId($tables, $tableId), $action], []);
+        }
+
+        $tables = array_map(function($table) {;
+            return $table->html();
+        }, $tables);
+
+        return view($view, $data, $mergeData)->with($tables);
+    }
+
+    private function getTableFromId($tables, $tableId)
+    {
+        if (!array_key_exists($tableId, $tables)) {
+            throw new \Exception("Table {$tableId} is not defined in multiple renderer.");
+        }
+        return $tables[$tableId];
+    }
+
+    /**
      * Get html builder instance.
      *
      * @return \Yajra\Datatables\Html\Builder
