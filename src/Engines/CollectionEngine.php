@@ -120,9 +120,9 @@ class CollectionEngine extends BaseEngine
         foreach ($this->request->orderableColumns() as $orderable) {
             $column = $this->getColumnName($orderable['column']);
 
-            $options = SORT_REGULAR;
+            $options = SORT_NATURAL;
             if ($this->isCaseInsensitive()) {
-                $options = SORT_REGULAR | SORT_FLAG_CASE;
+                $options = SORT_NATURAL | SORT_FLAG_CASE;
             }
 
             $this->collection = $this->collection->sortBy(function ($row) use ($column) {
@@ -220,7 +220,7 @@ class CollectionEngine extends BaseEngine
     {
         $this->collection = $this->collection->slice(
             $this->request->input('start'),
-            (int)$this->request->input('length') > 0 ? $this->request->input('length') : 10
+            (int) $this->request->input('length') > 0 ? $this->request->input('length') : 10
         );
     }
 
