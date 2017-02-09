@@ -2,7 +2,7 @@
 
 namespace Yajra\Datatables;
 
-use Yajra\Datatables\Html\Builder;
+use Illuminate\Support\Collection;
 
 /**
  * Class Datatables.
@@ -39,26 +39,30 @@ class Datatables
     /**
      * Gets query and returns instance of class.
      *
-     * @param  mixed $builder
+     * @param  mixed $source
      * @return mixed
      * @throws \Exception
      */
-    public static function of($builder)
+    public static function of($source)
     {
         $datatables = app('datatables');
         $config     = app('config');
         $engines    = $config->get('datatables.engines');
         $builders   = $config->get('datatables.builders');
 
+        if (is_array($source)) {
+            $source = new Collection($source);
+        }
+
         foreach ($builders as $class => $engine) {
-            if ($builder instanceof $class) {
+            if ($source instanceof $class) {
                 $class = $engines[$engine];
 
-                return new $class($builder, $datatables->getRequest());
+                return new $class($source, $datatables->getRequest());
             }
         }
 
-        throw new \Exception('No available engine for ' . get_class($builder));
+        throw new \Exception('No available engine for ' . get_class($source));
     }
 
     /**
@@ -96,12 +100,16 @@ class Datatables
     /**
      * Datatables using Collection.
      *
-     * @param \Illuminate\Support\Collection|mixed $builder
+     * @param \Illuminate\Support\Collection|mixed $collection
      * @return \Yajra\Datatables\Engines\CollectionEngine
      */
-    public function collection($builder)
+    public function collection($collection)
     {
-        return new Engines\CollectionEngine($builder, $this->request);
+        if (is_array($collection)) {
+            $collection = new Collection($collection);
+        }
+
+        return new Engines\CollectionEngine($collection, $this->request);
     }
 
     /**
