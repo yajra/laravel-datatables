@@ -8,6 +8,10 @@
 
 ##Change Log
 
+### v6.24.4 - 2017-02-09
+- Fix collection case insensitive ordering.
+- Fix [#945](https://github.com/yajra/laravel-datatables/issues/945).
+
 ### v6.24.3 - 2017-02-08
 - Add bindings from relations. #981
 - Implementation from PR #962 to fix #960.
