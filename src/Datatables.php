@@ -131,13 +131,21 @@ class Datatables
             return call_user_func_array([$this->getTableFromId($tables, $tableId), $action], []);
         }
 
-        $tables = array_map(function($table) {;
+        $tables = array_map(function($table) {
+            if (!$table->hasCustomId()) {
+                $table->setId($this->createCustomIdFor($table));
+            }
             return $table->html();
         }, $tables);
 
         return view($view, $data, $mergeData)->with($tables);
     }
 
+    private function createCustomIdFor($table)
+    {
+        return (new \ReflectionClass($table))->getShortName();
+    }
+    
     private function getTableFromId($tables, $tableId)
     {
         if (!array_key_exists($tableId, $tables)) {
