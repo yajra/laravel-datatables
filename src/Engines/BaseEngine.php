@@ -729,7 +729,7 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Update list of columns that is not allowed for search/sort.
+     * Update list of columns that is allowed for search/sort.
      *
      * @param  string|array $whitelist
      * @return $this
