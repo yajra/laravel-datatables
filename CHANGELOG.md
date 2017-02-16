@@ -13,6 +13,11 @@
 - Enhance/Fix nested relations support. #789
 - Export Selected Rows Datatables Service Provider. #829 #850
 
+### v7.2.1 - 02-16-2017
+- Move orchestra/testbench to require-dev.
+- Use phpunit 5.7 to match Laravel’s requirement.
+- Revert branch alias.
+
 ### v7.2.0 - 02-16-2017
 - Add support for array data source. [#992](https://github.com/yajra/laravel-datatables/pull/992)
 - Minor comment correction [#1002](https://github.com/yajra/laravel-datatables/pull/1002), credits to @lk77.
