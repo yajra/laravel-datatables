@@ -59,7 +59,7 @@ return Datatables::of(DB::select('select * from users'))->make(true);
  5.4.x    | 7.x
 
 ## Quick Installation
-`composer require yajra/laravel-datatables-oracle:^7.0`
+`composer require yajra/laravel-datatables-oracle:^7.2`
 
 #### Service Provider
 `Yajra\Datatables\DatatablesServiceProvider::class`
