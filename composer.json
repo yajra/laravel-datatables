@@ -19,12 +19,12 @@
     "illuminate/filesystem": "5.4.*",
     "illuminate/http": "5.4.*",
     "illuminate/support": "5.4.*",
-    "illuminate/view": "5.4.*",
-    "orchestra/testbench": "^3.4"
+    "illuminate/view": "5.4.*"
   },
   "require-dev": {
     "mockery/mockery": "0.9.*",
-    "phpunit/phpunit": "~5.0"
+    "orchestra/testbench": "^3.4",
+    "phpunit/phpunit": "~5.7"
   },
   "suggest": {
     "yajra/laravel-datatables-buttons": "Plugin for server-side exporting of dataTable.",
@@ -39,6 +39,11 @@
   "autoload-dev": {
     "psr-4": {
       "Yajra\\Datatables\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "7.0-dev"
     }
   },
   "minimum-stability": "stable"
