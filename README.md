@@ -22,13 +22,18 @@ return Datatables::eloquent(User::query())->make(true);
 // Using Query Builder
 return Datatables::queryBuilder(DB::table('users'))->make(true);
 
-// Using Collection
+// Using Collection or Array
 return Datatables::collection(User::all())->make(true);
+return Datatables::collection([
+    ['id' => 1, 'name' => 'Foo'],
+    ['id' => 2, 'name' => 'Bar'],
+])->make(true);
 
 // Using the Engine Factory
 return Datatables::of(User::query())->make(true);
 return Datatables::of(DB::table('users'))->make(true);
 return Datatables::of(User::all())->make(true);
+return Datatables::of(DB::select('select * from users'))->make(true);
 ```
 
 ## Requirements
