@@ -41,5 +41,10 @@
       "Yajra\\Datatables\\Tests\\": "tests/"
     }
   },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "7.0-dev"
+    }
+  },
   "minimum-stability": "stable"
 }
