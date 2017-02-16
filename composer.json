@@ -19,10 +19,10 @@
     "illuminate/filesystem": "5.4.*",
     "illuminate/http": "5.4.*",
     "illuminate/support": "5.4.*",
-    "illuminate/view": "5.4.*",
-    "orchestra/testbench": "^3.4"
+    "illuminate/view": "5.4.*"
   },
   "require-dev": {
+    "orchestra/testbench": "^3.4",
     "mockery/mockery": "0.9.*",
     "phpunit/phpunit": "~5.0"
   },
