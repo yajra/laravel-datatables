@@ -136,6 +136,19 @@ class CollectionEngineTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
+    /** @test */
+    public function it_accepts_array_data_source()
+    {
+        $source = [
+            ['id' => 1, 'name' => 'foo'],
+            ['id' => 2, 'name' => 'bar'],
+        ];
+        $dataTable = app('datatables')->of($source);
+        $response  = $dataTable->make(true);
+        $this->assertInstanceOf(CollectionEngine::class, $dataTable);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
     protected function setUp()
     {
         parent::setUp();
