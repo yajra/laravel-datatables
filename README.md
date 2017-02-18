@@ -58,6 +58,10 @@ return Datatables::of(DB::select('select * from users'))->make(true);
  5.3.x    | 6.x
  5.4.x    | 7.x
 
+## Laravel 5.4 Upgrade Guide
+There are breaking changes since Laravel 5.4 and Datatables v7.0.
+If you are upgrading from v6.x to v7.x, please see [upgrade guide](https://yajrabox.com/docs/laravel-datatables/7.0/upgrade).
+
 ## Quick Installation
 `composer require yajra/laravel-datatables-oracle:^7.2`
 
