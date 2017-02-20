@@ -143,7 +143,7 @@ class Datatables
 
     private function createCustomIdFor($table)
     {
-        return (new \ReflectionClass($table))->getShortName();
+        return camel_case((new \ReflectionClass($table))->getShortName());
     }
     
     private function getTableFromId($tables, $tableId)
