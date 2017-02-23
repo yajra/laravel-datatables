@@ -516,37 +516,43 @@ class QueryBuilderEngine extends BaseEngine
             $joins[] = $join->table;
         }
 
-        $model = $this->query->getRelation($relation);
-        if ($model instanceof BelongsToMany) {
-            $pivot   = $model->getTable();
-            $pivotPK = $model->getForeignKey();
-            $pivotFK = $model->getQualifiedParentKeyName();
+        /**
+         * Add support nested relations.
+         */
+        $lastQuery = $this->query;
 
-            if (! in_array($pivot, $joins)) {
-                $this->getQueryBuilder()->leftJoin($pivot, $pivotPK, '=', $pivotFK);
-            }
+        foreach (explode('.', $relation) as $eachRelation) {
+            $model = $lastQuery->getRelation($eachRelation);
 
-            $related = $model->getRelated();
-            $table   = $related->getTable();
-            $tablePK = $related->getForeignKey();
-            $tableFK = $related->getQualifiedKeyName();
-
-            if (! in_array($table, $joins)) {
-                $this->getQueryBuilder()->leftJoin($table, $pivot . '.' . $tablePK, '=', $tableFK);
-            }
-        } else {
-            $table = $model->getRelated()->getTable();
-            if ($model instanceof HasOneOrMany) {
-                $foreign = $model->getForeignKey();
-                $other   = $model->getQualifiedParentKeyName();
+            if ($model instanceof BelongsToMany) {
+                $pivot   = $model->getTable();
+                $pivotPK = $model->getForeignKey();
+                $pivotFK = $model->getQualifiedParentKeyName();
+                if (! in_array($pivot, $joins)) {
+                    $this->getQueryBuilder()->leftJoin($pivot, $pivotPK, '=', $pivotFK);
+                }
+                $related = $model->getRelated();
+                $table   = $related->getTable();
+                $tablePK = $related->getForeignKey();
+                $tableFK = $related->getQualifiedKeyName();
+                if (! in_array($table, $joins)) {
+                    $this->getQueryBuilder()->leftJoin($table, $pivot . '.' . $tablePK, '=', $tableFK);
+                }
             } else {
-                $foreign = $model->getQualifiedForeignKey();
-                $other   = $model->getQualifiedOtherKeyName();
+                $table = $model->getRelated()->getTable();
+                if ($model instanceof HasOneOrMany) {
+                    $foreign = $model->getForeignKey();
+                    $other   = $model->getQualifiedParentKeyName();
+                } else {
+                    $foreign = $model->getQualifiedForeignKey();
+                    $other   = $model->getQualifiedOtherKeyName();
+                }
+                if (! in_array($table, $joins)) {
+                    $this->getQueryBuilder()->leftJoin($table, $foreign, '=', $other);
+                }
             }
 
-            if (! in_array($table, $joins)) {
-                $this->getQueryBuilder()->leftJoin($table, $foreign, '=', $other);
-            }
+            $lastQuery = $model->getQuery();
         }
 
         $column = $table . '.' . $relationColumn;
@@ -630,8 +636,20 @@ class QueryBuilderEngine extends BaseEngine
                     $relation       = implode('.', $parts);
 
                     if (in_array($relation, $eagerLoads)) {
-                        $relationship = $this->query->getRelation($relation);
-                        if (! ($relationship instanceof MorphToMany)) {
+                        // Loop for nested relations
+                        // This code is check morph many or not.
+                        // If one of nested relation is MorphToMany
+                        // we will call joinEagerLoadedColumn.
+                        $lastQuery = $this->query;
+                        $isMorphToMany = false;
+                        foreach (explode('.', $relation) as $eachRelation) {
+                            $relationship = $lastQuery->getRelation($eachRelation);
+                            if (! ($relationship instanceof MorphToMany)) {
+                                $isMorphToMany = true;
+                            }
+                            $lastQuery = $relationship;
+                        }
+                        if ($isMorphToMany) {
                             $column = $this->joinEagerLoadedColumn($relation, $relationColumn);
                         } else {
                             $valid = 0;
