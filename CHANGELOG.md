@@ -8,6 +8,10 @@
 
 ##Change Log
 
+### v6.25.0 - 2017-02-23
+- Add support ordering when search in nested relations. #850
+- Credits to @ethaizone.
+
 ### v6.24.4 - 2017-02-09
 - Fix collection case insensitive ordering.
 - Fix [#945](https://github.com/yajra/laravel-datatables/issues/945).
