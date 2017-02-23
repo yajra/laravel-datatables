@@ -13,6 +13,10 @@
 - Enhance/Fix nested relations support. #789
 - Export Selected Rows Datatables Service Provider. #829 #850
 
+### v7.3.0 - 02-23-2017
+- Add support ordering when search in nested relations #965.
+- Credits to @AdrienPoupa and @ethaizone.
+
 ### v7.2.1 - 02-16-2017
 - Move orchestra/testbench to require-dev.
 - Use phpunit 5.7 to match Laravel’s requirement.
