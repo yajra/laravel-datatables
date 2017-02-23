@@ -513,42 +513,52 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function joinEagerLoadedColumn($relation, $relationColumn)
     {
-        $model = $this->query->getRelation($relation);
-        switch (true) {
-            case $model instanceof BelongsToMany:
-                $pivot   = $model->getTable();
-                $pivotPK = $model->getExistenceCompareKey();
-                $pivotFK = $model->getQualifiedParentKeyName();
-                $this->performJoin($pivot, $pivotPK, $pivotFK);
+        $lastQuery = $this->query;
+        foreach (explode('.', $relation) as $eachRelation) {
+            $model = $lastQuery->getRelation($eachRelation);
+            switch (true) {
+                case $model instanceof BelongsToMany:
+                    $pivot = $model->getTable();
+                    $pivotPK = $model->getExistenceCompareKey();
+                    $pivotFK = $model->getQualifiedParentKeyName();
+                    $this->performJoin($pivot, $pivotPK, $pivotFK);
 
-                $related = $model->getRelated();
-                $table   = $related->getTable();
-                $tablePK = $related->getForeignKey();
-                $foreign = $pivot . '.' . $tablePK;
-                $other   = $related->getQualifiedKeyName();
+                    $related = $model->getRelated();
+                    $table = $related->getTable();
+                    $tablePK = $related->getForeignKey();
+                    $foreign = $pivot . '.' . $tablePK;
+                    $other = $related->getQualifiedKeyName();
 
-                $this->query->addSelect($table . '.' . $relationColumn);
-                break;
+                    $lastQuery->addSelect($table . '.' . $eachRelation);
+                    $this->performJoin($table, $foreign, $other);
 
-            case $model instanceof HasOneOrMany:
-                $table   = $model->getRelated()->getTable();
-                $foreign = $model->getQualifiedForeignKeyName();
-                $other   = $model->getQualifiedParentKeyName();
-                break;
+                    break;
 
-            case $model instanceof BelongsTo:
-                $table   = $model->getRelated()->getTable();
-                $foreign = $model->getQualifiedForeignKey();
-                $other   = $model->getQualifiedOwnerKeyName();
-                break;
+                case $model instanceof HasOneOrMany:
+                    $table = $model->getRelated()->getTable();
+                    $foreign = $model->getQualifiedForeignKeyName();
+                    $other = $model->getQualifiedParentKeyName();
+                    break;
 
-            default:
-                $table   = $model->getRelated()->getTable();
-                $foreign = $model->getQualifiedForeignKey();
-                $other   = $model->getQualifiedOtherKeyName();
+                case $model instanceof BelongsTo:
+                    $table = $model->getRelated()->getTable();
+                    $foreign = $model->getQualifiedForeignKey();
+                    $other = $model->getQualifiedOwnerKeyName();
+                    break;
+
+                default:
+                    $table = $model->getRelated()->getTable();
+                    if ($model instanceof HasOneOrMany) {
+                        $foreign = $model->getForeignKey();
+                        $other = $model->getQualifiedParentKeyName();
+                    } else {
+                        $foreign = $model->getQualifiedForeignKey();
+                        $other = $model->getQualifiedOtherKeyName();
+                    }
+            }
+            $this->performJoin($table, $foreign, $other);
+            $lastQuery = $model->getQuery();
         }
-
-        $this->performJoin($table, $foreign, $other);
 
         return $table . '.' . $relationColumn;
     }
@@ -648,8 +658,20 @@ class QueryBuilderEngine extends BaseEngine
                     $relation       = implode('.', $parts);
 
                     if (in_array($relation, $eagerLoads)) {
-                        $relationship = $this->query->getRelation($relation);
-                        if (! ($relationship instanceof MorphToMany)) {
+                        // Loop for nested relations
+                        // This code is check morph many or not.
+                        // If one of nested relation is MorphToMany
+                        // we will call joinEagerLoadedColumn.
+                        $lastQuery = $this->query;
+                        $isMorphToMany = false;
+                        foreach (explode('.', $relation) as $eachRelation) {
+                            $relationship = $lastQuery->getRelation($eachRelation);
+                            if (! ($relationship instanceof MorphToMany)) {
+                                $isMorphToMany = true;
+                            }
+                            $lastQuery = $relationship;
+                        }
+                        if ($isMorphToMany) {
                             $column = $this->joinEagerLoadedColumn($relation, $relationColumn);
                         } else {
                             $valid = 0;
