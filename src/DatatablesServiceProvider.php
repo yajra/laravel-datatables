@@ -2,7 +2,6 @@
 
 namespace Yajra\Datatables;
 
-use Collective\Html\HtmlServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use League\Fractal\Manager;
 use League\Fractal\Serializer\DataArraySerializer;
