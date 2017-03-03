@@ -33,5 +33,10 @@
             "Yajra\\Datatables\\": "src/"
         }
     },
+    "extra": {
+      "branch-alias": {
+        "dev-master": "6.0-dev"
+      }
+    },
     "minimum-stability": "stable"
 }
