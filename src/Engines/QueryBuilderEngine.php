@@ -365,7 +365,12 @@ class QueryBuilderEngine extends BaseEngine
             $column = $this->castColumn($column);
             $this->columns[$column] = $column;
             if (count($this->request->searchableColumnIndex())==count($this->columns)) {
-                $sql = !$this->isCaseInsensitive() ? "concat_ws(' ',".implode(',',$this->columns).")" : "lower(concat_ws(' ',".implode(',',$this->columns)."))";
+
+		foreach ($this->columns as $key => $value) {
+                    @$columnsSql .= ++$nCol <= count($this->columns)-1 ? $value . ",' '," : $value;
+                }
+
+                $sql = !$this->isCaseInsensitive() ? "concat($columnsSql)" : "lower(concat($columnsSql))";
 
                 foreach (explode(' ' ,$keyword) as $k=>$singleKeyword) {
                     $keywords[] = $this->prepareKeyword($singleKeyword);
