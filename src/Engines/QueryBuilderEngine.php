@@ -529,7 +529,7 @@ class QueryBuilderEngine extends BaseEngine
                     $foreign = $pivot . '.' . $tablePK;
                     $other   = $related->getQualifiedKeyName();
 
-                    $lastQuery->addSelect($table . '.' . $eachRelation);
+                    $lastQuery->addSelect($this->wrapTable($table) . '.' . $eachRelation);
                     $this->performJoin($table, $foreign, $other);
 
                     break;
@@ -560,7 +560,7 @@ class QueryBuilderEngine extends BaseEngine
             $lastQuery = $model->getQuery();
         }
 
-        return $table . '.' . $relationColumn;
+        return $this->wrapTable($table) . '.' . $relationColumn;
     }
 
     /**
