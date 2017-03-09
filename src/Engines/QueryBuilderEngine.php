@@ -583,7 +583,7 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Wrap table and preppend db table prefix.
+     * Wrap table and prepend db table prefix.
      *
      * @param string $table
      * @return string
