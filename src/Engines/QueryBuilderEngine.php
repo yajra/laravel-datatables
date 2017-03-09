@@ -326,10 +326,10 @@ class QueryBuilderEngine extends BaseEngine
          */
         foreach ($relationChunk as $relation => $chunk) {
             // Prepare variables
-            $builder      = $chunk['builder'];
-            $query        = $chunk['query'];
-            $bindings     = $builder->getBindings();
-            $builder      = "({$builder->toSql()}) >= 1";
+            $builder  = $chunk['builder'];
+            $query    = $chunk['query'];
+            $bindings = $builder->getBindings();
+            $builder  = "({$builder->toSql()}) >= 1";
 
             // Check if it last relation we will use orWhereRaw
             if ($lastRelation == $relation) {
@@ -518,16 +518,16 @@ class QueryBuilderEngine extends BaseEngine
             $model = $lastQuery->getRelation($eachRelation);
             switch (true) {
                 case $model instanceof BelongsToMany:
-                    $pivot = $model->getTable();
+                    $pivot   = $model->getTable();
                     $pivotPK = $model->getExistenceCompareKey();
                     $pivotFK = $model->getQualifiedParentKeyName();
                     $this->performJoin($pivot, $pivotPK, $pivotFK);
 
                     $related = $model->getRelated();
-                    $table = $related->getTable();
+                    $table   = $related->getTable();
                     $tablePK = $related->getForeignKey();
                     $foreign = $pivot . '.' . $tablePK;
-                    $other = $related->getQualifiedKeyName();
+                    $other   = $related->getQualifiedKeyName();
 
                     $lastQuery->addSelect($table . '.' . $eachRelation);
                     $this->performJoin($table, $foreign, $other);
@@ -535,25 +535,25 @@ class QueryBuilderEngine extends BaseEngine
                     break;
 
                 case $model instanceof HasOneOrMany:
-                    $table = $model->getRelated()->getTable();
+                    $table   = $model->getRelated()->getTable();
                     $foreign = $model->getQualifiedForeignKeyName();
-                    $other = $model->getQualifiedParentKeyName();
+                    $other   = $model->getQualifiedParentKeyName();
                     break;
 
                 case $model instanceof BelongsTo:
-                    $table = $model->getRelated()->getTable();
+                    $table   = $model->getRelated()->getTable();
                     $foreign = $model->getQualifiedForeignKey();
-                    $other = $model->getQualifiedOwnerKeyName();
+                    $other   = $model->getQualifiedOwnerKeyName();
                     break;
 
                 default:
                     $table = $model->getRelated()->getTable();
                     if ($model instanceof HasOneOrMany) {
                         $foreign = $model->getForeignKey();
-                        $other = $model->getQualifiedParentKeyName();
+                        $other   = $model->getQualifiedParentKeyName();
                     } else {
                         $foreign = $model->getQualifiedForeignKey();
-                        $other = $model->getQualifiedOtherKeyName();
+                        $other   = $model->getQualifiedOtherKeyName();
                     }
             }
             $this->performJoin($table, $foreign, $other);
@@ -578,8 +578,19 @@ class QueryBuilderEngine extends BaseEngine
         }
 
         if (! in_array($table, $joins)) {
-            $this->getQueryBuilder()->leftJoin($table, $foreign, '=', $other);
+            $this->getQueryBuilder()->leftJoin($this->wrapTable($table), $foreign, '=', $other);
         }
+    }
+
+    /**
+     * Wrap table using the query grammar.
+     *
+     * @param string $table
+     * @return string
+     */
+    protected function wrapTable($table)
+    {
+        return $this->connection->getQueryGrammar()->wrapTable($table);
     }
 
     /**
@@ -662,7 +673,7 @@ class QueryBuilderEngine extends BaseEngine
                         // This code is check morph many or not.
                         // If one of nested relation is MorphToMany
                         // we will call joinEagerLoadedColumn.
-                        $lastQuery = $this->query;
+                        $lastQuery     = $this->query;
                         $isMorphToMany = false;
                         foreach (explode('.', $relation) as $eachRelation) {
                             $relationship = $lastQuery->getRelation($eachRelation);
