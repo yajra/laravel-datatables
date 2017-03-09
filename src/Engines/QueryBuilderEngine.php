@@ -583,7 +583,7 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Wrap table using the query grammar.
+     * Wrap table and preppend db table prefix.
      *
      * @param string $table
      * @return string
