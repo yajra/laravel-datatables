@@ -590,7 +590,7 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function wrapTable($table)
     {
-        return $this->connection->getQueryGrammar()->wrapTable($table);
+        return $this->connection->getTablePrefix() . $table;
     }
 
     /**
