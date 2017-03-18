@@ -127,7 +127,7 @@ class Datatables
     /**
      * Get request object.
      *
-     * @return \Yajra\Datatables\Request|static
+     * @return \Yajra\Datatables\Request
      */
     public function getRequest()
     {

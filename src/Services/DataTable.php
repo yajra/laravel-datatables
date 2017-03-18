@@ -73,6 +73,13 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     protected $filename = '';
 
     /**
+     * Custom attributes set on the class.
+     *
+     * @var array
+     */
+    protected $attributes = [];
+
+    /**
      * DataTable constructor.
      *
      * @param \Yajra\Datatables\Datatables $datatables
@@ -90,7 +97,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      * @param string $view
      * @param array $data
      * @param array $mergeData
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Http\JsonResponse|\Illuminate\View\View
      */
     public function render($view, $data = [], $mergeData = [])
     {
@@ -156,7 +163,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     /**
      * Get columns definition from html builder.
      *
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
     protected function getColumnsFromBuilder()
     {
@@ -359,6 +366,39 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
         $this->scopes[] = $scope;
 
         return $this;
+    }
+
+    /**
+     * Set a custom class attribute.
+     *
+     * @param mixed $key
+     * @param mixed|null $value
+     * @return $this
+     */
+    public function with($key, $value = null)
+    {
+        if (is_array($key)) {
+            $this->attributes = array_merge($this->attributes, $key);
+        } else {
+            $this->attributes[$key] = $value;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Dynamically retrieve the value of an attribute.
+     *
+     * @param string $key
+     * @return mixed|null
+     */
+    public function __get($key)
+    {
+        if (array_key_exists($key, $this->attributes)) {
+            return $this->attributes[$key];
+        }
+
+        return null;
     }
 
     /**
