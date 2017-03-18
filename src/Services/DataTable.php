@@ -246,6 +246,20 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
         return $excel->create($this->getFilename(), function (LaravelExcelWriter $excel) {
             $excel->sheet('exported-data', function (LaravelExcelWorksheet $sheet) {
                 $sheet->fromArray($this->getDataForExport());
+                $highestColumn = $sheet->getHighestColumn();
+
+                for($row = 1; $row <= sizeof($sheet->data); $row++) {
+                    foreach (range('A', $highestColumn) as $column) {
+                        $cell = $sheet->getCell($column.$row);
+                        $cellValue = $cell->getValue();
+
+                        if(filter_var($cellValue, FILTER_VALIDATE_URL)) {
+                            $cell->setValue($cellValue)
+                                 ->getHyperlink()
+                                 ->setUrl($cellValue);
+                        }
+                    }
+                }
             });
         });
     }
