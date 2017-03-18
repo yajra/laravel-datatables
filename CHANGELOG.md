@@ -8,6 +8,10 @@
 
 ##Change Log
 
+### v6.27.0 - 2017-03-08
+- Add a fluent way to send route variables to DataTable service class. PR  #1071.
+- Fix #1069.
+
 ### v6.26.0 - 2017-03-03
 - Remove dompdf dependency and let the developers decide on which version they want to use.
 > Note: This is possible breaking change for some users but needed to move forward. See https://github.com/yajra/laravel-datatables/pull/1026 for details. Thanks!
