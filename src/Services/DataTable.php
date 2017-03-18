@@ -97,7 +97,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
      * @param string $view
      * @param array $data
      * @param array $mergeData
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Http\JsonResponse|\Illuminate\View\View
      */
     public function render($view, $data = [], $mergeData = [])
     {
@@ -163,7 +163,7 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     /**
      * Get columns definition from html builder.
      *
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
     protected function getColumnsFromBuilder()
     {
