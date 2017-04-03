@@ -66,7 +66,7 @@ class DataTransformer
     {
         preg_match_all('/<a[^>]+href=([\'"])(.+?)\1[^>]*>/i', $data, $result);
         if ($result[2] && $result[2][0]) {
-            return $result[2][0];
+            return $data;
         }
 
         try {
