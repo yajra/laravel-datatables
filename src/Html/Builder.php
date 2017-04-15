@@ -188,6 +188,12 @@ class Builder
         $json = $this->decodeColumnFunctions($columnFunctions, $json);
         $json = $this->decodeCallbackFunctions($callbackFunctions, $json);
 
+        /* 
+         * Formatting the attributes for Editor buttons. json_encode wraps the key and value both in double qoutes,
+         * remove the additional quotes around "editor" string
+         */
+        $json = preg_replace('/"(editor)"/','$1',$json);
+        
         return $json;
     }
 
