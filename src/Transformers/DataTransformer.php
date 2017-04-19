@@ -64,6 +64,11 @@ class DataTransformer
      */
     protected function decodeContent($data)
     {
+        preg_match_all('/<a[^>]+href=([\'"])(.+?)\1[^>]*>/i', $data, $result);
+        if ($result[2] && $result[2][0]) {
+            return $data;
+        }
+
         try {
             $decoded = html_entity_decode(strip_tags($data), ENT_QUOTES, 'UTF-8');
 
