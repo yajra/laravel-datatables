@@ -356,6 +356,8 @@ class QueryBuilderEngine extends BaseEngine
         $column = $this->castColumn($column);
         $sql    = $column . ' LIKE ?';
 
+        $keyword = str_replace('%', '\%', $keyword);
+
         if ($this->isCaseInsensitive()) {
             $sql = 'LOWER(' . $column . ') LIKE ?';
         }
