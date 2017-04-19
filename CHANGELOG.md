@@ -8,6 +8,10 @@
 
 ##Change Log
 
+### v6.28.0 - 2017-04-19
+- Display url and A balise as hyperlink in excel export.
+- PR #1074, credits to @julianfox.
+
 ### v6.27.0 - 2017-03-08
 - Add a fluent way to send route variables to DataTable service class. PR  #1071.
 - Fix #1069.
