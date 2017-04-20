@@ -126,11 +126,23 @@ class QueryBuilderEngine extends BaseEngine
      */
     public function filtering()
     {
-         $keywords = array_filter(explode(' ', $this->request->keyword()));
+        $keyword = $this->request->keyword();
 
-         foreach ($keywords as $keyword) {
+        if ($this->isSmartSearch()) {
+            $this->smartGlobalSearch($keyword);
+            return;
+        }
+
+        $this->globalSearch($keyword);
+    }
+
+    private function smartGlobalSearch($keyword)
+    {
+        $keywords = array_filter(explode(' ', $keyword));
+
+        foreach ($keywords as $keyword) {
             $this->globalSearch($keyword);
-         }
+        }
     }
 
     private function globalSearch($keyword)
