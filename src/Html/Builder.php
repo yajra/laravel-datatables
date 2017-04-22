@@ -261,12 +261,15 @@ class Builder
 	protected function encodeEditorButtons(array $parameters)
 	{
 		$editorButtons = [];
-		foreach ($parameters['buttons'] as $i => $button) {
-			if (isset($button['editor'])) {
-				$editorButtons[$i] = $this->compileCallback($button['editor']);
-				$parameters['buttons'][$i]['editor']        = "#editor_button.{$i}#";
+		if (isset($parameters['buttons'])) {
+			foreach ($parameters['buttons'] as $i => $button) {
+				if (isset($button['editor'])) {
+					$editorButtons[$i] = $this->compileCallback($button['editor']);
+					$parameters['buttons'][$i]['editor']        = "#editor_button.{$i}#";
+				}
 			}
 		}
+
 
 		return [$editorButtons, $parameters];
 	}
