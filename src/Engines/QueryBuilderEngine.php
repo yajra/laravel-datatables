@@ -126,9 +126,29 @@ class QueryBuilderEngine extends BaseEngine
      */
     public function filtering()
     {
+        $keyword = $this->request->keyword();
+
+        if ($this->isSmartSearch()) {
+            $this->smartGlobalSearch($keyword);
+            return;
+        }
+
+        $this->globalSearch($keyword);
+    }
+
+    private function smartGlobalSearch($keyword)
+    {
+        $keywords = array_filter(explode(' ', $keyword));
+
+        foreach ($keywords as $keyword) {
+            $this->globalSearch($keyword);
+        }
+    }
+
+    private function globalSearch($keyword)
+    {
         $this->query->where(
-            function ($query) {
-                $globalKeyword = $this->request->keyword();
+            function ($query) use ($keyword) {
                 $queryBuilder  = $this->getQueryBuilder($query);
 
                 foreach ($this->request->searchableColumnIndex() as $index) {
@@ -148,7 +168,7 @@ class QueryBuilderEngine extends BaseEngine
 
                         if ($columnDef['method'] instanceof Closure) {
                             $whereQuery = $queryBuilder->newQuery();
-                            call_user_func_array($columnDef['method'], [$whereQuery, $globalKeyword]);
+                            call_user_func_array($columnDef['method'], [$whereQuery, $keyword]);
                             $queryBuilder->addNestedWhereQuery($whereQuery, 'or');
                         } else {
                             $this->compileColumnQuery(
@@ -156,7 +176,7 @@ class QueryBuilderEngine extends BaseEngine
                                 Helper::getOrMethod($columnDef['method']),
                                 $columnDef['parameters'],
                                 $columnName,
-                                $globalKeyword
+                                $keyword
                             );
                         }
                     } else {
@@ -170,13 +190,13 @@ class QueryBuilderEngine extends BaseEngine
                                     $queryBuilder,
                                     $relation,
                                     $relationColumn,
-                                    $globalKeyword
+                                    $keyword
                                 );
                             } else {
-                                $this->compileQuerySearch($queryBuilder, $columnName, $globalKeyword);
+                                $this->compileQuerySearch($queryBuilder, $columnName, $keyword);
                             }
                         } else {
-                            $this->compileQuerySearch($queryBuilder, $columnName, $globalKeyword);
+                            $this->compileQuerySearch($queryBuilder, $columnName, $keyword);
                         }
                     }
 
