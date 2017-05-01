@@ -148,12 +148,19 @@ class CollectionEngine extends BaseEngine
 
         if ($this->isSmartSearch()) {
             $this->smartGlobalSearch($keyword);
+
             return;
         }
 
         $this->globalSearch($keyword);
     }
 
+    /**
+     * Perform multi-term search by splitting keyword into
+     * individual words and searches for each of them.
+     *
+     * @param string $keyword
+     */
     private function smartGlobalSearch($keyword)
     {
         $keywords = array_filter(explode(' ', $keyword));
@@ -163,6 +170,11 @@ class CollectionEngine extends BaseEngine
         }
     }
 
+    /**
+     * Perform global search for the given keyword.
+     *
+     * @param string $keyword
+     */
     private function globalSearch($keyword)
     {
         if ($this->isCaseInsensitive()) {
@@ -206,7 +218,7 @@ class CollectionEngine extends BaseEngine
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($this->request->isColumnSearchable($i)) {
                 $this->isFilterApplied = true;
-                $regex = $this->request->isRegex($i);
+                $regex                 = $this->request->isRegex($i);
 
                 $column  = $this->getColumnName($i);
                 $keyword = $this->request->columnKeyword($i);
