@@ -13,6 +13,12 @@
 - Enhance/Fix nested relations support. #789
 - Export Selected Rows Datatables Service Provider. #829 #850
 
+### v7.4.0 - 05-01-2017
+- Implement multi-term smart search in collection engine. #1115
+- Implement multi-term smart search in QueryBuilderEngine. #1113
+- Fix #881, #1109, #998
+- Credits to @apreiml.
+
 ### v7.3.0 - 02-23-2017
 - Add support ordering when search in nested relations #965.
 - Credits to @AdrienPoupa and @ethaizone.
