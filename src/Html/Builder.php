@@ -179,6 +179,7 @@ class Builder
         list($ajaxDataFunction, $parameters) = $this->encodeAjaxDataFunction($parameters);
         list($columnFunctions, $parameters) = $this->encodeColumnFunctions($parameters);
         list($callbackFunctions, $parameters) = $this->encodeCallbackFunctions($parameters);
+        list($editorButtons, $parameters) = $this->encodeEditorButtons($parameters);
 
         $json = json_encode($parameters);
 
@@ -187,7 +188,8 @@ class Builder
         $json = $this->decodeAjaxDataFunction($ajaxDataFunction, $json);
         $json = $this->decodeColumnFunctions($columnFunctions, $json);
         $json = $this->decodeCallbackFunctions($callbackFunctions, $json);
-
+        $json = $this->decodeEditorButtons($editorButtons, $json);
+        
         return $json;
     }
 
@@ -249,6 +251,28 @@ class Builder
 
         return [$callbackFunctions, $parameters];
     }
+    
+    /**
+	 * Encode DataTables editor buttons.
+	 *
+	 * @param array $parameters
+	 * @return array
+	 */
+	protected function encodeEditorButtons(array $parameters)
+	{
+		$editorButtons = [];
+		if (isset($parameters['buttons'])) {
+			foreach ($parameters['buttons'] as $i => $button) {
+				if (isset($button['editor'])) {
+					$editorButtons[$i] = $this->compileCallback($button['editor']);
+					$parameters['buttons'][$i]['editor']        = "#editor_button.{$i}#";
+				}
+			}
+		}
+
+
+		return [$editorButtons, $parameters];
+	}
 
     /**
      * Compile DataTable callback value.
@@ -306,6 +330,22 @@ class Builder
     {
         foreach ($callbackFunctions as $i => $function) {
             $json = str_replace("\"#callback_function.{$i}#\"", $function, $json);
+        }
+
+        return $json;
+    }
+    
+    /**
+     * Decode DataTables Editor buttons.
+     *
+     * @param array $editorButtons
+     * @param string $json
+     * @return string
+     */
+    protected function decodeEditorButtons(array $editorButtons, $json)
+    {
+        foreach ($editorButtons as $i => $function) {
+            $json = str_replace("\"#editor_button.{$i}#\"", $function, $json);
         }
 
         return $json;
