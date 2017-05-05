@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use League\Fractal\Resource\Collection;
 use Yajra\Datatables\Contracts\DataTableEngineContract;
+use Yajra\Datatables\Exception;
 use Yajra\Datatables\Helper;
 use Yajra\Datatables\Processors\DataProcessor;
 
@@ -510,7 +511,7 @@ abstract class BaseEngine implements DataTableEngineContract
             return $this->render($mDataSupport);
         } catch (\Exception $exception) {
             if ($this->isDebugging()) {
-                throw $exception;
+                throw new Exception($exception->getMessage(), $exception->getCode());
             }
 
             $defaultError = config('datatables.error');
