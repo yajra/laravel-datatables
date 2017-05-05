@@ -2,6 +2,7 @@
 
 namespace Yajra\Datatables\Engines;
 
+use Illuminate\Contracts\Logging\Log;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use League\Fractal\Resource\Collection;
@@ -45,6 +46,11 @@ abstract class BaseEngine implements DataTableEngineContract
      * @var \Illuminate\Database\Query\Builder
      */
     protected $builder;
+
+    /**
+     * @var \Illuminate\Contracts\Logging\Log
+     */
+    protected $logger;
 
     /**
      * Array of result columns/fields.
@@ -510,9 +516,8 @@ abstract class BaseEngine implements DataTableEngineContract
 
             return $this->render($mDataSupport);
         } catch (\Exception $exception) {
-            if ($this->isDebugging()) {
-                throw new Exception($exception->getMessage(), $exception->getCode());
-            }
+            $log = new Exception($exception->getMessage(), $exception->getCode());
+            $this->getLogger()->error($log);
 
             $defaultError = config('datatables.error');
 
@@ -521,7 +526,7 @@ abstract class BaseEngine implements DataTableEngineContract
                 'recordsTotal'    => (int) $this->totalRecords,
                 'recordsFiltered' => 0,
                 'data'            => [],
-                'error'           => $defaultError ? __($defaultError) : $exception->getMessage(),
+                'error'           => $defaultError ? __($defaultError) : "Exception Message:\n\n" . $log->getMessage(),
             ]);
         }
     }
@@ -688,6 +693,31 @@ abstract class BaseEngine implements DataTableEngineContract
         $output['input']   = $this->request->all();
 
         return $output;
+    }
+
+    /**
+     * Get monolog/logger instance.
+     *
+     * @return \Illuminate\Contracts\Logging\Log
+     */
+    public function getLogger()
+    {
+        $this->logger = $this->logger ?: resolve(Log::class);
+
+        return $this->logger;
+    }
+
+    /**
+     * Set monolog/logger instance.
+     *
+     * @param \Illuminate\Contracts\Logging\Log $logger
+     * @return $this
+     */
+    public function setLogger(Log $logger)
+    {
+        $this->logger = $logger;
+
+        return $this;
     }
 
     /**
