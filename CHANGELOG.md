@@ -8,6 +8,9 @@
 
 ##Change Log
 
+### v6.28.1 - 2017-05-05
+- Fixed: Formatting the attributes for Editor buttons. #1105, credits to @karmendra.
+
 ### v6.28.0 - 2017-04-19
 - Display url and A balise as hyperlink in excel export.
 - PR #1074, credits to @julianfox.
