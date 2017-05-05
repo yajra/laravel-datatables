@@ -517,7 +517,7 @@ abstract class BaseEngine implements DataTableEngineContract
 
             return new JsonResponse([
                 'draw'            => (int) $this->request->input('draw'),
-                'recordsTotal'    => 0,
+                'recordsTotal'    => (int) $this->totalRecords,
                 'recordsFiltered' => 0,
                 'data'            => [],
                 'error'           => $defaultError ? __($defaultError) : $exception->getMessage(),
