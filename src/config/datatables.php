@@ -69,4 +69,11 @@ return [
      * For MySQL, use '-%s %s'
      */
     'nulls_last_sql' => '%s %s NULLS LAST',
+
+    /**
+     * User friendly message to be displayed on user if error occurs.
+     * If set to null, the exception message will be used.
+     * Note: You can also use translation key.
+     */
+    'error' => null
 ];

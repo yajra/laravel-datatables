@@ -493,19 +493,36 @@ abstract class BaseEngine implements DataTableEngineContract
      * @param bool $mDataSupport
      * @param bool $orderFirst
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function make($mDataSupport = false, $orderFirst = false)
     {
-        $this->totalRecords = $this->totalCount();
+        try {
+            $this->totalRecords = $this->totalCount();
 
-        if ($this->totalRecords) {
-            $this->orderRecords(! $orderFirst);
-            $this->filterRecords();
-            $this->orderRecords($orderFirst);
-            $this->paginate();
+            if ($this->totalRecords) {
+                $this->orderRecords(! $orderFirst);
+                $this->filterRecords();
+                $this->orderRecords($orderFirst);
+                $this->paginate();
+            }
+
+            return $this->render($mDataSupport);
+        } catch (\Exception $exception) {
+            if ($this->isDebugging()) {
+                throw $exception;
+            }
+
+            $defaultError = config('datatables.error');
+
+            return new JsonResponse([
+                'draw'            => (int) $this->request->input('draw'),
+                'recordsTotal'    => 0,
+                'recordsFiltered' => 0,
+                'data'            => [],
+                'error'           => $defaultError ? __($defaultError) : $exception->getMessage(),
+            ]);
         }
-
-        return $this->render($mDataSupport);
     }
 
     /**
