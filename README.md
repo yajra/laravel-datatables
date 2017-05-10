@@ -37,15 +37,15 @@ return Datatables::of(DB::select('select * from users'))->make(true);
 ```
 
 ## Requirements
-- [PHP >=5.6.4](http://php.net/)
+- [PHP >= 5.6.4](http://php.net/)
 - [Laravel 5.4+](https://github.com/laravel/framework)
 - [jQuery DataTables v1.10.x](http://datatables.net/)
 
 ## Documentations
 - [Laravel Datatables Documentation](http://yajrabox.com/docs/laravel-datatables)
 - [Laravel Datatables API](http://yajra.github.io/laravel-datatables/api/)
-- [Laravel 5.0 - 5.3 Demo Application](http://datatables.yajrabox.com).
-- [Laravel 5.4 Demo Application](http://dt54.yajrabox.com).
+- [Laravel 5.0 - 5.3 Demo Application](http://datatables.yajrabox.com)
+- [Laravel 5.4 Demo Application](http://dt54.yajrabox.com)
 
 ## Laravel Version Compatibility
 
@@ -63,7 +63,9 @@ There are breaking changes since Laravel 5.4 and Datatables v7.0.
 If you are upgrading from v6.x to v7.x, please see [upgrade guide](https://yajrabox.com/docs/laravel-datatables/7.0/upgrade).
 
 ## Quick Installation
-`composer require yajra/laravel-datatables-oracle:^7.2`
+```bash
+$ composer require yajra/laravel-datatables-oracle:^7.2
+```
 
 #### Service Provider
 `Yajra\Datatables\DatatablesServiceProvider::class`
@@ -72,7 +74,9 @@ If you are upgrading from v6.x to v7.x, please see [upgrade guide](https://yajra
 `Datatables` facade is automatically registered as an alias for `Yajra\Datatables\Facades\Datatables` class. 
 
 #### Configuration and Assets
-`$ php artisan vendor:publish --tag=datatables`
+```bash
+$ php artisan vendor:publish --tag=datatables
+```
 
 And that's it! Start building out some awesome DataTables!
 
