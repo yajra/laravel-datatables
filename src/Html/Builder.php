@@ -135,6 +135,10 @@ class Builder
      */
     public function generateScripts()
     {
+        $editor_script = '';
+        if (isset($this->attributes['editor'])) {
+            $editor_script = $this->generateEditorScripts();
+        }
         $args = array_merge(
             $this->attributes, [
                 'ajax'    => $this->ajax,
@@ -144,10 +148,12 @@ class Builder
 
         $parameters = $this->parameterize($args);
 
-        return sprintf(
-            $this->template(),
-            $this->tableAttributes['id'], $parameters
+        $script = sprintf(
+                $this->template(),
+                $this->tableAttributes['id'], $parameters
         );
+
+       return $editor_script . $script;
     }
 
     /**
@@ -194,6 +200,42 @@ class Builder
     }
 
     /**
+     * Generate DataTable Editor js parameters
+     *
+     * @param $attributes
+     * @return string
+     */
+    public function editorParametrize($attributes)
+    {
+        $parameters = (new Parameters($attributes))->toArray();
+
+        $values = [];
+        $replacements = [];
+        foreach ($parameters as $key => &$value) {
+            if (!is_array($value)) {
+                if (strpos($value, '$.') === 0) {
+                    // Store function string.
+                    $values[] = $value;
+                    // Replace function string in $foo with a 'unique' special key.
+                    $value = '%' . $key . '%';
+                    // Later on, we'll look for the value, and replace it.
+                    $replacements[] = '"' . $value . '"';
+                }
+            }
+        }
+
+        list($ajaxHeaderFunction, $parameters) = $this->encodeAjaxHeaderFunction($parameters);
+
+        $json = json_encode($parameters);
+
+        $json = str_replace($replacements, $values, $json);
+
+        $json = $this->decodeAjaxHeaderFunction($ajaxHeaderFunction, $json);
+
+        return $json;
+    }
+
+    /**
      * Encode ajax data function param.
      *
      * @param array $parameters
@@ -208,6 +250,25 @@ class Builder
         }
 
         return [$ajaxData, $parameters];
+    }
+
+    /**
+     * Encode ajax header function param.
+     *
+     * @param array $parameters
+     * @return mixed
+     */
+    protected function encodeAjaxHeaderFunction($parameters)
+    {
+        $ajaxHeaders = [];
+        if (isset($parameters['ajax']['headers'])) {
+            foreach ($parameters['ajax']['headers'] as $header => $header_value) {
+                $ajaxHeaders[$header] = $this->compileCallback($header_value);
+                $parameters['ajax']['headers'][$header] = "#ajax_header.{$header}#";
+            }
+        }
+
+        return [$ajaxHeaders, $parameters];
     }
 
     /**
@@ -253,26 +314,25 @@ class Builder
     }
     
     /**
-	 * Encode DataTables editor buttons.
-	 *
-	 * @param array $parameters
-	 * @return array
-	 */
-	protected function encodeEditorButtons(array $parameters)
-	{
-		$editorButtons = [];
-		if (isset($parameters['buttons'])) {
-			foreach ($parameters['buttons'] as $i => $button) {
-				if (isset($button['editor'])) {
-					$editorButtons[$i] = $this->compileCallback($button['editor']);
-					$parameters['buttons'][$i]['editor']        = "#editor_button.{$i}#";
-				}
-			}
-		}
+     * Encode DataTables editor buttons.
+     *
+     * @param array $parameters
+     * @return array
+     */
+    protected function encodeEditorButtons(array $parameters)
+    {
+        $editorButtons = [];
+        if (isset($parameters['buttons'])) {
+            foreach ($parameters['buttons'] as $i => $button) {
+                if (isset($button['editor'])) {
+                    $editorButtons[$i] = $this->compileCallback($button['editor']);
+                    $parameters['buttons'][$i]['editor']        = "#editor_button.{$i}#";
+                }
+            }
+        }
 
-
-		return [$editorButtons, $parameters];
-	}
+        return [$editorButtons, $parameters];
+    }
 
     /**
      * Compile DataTable callback value.
@@ -301,6 +361,22 @@ class Builder
     protected function decodeAjaxDataFunction($function, $json)
     {
         return str_replace("\"#ajax_data#\"", $function, $json);
+    }
+
+    /**
+     * Decode ajax header method.
+     *
+     * @param array $ajaxHeaders
+     * @param string $json
+     * @return string
+     */
+    protected function decodeAjaxHeaderFunction(array $ajaxHeaders, $json)
+    {
+        foreach ($ajaxHeaders as $header => $function) {
+            $json = str_replace("\"#ajax_header.{$header}#\"", $function, $json);
+        }
+
+        return $json;
     }
 
     /**
@@ -688,5 +764,38 @@ class Builder
     public function getColumns()
     {
         return $this->collection;
+    }
+    
+    /**
+     * Generate script for Editor
+     *
+     * @return mixed
+     */
+    public function generateEditorScripts()
+    {
+        $editor_variable = $this->attributes['editor']['variable'];
+        $this->attributes['editor']['table'] = '#' . $this->tableAttributes['id'];
+        $editor_args = $this->attributes['editor'];
+        unset($this->attributes['editor']);
+
+        $editor_parameters = $this->editorParametrize($editor_args);
+        $editor_script = sprintf(
+            $this->editor_template(),
+            $editor_variable,$editor_parameters
+        );
+
+        return $editor_script;
+    }
+    
+    /**
+     * Get javascript template to use for Editor.
+     *
+     * @return string
+     */
+    protected function editor_template()
+    {
+        return $this->view->make(
+            $this->config->get('datatables.editor_script_template', 'datatables::editor-script')
+        )->render();
     }
 }
