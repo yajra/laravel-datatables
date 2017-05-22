@@ -2,10 +2,12 @@
 
 namespace Yajra\Datatables\Engines;
 
+use Illuminate\Contracts\Logging\Log;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use League\Fractal\Resource\Collection;
 use Yajra\Datatables\Contracts\DataTableEngineContract;
+use Yajra\Datatables\Exception;
 use Yajra\Datatables\Helper;
 use Yajra\Datatables\Processors\DataProcessor;
 
@@ -44,6 +46,11 @@ abstract class BaseEngine implements DataTableEngineContract
      * @var \Illuminate\Database\Query\Builder
      */
     protected $builder;
+
+    /**
+     * @var \Illuminate\Contracts\Logging\Log
+     */
+    protected $logger;
 
     /**
      * Array of result columns/fields.
@@ -493,19 +500,37 @@ abstract class BaseEngine implements DataTableEngineContract
      * @param bool $mDataSupport
      * @param bool $orderFirst
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function make($mDataSupport = false, $orderFirst = false)
     {
-        $this->totalRecords = $this->totalCount();
+        try {
+            $this->totalRecords = $this->totalCount();
 
-        if ($this->totalRecords) {
-            $this->orderRecords(! $orderFirst);
-            $this->filterRecords();
-            $this->orderRecords($orderFirst);
-            $this->paginate();
+            if ($this->totalRecords) {
+                $this->orderRecords(! $orderFirst);
+                $this->filterRecords();
+                $this->orderRecords($orderFirst);
+                $this->paginate();
+            }
+
+            return $this->render($mDataSupport);
+        } catch (\Exception $exception) {
+            $error = config('datatables.error');
+            if ($error === 'throw') {
+                throw new Exception($exception->getMessage(), $code = 0, $exception);
+            }
+
+            $this->getLogger()->error($exception);
+
+            return new JsonResponse([
+                'draw'            => (int) $this->request->input('draw'),
+                'recordsTotal'    => (int) $this->totalRecords,
+                'recordsFiltered' => 0,
+                'data'            => [],
+                'error'           => $error ? __($error) : "Exception Message:\n\n" . $exception->getMessage(),
+            ]);
         }
-
-        return $this->render($mDataSupport);
     }
 
     /**
@@ -670,6 +695,31 @@ abstract class BaseEngine implements DataTableEngineContract
         $output['input']   = $this->request->all();
 
         return $output;
+    }
+
+    /**
+     * Get monolog/logger instance.
+     *
+     * @return \Illuminate\Contracts\Logging\Log
+     */
+    public function getLogger()
+    {
+        $this->logger = $this->logger ?: resolve(Log::class);
+
+        return $this->logger;
+    }
+
+    /**
+     * Set monolog/logger instance.
+     *
+     * @param \Illuminate\Contracts\Logging\Log $logger
+     * @return $this
+     */
+    public function setLogger(Log $logger)
+    {
+        $this->logger = $logger;
+
+        return $this;
     }
 
     /**

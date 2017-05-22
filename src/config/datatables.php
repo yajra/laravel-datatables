@@ -69,4 +69,14 @@ return [
      * For MySQL, use '-%s %s'
      */
     'nulls_last_sql' => '%s %s NULLS LAST',
+
+    /**
+     * User friendly message to be displayed on user if error occurs.
+     * Possible values:
+     * null             - The exception message will be used on error response.
+     * 'throw'          - Throws a \Yajra\Datatables\Exception. You can then use your custom error handler if needed.
+     * 'custom message' - Any friendly message to be displayed to the user. You can also use translation key.
+     */
+    'error'          => env('DATATABLES_ERROR', null),
+
 ];
