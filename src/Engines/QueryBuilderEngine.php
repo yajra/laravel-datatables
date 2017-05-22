@@ -561,7 +561,7 @@ class QueryBuilderEngine extends BaseEngine
                     $foreign = $pivot . '.' . $tablePK;
                     $other   = $related->getQualifiedKeyName();
 
-                    $lastQuery->addSelect($table . '.' . $eachRelation);
+                    $lastQuery->addSelect($this->wrapTable($table) . '.' . $eachRelation);
                     $this->performJoin($table, $foreign, $other);
 
                     break;
@@ -592,7 +592,7 @@ class QueryBuilderEngine extends BaseEngine
             $lastQuery = $model->getQuery();
         }
 
-        return $table . '.' . $relationColumn;
+        return $this->wrapTable($table) . '.' . $relationColumn;
     }
 
     /**
@@ -610,8 +610,19 @@ class QueryBuilderEngine extends BaseEngine
         }
 
         if (! in_array($table, $joins)) {
-            $this->getQueryBuilder()->leftJoin($table, $foreign, '=', $other);
+            $this->getQueryBuilder()->leftJoin($this->wrapTable($table), $foreign, '=', $other);
         }
+    }
+
+    /**
+     * Wrap table and prepend db table prefix.
+     *
+     * @param string $table
+     * @return string
+     */
+    protected function wrapTable($table)
+    {
+        return $this->connection->getTablePrefix() . $table;
     }
 
     /**
