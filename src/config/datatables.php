@@ -77,6 +77,6 @@ return [
      * 'throw'          - Throws a \Yajra\Datatables\Exception. You can then use your custom error handler if needed.
      * 'custom message' - Any friendly message to be displayed to the user. You can also use translation key.
      */
-    'error'          => null,
+    'error'          => env('DATATABLES_ERROR', null),
 
 ];
