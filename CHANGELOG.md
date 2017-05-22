@@ -8,10 +8,9 @@
 
 ## Change Log
 
-### TODO
-- Fix IE compatibility by using POST method when exporting/printing. #826
-- Enhance/Fix nested relations support. #789
-- Export Selected Rows Datatables Service Provider. #829 #850
+### v7.5.0 - 05-22-2017
+- Do not use ::class to avoid IDE error when fractal is not installed. #1132
+- Add server-side [error handler](https://yajrabox.com/docs/laravel-datatables/7.0/error-handler). #1131
 
 ### v7.4.0 - 05-01-2017
 - Implement multi-term smart search in collection engine. #1115
@@ -74,3 +73,8 @@
 - Added option to order by nulls last. #794
 - Escape all columns by default for XSS protection. Fix #909
 - Add rawColumns method for unescaped columns. https://github.com/yajra/laravel-datatables/commit/81adef8555195795189853f91e326dd056e40bb0
+
+## TODO
+- Fix IE compatibility by using POST method when exporting/printing. #826
+- Enhance/Fix nested relations support. #789
+- Export Selected Rows Datatables Service Provider. #829 #850
