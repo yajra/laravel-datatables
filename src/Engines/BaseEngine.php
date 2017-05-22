@@ -516,17 +516,19 @@ abstract class BaseEngine implements DataTableEngineContract
 
             return $this->render($mDataSupport);
         } catch (\Exception $exception) {
-            $log = new Exception($exception->getMessage(), $exception->getCode());
-            $this->getLogger()->error($log);
+            $error = config('datatables.error');
+            if ($error === 'throw') {
+                throw new Exception($exception->getMessage(), $code = 0, $exception);
+            }
 
-            $defaultError = config('datatables.error');
+            $this->getLogger()->error($exception);
 
             return new JsonResponse([
                 'draw'            => (int) $this->request->input('draw'),
                 'recordsTotal'    => (int) $this->totalRecords,
                 'recordsFiltered' => 0,
                 'data'            => [],
-                'error'           => $defaultError ? __($defaultError) : "Exception Message:\n\n" . $log->getMessage(),
+                'error'           => $error ? __($error) : "Exception Message:\n\n" . $exception->getMessage(),
             ]);
         }
     }

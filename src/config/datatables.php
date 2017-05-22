@@ -72,8 +72,11 @@ return [
 
     /**
      * User friendly message to be displayed on user if error occurs.
-     * If set to null, the exception message will be used.
-     * Note: You can also use translation key.
+     * Possible values:
+     * null             - The exception message will be used on error response.
+     * 'throw'          - Throws a \Yajra\Datatables\Exception. You can then use your custom error handler if needed.
+     * 'custom message' - Any friendly message to be displayed to the user. You can also use translation key.
      */
-    'error' => null
+    'error'          => 'throw',
+
 ];
