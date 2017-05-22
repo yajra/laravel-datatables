@@ -85,6 +85,12 @@ To enable debugging mode, just set `APP_DEBUG=true` and the package will include
 
 **IMPORTANT:** Please make sure that APP_DEBUG is set to false when your app is on production.
 
+## PHP ARTISAN SERVE BUG
+Please avoid using `php artisan serve` when developing with the package. 
+There are known bugs when using this where Laravel randomly returns a redirect if the route requires authentication and sometimes returns a 404 on valid route.
+
+It is advise to use [Homestead](https://laravel.com/docs/5.4/homestead) or [Valet](https://laravel.com/docs/5.4/valet) when working with the package.
+
 ## Contributing
 
 Please see [CONTRIBUTING](https://github.com/yajra/laravel-datatables/blob/master/.github/CONTRIBUTING.md) for details.

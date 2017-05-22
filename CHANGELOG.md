@@ -8,6 +8,11 @@
 
 ## Change Log
 
+### UNRELEASED
+- Fix column name added when relation is belongsToMany. #1155
+- Fix rawColumns not working on relationships. #1156
+- Fixes #1094, #1151.
+
 ### v7.5.0 - 05-22-2017
 - Do not use ::class to avoid IDE error when fractal is not installed. #1132
 - Add server-side [error handler](https://yajrabox.com/docs/laravel-datatables/7.0/error-handler). #1131
