@@ -561,7 +561,7 @@ class QueryBuilderEngine extends BaseEngine
                     $foreign = $pivot . '.' . $tablePK;
                     $other   = $related->getQualifiedKeyName();
 
-                    $lastQuery->addSelect($table . '.' . $eachRelation);
+                    $lastQuery->addSelect($table . '.' . $relationColumn);
                     $this->performJoin($table, $foreign, $other);
 
                     break;
