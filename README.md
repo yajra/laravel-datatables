@@ -64,7 +64,7 @@ If you are upgrading from v6.x to v7.x, please see [upgrade guide](https://yajra
 
 ## Quick Installation
 ```bash
-$ composer require yajra/laravel-datatables-oracle:^7.2
+$ composer require yajra/laravel-datatables-oracle:^7.5
 ```
 
 #### Service Provider
@@ -87,7 +87,7 @@ To enable debugging mode, just set `APP_DEBUG=true` and the package will include
 
 ## PHP ARTISAN SERVE BUG
 Please avoid using `php artisan serve` when developing with the package. 
-There are known bugs when using this where Laravel randomly returns a redirect if the route requires authentication and sometimes returns a 404 on valid route.
+There are known bugs when using this where Laravel randomly returns a redirect and 401 (Unauthorized) if the route requires authentication and a 404 NotFoundHttpException on valid routes.
 
 It is advise to use [Homestead](https://laravel.com/docs/5.4/homestead) or [Valet](https://laravel.com/docs/5.4/valet) when working with the package.
 
