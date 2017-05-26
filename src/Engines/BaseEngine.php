@@ -1045,7 +1045,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function pushToBlacklist($column)
     {
-        if (!$this->isBlacklisted($name)) {
+        if (!$this->isBlacklisted($column)) {
             array_push($this->columnDef['blacklist'], $column);
         }
 
