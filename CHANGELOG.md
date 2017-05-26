@@ -8,6 +8,10 @@
 
 ## Change Log
 
+### v7.5.2 - 05-26-2017
+- Remove empty arrays returned from array_dot. PR #1161
+- Fix #1160.
+
 ### v7.5.1 - 05-26-2017
 - Fix column name added to select when relation is belongsToMany. #1155
 - Fix rawColumns not working on relationships. #1156
