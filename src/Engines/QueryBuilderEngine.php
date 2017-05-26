@@ -738,26 +738,10 @@ class QueryBuilderEngine extends BaseEngine {
 	 */
 	public function addColumn($name, $content, $order = false) {
 		$this->extraColumns[] = $name;
-
 		if (!$this->isBlacklisted($name)) {
 			$this->pushToBlacklist($name);
 		}
-
 		$this->columnDef['append'][] = ['name' => $name, 'content' => $content, 'order' => $order];
-		return $this;
-	}
-
-	/**
-	 * Push a new column name to blacklist
-	 *
-	 * @return $this
-	 */
-	public function pushToBlacklist($column) {
-		if (isset($this->columnDef['blacklist'])) {
-			array_push($this->columnDef['blacklist'], $column);
-		} else {
-			$this->columnDef['blacklist'] = [$column];
-		}
 
 		return $this;
 	}
