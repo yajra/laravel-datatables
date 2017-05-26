@@ -8,10 +8,11 @@
 
 ## Change Log
 
-### UNRELEASED
-- Fix column name added when relation is belongsToMany. #1155
+### v7.5.1 - 05-26-2017
+- Fix column name added to select when relation is belongsToMany. #1155
 - Fix rawColumns not working on relationships. #1156
 - Fixes #1094, #1151.
+- Add docs for artisan serve bug.
 
 ### v7.5.0 - 05-22-2017
 - Do not use ::class to avoid IDE error when fractal is not installed. #1132
