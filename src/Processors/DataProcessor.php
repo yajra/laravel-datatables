@@ -235,7 +235,7 @@ class DataProcessor
      */
     protected function escapeRow(array $row)
     {
-        $arrayDot = array_dot($row);
+        $arrayDot = array_filter(array_dot($row));
         foreach ($arrayDot as $key => $value) {
             if (! in_array($key, $this->rawColumns)) {
                 $arrayDot[$key] = e($value);
