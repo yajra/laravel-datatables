@@ -4,8 +4,8 @@ namespace Yajra\Datatables\Tests\Integration;
 
 use DB;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Str;
 use Yajra\Datatables\Datatables;
 use Yajra\Datatables\Engines\QueryBuilderEngine;
 use Yajra\Datatables\Facades\Datatables as DatatablesFacade;
@@ -13,6 +13,8 @@ use Yajra\Datatables\Tests\TestCase;
 
 class QueryBuilderEngineTest extends TestCase
 {
+    use DatabaseTransactions;
+
     /** @test */
     public function it_returns_all_records_when_no_parameters_is_passed()
     {
@@ -32,7 +34,25 @@ class QueryBuilderEngineTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
                 ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
             ],
-            'search'  => ['value' => 'Record 19'],
+            'search'  => ['value' => 'Record-19'],
+        ]);
+
+        $crawler->assertJson([
+            'draw'            => 0,
+            'recordsTotal'    => 20,
+            'recordsFiltered' => 1,
+        ]);
+    }
+
+    /** @test */
+    public function it_can_perform_multiple_term_global_search()
+    {
+        $crawler = $this->call('GET', '/queryBuilder/users', [
+            'columns' => [
+                ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
+                ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
+            ],
+            'search'  => ['value' => 'Record-19 Email-19'],
         ]);
 
         $crawler->assertJson([
@@ -96,7 +116,7 @@ class QueryBuilderEngineTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
                 ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
             ],
-            'search'  => ['value' => 'Record 19'],
+            'search'  => ['value' => 'Record-19'],
         ]);
 
         $crawler->assertJson([
@@ -104,6 +124,27 @@ class QueryBuilderEngineTest extends TestCase
             'recordsTotal'    => 20,
             'recordsFiltered' => 1,
         ]);
+    }
+
+    /** @test */
+    public function it_can_return_auto_index_column()
+    {
+        $crawler = $this->call('GET', '/queryBuilder/indexColumn', [
+            'columns' => [
+                ['data' => 'DT_Row_index', 'name' => 'index', 'searchable' => "false", 'orderable' => "false"],
+                ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
+                ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
+            ],
+            'search'  => ['value' => 'Record-19'],
+        ]);
+
+        $crawler->assertJson([
+            'draw'            => 0,
+            'recordsTotal'    => 20,
+            'recordsFiltered' => 1,
+        ]);
+
+        $this->assertArrayHasKey('DT_Row_Index', $crawler->json()['data'][0]);
     }
 
     /** @test */
@@ -115,7 +156,7 @@ class QueryBuilderEngineTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
                 ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
             ],
-            'search'  => ['value' => 'Record 19'],
+            'search'  => ['value' => 'Record-19'],
         ]);
 
         $crawler->assertJson([
@@ -125,7 +166,7 @@ class QueryBuilderEngineTest extends TestCase
         ]);
 
         $queries = $crawler->json()['queries'];
-        $this->assertTrue(Str::contains($queries[1]['query'], '"1" = ?'));
+        $this->assertContains('"1" = ?', $queries[1]['query']);
     }
 
     protected function setUp()
@@ -139,6 +180,12 @@ class QueryBuilderEngineTest extends TestCase
         $this->app['router']->get('/queryBuilder/addColumn', function (Datatables $dataTable) {
             return $dataTable->queryBuilder(DB::table('users'))
                              ->addColumn('foo', 'bar')
+                             ->make('true');
+        });
+
+        $this->app['router']->get('/queryBuilder/indexColumn', function (Datatables $dataTable) {
+            return $dataTable->queryBuilder(DB::table('users'))
+                             ->addIndexColumn()
                              ->make('true');
         });
 

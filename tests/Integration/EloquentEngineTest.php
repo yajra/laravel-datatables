@@ -2,6 +2,7 @@
 
 namespace Yajra\Datatables\Tests\Integration;
 
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
 use Yajra\Datatables\Datatables;
 use Yajra\Datatables\Engines\EloquentEngine;
@@ -11,6 +12,8 @@ use Yajra\Datatables\Tests\TestCase;
 
 class EloquentEngineTest extends TestCase
 {
+    use DatabaseTransactions;
+
     /** @test */
     public function it_returns_all_records_when_no_parameters_is_passed()
     {
@@ -30,7 +33,7 @@ class EloquentEngineTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
                 ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
             ],
-            'search'  => ['value' => 'Record 19'],
+            'search'  => ['value' => 'Record-19'],
         ]);
 
         $crawler->assertJson([

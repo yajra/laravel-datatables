@@ -2,6 +2,7 @@
 
 namespace Yajra\Datatables\Tests\Integration;
 
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
 use Yajra\Datatables\Datatables;
 use Yajra\Datatables\Engines\CollectionEngine;
@@ -11,6 +12,8 @@ use Yajra\Datatables\Tests\TestCase;
 
 class CollectionEngineTest extends TestCase
 {
+    use DatabaseTransactions;
+
     /** @test */
     public function it_returns_all_records_when_no_parameters_is_passed()
     {
