@@ -26,15 +26,28 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
             $table->string('email');
             $table->timestamps();
         });
+        $schemaBuilder->create('posts', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('title');
+            $table->unsignedInteger('user_id');
+            $table->timestamps();
+        });
     }
 
     protected function seedDatabase()
     {
         collect(range(1, 20))->each(function ($i) {
-            User::forceCreate([
+            /** @var User $user */
+            $user = User::query()->create([
                 'name'  => 'Record-' . $i,
                 'email' => 'Email-' . $i,
             ]);
+
+            collect(range(1, 3))->each(function ($i) use ($user) {
+                $user->posts()->create([
+                    'title' => "User-{$user->id} Post-{$i}",
+                ]);
+            });
         });
     }
 
