@@ -32,8 +32,8 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
     {
         collect(range(1, 20))->each(function ($i) {
             User::forceCreate([
-                'name'  => 'Record ' . $i,
-                'email' => 'Email ' . $i,
+                'name'  => 'Record-' . $i,
+                'email' => 'Email-' . $i,
             ]);
         });
     }

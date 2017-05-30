@@ -5,7 +5,6 @@ namespace Yajra\Datatables\Tests\Integration;
 use DB;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Str;
 use Yajra\Datatables\Datatables;
 use Yajra\Datatables\Engines\QueryBuilderEngine;
 use Yajra\Datatables\Facades\Datatables as DatatablesFacade;
@@ -32,7 +31,25 @@ class QueryBuilderEngineTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
                 ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
             ],
-            'search'  => ['value' => 'Record 19'],
+            'search'  => ['value' => 'Record-19'],
+        ]);
+
+        $crawler->assertJson([
+            'draw'            => 0,
+            'recordsTotal'    => 20,
+            'recordsFiltered' => 1,
+        ]);
+    }
+
+    /** @test */
+    public function it_can_perform_multiple_term_global_search()
+    {
+        $crawler = $this->call('GET', '/queryBuilder/users', [
+            'columns' => [
+                ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
+                ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
+            ],
+            'search'  => ['value' => 'Record-19 Email-19'],
         ]);
 
         $crawler->assertJson([
@@ -96,7 +113,7 @@ class QueryBuilderEngineTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
                 ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
             ],
-            'search'  => ['value' => 'Record 19'],
+            'search'  => ['value' => 'Record-19'],
         ]);
 
         $crawler->assertJson([
@@ -115,7 +132,7 @@ class QueryBuilderEngineTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
                 ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
             ],
-            'search'  => ['value' => 'Record 19'],
+            'search'  => ['value' => 'Record-19'],
         ]);
 
         $crawler->assertJson([
@@ -125,7 +142,7 @@ class QueryBuilderEngineTest extends TestCase
         ]);
 
         $queries = $crawler->json()['queries'];
-        $this->assertTrue(Str::contains($queries[1]['query'], '"1" = ?'));
+        $this->assertContains('"1" = ?', $queries[1]['query']);
     }
 
     protected function setUp()
