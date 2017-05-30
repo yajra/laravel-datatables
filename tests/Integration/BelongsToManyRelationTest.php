@@ -14,69 +14,72 @@ class BelongsToManyRelationTest extends TestCase
     /** @test */
     public function it_returns_all_records_with_the_relation_when_called_without_parameters()
     {
-        $crawler = $this->call('GET', '/relations/belongsToMany');
-        $crawler->assertJson([
+        $response = $this->call('GET', '/relations/belongsToMany');
+        $response->assertJson([
             'draw'            => 0,
             'recordsTotal'    => 20,
             'recordsFiltered' => 20,
         ]);
 
-        $this->assertArrayHasKey('roles', $crawler->json()['data'][0]);
-        $this->assertEquals(20, count($crawler->json()['data']));
+        $this->assertArrayHasKey('roles', $response->json()['data'][0]);
+        $this->assertEquals(20, count($response->json()['data']));
     }
 
     /** @test */
     public function it_can_perform_global_search_on_the_relation()
     {
-        $crawler = $this->call('GET', '/relations/belongsToMany', [
-            'columns' => [
-                ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
-                ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
-                ['data' => 'roles', 'name' => 'roles.role', 'searchable' => "true", 'orderable' => "true"],
-            ],
-            'search'  => ['value' => 'Administrator'],
+        $response = $this->getJsonResponse([
+            'search' => ['value' => 'Administrator'],
         ]);
 
-        $crawler->assertJson([
+        $response->assertJson([
             'draw'            => 0,
             'recordsTotal'    => 20,
             'recordsFiltered' => 10,
         ]);
 
-        $this->assertEquals(10, count($crawler->json()['data']));
+        $this->assertEquals(10, count($response->json()['data']));
     }
 
-    /** @test */
-    public function it_can_sort_using_the_relation_with_pagination()
+    protected function getJsonResponse(array $params = [])
     {
-        $crawler = $this->call('GET', '/relations/belongsToMany', [
+        $data = [
             'columns' => [
                 ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
                 ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
                 ['data' => 'roles', 'name' => 'roles.role', 'searchable' => "true", 'orderable' => "true"],
             ],
-            'order'   => [
+        ];
+
+        return $this->call('GET', '/relations/belongsToMany', array_merge($data, $params));
+    }
+
+    /** @test */
+    public function it_can_sort_using_the_relation_with_pagination()
+    {
+        $response = $this->getJsonResponse([
+            'order'  => [
                 [
                     'column' => 2,
                     'dir'    => 'desc',
                 ],
             ],
-            'length'  => 10,
-            'start'   => 0,
-            'draw'    => 1,
+            'length' => 10,
+            'start'  => 0,
+            'draw'   => 1,
         ]);
 
-        $crawler->assertJson([
+        $response->assertJson([
             'draw'            => 1,
             'recordsTotal'    => 20,
             'recordsFiltered' => 20,
         ]);
 
-        $this->assertEquals(10, count($crawler->json()['data']));
+        $this->assertEquals(10, count($response->json()['data']));
 
-        $this->assertEquals(2, count($crawler->json()['data'][0]['roles']));
-        $this->assertEquals('Administrator', $crawler->json()['data'][0]['roles'][0]['role']);
-        $this->assertEquals('User', $crawler->json()['data'][0]['roles'][1]['role']);
+        $this->assertEquals(2, count($response->json()['data'][0]['roles']));
+        $this->assertEquals('Administrator', $response->json()['data'][0]['roles'][0]['role']);
+        $this->assertEquals('User', $response->json()['data'][0]['roles'][1]['role']);
     }
 
     protected function setUp()

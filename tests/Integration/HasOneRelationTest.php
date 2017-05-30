@@ -14,66 +14,69 @@ class HasOneRelationTest extends TestCase
     /** @test */
     public function it_returns_all_records_with_the_relation_when_called_without_parameters()
     {
-        $crawler = $this->call('GET', '/relations/hasOne');
-        $crawler->assertJson([
+        $response = $this->call('GET', '/relations/hasOne');
+        $response->assertJson([
             'draw'            => 0,
             'recordsTotal'    => 20,
             'recordsFiltered' => 20,
         ]);
 
-        $this->assertArrayHasKey('heart', $crawler->json()['data'][0]);
-        $this->assertEquals(20, count($crawler->json()['data']));
+        $this->assertArrayHasKey('heart', $response->json()['data'][0]);
+        $this->assertEquals(20, count($response->json()['data']));
     }
 
     /** @test */
     public function it_can_perform_global_search_on_the_relation()
     {
-        $crawler = $this->call('GET', '/relations/hasOne', [
-            'columns' => [
-                ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
-                ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
-                ['data' => 'heart.size', 'name' => 'heart.size', 'searchable' => "true", 'orderable' => "true"],
-            ],
-            'search'  => ['value' => 'heart-19'],
+        $response = $this->getJsonResponse([
+            'search' => ['value' => 'heart-19'],
         ]);
 
-        $crawler->assertJson([
+        $response->assertJson([
             'draw'            => 0,
             'recordsTotal'    => 20,
             'recordsFiltered' => 1,
         ]);
 
-        $this->assertEquals(1, count($crawler->json()['data']));
+        $this->assertEquals(1, count($response->json()['data']));
     }
 
-    /** @test */
-    public function it_can_sort_using_the_relation_with_pagination()
+    protected function getJsonResponse(array $params = [])
     {
-        $crawler = $this->call('GET', '/relations/hasOne', [
+        $data = [
             'columns' => [
                 ['data' => 'heart.size', 'name' => 'heart.size', 'searchable' => "true", 'orderable' => "true"],
                 ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
                 ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
             ],
-            'order'   => [
+        ];
+
+        return $this->call('GET', '/relations/hasOne', array_merge($data, $params));
+    }
+
+    /** @test */
+    public function it_can_sort_using_the_relation_with_pagination()
+    {
+        $response = $this->getJsonResponse([
+            'order'  => [
                 [
                     'column' => 0,
                     'dir'    => 'desc',
                 ],
             ],
-            'length'  => 10,
-            'start'   => 0,
-            'draw'    => 1,
+            'length' => 10,
+            'start'  => 0,
+            'draw'   => 1,
         ]);
 
-        $crawler->assertJson([
+        $response->assertJson([
             'draw'            => 1,
             'recordsTotal'    => 20,
             'recordsFiltered' => 20,
         ]);
 
-        $this->assertEquals('heart-9', $crawler->json()['data'][0]['heart']['size']);
-        $this->assertEquals(10, count($crawler->json()['data']));
+        $this->assertEquals('heart-9', $response->json()['data'][0]['heart']['size']);
+        $this->assertEquals(10, count($response->json()['data']));
     }
 
     protected function setUp()

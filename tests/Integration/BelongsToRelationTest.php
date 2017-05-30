@@ -14,66 +14,69 @@ class BelongsToRelationTest extends TestCase
     /** @test */
     public function it_returns_all_records_with_the_relation_when_called_without_parameters()
     {
-        $crawler = $this->call('GET', '/relations/belongsTo');
-        $crawler->assertJson([
+        $response = $this->call('GET', '/relations/belongsTo');
+        $response->assertJson([
             'draw'            => 0,
             'recordsTotal'    => 60,
             'recordsFiltered' => 60,
         ]);
 
-        $this->assertArrayHasKey('user', $crawler->json()['data'][0]);
-        $this->assertEquals(60, count($crawler->json()['data']));
+        $this->assertArrayHasKey('user', $response->json()['data'][0]);
+        $this->assertEquals(60, count($response->json()['data']));
     }
 
     /** @test */
     public function it_can_perform_global_search_on_the_relation()
     {
-        $crawler = $this->call('GET', '/relations/belongsTo', [
-            'columns' => [
-                ['data' => 'user.name', 'name' => 'user.name', 'searchable' => "true", 'orderable' => "true"],
-                ['data' => 'user.email', 'name' => 'user.email', 'searchable' => "true", 'orderable' => "true"],
-                ['data' => 'title', 'name' => 'posts.title', 'searchable' => "true", 'orderable' => "true"],
-            ],
-            'search'  => ['value' => 'email-19@example.com'],
+        $response = $this->getJsonResponse([
+            'search' => ['value' => 'email-19@example.com'],
         ]);
 
-        $crawler->assertJson([
+        $response->assertJson([
             'draw'            => 0,
             'recordsTotal'    => 60,
             'recordsFiltered' => 3,
         ]);
 
-        $this->assertEquals(3, count($crawler->json()['data']));
+        $this->assertEquals(3, count($response->json()['data']));
     }
 
-    /** @test */
-    public function it_can_sort_using_the_relation_with_pagination()
+    protected function getJsonResponse(array $params = [])
     {
-        $crawler = $this->call('GET', '/relations/belongsTo', [
+        $data = [
             'columns' => [
                 ['data' => 'user.name', 'name' => 'user.name', 'searchable' => "true", 'orderable' => "true"],
                 ['data' => 'user.email', 'name' => 'user.email', 'searchable' => "true", 'orderable' => "true"],
                 ['data' => 'title', 'name' => 'posts.title', 'searchable' => "true", 'orderable' => "true"],
             ],
-            'order'   => [
+        ];
+
+        return $this->call('GET', '/relations/belongsTo', array_merge($data, $params));
+    }
+
+    /** @test */
+    public function it_can_sort_using_the_relation_with_pagination()
+    {
+        $response = $this->getJsonResponse([
+            'order'  => [
                 [
                     'column' => 1,
                     'dir'    => 'desc',
                 ],
             ],
-            'length'  => 10,
-            'start'   => 0,
-            'draw'    => 1,
+            'length' => 10,
+            'start'  => 0,
+            'draw'   => 1,
         ]);
 
-        $crawler->assertJson([
+        $response->assertJson([
             'draw'            => 1,
             'recordsTotal'    => 60,
             'recordsFiltered' => 60,
         ]);
 
-        $this->assertEquals('Email-9@example.com', $crawler->json()['data'][0]['user']['email']);
-        $this->assertEquals(10, count($crawler->json()['data']));
+        $this->assertEquals('Email-9@example.com', $response->json()['data'][0]['user']['email']);
+        $this->assertEquals(10, count($response->json()['data']));
     }
 
     protected function setUp()

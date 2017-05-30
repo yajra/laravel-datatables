@@ -14,35 +14,43 @@ class HasManyRelationTest extends TestCase
     /** @test */
     public function it_returns_all_records_with_the_relation_when_called_without_parameters()
     {
-        $crawler = $this->call('GET', '/relations/hasMany');
-        $crawler->assertJson([
+        $response = $this->call('GET', '/relations/hasMany');
+        $response->assertJson([
             'draw'            => 0,
             'recordsTotal'    => 20,
             'recordsFiltered' => 20,
         ]);
 
-        $this->assertArrayHasKey('posts', $crawler->json()['data'][0]);
-        $this->assertEquals(20, count($crawler->json()['data']));
+        $this->assertArrayHasKey('posts', $response->json()['data'][0]);
+        $this->assertEquals(20, count($response->json()['data']));
     }
 
     /** @test */
     public function it_can_perform_global_search_on_the_relation()
     {
-        $crawler = $this->call('GET', '/relations/hasMany', [
+        $response = $this->getJsonResponse([
+            'search' => ['value' => 'User-19 Post-1'],
+        ]);
+
+        $response->assertJson([
+            'draw'            => 0,
+            'recordsTotal'    => 20,
+            'recordsFiltered' => 1,
+        ]);
+        $this->assertEquals(1, count($response->json()['data']));
+    }
+
+    protected function getJsonResponse(array $params = [])
+    {
+        $data = [
             'columns' => [
                 ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
                 ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
                 ['data' => 'posts.title', 'name' => 'posts.title', 'searchable' => "true", 'orderable' => "true"],
             ],
-            'search'  => ['value' => 'User-19 Post-1'],
-        ]);
+        ];
 
-        $crawler->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
-            'recordsFiltered' => 1,
-        ]);
-        $this->assertEquals(1, count($crawler->json()['data']));
+        return $this->call('GET', '/relations/hasMany', array_merge($data, $params));
     }
 
     protected function setUp()
