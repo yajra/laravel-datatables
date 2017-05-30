@@ -8,6 +8,12 @@
 
 ## Change Log
 
+### v7.6.0 - 05-31-2017
+- Fix addColumn search/sort query bug by adding it to blacklist. PR #1158, credits to @liub1993.
+- Add `pushToBlacklist($column)` api. #1158
+- Allow filtering of added column if a custom handler was defined. #1169
+- Add more tests. #1170
+
 ### v7.5.2 - 05-26-2017
 - Remove empty arrays returned from array_dot. PR #1161
 - Fix #1160.
