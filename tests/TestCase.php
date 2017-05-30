@@ -32,6 +32,12 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
             $table->unsignedInteger('user_id');
             $table->timestamps();
         });
+        $schemaBuilder->create('hearts', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('user_id');
+            $table->string('size');
+            $table->timestamps();
+        });
     }
 
     protected function seedDatabase()
@@ -48,6 +54,10 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
                     'title' => "User-{$user->id} Post-{$i}",
                 ]);
             });
+
+            $user->heart()->create([
+                'size' => 'heart-' . $user->id,
+            ]);
         });
     }
 

@@ -12,4 +12,9 @@ class User extends Model
     {
         return $this->hasMany(Post::class);
     }
+
+    public function heart()
+    {
+        return $this->hasOne(Heart::class);
+    }
 }
