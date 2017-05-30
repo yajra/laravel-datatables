@@ -397,15 +397,33 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function compileQuerySearch($query, $column, $keyword, $relation = 'or')
     {
-        $column = $this->addTablePrefix($query, $column);
-        $column = $this->castColumn($column);
-        $sql    = $column . ' LIKE ?';
+        $keyword = trim($keyword);
+        if (false===strpos($keyword,' ')) {
+            $column = $this->addTablePrefix($query, $column);
+            $column = $this->castColumn($column);
+            $sql    = !$this->isCaseInsensitive() ? $column . ' LIKE ? ':'LOWER(' . $column . ') LIKE ? ';
+            $query->{$relation . 'WhereRaw'}($sql, [$this->prepareKeyword($keyword)]);
+        } else {
+            $column = $this->addTablePrefix($query, $column);
+            $column = $this->castColumn($column);
+            $this->columns[$column] = $column;
+            if (count($this->request->searchableColumnIndex())==count($this->columns)) {
 
-        if ($this->isCaseInsensitive()) {
-            $sql = 'LOWER(' . $column . ') LIKE ?';
+		foreach ($this->columns as $key => $value) {
+                    @$columnsSql .= ++$nCol <= count($this->columns)-1 ? $value . ",' '," : $value;
+                }
+
+                $sql = !$this->isCaseInsensitive() ? "concat($columnsSql)" : "lower(concat($columnsSql))";
+
+                foreach (explode(' ' ,$keyword) as $k=>$singleKeyword) {
+                    $keywords[] = $this->prepareKeyword($singleKeyword);
+                    $sqlAnd[] = $sql . (!$this->isCaseInsensitive() ? ' LIKE ? ' : ' LIKE LOWER(?) ');
+                }
+                $sqlAnd = implode(' AND ',$sqlAnd);
+                
+                $query->{$relation . 'WhereRaw'}($sqlAnd,$keywords);
+            }
         }
-
-        $query->{$relation . 'WhereRaw'}($sql, [$this->prepareKeyword($keyword)]);
     }
 
     /**
