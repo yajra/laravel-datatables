@@ -17,4 +17,9 @@ class User extends Model
     {
         return $this->hasOne(Heart::class);
     }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
 }

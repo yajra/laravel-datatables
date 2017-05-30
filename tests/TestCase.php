@@ -3,6 +3,7 @@
 namespace Yajra\Datatables\Tests;
 
 use Illuminate\Database\Schema\Blueprint;
+use Yajra\Datatables\Tests\Models\Role;
 use Yajra\Datatables\Tests\Models\User;
 
 abstract class TestCase extends \Orchestra\Testbench\TestCase
@@ -38,11 +39,24 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
             $table->string('size');
             $table->timestamps();
         });
+        $schemaBuilder->create('roles', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('role');
+            $table->timestamps();
+        });
+        $schemaBuilder->create('role_user', function (Blueprint $table) {
+            $table->unsignedInteger('role_id');
+            $table->unsignedInteger('user_id');
+            $table->timestamps();
+        });
     }
 
     protected function seedDatabase()
     {
-        collect(range(1, 20))->each(function ($i) {
+        $adminRole = Role::create(['role' => 'Administrator']);
+        $userRole  = Role::create(['role' => 'User']);
+
+        collect(range(1, 20))->each(function ($i) use ($adminRole, $userRole) {
             /** @var User $user */
             $user = User::query()->create([
                 'name'  => 'Record-' . $i,
@@ -58,6 +72,12 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
             $user->heart()->create([
                 'size' => 'heart-' . $user->id,
             ]);
+
+            if ($i % 2) {
+                $user->roles()->attach(Role::all());
+            } else {
+                $user->roles()->attach($userRole);
+            }
         });
     }
 
