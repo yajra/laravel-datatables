@@ -124,6 +124,27 @@ class QueryBuilderEngineTest extends TestCase
     }
 
     /** @test */
+    public function it_can_return_auto_index_column()
+    {
+        $crawler = $this->call('GET', '/queryBuilder/indexColumn', [
+            'columns' => [
+                ['data' => 'DT_Row_index', 'name' => 'index', 'searchable' => "false", 'orderable' => "false"],
+                ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
+                ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
+            ],
+            'search'  => ['value' => 'Record-19'],
+        ]);
+
+        $crawler->assertJson([
+            'draw'            => 0,
+            'recordsTotal'    => 20,
+            'recordsFiltered' => 1,
+        ]);
+
+        $this->assertArrayHasKey('DT_Row_Index', $crawler->json()['data'][0]);
+    }
+
+    /** @test */
     public function it_allows_search_on_added_column_with_custom_filter_handler()
     {
         $crawler = $this->call('GET', '/queryBuilder/filterColumn', [
@@ -156,6 +177,12 @@ class QueryBuilderEngineTest extends TestCase
         $this->app['router']->get('/queryBuilder/addColumn', function (Datatables $dataTable) {
             return $dataTable->queryBuilder(DB::table('users'))
                              ->addColumn('foo', 'bar')
+                             ->make('true');
+        });
+
+        $this->app['router']->get('/queryBuilder/indexColumn', function (Datatables $dataTable) {
+            return $dataTable->queryBuilder(DB::table('users'))
+                             ->addIndexColumn()
                              ->make('true');
         });
 
