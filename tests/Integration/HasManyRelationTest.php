@@ -12,7 +12,7 @@ class HasManyRelationTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
-    public function it_returns_all_records_with_the_relation()
+    public function it_returns_all_records_with_the_relation_when_called_without_parameters()
     {
         $crawler = $this->call('GET', '/relations/hasMany');
         $crawler->assertJson([
@@ -22,10 +22,11 @@ class HasManyRelationTest extends TestCase
         ]);
 
         $this->assertArrayHasKey('posts', $crawler->json()['data'][0]);
+        $this->assertEquals(20, count($crawler->json()['data']));
     }
 
     /** @test */
-    public function it_can_perform_global_search()
+    public function it_can_perform_global_search_on_the_relation()
     {
         $crawler = $this->call('GET', '/relations/hasMany', [
             'columns' => [
@@ -41,6 +42,7 @@ class HasManyRelationTest extends TestCase
             'recordsTotal'    => 20,
             'recordsFiltered' => 1,
         ]);
+        $this->assertEquals(1, count($crawler->json()['data']));
     }
 
     protected function setUp()

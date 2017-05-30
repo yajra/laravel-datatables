@@ -4,6 +4,7 @@ namespace Yajra\Datatables\Tests\Integration;
 
 use DB;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
 use Yajra\Datatables\Datatables;
 use Yajra\Datatables\Engines\QueryBuilderEngine;
@@ -12,6 +13,8 @@ use Yajra\Datatables\Tests\TestCase;
 
 class QueryBuilderEngineTest extends TestCase
 {
+    use DatabaseTransactions;
+
     /** @test */
     public function it_returns_all_records_when_no_parameters_is_passed()
     {

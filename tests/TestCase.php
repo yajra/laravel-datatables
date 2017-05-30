@@ -40,7 +40,7 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
             /** @var User $user */
             $user = User::query()->create([
                 'name'  => 'Record-' . $i,
-                'email' => 'Email-' . $i,
+                'email' => 'Email-' . $i . '@example.com',
             ]);
 
             collect(range(1, 3))->each(function ($i) use ($user) {
