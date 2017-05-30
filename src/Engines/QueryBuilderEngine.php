@@ -778,11 +778,8 @@ class QueryBuilderEngine extends BaseEngine
      */
     public function addColumn($name, $content, $order = false)
     {
-        $this->extraColumns[] = $name;
         $this->pushToBlacklist($name);
 
-        $this->columnDef['append'][] = ['name' => $name, 'content' => $content, 'order' => $order];
-
-        return $this;
+        return parent::addColumn($name, $content, $order);
     }
 }
