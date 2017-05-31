@@ -624,7 +624,7 @@ abstract class BaseEngine implements DataTableEngineContract
             $output = $this->showDebugger($output);
         }
 
-        return new JsonResponse($output);
+        return new JsonResponse($output, 200, config('datatables.json.header', []), config('datatables.json.options', 0));
     }
 
     /**

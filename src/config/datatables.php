@@ -79,4 +79,12 @@ return [
      */
     'error'          => env('DATATABLES_ERROR', null),
 
+    /**
+     * JsonResponse header and options config.
+     */
+    'json'           => [
+        'header'  => [],
+        'options' => 0,
+    ],
+
 ];
