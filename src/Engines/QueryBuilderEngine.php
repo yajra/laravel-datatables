@@ -180,7 +180,7 @@ class QueryBuilderEngine extends BaseEngine
 
                         if ($columnDef['method'] instanceof Closure) {
                             $whereQuery = $queryBuilder->newQuery();
-                            call_user_func_array($columnDef['method'], [$whereQuery, $keyword]);
+                            call_user_func_array($columnDef['method'], [$whereQuery, $this->request->keyword()]);
                             $queryBuilder->addNestedWhereQuery($whereQuery, 'or');
                         } else {
                             $this->compileColumnQuery(
@@ -188,7 +188,7 @@ class QueryBuilderEngine extends BaseEngine
                                 Helper::getOrMethod($columnDef['method']),
                                 $columnDef['parameters'],
                                 $columnName,
-                                $keyword
+                                $this->request->keyword()
                             );
                         }
                     } else {
