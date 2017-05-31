@@ -665,12 +665,25 @@ abstract class BaseEngine implements DataTableEngineContract
     {
         $processor = new DataProcessor(
             $this->results(),
-            $this->columnDef,
+            $this->getColumnsDefinition(),
             $this->templates,
             $this->request->input('start')
         );
 
         return $processor->process($object);
+    }
+
+    /**
+     * Get columns definition.
+     *
+     * @return array
+     */
+    protected function getColumnsDefinition()
+    {
+        $config  = config('datatables.columns');
+        $allowed = ['excess', 'escape', 'raw', 'blacklist', 'whitelist'];
+
+        return array_merge($this->columnDef, array_only($config, $allowed));
     }
 
     /**
@@ -680,7 +693,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function isDebugging()
     {
-        return ! ! config('app.debug', false);
+        return config('app.debug', false);
     }
 
     /**
@@ -729,7 +742,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function isCaseInsensitive()
     {
-        return ! ! config('datatables.search.case_insensitive', false);
+        return config('datatables.search.case_insensitive', false);
     }
 
     /**
@@ -854,6 +867,7 @@ abstract class BaseEngine implements DataTableEngineContract
     /**
      * Push a new column name to blacklist
      *
+     * @param string $column
      * @return $this
      */
     public function pushToBlacklist($column)
@@ -913,7 +927,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function isSmartSearch()
     {
-        return ! ! config('datatables.search.smart', true);
+        return config('datatables.search.smart', true);
     }
 
     /**
@@ -923,7 +937,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function isWildcard()
     {
-        return ! ! config('datatables.search.use_wildcards', false);
+        return config('datatables.search.use_wildcards', false);
     }
 
     /**

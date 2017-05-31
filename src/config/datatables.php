@@ -79,4 +79,37 @@ return [
      */
     'error'          => env('DATATABLES_ERROR', null),
 
+    /**
+     * Default columns definition of dataTable utility functions.
+     */
+    'columns'        => [
+        /**
+         * List of columns hidden/removed on json response.
+         */
+        'excess'    => ['rn', 'row_num'],
+
+        /**
+         * List of columns to be escaped. If set to *, all columns are escape.
+         * Note: You can set the value to empty array to disable XSS protection.
+         */
+        'escape'    => '*',
+
+        /**
+         * List of columns that are allowed to display html content.
+         * Note: Adding columns to list will make us available to XSS attacks.
+         */
+        'raw'       => ['action'],
+
+        /**
+         * List of columns are are forbidden from being searched/sorted.
+         */
+        'blacklist' => ['password', 'remember_token'],
+
+        /**
+         * List of columns that are only allowed fo search/sort.
+         * If set to *, all columns are allowed.
+         */
+        'whitelist' => '*',
+    ],
+
 ];
