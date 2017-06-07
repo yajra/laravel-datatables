@@ -8,6 +8,11 @@
 
 ##Change Log
 
+### v6.29.0 - 2017-06-07
+- Add config for setting the default JsonResponse header and options. #1179
+- Fix #1034
+- TODO: Need to update tests.
+
 ### v6.28.1 - 2017-05-05
 - Fixed: Formatting the attributes for Editor buttons. #1105, credits to @karmendra.
 
