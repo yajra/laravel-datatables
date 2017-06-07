@@ -678,11 +678,11 @@ class QueryBuilderEngine extends BaseEngine
         foreach ($this->request->orderableColumns() as $orderable) {
             $column = $this->getColumnName($orderable['column'], true);
 
-            if ($this->isBlacklisted($column)) {
+            if ($this->isBlacklisted($column) && ! $this->hasCustomOrder($column)) {
                 continue;
             }
 
-            if (isset($this->columnDef['order'][$column])) {
+            if ($this->hasCustomOrder($column)) {
                 $method     = $this->columnDef['order'][$column]['method'];
                 $parameters = $this->columnDef['order'][$column]['parameters'];
                 $this->compileColumnQuery(
@@ -731,6 +731,17 @@ class QueryBuilderEngine extends BaseEngine
                 }
             }
         }
+    }
+
+    /**
+     * Check if column has custom sort handler.
+     *
+     * @param string $column
+     * @return bool
+     */
+    protected function hasCustomOrder($column)
+    {
+        return isset($this->columnDef['order'][$column]);
     }
 
     /**
