@@ -8,6 +8,11 @@
 
 ## Change Log
 
+### v7.7.0 - 06-07-2017
+- Add config for setting the default JsonResponse header and options. #1177
+- Allow sorting for blacklisted columns with custom handler. #1192
+- Fix #1034, #1191.
+
 ### v7.6.0 - 05-31-2017
 - Fix addColumn search/sort query bug by adding it to blacklist. PR #1158, credits to @liub1993.
 - Add `pushToBlacklist($column)` api. #1158
