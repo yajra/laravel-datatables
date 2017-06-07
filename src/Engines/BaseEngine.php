@@ -583,11 +583,14 @@ abstract class BaseEngine implements DataTableEngineContract
      *
      * @param bool $mDataSupport
      * @param bool $orderFirst
+     * @param null|int $count
      * @return \Illuminate\Http\JsonResponse
      */
-    public function make($mDataSupport = false, $orderFirst = false)
+    public function make($mDataSupport = false, $orderFirst = false, $count = null)
     {
-        $this->totalRecords = $this->totalCount();
+        if (is_null($this->totalRecords = $count)) {
+            $this->totalRecords = $this->totalCount();
+        };
 
         if ($this->totalRecords) {
             $this->orderRecords(! $orderFirst);
