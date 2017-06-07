@@ -568,6 +568,24 @@ class Builder
 
         return $this;
     }
+    
+    /**
+     * Reorderable
+     *
+     * @param       $column
+     * @param array $options
+     *
+     * @return $this
+     */
+    public function reorderable($column, array $options = [])
+    {
+        $this->attributes['rowReorder'] = array_merge([
+            'dataSrc' => $column,
+            'selector' => 'tr'
+        ], $options);
+
+        return $this;
+    }
 
     /**
      * Setup ajax parameter for datatables pipeline plugin.
