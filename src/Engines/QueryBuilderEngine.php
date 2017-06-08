@@ -334,6 +334,7 @@ class QueryBuilderEngine extends BaseEngine
 
                 // We will perform search on last relation only.
                 if ($relation == $lastRelation) {
+                    $this->query->addBinding($relationType->getQuery()->getBindings());
                     $this->compileQuerySearch($builder, $column, $keyword, '');
                 }
 
