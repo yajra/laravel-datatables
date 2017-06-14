@@ -19,7 +19,6 @@
         "league/fractal": "~0.14",
         "laravelcollective/html": "~5.0",
         "maatwebsite/excel": "^2.0",
-        "dompdf/dompdf": "^0.7"
     },
     "require-dev": {
         "mockery/mockery": "~0.9",
