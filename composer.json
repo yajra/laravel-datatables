@@ -44,6 +44,14 @@
   "extra": {
     "branch-alias": {
       "dev-master": "7.0-dev"
+    },
+    "laravel": {
+      "providers": [
+        "Yajra\\Datatables\\DatatablesServiceProvider"
+      ],
+      "aliases": {
+        "Datatables": "Yajra\\Datatables\\Facades\\Datatables"
+      }
     }
   },
   "minimum-stability": "stable"
