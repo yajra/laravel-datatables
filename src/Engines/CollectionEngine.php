@@ -192,7 +192,11 @@ class CollectionEngine extends BaseEngine
                     if (! $value = Arr::get($data, $column)) {
                         continue;
                     }
-
+                    
+                    if (!is_string($value)) {
+						continue;
+					}
+                    
                     if ($this->isCaseInsensitive()) {
                         $value = Str::lower($value);
                     }
