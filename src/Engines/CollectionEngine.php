@@ -193,9 +193,9 @@ class CollectionEngine extends BaseEngine
                         continue;
                     }
                     
-                    if (!is_string($value)) {
-						continue;
-					}
+                    if (is_array($value)) {
+                        continue;
+                    }
                     
                     if ($this->isCaseInsensitive()) {
                         $value = Str::lower($value);
