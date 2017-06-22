@@ -8,6 +8,9 @@
 
 ## Change Log
 
+### v7.7.1 - 06-22-2017
+- The global search keywords should not be an array on collection. #1221, credits to @liub1993.
+
 ### v7.7.0 - 06-07-2017
 - Add config for setting the default JsonResponse header and options. #1177
 - Allow sorting for blacklisted columns with custom handler. #1192
