@@ -785,7 +785,7 @@ class QueryBuilderEngine extends BaseEngine
      * @param string $name
      * @param string|callable $content
      * @param bool|int $order
-     * @return $this
+     * @return \Yajra\Datatables\Engines\BaseEngine|\Yajra\Datatables\Engines\QueryBuilderEngine
      */
     public function addColumn($name, $content, $order = false)
     {
