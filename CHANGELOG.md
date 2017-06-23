@@ -8,6 +8,9 @@
 
 ## Change Log
 
+### v7.8.0 - 06-23-2017
+- Extract default columns definition to config. #1175
+
 ### v7.7.1 - 06-22-2017
 - The global search keywords should not be an array on collection. #1221, credits to @liub1993.
 
