@@ -15,16 +15,14 @@
   ],
   "require": {
     "php": ">=5.6.4",
-    "illuminate/database": "5.4.*",
-    "illuminate/filesystem": "5.4.*",
-    "illuminate/http": "5.4.*",
-    "illuminate/support": "5.4.*",
-    "illuminate/view": "5.4.*"
+    "illuminate/database": "5.5.*",
+    "illuminate/filesystem": "5.5.*",
+    "illuminate/http": "5.5.*",
+    "illuminate/support": "5.5.*",
+    "illuminate/view": "5.5.*"
   },
   "require-dev": {
-    "mockery/mockery": "0.9.*",
-    "orchestra/testbench": "^3.4",
-    "phpunit/phpunit": "~5.7"
+    "orchestra/testbench": "~3.5"
   },
   "suggest": {
     "yajra/laravel-datatables-buttons": "Plugin for server-side exporting of dataTable.",
@@ -43,8 +41,12 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "7.0-dev"
+      "dev-master": "8.0-dev"
     }
   },
-  "minimum-stability": "stable"
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
