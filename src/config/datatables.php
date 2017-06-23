@@ -111,5 +111,13 @@ return [
          */
         'whitelist' => '*',
     ],
+  
+    /*
+     * JsonResponse header and options config.
+     */
+    'json'          => [
+        'header'  => [],
+        'options' => 0,
+    ],
 
 ];
