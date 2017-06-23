@@ -66,8 +66,6 @@ class DatatablesServiceProvider extends ServiceProvider
         $this->app->singleton('datatables', function () {
             return new Datatables(new Request(app('request')));
         });
-
-        $this->registerAliases();
     }
 
     /**
@@ -78,17 +76,6 @@ class DatatablesServiceProvider extends ServiceProvider
     protected function isLumen()
     {
         return str_contains($this->app->version(), 'Lumen');
-    }
-
-    /**
-     * Create aliases for the dependency.
-     */
-    protected function registerAliases()
-    {
-        if (class_exists('Illuminate\Foundation\AliasLoader')) {
-            $loader = \Illuminate\Foundation\AliasLoader::getInstance();
-            $loader->alias('Datatables', \Yajra\Datatables\Facades\Datatables::class);
-        }
     }
 
     /**
