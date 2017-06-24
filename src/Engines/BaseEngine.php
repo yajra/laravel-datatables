@@ -26,20 +26,6 @@ abstract class BaseEngine implements DataTableEngineContract
     public $request;
 
     /**
-     * Database connection used.
-     *
-     * @var \Illuminate\Database\Connection
-     */
-    protected $connection;
-
-    /**
-     * Query builder object.
-     *
-     * @var \Illuminate\Database\Query\Builder
-     */
-    protected $builder;
-
-    /**
      * @var \Illuminate\Contracts\Logging\Log
      */
     protected $logger;

@@ -30,24 +30,27 @@ class QueryBuilderEngine extends BaseEngine
     protected $query;
 
     /**
+     * Query builder object.
+     *
+     * @var \Illuminate\Database\Query\Builder
+     */
+    protected $builder;
+
+    /**
+     * Database connection used.
+     *
+     * @var \Illuminate\Database\Connection
+     */
+    protected $connection;
+
+
+    /**
      * @param \Illuminate\Database\Query\Builder $builder
      * @param \Yajra\Datatables\Request $request
      */
     public function __construct(Builder $builder, Request $request)
     {
-        $this->query = $builder;
-        $this->init($request, $builder);
-    }
-
-    /**
-     * Initialize attributes.
-     *
-     * @param  \Yajra\Datatables\Request $request
-     * @param  \Illuminate\Database\Query\Builder $builder
-     * @param  string $type
-     */
-    protected function init($request, $builder, $type = 'builder')
-    {
+        $this->query      = $builder;
         $this->request    = $request;
         $this->columns    = $builder->columns;
         $this->connection = $builder->getConnection();
