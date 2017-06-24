@@ -5,7 +5,6 @@ namespace Yajra\Datatables\Engines;
 use Illuminate\Contracts\Logging\Log;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
-use League\Fractal\Resource\Collection;
 use Yajra\Datatables\Contracts\DataTableEngineContract;
 use Yajra\Datatables\Exception;
 use Yajra\Datatables\Helper;
@@ -537,9 +536,9 @@ abstract class BaseEngine implements DataTableEngineContract
             //If parameter is class assuming it requires object
             //Else just pass array by default
             if ($parameter->getClass()) {
-                $resource = new Collection($this->results(), $this->createTransformer());
+                $resource = new \League\Fractal\Resource\Collection($this->results(), $this->createTransformer());
             } else {
-                $resource = new Collection(
+                $resource = new \League\Fractal\Resource\Collection(
                     $this->getProcessedData($object),
                     $this->createTransformer()
                 );
@@ -555,7 +554,9 @@ abstract class BaseEngine implements DataTableEngineContract
             $output = $this->showDebugger($output);
         }
 
-        return new JsonResponse($output, 200, config('datatables.json.header', []), config('datatables.json.options', 0));
+        return new JsonResponse(
+            $output, 200, config('datatables.json.header', []), config('datatables.json.options', 0)
+        );
     }
 
     /**
