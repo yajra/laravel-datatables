@@ -161,7 +161,7 @@ class QueryBuilderEngine extends BaseEngine
     {
         $this->query->where(
             function ($query) use ($keyword) {
-                $queryBuilder = $this->getQueryBuilder($query);
+                $query = $this->getQueryBuilder($query);
 
                 foreach ($this->request->searchableColumnIndex() as $index) {
                     $columnName = $this->getColumnName($index);
@@ -169,28 +169,11 @@ class QueryBuilderEngine extends BaseEngine
                         continue;
                     }
 
-                    // check if custom column filtering is applied
                     if ($this->hasCustomFilter($columnName)) {
-                        $columnDef = $this->columnDef['filter'][$columnName];
-                        // check if global search should be applied for the specific column
-                        $applyGlobalSearch = count($columnDef['parameters']) == 0 || end($columnDef['parameters']) !== false;
-                        if (! $applyGlobalSearch) {
-                            continue;
-                        }
-
-                        if ($columnDef['method'] instanceof Closure) {
-                            $whereQuery = $queryBuilder->newQuery();
-                            call_user_func_array($columnDef['method'], [$whereQuery, $keyword]);
-                            $queryBuilder->addNestedWhereQuery($whereQuery, 'or');
-                        } else {
-                            $this->compileColumnQuery(
-                                $queryBuilder,
-                                Helper::getOrMethod($columnDef['method']),
-                                $columnDef['parameters'],
-                                $columnName,
-                                $keyword
-                            );
-                        }
+                        $callback = $this->columnDef['filter'][$columnName]['method'];
+                        $builder  = $query->newQuery();
+                        call_user_func_array($callback, [$builder, $keyword]);
+                        $query->addNestedWhereQuery($builder, 'or');
                     } else {
                         if (count(explode('.', $columnName)) > 1) {
                             $eagerLoads     = $this->getEagerLoads();
@@ -199,16 +182,16 @@ class QueryBuilderEngine extends BaseEngine
                             $relation       = implode('.', $parts);
                             if (in_array($relation, $eagerLoads)) {
                                 $this->compileRelationSearch(
-                                    $queryBuilder,
+                                    $query,
                                     $relation,
                                     $relationColumn,
                                     $keyword
                                 );
                             } else {
-                                $this->compileQuerySearch($queryBuilder, $columnName, $keyword);
+                                $this->compileQuerySearch($query, $columnName, $keyword);
                             }
                         } else {
-                            $this->compileQuerySearch($queryBuilder, $columnName, $keyword);
+                            $this->compileQuerySearch($query, $columnName, $keyword);
                         }
                     }
 
@@ -227,51 +210,6 @@ class QueryBuilderEngine extends BaseEngine
     public function hasCustomFilter($columnName)
     {
         return isset($this->columnDef['filter'][$columnName]);
-    }
-
-    /**
-     * Perform filter column on selected field.
-     *
-     * @param mixed $query
-     * @param string|Closure $method
-     * @param mixed $parameters
-     * @param string $column
-     * @param string $keyword
-     */
-    protected function compileColumnQuery($query, $method, $parameters, $column, $keyword)
-    {
-        if (method_exists($query, $method)
-            && count($parameters) <= with(new \ReflectionMethod($query, $method))->getNumberOfParameters()
-        ) {
-            if (Str::contains(Str::lower($method), 'raw')
-                || Str::contains(Str::lower($method), 'exists')
-            ) {
-                call_user_func_array(
-                    [$query, $method],
-                    $this->parameterize($parameters, $keyword)
-                );
-            } else {
-                call_user_func_array(
-                    [$query, $method],
-                    $this->parameterize($column, $parameters, $keyword)
-                );
-            }
-        }
-    }
-
-    /**
-     * Build Query Builder Parameters.
-     *
-     * @return array
-     */
-    protected function parameterize()
-    {
-        $args       = func_get_args();
-        $keyword    = count($args) > 2 ? $args[2] : $args[1];
-        $parameters = Helper::buildParameters($args);
-        $parameters = Helper::replacePatternWithKeyword($parameters, $keyword, '$1');
-
-        return $parameters;
     }
 
     /**
@@ -492,25 +430,13 @@ class QueryBuilderEngine extends BaseEngine
 
             $column = $this->getColumnName($index);
 
-            if (isset($this->columnDef['filter'][$column])) {
-                $columnDef = $this->columnDef['filter'][$column];
+            if ($this->hasCustomFilter($column)) {
                 // get a raw keyword (without wildcards)
-                $keyword = $this->getSearchKeyword($index, true);
-                $builder = $this->getQueryBuilder();
-
-                if ($columnDef['method'] instanceof Closure) {
-                    $whereQuery = $builder->newQuery();
-                    call_user_func_array($columnDef['method'], [$whereQuery, $keyword]);
-                    $builder->addNestedWhereQuery($whereQuery);
-                } else {
-                    $this->compileColumnQuery(
-                        $builder,
-                        $columnDef['method'],
-                        $columnDef['parameters'],
-                        $column,
-                        $keyword
-                    );
-                }
+                $keyword    = $this->getColumnSearchKeyword($index, true);
+                $callback   = $this->columnDef['filter'][$column]['method'];
+                $whereQuery = $this->query->newQuery();
+                call_user_func_array($callback, [$whereQuery, $keyword]);
+                $this->query->addNestedWhereQuery($whereQuery);
             } else {
                 if (count(explode('.', $column)) > 1) {
                     $eagerLoads     = $this->getEagerLoads();
@@ -522,7 +448,7 @@ class QueryBuilderEngine extends BaseEngine
                     }
                 }
 
-                $keyword = $this->getSearchKeyword($index);
+                $keyword = $this->getColumnSearchKeyword($index);
                 $this->compileColumnSearch($index, $column, $keyword);
             }
 
@@ -531,13 +457,13 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Get proper keyword to use for search.
+     * Get column keyword to use for search.
      *
      * @param int $i
      * @param bool $raw
      * @return string
      */
-    protected function getSearchKeyword($i, $raw = false)
+    protected function getColumnSearchKeyword($i, $raw = false)
     {
         $keyword = $this->request->columnKeyword($i);
         if ($raw || $this->request->isRegex($i)) {
@@ -742,6 +668,51 @@ class QueryBuilderEngine extends BaseEngine
     protected function hasCustomOrder($column)
     {
         return isset($this->columnDef['order'][$column]);
+    }
+
+    /**
+     * Perform filter column on selected field.
+     *
+     * @param mixed $query
+     * @param string|Closure $method
+     * @param mixed $parameters
+     * @param string $column
+     * @param string $keyword
+     */
+    protected function compileColumnQuery($query, $method, $parameters, $column, $keyword)
+    {
+        if (method_exists($query, $method)
+            && count($parameters) <= with(new \ReflectionMethod($query, $method))->getNumberOfParameters()
+        ) {
+            if (Str::contains(Str::lower($method), 'raw')
+                || Str::contains(Str::lower($method), 'exists')
+            ) {
+                call_user_func_array(
+                    [$query, $method],
+                    $this->parameterize($parameters, $keyword)
+                );
+            } else {
+                call_user_func_array(
+                    [$query, $method],
+                    $this->parameterize($column, $parameters, $keyword)
+                );
+            }
+        }
+    }
+
+    /**
+     * Build Query Builder Parameters.
+     *
+     * @return array
+     */
+    protected function parameterize()
+    {
+        $args       = func_get_args();
+        $keyword    = count($args) > 2 ? $args[2] : $args[1];
+        $parameters = Helper::buildParameters($args);
+        $parameters = Helper::replacePatternWithKeyword($parameters, $keyword, '$1');
+
+        return $parameters;
     }
 
     /**

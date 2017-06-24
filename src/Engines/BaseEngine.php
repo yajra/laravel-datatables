@@ -310,7 +310,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * Get Query Builder object.
      *
      * @param mixed $instance
-     * @return mixed
+     * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
      */
     public function getQueryBuilder($instance = null)
     {
@@ -419,18 +419,15 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Override default column filter search.
+     * Add custom filter handler for the give column.
      *
      * @param string $column
-     * @param string|callable $method
+     * @param callable $callback
      * @return $this
-     * @internal param $mixed ...,... All the individual parameters required for specified $method
-     * @internal string $1 Special variable that returns the requested search keyword.
      */
-    public function filterColumn($column, $method)
+    public function filterColumn($column, callable $callback)
     {
-        $params                             = func_get_args();
-        $this->columnDef['filter'][$column] = ['method' => $method, 'parameters' => array_splice($params, 2)];
+        $this->columnDef['filter'][$column] = ['method' => $callback];
 
         return $this;
     }
