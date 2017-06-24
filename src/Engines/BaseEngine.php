@@ -71,13 +71,6 @@ abstract class BaseEngine implements DataTableEngineContract
     ];
 
     /**
-     * Query type.
-     *
-     * @var string
-     */
-    protected $query_type;
-
-    /**
      * Extra/Added columns.
      *
      * @var array
@@ -274,16 +267,6 @@ abstract class BaseEngine implements DataTableEngineContract
         $this->columnDef['raw'] = $columns;
 
         return $this;
-    }
-
-    /**
-     * Check query type is a builder.
-     *
-     * @return bool
-     */
-    public function isQueryBuilder()
-    {
-        return $this->query_type == 'builder';
     }
 
     /**
@@ -962,30 +945,6 @@ abstract class BaseEngine implements DataTableEngineContract
         $name = isset($this->columns[$index]) && $this->columns[$index] != '*' ? $this->columns[$index] : $this->getPrimaryKeyName();
 
         return in_array($name, $this->extraColumns, true) ? $this->getPrimaryKeyName() : $name;
-    }
-
-    /**
-     * If column name could not be resolved then use primary key.
-     *
-     * @return string
-     */
-    protected function getPrimaryKeyName()
-    {
-        if ($this->isEloquent()) {
-            return $this->query->getModel()->getKeyName();
-        }
-
-        return 'id';
-    }
-
-    /**
-     * Check if the engine used was eloquent.
-     *
-     * @return bool
-     */
-    public function isEloquent()
-    {
-        return $this->query_type === 'eloquent';
     }
 
     /**

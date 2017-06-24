@@ -49,7 +49,6 @@ class QueryBuilderEngine extends BaseEngine
     protected function init($request, $builder, $type = 'builder')
     {
         $this->request    = $request;
-        $this->query_type = $type;
         $this->columns    = $builder->columns;
         $this->connection = $builder->getConnection();
         $this->prefix     = $this->connection->getTablePrefix();
@@ -243,7 +242,7 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function getEagerLoads()
     {
-        if ($this->query_type == 'eloquent') {
+        if ($this->query instanceof EloquentBuilder) {
             return array_keys($this->query->getEagerLoads());
         }
 

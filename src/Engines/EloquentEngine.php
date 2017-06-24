@@ -40,7 +40,6 @@ class EloquentEngine extends QueryBuilderEngine
         parent::__construct($builder->getQuery(), $request);
 
         $this->query      = $builder;
-        $this->query_type = 'eloquent';
     }
 
     /**
@@ -78,11 +77,7 @@ class EloquentEngine extends QueryBuilderEngine
      */
     protected function modelUseSoftDeletes()
     {
-        if ($this->query_type == 'eloquent') {
-            return in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->query->getModel()));
-        }
-
-        return false;
+        return in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->query->getModel()));
     }
 
     /**
