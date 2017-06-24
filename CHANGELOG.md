@@ -12,8 +12,12 @@
 ### ADDED
 - Add support for Laravel 5.5.
 - Package auto-discovery implemented.
+- Add method to get the query used by dataTable.
 
 ### REMOVED
 - Remove filterColumn api magic query method in favor of closure.
 - Remove support on older snake_case methods.
 - Remove silly implementation of proxying query builder calls via magic method. 
+
+### FIXED
+- Fix #1068.

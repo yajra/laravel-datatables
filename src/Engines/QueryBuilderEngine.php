@@ -23,6 +23,13 @@ use Yajra\Datatables\Request;
 class QueryBuilderEngine extends BaseEngine
 {
     /**
+     * Builder object.
+     *
+     * @var \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
+     */
+    protected $query;
+
+    /**
      * @param \Illuminate\Database\Query\Builder $builder
      * @param \Yajra\Datatables\Request $request
      */
@@ -731,5 +738,15 @@ class QueryBuilderEngine extends BaseEngine
         $this->pushToBlacklist($name);
 
         return parent::addColumn($name, $content, $order);
+    }
+
+    /**
+     * Get query builder instance.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
+     */
+    public function getQuery()
+    {
+        return $this->query;
     }
 }
