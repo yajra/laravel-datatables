@@ -15,3 +15,5 @@
 
 ### REMOVED
 - Remove filterColumn api magic query method in favor of closure.
+- Remove support on older snake_case methods.
+- Remove silly implementation of proxying query builder calls via magic method. 

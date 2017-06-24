@@ -284,29 +284,6 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Allows previous API calls where the methods were snake_case.
-     * Will convert a camelCase API call to a snake_case call.
-     * Allow query builder method to be used by the engine.
-     *
-     * @param  string $name
-     * @param  array $arguments
-     * @return mixed
-     */
-    public function __call($name, $arguments)
-    {
-        $name = Str::camel(Str::lower($name));
-        if (method_exists($this, $name)) {
-            return call_user_func_array([$this, $name], $arguments);
-        } elseif (method_exists($this->getQueryBuilder(), $name)) {
-            call_user_func_array([$this->getQueryBuilder(), $name], $arguments);
-        } else {
-            trigger_error('Call to undefined method ' . __CLASS__ . '::' . $name . '()', E_USER_ERROR);
-        }
-
-        return $this;
-    }
-
-    /**
      * Get Query Builder object.
      *
      * @param mixed $instance
