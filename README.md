@@ -37,8 +37,8 @@ return Datatables::of(DB::select('select * from users'))->make(true);
 ```
 
 ## Requirements
-- [PHP >= 5.6.4](http://php.net/)
-- [Laravel 5.4+](https://github.com/laravel/framework)
+- [PHP >= 7.0](http://php.net/)
+- [Laravel 5.5+](https://github.com/laravel/framework)
 - [jQuery DataTables v1.10.x](http://datatables.net/)
 
 ## Documentations
