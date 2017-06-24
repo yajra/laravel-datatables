@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Expression;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Yajra\Datatables\Request;
 
@@ -42,7 +41,6 @@ class QueryBuilderEngine extends BaseEngine
      * @var \Illuminate\Database\Connection
      */
     protected $connection;
-
 
     /**
      * @param \Illuminate\Database\Query\Builder $builder
@@ -701,7 +699,7 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function getNullsLastSql($column, $direction)
     {
-        $sql = Config::get('datatables.nulls_last_sql', '%s %s NULLS LAST');
+        $sql = config('datatables.nulls_last_sql', '%s %s NULLS LAST');
 
         return sprintf($sql, $column, $direction);
     }
