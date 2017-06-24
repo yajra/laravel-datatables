@@ -139,6 +139,7 @@ class HelperTest extends TestCase
             'id'         => 1,
             'name'       => 'John',
             'created_at' => Carbon::createFromDate(2015, 1, 1),
+            'model'      => $class,
         ];
         $this->assertEquals($expected, $compiled);
     }

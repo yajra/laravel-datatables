@@ -117,11 +117,13 @@ class Helper
      */
     public static function getMixedValue(array $data, $param)
     {
-        $param = self::castToArray($param);
+        $casted = self::castToArray($param);
+
+        $data['model'] = $param;
 
         foreach ($data as $key => $value) {
-            if (isset($param[$key])) {
-                $data[$key] = $param[$key];
+            if (isset($casted[$key])) {
+                $data[$key] = $casted[$key];
             }
         }
 

@@ -13,6 +13,7 @@
 - Add support for Laravel 5.5.
 - Package auto-discovery implemented.
 - Add method to get the query used by dataTable.
+- Add the raw data to model key when compiling views when using addColumn and editColumn.
 
 ### REMOVED
 - Remove filterColumn api magic query method in favor of closure.
