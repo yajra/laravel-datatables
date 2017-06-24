@@ -57,23 +57,21 @@ return Datatables::of(DB::select('select * from users'))->make(true);
  5.2.x    | 6.x
  5.3.x    | 6.x
  5.4.x    | 7.x
+ 5.5.x    | 8.x
 
-## Laravel 5.4 Upgrade Guide
-There are breaking changes since Laravel 5.4 and Datatables v7.0.
-If you are upgrading from v6.x to v7.x, please see [upgrade guide](https://yajrabox.com/docs/laravel-datatables/7.0/upgrade).
+## Laravel 5.5 Upgrade Guide
+There are breaking changes since Laravel 5.5 and Datatables v8.0.
+If you are upgrading from v7.x to v8.x, please see [upgrade guide](https://yajrabox.com/docs/laravel-datatables/master/upgrade).
 
 ## Quick Installation
 ```bash
-$ composer require yajra/laravel-datatables-oracle:^7.5
+$ composer require yajra/laravel-datatables-oracle:"~8.0"
 ```
 
-#### Service Provider
-`Yajra\Datatables\DatatablesServiceProvider::class`
+#### Service Provider & Facade
+Service provider and facade are automatically registered using Laravel automatic package discovery.
 
-#### Facade
-`Datatables` facade is automatically registered as an alias for `Yajra\Datatables\Facades\Datatables` class. 
-
-#### Configuration and Assets
+#### Configuration (Optional)
 ```bash
 $ php artisan vendor:publish --tag=datatables
 ```
