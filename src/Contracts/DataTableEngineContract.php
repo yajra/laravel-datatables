@@ -35,11 +35,11 @@ interface DataTableEngineContract
      * Set auto filter off and run your own filter.
      * Overrides global search.
      *
-     * @param \Closure $callback
+     * @param callable $callback
      * @param bool $globalSearch
      * @return $this
      */
-    public function filter(\Closure $callback, $globalSearch = false);
+    public function filter(callable $callback, $globalSearch = false);
 
     /**
      * Perform global search.

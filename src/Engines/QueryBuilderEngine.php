@@ -2,7 +2,6 @@
 
 namespace Yajra\Datatables\Engines;
 
-use Closure;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -63,11 +62,11 @@ class QueryBuilderEngine extends BaseEngine
      * Set auto filter off and run your own filter.
      * Overrides global search.
      *
-     * @param \Closure $callback
+     * @param callable $callback
      * @param bool $globalSearch
      * @return $this
      */
-    public function filter(Closure $callback, $globalSearch = false)
+    public function filter(callable $callback, $globalSearch = false)
     {
         $this->overrideGlobalSearch($callback, $this->query, $globalSearch);
 

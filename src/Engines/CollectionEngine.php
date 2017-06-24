@@ -2,7 +2,6 @@
 
 namespace Yajra\Datatables\Engines;
 
-use Closure;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -60,11 +59,11 @@ class CollectionEngine extends BaseEngine
      * Set auto filter off and run your own filter.
      * Overrides global search.
      *
-     * @param \Closure $callback
+     * @param callable $callback
      * @param bool $globalSearch
      * @return $this
      */
-    public function filter(Closure $callback, $globalSearch = false)
+    public function filter(callable $callback, $globalSearch = false)
     {
         $this->overrideGlobalSearch($callback, $this, $globalSearch);
 
@@ -192,11 +191,11 @@ class CollectionEngine extends BaseEngine
                     if (! $value = Arr::get($data, $column)) {
                         continue;
                     }
-                    
+
                     if (is_array($value)) {
                         continue;
                     }
-                    
+
                     if ($this->isCaseInsensitive()) {
                         $value = Str::lower($value);
                     }
