@@ -11,7 +11,6 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
-use Yajra\Datatables\Helper;
 use Yajra\Datatables\Request;
 
 /**
@@ -609,15 +608,10 @@ class QueryBuilderEngine extends BaseEngine
             }
 
             if ($this->hasCustomOrder($column)) {
-                $method     = $this->columnDef['order'][$column]['method'];
-                $parameters = $this->columnDef['order'][$column]['parameters'];
-                $this->compileColumnQuery(
-                    $this->getQueryBuilder(),
-                    $method,
-                    $parameters,
-                    $column,
-                    $orderable['direction']
-                );
+                $sql      = $this->columnDef['order'][$column]['sql'];
+                $sql      = str_replace('$1', $orderable['direction'], $sql);
+                $bindings = $this->columnDef['order'][$column]['bindings'];
+                $this->query->orderByRaw($sql, $bindings);
             } else {
                 $valid = 1;
                 if (count(explode('.', $column)) > 1) {
@@ -671,51 +665,6 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Perform filter column on selected field.
-     *
-     * @param mixed $query
-     * @param string|Closure $method
-     * @param mixed $parameters
-     * @param string $column
-     * @param string $keyword
-     */
-    protected function compileColumnQuery($query, $method, $parameters, $column, $keyword)
-    {
-        if (method_exists($query, $method)
-            && count($parameters) <= with(new \ReflectionMethod($query, $method))->getNumberOfParameters()
-        ) {
-            if (Str::contains(Str::lower($method), 'raw')
-                || Str::contains(Str::lower($method), 'exists')
-            ) {
-                call_user_func_array(
-                    [$query, $method],
-                    $this->parameterize($parameters, $keyword)
-                );
-            } else {
-                call_user_func_array(
-                    [$query, $method],
-                    $this->parameterize($column, $parameters, $keyword)
-                );
-            }
-        }
-    }
-
-    /**
-     * Build Query Builder Parameters.
-     *
-     * @return array
-     */
-    protected function parameterize()
-    {
-        $args       = func_get_args();
-        $keyword    = count($args) > 2 ? $args[2] : $args[1];
-        $parameters = Helper::buildParameters($args);
-        $parameters = Helper::replacePatternWithKeyword($parameters, $keyword, '$1');
-
-        return $parameters;
-    }
-
-    /**
      * Get NULLS LAST SQL.
      *
      * @param  string $column
@@ -743,7 +692,7 @@ class QueryBuilderEngine extends BaseEngine
     /**
      * Get results
      *
-     * @return array|static[]
+     * @return \Illuminate\Support\Collection
      */
     public function results()
     {

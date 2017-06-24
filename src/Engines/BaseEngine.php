@@ -460,7 +460,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function orderColumn($column, $sql, $bindings = [])
     {
-        $this->columnDef['order'][$column] = ['method' => 'orderByRaw', 'parameters' => [$sql, $bindings]];
+        $this->columnDef['order'][$column] = compact('sql', 'bindings');
 
         return $this;
     }
