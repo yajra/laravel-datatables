@@ -16,7 +16,7 @@ class EloquentEngine extends QueryBuilderEngine
 {
     /**
      * Select trashed records in count function for models with soft deletes trait.
-     * By default we do not select soft deleted records
+     * By default we do not select soft deleted records.
      *
      * @var bool
      */
@@ -24,7 +24,7 @@ class EloquentEngine extends QueryBuilderEngine
 
     /**
      * Select only trashed records in count function for models with soft deletes trait.
-     * By default we do not select soft deleted records
+     * By default we do not select soft deleted records.
      *
      * @var bool
      */
@@ -71,7 +71,7 @@ class EloquentEngine extends QueryBuilderEngine
     }
 
     /**
-     * Check if model use SoftDeletes trait
+     * Check if model use SoftDeletes trait.
      *
      * @return boolean
      */

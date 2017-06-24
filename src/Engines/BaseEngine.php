@@ -117,7 +117,7 @@ abstract class BaseEngine implements DataTableEngineContract
     protected $transformer = null;
 
     /**
-     * Database prefix
+     * Database prefix.
      *
      * @var string
      */
@@ -131,7 +131,7 @@ abstract class BaseEngine implements DataTableEngineContract
     protected $database;
 
     /**
-     * [internal] Track if any filter was applied for at least one column
+     * [internal] Track if any filter was applied for at least one column.
      *
      * @var boolean
      */
@@ -574,7 +574,7 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Get processed data
+     * Get processed data.
      *
      * @param bool|false $object
      * @return array
@@ -654,7 +654,7 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Get config is case insensitive status.
+     * Check if config uses case insensitive search.
      *
      * @return bool
      */
@@ -783,7 +783,7 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Push a new column name to blacklist
+     * Push a new column name to blacklist.
      *
      * @param string $column
      * @return $this
@@ -839,7 +839,7 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Check if DataTables uses smart search.
+     * Check if config uses smart search.
      *
      * @return bool
      */
@@ -849,7 +849,7 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Get config use wild card status.
+     * Check if config uses wild card search.
      *
      * @return bool
      */
@@ -884,7 +884,7 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Update flags to disable global search
+     * Update flags to disable global search.
      *
      * @param  callable $callback
      * @param  mixed $parameters

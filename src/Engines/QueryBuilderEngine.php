@@ -61,7 +61,7 @@ class QueryBuilderEngine extends BaseEngine
 
     /**
      * Set auto filter off and run your own filter.
-     * Overrides global search
+     * Overrides global search.
      *
      * @param \Closure $callback
      * @param bool $globalSearch
@@ -75,7 +75,7 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Organizes works
+     * Organizes works.
      *
      * @param bool $mDataSupport
      * @param bool $orderFirst
@@ -207,7 +207,7 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Get base query builder instance.
+     * Get the base query builder instance.
      *
      * @param mixed $instance
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
@@ -399,7 +399,7 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Wrap a column and cast in pgsql.
+     * Wrap a column and cast based on database driver.
      *
      * @param  string $column
      * @return string
@@ -705,7 +705,7 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Perform pagination
+     * Perform pagination.
      *
      * @return void
      */
@@ -716,7 +716,7 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Get results
+     * Get paginated results.
      *
      * @return \Illuminate\Support\Collection
      */
