@@ -284,25 +284,6 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Get Query Builder object.
-     *
-     * @param mixed $instance
-     * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
-     */
-    public function getQueryBuilder($instance = null)
-    {
-        if (! $instance) {
-            $instance = $this->query;
-        }
-
-        if ($this->isQueryBuilder()) {
-            return $instance;
-        }
-
-        return $instance->getQuery();
-    }
-
-    /**
      * Check query type is a builder.
      *
      * @return bool

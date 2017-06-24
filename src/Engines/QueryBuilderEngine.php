@@ -3,6 +3,7 @@
 namespace Yajra\Datatables\Engines;
 
 use Closure;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
@@ -158,46 +159,63 @@ class QueryBuilderEngine extends BaseEngine
      */
     private function globalSearch($keyword)
     {
-        $this->query->where(
-            function ($query) use ($keyword) {
-                $query = $this->getQueryBuilder($query);
+        $this->query->where(function ($query) use ($keyword) {
+            $query = $this->getBaseQueryBuilder($query);
 
-                foreach ($this->request->searchableColumnIndex() as $index) {
-                    $columnName = $this->getColumnName($index);
-                    if ($this->isBlacklisted($columnName) && ! $this->hasCustomFilter($columnName)) {
-                        continue;
-                    }
+            foreach ($this->request->searchableColumnIndex() as $index) {
+                $columnName = $this->getColumnName($index);
+                if ($this->isBlacklisted($columnName) && ! $this->hasCustomFilter($columnName)) {
+                    continue;
+                }
 
-                    if ($this->hasCustomFilter($columnName)) {
-                        $callback = $this->columnDef['filter'][$columnName]['method'];
-                        $builder  = $query->newQuery();
-                        call_user_func_array($callback, [$builder, $keyword]);
-                        $query->addNestedWhereQuery($builder, 'or');
-                    } else {
-                        if (count(explode('.', $columnName)) > 1) {
-                            $eagerLoads     = $this->getEagerLoads();
-                            $parts          = explode('.', $columnName);
-                            $relationColumn = array_pop($parts);
-                            $relation       = implode('.', $parts);
-                            if (in_array($relation, $eagerLoads)) {
-                                $this->compileRelationSearch(
-                                    $query,
-                                    $relation,
-                                    $relationColumn,
-                                    $keyword
-                                );
-                            } else {
-                                $this->compileQuerySearch($query, $columnName, $keyword);
-                            }
+                if ($this->hasCustomFilter($columnName)) {
+                    $callback = $this->columnDef['filter'][$columnName]['method'];
+                    $builder  = $query->newQuery();
+                    $callback($builder, $keyword);
+                    $query->addNestedWhereQuery($builder, 'or');
+                } else {
+                    if (count(explode('.', $columnName)) > 1) {
+                        $eagerLoads     = $this->getEagerLoads();
+                        $parts          = explode('.', $columnName);
+                        $relationColumn = array_pop($parts);
+                        $relation       = implode('.', $parts);
+                        if (in_array($relation, $eagerLoads)) {
+                            $this->compileRelationSearch(
+                                $query,
+                                $relation,
+                                $relationColumn,
+                                $keyword
+                            );
                         } else {
                             $this->compileQuerySearch($query, $columnName, $keyword);
                         }
+                    } else {
+                        $this->compileQuerySearch($query, $columnName, $keyword);
                     }
-
-                    $this->isFilterApplied = true;
                 }
+
+                $this->isFilterApplied = true;
             }
-        );
+        });
+    }
+
+    /**
+     * Get base query builder instance.
+     *
+     * @param mixed $instance
+     * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
+     */
+    protected function getBaseQueryBuilder($instance = null)
+    {
+        if (! $instance) {
+            $instance = $this->query;
+        }
+
+        if ($instance instanceof EloquentBuilder) {
+            return $instance->getQuery();
+        }
+
+        return $instance;
     }
 
     /**
@@ -431,11 +449,11 @@ class QueryBuilderEngine extends BaseEngine
 
             if ($this->hasCustomFilter($column)) {
                 // get a raw keyword (without wildcards)
-                $keyword    = $this->getColumnSearchKeyword($index, true);
-                $callback   = $this->columnDef['filter'][$column]['method'];
-                $whereQuery = $this->query->newQuery();
-                call_user_func_array($callback, [$whereQuery, $keyword]);
-                $this->query->addNestedWhereQuery($whereQuery);
+                $keyword  = $this->getColumnSearchKeyword($index, true);
+                $callback = $this->columnDef['filter'][$column]['method'];
+                $builder  = $this->query->newQuery();
+                $callback($builder, $keyword);
+                $this->query->addNestedWhereQuery($builder);
             } else {
                 if (count(explode('.', $column)) > 1) {
                     $eagerLoads     = $this->getEagerLoads();
@@ -541,12 +559,12 @@ class QueryBuilderEngine extends BaseEngine
     protected function performJoin($table, $foreign, $other)
     {
         $joins = [];
-        foreach ((array) $this->getQueryBuilder()->joins as $key => $join) {
+        foreach ((array) $this->getBaseQueryBuilder()->joins as $key => $join) {
             $joins[] = $join->table;
         }
 
         if (! in_array($table, $joins)) {
-            $this->getQueryBuilder()->leftJoin($table, $foreign, '=', $other);
+            $this->getBaseQueryBuilder()->leftJoin($table, $foreign, '=', $other);
         }
     }
 
@@ -595,7 +613,7 @@ class QueryBuilderEngine extends BaseEngine
     public function ordering()
     {
         if ($this->orderCallback) {
-            call_user_func($this->orderCallback, $this->getQueryBuilder());
+            call_user_func($this->orderCallback, $this->getBaseQueryBuilder());
 
             return;
         }
@@ -644,9 +662,10 @@ class QueryBuilderEngine extends BaseEngine
 
                 if ($valid == 1) {
                     if ($this->nullsLast) {
-                        $this->getQueryBuilder()->orderByRaw($this->getNullsLastSql($column, $orderable['direction']));
+                        $this->getBaseQueryBuilder()->orderByRaw($this->getNullsLastSql($column,
+                            $orderable['direction']));
                     } else {
-                        $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
+                        $this->getBaseQueryBuilder()->orderBy($column, $orderable['direction']);
                     }
                 }
             }
