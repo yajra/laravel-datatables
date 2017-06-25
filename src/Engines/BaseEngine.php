@@ -424,7 +424,7 @@ abstract class BaseEngine implements DataTableEngineContract
             $this->totalRecords = $this->totalCount();
 
             if ($this->totalRecords) {
-                $this->orderRecords(! $orderFirst);
+                $this->orderRecords(!$orderFirst);
                 $this->filterRecords();
                 $this->orderRecords($orderFirst);
                 $this->paginate();
@@ -457,7 +457,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     protected function orderRecords($skip)
     {
-        if (! $skip) {
+        if (!$skip) {
             $this->ordering();
         }
     }
@@ -488,7 +488,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     protected function paginate()
     {
-        if ($this->request->isPaginationable() && ! $this->skipPaging) {
+        if ($this->request->isPaginationable() && !$this->skipPaging) {
             $this->paging();
         }
     }
@@ -776,7 +776,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function pushToBlacklist($column)
     {
-        if (! $this->isBlacklisted($column)) {
+        if (!$this->isBlacklisted($column)) {
             array_push($this->columnDef['blacklist'], $column);
         }
 
@@ -930,7 +930,6 @@ abstract class BaseEngine implements DataTableEngineContract
         return 'id';
     }
 
-
     /**
      * Get column name from string.
      *
@@ -942,7 +941,7 @@ abstract class BaseEngine implements DataTableEngineContract
     {
         $matches = explode(' as ', Str::lower($str));
 
-        if (! empty($matches)) {
+        if (!empty($matches)) {
             if ($wantsAlias) {
                 return array_pop($matches);
             } else {

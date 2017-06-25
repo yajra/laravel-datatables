@@ -52,13 +52,13 @@ class EloquentEngine extends QueryBuilderEngine
         $myQuery = clone $this->query;
         // if its a normal query ( no union, having and distinct word )
         // replace the select with static text to improve performance
-        if (! Str::contains(Str::lower($myQuery->toSql()), ['union', 'having', 'distinct', 'order by', 'group by'])) {
+        if (!Str::contains(Str::lower($myQuery->toSql()), ['union', 'having', 'distinct', 'order by', 'group by'])) {
             $row_count = $this->wrap('row_count');
             $myQuery->select($this->connection->raw("'1' as {$row_count}"));
         }
 
         // check for select soft deleted records
-        if (! $this->withTrashed && ! $this->onlyTrashed && $this->modelUseSoftDeletes()) {
+        if (!$this->withTrashed && !$this->onlyTrashed && $this->modelUseSoftDeletes()) {
             $myQuery->whereNull($myQuery->getModel()->getQualifiedDeletedAtColumn());
         }
 

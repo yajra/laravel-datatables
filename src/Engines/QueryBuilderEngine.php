@@ -105,7 +105,7 @@ class QueryBuilderEngine extends BaseEngine
         $myQuery = clone $this->query;
         // if its a normal query ( no union, having and distinct word )
         // replace the select with static text to improve performance
-        if (! Str::contains(Str::lower($myQuery->toSql()), ['union', 'having', 'distinct', 'order by', 'group by'])) {
+        if (!Str::contains(Str::lower($myQuery->toSql()), ['union', 'having', 'distinct', 'order by', 'group by'])) {
             $row_count = $this->wrap('row_count');
             $myQuery->select($this->connection->raw("'1' as {$row_count}"));
         }
@@ -170,7 +170,7 @@ class QueryBuilderEngine extends BaseEngine
 
             foreach ($this->request->searchableColumnIndex() as $index) {
                 $columnName = $this->getColumnName($index);
-                if ($this->isBlacklisted($columnName) && ! $this->hasCustomFilter($columnName)) {
+                if ($this->isBlacklisted($columnName) && !$this->hasCustomFilter($columnName)) {
                     continue;
                 }
 
@@ -213,7 +213,7 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function getBaseQueryBuilder($instance = null)
     {
-        if (! $instance) {
+        if (!$instance) {
             $instance = $this->query;
         }
 
@@ -388,7 +388,7 @@ class QueryBuilderEngine extends BaseEngine
                 $q = $query;
             }
 
-            if (! $q->from instanceof Expression) {
+            if (!$q->from instanceof Expression) {
                 // Get table from query and add it.
                 $column = $q->from . '.' . $column;
             }
@@ -447,7 +447,7 @@ class QueryBuilderEngine extends BaseEngine
         $columns = $this->request->columns();
 
         foreach ($columns as $index => $column) {
-            if (! $this->request->isColumnSearchable($index)) {
+            if (!$this->request->isColumnSearchable($index)) {
                 continue;
             }
 
@@ -569,7 +569,7 @@ class QueryBuilderEngine extends BaseEngine
             $joins[] = $join->table;
         }
 
-        if (! in_array($table, $joins)) {
+        if (!in_array($table, $joins)) {
             $this->getBaseQueryBuilder()->leftJoin($table, $foreign, '=', $other);
         }
     }
@@ -600,13 +600,13 @@ class QueryBuilderEngine extends BaseEngine
     protected function regexColumnSearch($column, $keyword)
     {
         if ($this->isOracleSql()) {
-            $sql = ! $this->isCaseInsensitive() ? 'REGEXP_LIKE( ' . $column . ' , ? )' : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
+            $sql = !$this->isCaseInsensitive() ? 'REGEXP_LIKE( ' . $column . ' , ? )' : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
             $this->query->whereRaw($sql, [$keyword]);
         } elseif ($this->database == 'pgsql') {
-            $sql = ! $this->isCaseInsensitive() ? $column . ' ~ ?' : $column . ' ~* ? ';
+            $sql = !$this->isCaseInsensitive() ? $column . ' ~ ?' : $column . ' ~* ? ';
             $this->query->whereRaw($sql, [$keyword]);
         } else {
-            $sql = ! $this->isCaseInsensitive() ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
+            $sql = !$this->isCaseInsensitive() ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
             $this->query->whereRaw($sql, [Str::lower($keyword)]);
         }
     }
@@ -627,7 +627,7 @@ class QueryBuilderEngine extends BaseEngine
         foreach ($this->request->orderableColumns() as $orderable) {
             $column = $this->getColumnName($orderable['column'], true);
 
-            if ($this->isBlacklisted($column) && ! $this->hasCustomOrder($column)) {
+            if ($this->isBlacklisted($column) && !$this->hasCustomOrder($column)) {
                 continue;
             }
 
@@ -653,7 +653,7 @@ class QueryBuilderEngine extends BaseEngine
                         $isMorphToMany = false;
                         foreach (explode('.', $relation) as $eachRelation) {
                             $relationship = $lastQuery->getRelation($eachRelation);
-                            if (! ($relationship instanceof MorphToMany)) {
+                            if (!($relationship instanceof MorphToMany)) {
                                 $isMorphToMany = true;
                             }
                             $lastQuery = $relationship;
