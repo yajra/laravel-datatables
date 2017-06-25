@@ -578,7 +578,7 @@ class QueryBuilderEngine extends BaseEngine
      * Compile queries for column search.
      *
      * @param int $i
-     * @param mixed $column
+     * @param string $column
      * @param string $keyword
      */
     protected function compileColumnSearch($i, $column, $keyword)

@@ -96,7 +96,7 @@ class Request
      * Check if Datatables must uses regular expressions
      *
      * @param integer $index
-     * @return string
+     * @return bool
      */
     public function isRegex($index)
     {

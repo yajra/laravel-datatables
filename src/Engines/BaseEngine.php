@@ -911,11 +911,11 @@ abstract class BaseEngine implements DataTableEngineContract
      * Get column name by order column index.
      *
      * @param int $index
-     * @return mixed
+     * @return string
      */
     protected function getColumnNameByIndex($index)
     {
-        $name = isset($this->columns[$index]) && $this->columns[$index] != '*' ? $this->columns[$index] : $this->getPrimaryKeyName();
+        $name = (isset($this->columns[$index]) && $this->columns[$index] != '*') ? $this->columns[$index] : $this->getPrimaryKeyName();
 
         return in_array($name, $this->extraColumns, true) ? $this->getPrimaryKeyName() : $name;
     }
