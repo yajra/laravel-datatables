@@ -188,7 +188,7 @@ class CollectionEngine extends BaseEngine
 
                 foreach ($this->request->searchableColumnIndex() as $index) {
                     $column = $this->getColumnName($index);
-                    if (! $value = Arr::get($data, $column)) {
+                    if (!$value = Arr::get($data, $column)) {
                         continue;
                     }
 

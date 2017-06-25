@@ -75,9 +75,9 @@ class Request
      */
     public function checkLegacyCode()
     {
-        if (! $this->request->input('draw') && $this->request->input('sEcho')) {
+        if (!$this->request->input('draw') && $this->request->input('sEcho')) {
             throw new Exception('DataTables legacy code is not supported! Please use DataTables 1.10++ coding convention.');
-        } elseif (! $this->request->input('draw') && ! $this->request->input('columns')) {
+        } elseif (!$this->request->input('draw') && !$this->request->input('columns')) {
             throw new Exception('Insufficient parameters');
         }
     }
@@ -110,7 +110,7 @@ class Request
      */
     public function orderableColumns()
     {
-        if (! $this->isOrderable()) {
+        if (!$this->isOrderable()) {
             return [];
         }
 
@@ -221,6 +221,6 @@ class Request
      */
     public function isPaginationable()
     {
-        return ! is_null($this->request->input('start')) && ! is_null($this->request->input('length')) && $this->request->input('length') != -1;
+        return !is_null($this->request->input('start')) && !is_null($this->request->input('length')) && $this->request->input('length') != -1;
     }
 }

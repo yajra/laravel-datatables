@@ -1,6 +1,6 @@
 <?php
 
-if (! function_exists('config_path')) {
+if (!function_exists('config_path')) {
     /**
      * Get the configuration path.
      *
@@ -13,7 +13,7 @@ if (! function_exists('config_path')) {
     }
 }
 
-if (! function_exists('public_path')) {
+if (!function_exists('public_path')) {
     /**
      * Return the path to public dir
      *

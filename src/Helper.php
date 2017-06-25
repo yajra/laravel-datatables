@@ -159,7 +159,7 @@ class Helper
      */
     public static function getOrMethod($method)
     {
-        if (! Str::contains(Str::lower($method), 'or')) {
+        if (!Str::contains(Str::lower($method), 'or')) {
             return 'or' . ucfirst($method);
         }
 

@@ -37,7 +37,7 @@ class DataTransformer
      * @param string $type
      * @return array
      */
-    protected function buildColumnByCollection(array  $row, Collection $columns, $type = 'printable')
+    protected function buildColumnByCollection(array $row, Collection $columns, $type = 'printable')
     {
         $results = [];
         foreach ($columns->all() as $column) {
