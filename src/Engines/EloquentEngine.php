@@ -105,4 +105,14 @@ class EloquentEngine extends QueryBuilderEngine
 
         return $this;
     }
+
+    /**
+     * If column name could not be resolved then use primary key.
+     *
+     * @return string
+     */
+    protected function getPrimaryKeyName()
+    {
+        return $this->query->getModel()->getKeyName();
+    }
 }

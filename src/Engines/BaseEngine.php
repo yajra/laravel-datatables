@@ -935,6 +935,17 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
+     * If column name could not be resolved then use primary key.
+     *
+     * @return string
+     */
+    protected function getPrimaryKeyName()
+    {
+        return 'id';
+    }
+
+
+    /**
      * Get column name from string.
      *
      * @param string $str
