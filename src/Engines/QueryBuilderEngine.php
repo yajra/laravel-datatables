@@ -748,4 +748,18 @@ class QueryBuilderEngine extends BaseEngine
     {
         return $this->query;
     }
+
+    /**
+     * Append debug parameters on output.
+     *
+     * @param  array $output
+     * @return array
+     */
+    protected function showDebugger(array $output)
+    {
+        $output['queries'] = $this->connection->getQueryLog();
+        $output['input']   = $this->request->all();
+
+        return $output;
+    }
 }

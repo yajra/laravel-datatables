@@ -39,7 +39,7 @@ class EloquentEngine extends QueryBuilderEngine
         $builder = $model instanceof Builder ? $model : $model->getQuery();
         parent::__construct($builder->getQuery(), $request);
 
-        $this->query      = $builder;
+        $this->query = $builder;
     }
 
     /**

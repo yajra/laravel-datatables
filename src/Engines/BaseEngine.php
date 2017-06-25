@@ -615,20 +615,6 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Append debug parameters on output.
-     *
-     * @param  array $output
-     * @return array
-     */
-    protected function showDebugger(array $output)
-    {
-        $output['queries'] = $this->connection->getQueryLog();
-        $output['input']   = $this->request->all();
-
-        return $output;
-    }
-
-    /**
      * Get monolog/logger instance.
      *
      * @return \Illuminate\Contracts\Logging\Log
