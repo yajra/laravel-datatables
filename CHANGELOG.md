@@ -8,6 +8,10 @@
 
 ## Change Log
 
+### v7.8.1 - 06-27-2017
+- Set columns orderable & searchable property as true by default. #1228
+- In relation to [yajra/laravel-datatables-html#13](https://github.com/yajra/laravel-datatables-html/pull/13).
+
 ### v7.8.0 - 06-23-2017
 - Extract default columns definition to config. #1175
 
