@@ -144,7 +144,7 @@ class Request
      */
     public function isColumnOrderable($index)
     {
-        return $this->request->input("columns.$index.orderable") == 'true';
+        return $this->request->input("columns.$index.orderable", "true") == 'true';
     }
 
     /**
@@ -174,10 +174,10 @@ class Request
     public function isColumnSearchable($i, $column_search = true)
     {
         if ($column_search) {
-            return $this->request->input("columns.$i.searchable") === 'true' && $this->columnKeyword($i) != '';
+            return $this->request->input("columns.$i.searchable", "true") === 'true' && $this->columnKeyword($i) != '';
         }
 
-        return $this->request->input("columns.$i.searchable") === 'true';
+        return $this->request->input("columns.$i.searchable", "true") === 'true';
     }
 
     /**
