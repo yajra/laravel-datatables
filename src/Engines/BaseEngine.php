@@ -521,19 +521,6 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Sort records.
-     *
-     * @param  boolean $skip
-     * @return void
-     */
-    protected function orderRecords($skip)
-    {
-        if (! $skip) {
-            $this->ordering();
-        }
-    }
-
-    /**
      * Perform necessary filters.
      *
      * @return void
