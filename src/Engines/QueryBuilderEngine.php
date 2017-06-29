@@ -316,7 +316,7 @@ class QueryBuilderEngine extends BaseEngine
     /**
      * Prepare count query builder.
      *
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
+     * @return \Illuminate\Database\Query\Builder
      */
     protected function prepareCountQuery()
     {
@@ -333,7 +333,7 @@ class QueryBuilderEngine extends BaseEngine
     /**
      * Check if builder query uses complex sql.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $builder
+     * @param \Illuminate\Database\Query\Builder $builder
      * @return bool
      */
     protected function isComplexQuery($builder)
