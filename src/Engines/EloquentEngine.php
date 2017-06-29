@@ -146,33 +146,35 @@ class EloquentEngine extends QueryBuilderEngine
         $this->query->where(function ($query) use ($keyword) {
             $query = $this->getBaseQueryBuilder($query);
 
-            foreach ($this->request->searchableColumnIndex() as $index) {
-                $columnName = $this->getColumnName($index);
-                if ($this->isBlacklisted($columnName) && !$this->hasCustomFilter($columnName)) {
-                    continue;
-                }
-
-                if ($this->hasCustomFilter($columnName)) {
-                    $this->applyFilterColumn($query, $columnName, $keyword);
-                } else {
-                    if (count(explode('.', $columnName)) > 1) {
-                        $this->eagerLoadSearch($query, $columnName, $keyword);
+            collect($this->request->searchableColumnIndex())
+                ->map(function ($index) {
+                    return $this->getColumnName($index);
+                })
+                ->reject(function ($column) {
+                    return $this->isBlacklisted($column) && !$this->hasCustomFilter($column);
+                })
+                ->each(function ($column) use ($keyword, $query) {
+                    if ($this->hasCustomFilter($column)) {
+                        $this->applyFilterColumn($query, $column, $keyword);
                     } else {
-                        $this->compileQuerySearch($query, $columnName, $keyword);
+                        if (count(explode('.', $column)) > 1) {
+                            $this->eagerLoadSearch($query, $column, $keyword);
+                        } else {
+                            $this->compileQuerySearch($query, $column, $keyword);
+                        }
                     }
-                }
 
-                $this->isFilterApplied = true;
-            }
+                    $this->isFilterApplied = true;
+                });
         });
     }
 
     /**
      * Perform search on eager loaded relation column.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string                                $columnName
-     * @param string                                $keyword
+     * @param mixed  $query
+     * @param string $columnName
+     * @param string $keyword
      */
     private function eagerLoadSearch($query, $columnName, $keyword)
     {
