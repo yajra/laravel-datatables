@@ -43,11 +43,11 @@ abstract class BaseEngine implements DataTableEngine
      * @var array
      */
     protected $columnDef = [
-        'index'     => false,
-        'append'    => [],
-        'edit'      => [],
-        'filter'    => [],
-        'order'     => [],
+        'index'  => false,
+        'append' => [],
+        'edit'   => [],
+        'filter' => [],
+        'order'  => [],
     ];
 
     /**
@@ -404,7 +404,172 @@ abstract class BaseEngine implements DataTableEngine
 
         return $this;
     }
-    
+
+    /**
+     * Check if config uses case insensitive search.
+     *
+     * @return bool
+     */
+    public function isCaseInsensitive()
+    {
+        return config('datatables.search.case_insensitive', false);
+    }
+
+    /**
+     * Append data on json response.
+     *
+     * @param mixed $key
+     * @param mixed $value
+     * @return $this
+     */
+    public function with($key, $value = '')
+    {
+        if (is_array($key)) {
+            $this->appends = $key;
+        } elseif (is_callable($value)) {
+            $this->appends[$key] = value($value);
+        } else {
+            $this->appends[$key] = value($value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Override default ordering method with a closure callback.
+     *
+     * @param callable $closure
+     * @return $this
+     */
+    public function order(callable $closure)
+    {
+        $this->orderCallback = $closure;
+
+        return $this;
+    }
+
+    /**
+     * Update list of columns that is not allowed for search/sort.
+     *
+     * @param  array $blacklist
+     * @return $this
+     */
+    public function blacklist(array $blacklist)
+    {
+        $this->columnDef['blacklist'] = $blacklist;
+
+        return $this;
+    }
+
+    /**
+     * Update list of columns that is allowed for search/sort.
+     *
+     * @param  string|array $whitelist
+     * @return $this
+     */
+    public function whitelist($whitelist = '*')
+    {
+        $this->columnDef['whitelist'] = $whitelist;
+
+        return $this;
+    }
+
+    /**
+     * Set smart search config at runtime.
+     *
+     * @param bool $bool
+     * @return $this
+     */
+    public function smart($bool = true)
+    {
+        config(['datatables.search.smart' => $bool]);
+
+        return $this;
+    }
+
+    /**
+     * Set total records manually.
+     *
+     * @param int $total
+     * @return $this
+     */
+    public function setTotalRecords($total)
+    {
+        $this->totalRecords = $total;
+
+        return $this;
+    }
+
+    /**
+     * Skip pagination as needed.
+     *
+     * @return $this
+     */
+    public function skipPaging()
+    {
+        $this->skipPaging = true;
+
+        return $this;
+    }
+
+    /**
+     * Check if the current sql language is based on oracle syntax.
+     *
+     * @return bool
+     */
+    public function isOracleSql()
+    {
+        return in_array($this->database, ['oracle', 'oci8']);
+    }
+
+    /**
+     * Set datatables to do ordering with NULLS LAST option.
+     *
+     * @return $this
+     */
+    public function orderByNullsLast()
+    {
+        $this->nullsLast = true;
+
+        return $this;
+    }
+
+    /**
+     * Push a new column name to blacklist.
+     *
+     * @param string $column
+     * @return $this
+     */
+    public function pushToBlacklist($column)
+    {
+        if (!$this->isBlacklisted($column)) {
+            $this->columnDef['blacklist'][] = $column;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Check if column is blacklisted.
+     *
+     * @param string $column
+     * @return bool
+     */
+    protected function isBlacklisted($column)
+    {
+        $colDef = $this->getColumnsDefinition();
+
+        if (in_array($column, $colDef['blacklist'])) {
+            return true;
+        }
+
+        if ($colDef['whitelist'] === '*' || in_array($column, $colDef['whitelist'])) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Perform necessary filters.
      *
@@ -627,171 +792,6 @@ abstract class BaseEngine implements DataTableEngine
         $this->logger = $logger;
 
         return $this;
-    }
-
-    /**
-     * Check if config uses case insensitive search.
-     *
-     * @return bool
-     */
-    public function isCaseInsensitive()
-    {
-        return config('datatables.search.case_insensitive', false);
-    }
-
-    /**
-     * Append data on json response.
-     *
-     * @param mixed $key
-     * @param mixed $value
-     * @return $this
-     */
-    public function with($key, $value = '')
-    {
-        if (is_array($key)) {
-            $this->appends = $key;
-        } elseif (is_callable($value)) {
-            $this->appends[$key] = value($value);
-        } else {
-            $this->appends[$key] = value($value);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Override default ordering method with a closure callback.
-     *
-     * @param callable $closure
-     * @return $this
-     */
-    public function order(callable $closure)
-    {
-        $this->orderCallback = $closure;
-
-        return $this;
-    }
-
-    /**
-     * Update list of columns that is not allowed for search/sort.
-     *
-     * @param  array $blacklist
-     * @return $this
-     */
-    public function blacklist(array $blacklist)
-    {
-        $this->columnDef['blacklist'] = $blacklist;
-
-        return $this;
-    }
-
-    /**
-     * Update list of columns that is allowed for search/sort.
-     *
-     * @param  string|array $whitelist
-     * @return $this
-     */
-    public function whitelist($whitelist = '*')
-    {
-        $this->columnDef['whitelist'] = $whitelist;
-
-        return $this;
-    }
-
-    /**
-     * Set smart search config at runtime.
-     *
-     * @param bool $bool
-     * @return $this
-     */
-    public function smart($bool = true)
-    {
-        config(['datatables.search.smart' => $bool]);
-
-        return $this;
-    }
-
-    /**
-     * Set total records manually.
-     *
-     * @param int $total
-     * @return $this
-     */
-    public function setTotalRecords($total)
-    {
-        $this->totalRecords = $total;
-
-        return $this;
-    }
-
-    /**
-     * Skip pagination as needed.
-     *
-     * @return $this
-     */
-    public function skipPaging()
-    {
-        $this->skipPaging = true;
-
-        return $this;
-    }
-
-    /**
-     * Check if the current sql language is based on oracle syntax.
-     *
-     * @return bool
-     */
-    public function isOracleSql()
-    {
-        return in_array($this->database, ['oracle', 'oci8']);
-    }
-
-    /**
-     * Set datatables to do ordering with NULLS LAST option.
-     *
-     * @return $this
-     */
-    public function orderByNullsLast()
-    {
-        $this->nullsLast = true;
-
-        return $this;
-    }
-
-    /**
-     * Push a new column name to blacklist.
-     *
-     * @param string $column
-     * @return $this
-     */
-    public function pushToBlacklist($column)
-    {
-        if (!$this->isBlacklisted($column)) {
-            $this->columnDef['blacklist'][] = $column;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Check if column is blacklisted.
-     *
-     * @param string $column
-     * @return bool
-     */
-    protected function isBlacklisted($column)
-    {
-        $colDef = $this->getColumnsDefinition();
-
-        if (in_array($column, $colDef['blacklist'])) {
-            return true;
-        }
-
-        if ($colDef['whitelist'] === '*' || in_array($column, $colDef['whitelist'])) {
-            return false;
-        }
-
-        return true;
     }
 
     /**
