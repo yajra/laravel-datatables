@@ -175,7 +175,24 @@ class Request
      */
     public function columnKeyword($index)
     {
-        return $this->request->input("columns.$index.search.value");
+        $keyword = $this->request->input("columns.$index.search.value");
+
+        return $this->prepareKeyword($keyword);
+    }
+
+    /**
+     * Prepare keyword string value.
+     *
+     * @param string|array $keyword
+     * @return string
+     */
+    protected function prepareKeyword($keyword)
+    {
+        if (is_array($keyword)) {
+            return implode(' ', $keyword);
+        }
+
+        return $keyword;
     }
 
     /**
@@ -187,11 +204,7 @@ class Request
     {
         $keyword = $this->request->input('search.value');
 
-        if (is_array($keyword)) {
-            return implode(' ', $keyword);
-        }
-
-        return $keyword;
+        return $this->prepareKeyword($keyword);
     }
 
     /**
