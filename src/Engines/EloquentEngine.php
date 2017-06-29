@@ -51,12 +51,7 @@ class EloquentEngine extends QueryBuilderEngine
      */
     public function count()
     {
-        $builder = clone $this->query;
-
-        if ($this->isComplexQuery($builder)) {
-            $row_count = $this->wrap('row_count');
-            $builder->select($this->connection->raw("'1' as {$row_count}"));
-        }
+        $builder = $this->prepareCountQuery();
 
         if ($this->isSoftDeleting()) {
             $builder->whereNull($builder->getModel()->getQualifiedDeletedAtColumn());
@@ -68,17 +63,6 @@ class EloquentEngine extends QueryBuilderEngine
 
         return $this->connection->table($this->connection->raw('(' . $builder->toSql() . ') count_row_table'))
                                 ->setBindings($builder->getBindings())->count();
-    }
-
-    /**
-     * Check if builder query uses complex sql.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @return bool
-     */
-    private function isComplexQuery($builder)
-    {
-        return !Str::contains(Str::lower($builder->toSql()), ['union', 'having', 'distinct', 'order by', 'group by']);
     }
 
     /**

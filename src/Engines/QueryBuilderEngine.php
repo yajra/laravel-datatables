@@ -439,16 +439,38 @@ class QueryBuilderEngine extends BaseEngine
      */
     public function count()
     {
-        $myQuery = clone $this->query;
-        // if its a normal query ( no union, having and distinct word )
-        // replace the select with static text to improve performance
-        if (!Str::contains(Str::lower($myQuery->toSql()), ['union', 'having', 'distinct', 'order by', 'group by'])) {
+        $builder = $this->prepareCountQuery();
+
+        return $this->connection->table($this->connection->raw('(' . $builder->toSql() . ') count_row_table'))
+                                ->setBindings($builder->getBindings())->count();
+    }
+
+    /**
+     * Prepare count query builder.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
+     */
+    protected function prepareCountQuery()
+    {
+        $builder = clone $this->query;
+
+        if ($this->isComplexQuery($builder)) {
             $row_count = $this->wrap('row_count');
-            $myQuery->select($this->connection->raw("'1' as {$row_count}"));
+            $builder->select($this->connection->raw("'1' as {$row_count}"));
         }
 
-        return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
-                                ->setBindings($myQuery->getBindings())->count();
+        return $builder;
+    }
+
+    /**
+     * Check if builder query uses complex sql.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $builder
+     * @return bool
+     */
+    protected function isComplexQuery($builder)
+    {
+        return !Str::contains(Str::lower($builder->toSql()), ['union', 'having', 'distinct', 'order by', 'group by']);
     }
 
     /**
