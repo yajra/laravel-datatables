@@ -102,7 +102,7 @@ class CollectionEngine extends BaseEngine
     {
         $keyword = $this->request->keyword();
 
-        if ($this->config()->isSmartSearch()) {
+        if ($this->config->isSmartSearch()) {
             $this->smartGlobalSearch($keyword);
 
             return;
@@ -133,7 +133,7 @@ class CollectionEngine extends BaseEngine
      */
     private function globalSearch($keyword)
     {
-        if ($this->config()->isCaseInsensitive()) {
+        if ($this->config->isCaseInsensitive()) {
             $keyword = Str::lower($keyword);
         }
 
@@ -153,7 +153,7 @@ class CollectionEngine extends BaseEngine
                         continue;
                     }
 
-                    if ($this->config()->isCaseInsensitive()) {
+                    if ($this->config->isCaseInsensitive()) {
                         $value = Str::lower($value);
                     }
 
@@ -189,7 +189,7 @@ class CollectionEngine extends BaseEngine
 
                         $value = Arr::get($data, $column);
 
-                        if ($this->config()->isCaseInsensitive()) {
+                        if ($this->config->isCaseInsensitive()) {
                             if ($regex) {
                                 return preg_match('/' . $keyword . '/i', $value) == 1;
                             } else {
@@ -285,7 +285,7 @@ class CollectionEngine extends BaseEngine
             $column = $this->getColumnName($orderable['column']);
 
             $options = SORT_NATURAL;
-            if ($this->config()->isCaseInsensitive()) {
+            if ($this->config->isCaseInsensitive()) {
                 $options = SORT_NATURAL | SORT_FLAG_CASE;
             }
 

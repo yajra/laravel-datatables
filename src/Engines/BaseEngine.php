@@ -548,20 +548,10 @@ abstract class BaseEngine implements DataTableEngine
      */
     protected function getColumnsDefinition()
     {
-        $config  = $this->config()->get('datatables.columns');
+        $config  = $this->config->get('datatables.columns');
         $allowed = ['excess', 'escape', 'raw', 'blacklist', 'whitelist'];
 
         return array_merge(array_only($config, $allowed), $this->columnDef);
-    }
-
-    /**
-     * Get dataTables config instance.
-     *
-     * @return \Yajra\Datatables\Config
-     */
-    protected function config()
-    {
-        return resolve('datatables.config');
     }
 
     /**
@@ -695,15 +685,15 @@ abstract class BaseEngine implements DataTableEngine
             'data'            => $data,
         ], $this->appends);
 
-        if ($this->config()->isDebugging()) {
+        if ($this->config->isDebugging()) {
             $output = $this->showDebugger($output);
         }
 
         return new JsonResponse(
             $output,
             200,
-            $this->config()->get('datatables.json.header', []),
-            $this->config()->get('datatables.json.options', 0)
+            $this->config->get('datatables.json.header', []),
+            $this->config->get('datatables.json.options', 0)
         );
     }
 
@@ -724,7 +714,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     protected function errorResponse(\Exception $exception)
     {
-        $error = $this->config()->get('datatables.error');
+        $error = $this->config->get('datatables.error');
         if ($error === 'throw') {
             throw new Exception($exception->getMessage(), $code = 0, $exception);
         }
@@ -773,9 +763,9 @@ abstract class BaseEngine implements DataTableEngine
      */
     protected function setupKeyword($value)
     {
-        if ($this->config()->isSmartSearch()) {
+        if ($this->config->isSmartSearch()) {
             $keyword = '%' . $value . '%';
-            if ($this->config()->isWildcard()) {
+            if ($this->config->isWildcard()) {
                 $keyword = $this->wildcardLikeString($value);
             }
             // remove escaping slash added on js script request
