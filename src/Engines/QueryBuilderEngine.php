@@ -109,7 +109,7 @@ class QueryBuilderEngine extends BaseEngine
      *
      * @param string $keyword
      */
-    private function globalSearch($keyword)
+    protected function globalSearch($keyword)
     {
         $this->query->where(function ($query) use ($keyword) {
             $query = $this->getBaseQueryBuilder($query);
@@ -121,29 +121,9 @@ class QueryBuilderEngine extends BaseEngine
                 }
 
                 if ($this->hasCustomFilter($columnName)) {
-                    $callback = $this->columnDef['filter'][$columnName]['method'];
-                    $builder  = $query->newQuery();
-                    $callback($builder, $keyword);
-                    $query->addNestedWhereQuery($builder, 'or');
+                    $this->applyFilterColumn($query, $columnName, $keyword, 'or');
                 } else {
-                    if (count(explode('.', $columnName)) > 1) {
-                        $eagerLoads     = $this->getEagerLoads();
-                        $parts          = explode('.', $columnName);
-                        $relationColumn = array_pop($parts);
-                        $relation       = implode('.', $parts);
-                        if (in_array($relation, $eagerLoads)) {
-                            $this->compileRelationSearch(
-                                $query,
-                                $relation,
-                                $relationColumn,
-                                $keyword
-                            );
-                        } else {
-                            $this->compileQuerySearch($query, $columnName, $keyword);
-                        }
-                    } else {
-                        $this->compileQuerySearch($query, $columnName, $keyword);
-                    }
+                    $this->compileQuerySearch($query, $columnName, $keyword);
                 }
 
                 $this->isFilterApplied = true;
@@ -182,116 +162,19 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Get eager loads keys if eloquent.
-     *
-     * @return array
-     */
-    protected function getEagerLoads()
-    {
-        if ($this->query instanceof EloquentBuilder) {
-            return array_keys($this->query->getEagerLoads());
-        }
-
-        return [];
-    }
-
-    /**
-     * Add relation query on global search.
+     * Apply filterColumn api search.
      *
      * @param mixed  $query
-     * @param string $relation
-     * @param string $column
+     * @param string $columnName
      * @param string $keyword
+     * @param string $boolean
      */
-    protected function compileRelationSearch($query, $relation, $column, $keyword)
+    protected function applyFilterColumn($query, $columnName, $keyword, $boolean = 'and')
     {
-        $myQuery = clone $this->query;
-
-        /**
-         * For compile nested relation, we need store all nested relation as array
-         * and reverse order to apply where query.
-         * With this method we can create nested sub query with properly relation.
-         */
-
-        /**
-         * Store all relation data that require in next step
-         */
-        $relationChunk = [];
-
-        /**
-         * Store last eloquent query builder for get next relation.
-         */
-        $lastQuery = $query;
-
-        $relations    = explode('.', $relation);
-        $lastRelation = end($relations);
-        foreach ($relations as $relation) {
-            $relationType = $myQuery->getModel()->{$relation}();
-            $myQuery->orWhereHas($relation, function ($builder) use (
-                $column,
-                $keyword,
-                $query,
-                $relationType,
-                $relation,
-                $lastRelation,
-                &$relationChunk,
-                &$lastQuery
-            ) {
-                $builder->select($this->connection->raw('count(1)'));
-
-                // We will perform search on last relation only.
-                if ($relation == $lastRelation) {
-                    $this->compileQuerySearch($builder, $column, $keyword, '');
-                }
-
-                // Put require object to next step!!
-                $relationChunk[$relation] = [
-                    'builder'      => $builder,
-                    'relationType' => $relationType,
-                    'query'        => $lastQuery,
-                ];
-
-                // This is trick make sub query.
-                $lastQuery = $builder;
-            });
-
-            // This is trick to make nested relation by pass previous relation to be next query eloquent builder
-            $myQuery = $relationType;
-        }
-
-        /**
-         * Reverse them all
-         */
-        $relationChunk = array_reverse($relationChunk, true);
-
-        /**
-         * Create valuable for use in check last relation
-         */
-        end($relationChunk);
-        $lastRelation = key($relationChunk);
-        reset($relationChunk);
-
-        /**
-         * Walking ...
-         */
-        foreach ($relationChunk as $relation => $chunk) {
-            // Prepare variables
-            $builder  = $chunk['builder'];
-            $query    = $chunk['query'];
-            $bindings = $builder->getBindings();
-            $builder  = "({$builder->toSql()}) >= 1";
-
-            // Check if it last relation we will use orWhereRaw
-            if ($lastRelation == $relation) {
-                $relationMethod = "orWhereRaw";
-            } else {
-                // For case parent relation of nested relation.
-                // We must use and for properly query and get correct result
-                $relationMethod = "whereRaw";
-            }
-
-            $query->{$relationMethod}($builder, $bindings);
-        }
+        $callback = $this->columnDef['filter'][$columnName]['method'];
+        $builder  = $query->newQuery();
+        $callback($builder, $keyword);
+        $query->addNestedWhereQuery($builder, $boolean);
     }
 
     /**
@@ -554,6 +437,20 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
+     * Get eager loads keys if eloquent.
+     *
+     * @return array
+     */
+    protected function getEagerLoads()
+    {
+        if ($this->query instanceof EloquentBuilder) {
+            return array_keys($this->query->getEagerLoads());
+        }
+
+        return [];
+    }
+
+    /**
      * Join eager loaded relation and get the related column name.
      *
      * @param string $relation
@@ -562,6 +459,7 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function joinEagerLoadedColumn($relation, $relationColumn)
     {
+        $table = '';
         $lastQuery = $this->query;
         foreach (explode('.', $relation) as $eachRelation) {
             $model = $lastQuery->getRelation($eachRelation);
@@ -658,10 +556,7 @@ class QueryBuilderEngine extends BaseEngine
 
             if ($this->hasCustomFilter($column)) {
                 $keyword  = $this->getColumnSearchKeyword($index, $raw = true);
-                $callback = $this->columnDef['filter'][$column]['method'];
-                $builder  = $this->query->newQuery();
-                $callback($builder, $keyword);
-                $this->query->addNestedWhereQuery($builder);
+                $this->applyFilterColumn($this->query, $column, $keyword);
             } else {
                 if (count(explode('.', $column)) > 1) {
                     $eagerLoads     = $this->getEagerLoads();

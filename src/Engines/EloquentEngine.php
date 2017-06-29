@@ -137,4 +137,159 @@ class EloquentEngine extends QueryBuilderEngine
     {
         return $this->query->getModel()->getKeyName();
     }
+
+    /**
+     * Perform global search for the given keyword.
+     *
+     * @param string $keyword
+     */
+    protected function globalSearch($keyword)
+    {
+        $this->query->where(function ($query) use ($keyword) {
+            $query = $this->getBaseQueryBuilder($query);
+
+            foreach ($this->request->searchableColumnIndex() as $index) {
+                $columnName = $this->getColumnName($index);
+                if ($this->isBlacklisted($columnName) && !$this->hasCustomFilter($columnName)) {
+                    continue;
+                }
+
+                if ($this->hasCustomFilter($columnName)) {
+                    $this->applyFilterColumn($query, $columnName, $keyword);
+                } else {
+                    if (count(explode('.', $columnName)) > 1) {
+                        $this->eagerLoadSearch($query, $columnName, $keyword);
+                    } else {
+                        $this->compileQuerySearch($query, $columnName, $keyword);
+                    }
+                }
+
+                $this->isFilterApplied = true;
+            }
+        });
+    }
+
+    /**
+     * Perform search on eager loaded relation column.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $columnName
+     * @param string $keyword
+     */
+    private function eagerLoadSearch($query, $columnName, $keyword)
+    {
+        $eagerLoads     = $this->getEagerLoads();
+        $parts          = explode('.', $columnName);
+        $relationColumn = array_pop($parts);
+        $relation       = implode('.', $parts);
+        if (in_array($relation, $eagerLoads)) {
+            $this->compileRelationSearch(
+                $query,
+                $relation,
+                $relationColumn,
+                $keyword
+            );
+        } else {
+            $this->compileQuerySearch($query, $columnName, $keyword);
+        }
+    }
+
+    /**
+     * Add relation query on global search.
+     *
+     * @param mixed  $query
+     * @param string $relation
+     * @param string $column
+     * @param string $keyword
+     */
+    private function compileRelationSearch($query, $relation, $column, $keyword)
+    {
+        $myQuery = clone $this->query;
+
+        /**
+         * For compile nested relation, we need store all nested relation as array
+         * and reverse order to apply where query.
+         * With this method we can create nested sub query with properly relation.
+         */
+
+        /**
+         * Store all relation data that require in next step
+         */
+        $relationChunk = [];
+
+        /**
+         * Store last eloquent query builder for get next relation.
+         */
+        $lastQuery = $query;
+
+        $relations    = explode('.', $relation);
+        $lastRelation = end($relations);
+        foreach ($relations as $relation) {
+            $relationType = $myQuery->getModel()->{$relation}();
+            $myQuery->orWhereHas($relation, function ($builder) use (
+                $column,
+                $keyword,
+                $query,
+                $relationType,
+                $relation,
+                $lastRelation,
+                &$relationChunk,
+                &$lastQuery
+            ) {
+                $builder->select($this->connection->raw('count(1)'));
+
+                // We will perform search on last relation only.
+                if ($relation == $lastRelation) {
+                    $this->compileQuerySearch($builder, $column, $keyword, '');
+                }
+
+                // Put require object to next step!!
+                $relationChunk[$relation] = [
+                    'builder'      => $builder,
+                    'relationType' => $relationType,
+                    'query'        => $lastQuery,
+                ];
+
+                // This is trick make sub query.
+                $lastQuery = $builder;
+            });
+
+            // This is trick to make nested relation by pass previous relation to be next query eloquent builder
+            $myQuery = $relationType;
+        }
+
+        /**
+         * Reverse them all
+         */
+        $relationChunk = array_reverse($relationChunk, true);
+
+        /**
+         * Create valuable for use in check last relation
+         */
+        end($relationChunk);
+        $lastRelation = key($relationChunk);
+        reset($relationChunk);
+
+        /**
+         * Walking ...
+         */
+        foreach ($relationChunk as $relation => $chunk) {
+            // Prepare variables
+            $builder  = $chunk['builder'];
+            $query    = $chunk['query'];
+            $bindings = $builder->getBindings();
+            $builder  = "({$builder->toSql()}) >= 1";
+
+            // Check if it last relation we will use orWhereRaw
+            if ($lastRelation == $relation) {
+                $relationMethod = "orWhereRaw";
+            } else {
+                // For case parent relation of nested relation.
+                // We must use and for properly query and get correct result
+                $relationMethod = "whereRaw";
+            }
+
+            $query->{$relationMethod}($builder, $bindings);
+        }
+    }
 }
