@@ -33,7 +33,6 @@ class CollectionEngine extends BaseEngine
      * CollectionEngine constructor.
      *
      * @param \Illuminate\Support\Collection $collection
-     * @param \Yajra\Datatables\Request      $request
      */
     public function __construct(Collection $collection)
     {
