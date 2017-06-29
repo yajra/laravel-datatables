@@ -72,4 +72,16 @@ class Config
     {
         return $this->repository->get($key, $default);
     }
+
+    /**
+     * Set a given configuration value.
+     *
+     * @param  array|string $key
+     * @param  mixed        $value
+     * @return void
+     */
+    public function set($key, $value = null)
+    {
+        $this->repository->set($key, $value);
+    }
 }

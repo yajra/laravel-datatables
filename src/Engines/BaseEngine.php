@@ -464,7 +464,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function smart($bool = true)
     {
-        config(['datatables.search.smart' => $bool]);
+        $this->config->set(['datatables.search.smart' => $bool]);
 
         return $this;
     }
