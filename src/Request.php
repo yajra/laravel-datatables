@@ -10,8 +10,10 @@ use Illuminate\Http\Request as IlluminateRequest;
  *
  * @package Yajra\Datatables
  * @method input($key, $default = null)
- * @method has($key)
+ * @method get($key, $default = null)
  * @method query($key, $default = null)
+ * @method has($key)
+ * @method all()
  * @author  Arjay Angeles <aqangeles@gmail.com>
  */
 class Request
