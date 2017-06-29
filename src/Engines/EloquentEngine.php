@@ -61,8 +61,11 @@ class EloquentEngine extends QueryBuilderEngine
             $builder->whereNotNull($builder->getModel()->getQualifiedDeletedAtColumn());
         }
 
-        return $this->connection->table($this->connection->raw('(' . $builder->toSql() . ') count_row_table'))
-                                ->setBindings($builder->getBindings())->count();
+        $table = $this->connection->raw('(' . $builder->toSql() . ') count_row_table');
+
+        return $this->connection->table($table)
+                                ->setBindings($builder->getBindings())
+                                ->count();
     }
 
     /**

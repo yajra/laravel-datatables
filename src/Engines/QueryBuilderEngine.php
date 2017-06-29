@@ -440,9 +440,11 @@ class QueryBuilderEngine extends BaseEngine
     public function count()
     {
         $builder = $this->prepareCountQuery();
+        $table   = $this->connection->raw('(' . $builder->toSql() . ') count_row_table');
 
-        return $this->connection->table($this->connection->raw('(' . $builder->toSql() . ') count_row_table'))
-                                ->setBindings($builder->getBindings())->count();
+        return $this->connection->table($table)
+                                ->setBindings($builder->getBindings())
+                                ->count();
     }
 
     /**
