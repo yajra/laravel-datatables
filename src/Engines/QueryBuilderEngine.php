@@ -633,8 +633,7 @@ class QueryBuilderEngine extends BaseEngine
             $column = $this->getColumnName($index);
 
             if ($this->hasCustomFilter($column)) {
-                // get a raw keyword (without wildcards)
-                $keyword  = $this->getColumnSearchKeyword($index, true);
+                $keyword  = $this->getColumnSearchKeyword($index, $raw = true);
                 $callback = $this->columnDef['filter'][$column]['method'];
                 $builder  = $this->query->newQuery();
                 $callback($builder, $keyword);
