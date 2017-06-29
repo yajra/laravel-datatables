@@ -64,171 +64,6 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Perform global search for the given keyword.
-     *
-     * @param string $keyword
-     */
-    protected function globalSearch($keyword)
-    {
-        $this->query->where(function ($query) use ($keyword) {
-            $query = $this->getBaseQueryBuilder($query);
-
-            collect($this->request->searchableColumnIndex())->map(function ($index) {
-                return $this->getColumnName($index);
-            })->reject(function($column) {
-                return $this->isBlacklisted($column) && !$this->hasCustomFilter($column);
-            })->each(function ($column) use ($keyword, $query) {
-                if ($this->hasCustomFilter($column)) {
-                    $this->applyFilterColumn($query, $column, $keyword, 'or');
-                } else {
-                    $this->compileQuerySearch($query, $column, $keyword);
-                }
-
-                $this->isFilterApplied = true;
-            });
-        });
-    }
-
-    /**
-     * Get the base query builder instance.
-     *
-     * @param mixed $instance
-     * @return \Illuminate\Database\Query\Builder
-     */
-    protected function getBaseQueryBuilder($instance = null)
-    {
-        if (!$instance) {
-            $instance = $this->query;
-        }
-
-        if ($instance instanceof EloquentBuilder) {
-            return $instance->getQuery();
-        }
-
-        return $instance;
-    }
-
-    /**
-     * Check if column has custom filter handler.
-     *
-     * @param  string $columnName
-     * @return bool
-     */
-    public function hasCustomFilter($columnName)
-    {
-        return isset($this->columnDef['filter'][$columnName]);
-    }
-
-    /**
-     * Apply filterColumn api search.
-     *
-     * @param mixed  $query
-     * @param string $columnName
-     * @param string $keyword
-     * @param string $boolean
-     */
-    protected function applyFilterColumn($query, $columnName, $keyword, $boolean = 'and')
-    {
-        $callback = $this->columnDef['filter'][$columnName]['method'];
-        $builder  = $query->newQuery();
-        $callback($builder, $keyword);
-        $query->addNestedWhereQuery($builder, $boolean);
-    }
-
-    /**
-     * Compile query builder where clause depending on configurations.
-     *
-     * @param mixed  $query
-     * @param string $column
-     * @param string $keyword
-     * @param string $relation
-     */
-    protected function compileQuerySearch($query, $column, $keyword, $relation = 'or')
-    {
-        $column = $this->addTablePrefix($query, $column);
-        $column = $this->castColumn($column);
-        $sql    = $column . ' LIKE ?';
-
-        if ($this->config->isCaseInsensitive()) {
-            $sql = 'LOWER(' . $column . ') LIKE ?';
-        }
-
-        $query->{$relation . 'WhereRaw'}($sql, [$this->prepareKeyword($keyword)]);
-    }
-
-    /**
-     * Patch for fix about ambiguous field.
-     * Ambiguous field error will appear when query use join table and search with keyword.
-     *
-     * @param mixed  $query
-     * @param string $column
-     * @return string
-     */
-    protected function addTablePrefix($query, $column)
-    {
-        if (strpos($column, '.') === false) {
-            $q = $this->getBaseQueryBuilder($query);
-            if (!$q->from instanceof Expression) {
-                $column = $q->from . '.' . $column;
-            }
-        }
-
-        return $this->wrap($column);
-    }
-
-    /**
-     * Wrap column with DB grammar.
-     *
-     * @param string $column
-     * @return string
-     */
-    protected function wrap($column)
-    {
-        return $this->connection->getQueryGrammar()->wrap($column);
-    }
-
-    /**
-     * Wrap a column and cast based on database driver.
-     *
-     * @param  string $column
-     * @return string
-     */
-    protected function castColumn($column)
-    {
-        switch ($this->connection->getDriverName()) {
-            case 'pgsql':
-                return 'CAST(' . $column . ' as TEXT)';
-            case 'firebird':
-                return 'CAST(' . $column . ' as VARCHAR(255))';
-            default:
-                return $column;
-        }
-    }
-
-    /**
-     * Prepare search keyword based on configurations.
-     *
-     * @param string $keyword
-     * @return string
-     */
-    protected function prepareKeyword($keyword)
-    {
-        if ($this->config->isCaseInsensitive()) {
-            $keyword = Str::lower($keyword);
-        }
-
-        if ($this->config->isWildcard()) {
-            $keyword = $this->wildcardLikeString($keyword);
-        }
-
-        if ($this->config->isSmartSearch()) {
-            $keyword = "%$keyword%";
-        }
-
-        return $keyword;
-    }
-
-    /**
      * Organizes works.
      *
      * @param bool $mDataSupport
@@ -308,6 +143,17 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
+     * Wrap column with DB grammar.
+     *
+     * @param string $column
+     * @return string
+     */
+    protected function wrap($column)
+    {
+        return $this->connection->getQueryGrammar()->wrap($column);
+    }
+
+    /**
      * Perform sorting of columns.
      *
      * @return void
@@ -372,6 +218,25 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
+     * Get the base query builder instance.
+     *
+     * @param mixed $instance
+     * @return \Illuminate\Database\Query\Builder
+     */
+    protected function getBaseQueryBuilder($instance = null)
+    {
+        if (!$instance) {
+            $instance = $this->query;
+        }
+
+        if ($instance instanceof EloquentBuilder) {
+            return $instance->getQuery();
+        }
+
+        return $instance;
+    }
+
+    /**
      * Check if column has custom sort handler.
      *
      * @param string $column
@@ -386,7 +251,7 @@ class QueryBuilderEngine extends BaseEngine
      * Apply orderColumn custom query.
      *
      * @param string $column
-     * @param array $orderable
+     * @param array  $orderable
      */
     protected function applyOrderColumn($column, $orderable): void
     {
@@ -537,6 +402,17 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
+     * Check if column has custom filter handler.
+     *
+     * @param  string $columnName
+     * @return bool
+     */
+    public function hasCustomFilter($columnName)
+    {
+        return isset($this->columnDef['filter'][$columnName]);
+    }
+
+    /**
      * Get column keyword to use for search.
      *
      * @param int  $i
@@ -551,6 +427,22 @@ class QueryBuilderEngine extends BaseEngine
         }
 
         return $this->setupKeyword($keyword);
+    }
+
+    /**
+     * Apply filterColumn api search.
+     *
+     * @param mixed  $query
+     * @param string $columnName
+     * @param string $keyword
+     * @param string $boolean
+     */
+    protected function applyFilterColumn($query, $columnName, $keyword, $boolean = 'and')
+    {
+        $callback = $this->columnDef['filter'][$columnName]['method'];
+        $builder  = $query->newQuery();
+        $callback($builder, $keyword);
+        $query->addNestedWhereQuery($builder, $boolean);
     }
 
     /**
@@ -581,7 +473,7 @@ class QueryBuilderEngine extends BaseEngine
         switch ($this->connection->getDriverName()) {
             case 'oracle':
                 $sql = !$this->config
-                             ->isCaseInsensitive() ? 'REGEXP_LIKE( ' . $column . ' , ? )' : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
+                    ->isCaseInsensitive() ? 'REGEXP_LIKE( ' . $column . ' , ? )' : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
                 break;
 
             case 'pgsql':
@@ -590,11 +482,93 @@ class QueryBuilderEngine extends BaseEngine
 
             default:
                 $sql     = !$this->config
-                                 ->isCaseInsensitive() ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
+                    ->isCaseInsensitive() ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
                 $keyword = Str::lower($keyword);
         }
 
         $this->query->whereRaw($sql, [$keyword]);
+    }
+
+    /**
+     * Compile query builder where clause depending on configurations.
+     *
+     * @param mixed  $query
+     * @param string $column
+     * @param string $keyword
+     * @param string $relation
+     */
+    protected function compileQuerySearch($query, $column, $keyword, $relation = 'or')
+    {
+        $column = $this->addTablePrefix($query, $column);
+        $column = $this->castColumn($column);
+        $sql    = $column . ' LIKE ?';
+
+        if ($this->config->isCaseInsensitive()) {
+            $sql = 'LOWER(' . $column . ') LIKE ?';
+        }
+
+        $query->{$relation . 'WhereRaw'}($sql, [$this->prepareKeyword($keyword)]);
+    }
+
+    /**
+     * Patch for fix about ambiguous field.
+     * Ambiguous field error will appear when query use join table and search with keyword.
+     *
+     * @param mixed  $query
+     * @param string $column
+     * @return string
+     */
+    protected function addTablePrefix($query, $column)
+    {
+        if (strpos($column, '.') === false) {
+            $q = $this->getBaseQueryBuilder($query);
+            if (!$q->from instanceof Expression) {
+                $column = $q->from . '.' . $column;
+            }
+        }
+
+        return $this->wrap($column);
+    }
+
+    /**
+     * Wrap a column and cast based on database driver.
+     *
+     * @param  string $column
+     * @return string
+     */
+    protected function castColumn($column)
+    {
+        switch ($this->connection->getDriverName()) {
+            case 'pgsql':
+                return 'CAST(' . $column . ' as TEXT)';
+            case 'firebird':
+                return 'CAST(' . $column . ' as VARCHAR(255))';
+            default:
+                return $column;
+        }
+    }
+
+    /**
+     * Prepare search keyword based on configurations.
+     *
+     * @param string $keyword
+     * @return string
+     */
+    protected function prepareKeyword($keyword)
+    {
+        if ($this->config->isCaseInsensitive()) {
+            $keyword = Str::lower($keyword);
+        }
+
+        if ($this->config->isWildcard()) {
+            $keyword = $this->wildcardLikeString($keyword);
+        }
+
+        if ($this->config->isSmartSearch()) {
+            $keyword = "%$keyword%";
+        }
+
+        return $keyword;
     }
 
     /**
@@ -641,6 +615,35 @@ class QueryBuilderEngine extends BaseEngine
     public function getQuery()
     {
         return $this->query;
+    }
+
+    /**
+     * Perform global search for the given keyword.
+     *
+     * @param string $keyword
+     */
+    protected function globalSearch($keyword)
+    {
+        $this->query->where(function ($query) use ($keyword) {
+            $query = $this->getBaseQueryBuilder($query);
+
+            collect($this->request->searchableColumnIndex())
+                ->map(function ($index) {
+                    return $this->getColumnName($index);
+                })
+                ->reject(function ($column) {
+                    return $this->isBlacklisted($column) && !$this->hasCustomFilter($column);
+                })
+                ->each(function ($column) use ($keyword, $query) {
+                    if ($this->hasCustomFilter($column)) {
+                        $this->applyFilterColumn($query, $column, $keyword, 'or');
+                    } else {
+                        $this->compileQuerySearch($query, $column, $keyword);
+                    }
+
+                    $this->isFilterApplied = true;
+                });
+        });
     }
 
     /**
