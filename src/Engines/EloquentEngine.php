@@ -195,10 +195,10 @@ class EloquentEngine extends QueryBuilderEngine
     /**
      * Add relation query on global search.
      *
-     * @param mixed  $query
-     * @param string $relation
-     * @param string $column
-     * @param string $keyword
+     * @param Builder $query
+     * @param string  $relation
+     * @param string  $column
+     * @param string  $keyword
      */
     private function compileRelationSearch($query, $relation, $column, $keyword)
     {
@@ -272,7 +272,7 @@ class EloquentEngine extends QueryBuilderEngine
          * Walking ...
          */
         foreach ($relationChunk as $relation => $chunk) {
-            // Prepare variables
+            /** @var Builder $builder */
             $builder  = $chunk['builder'];
             $query    = $chunk['query'];
             $bindings = $builder->getBindings();
