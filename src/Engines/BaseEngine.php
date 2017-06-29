@@ -404,33 +404,7 @@ abstract class BaseEngine implements DataTableEngine
 
         return $this;
     }
-
-    /**
-     * Organizes works.
-     *
-     * @param bool $mDataSupport
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception
-     */
-    public function make($mDataSupport = false)
-    {
-        try {
-            $this->totalRecords = $this->totalCount();
-
-            if ($this->totalRecords) {
-                $this->filterRecords();
-                $this->ordering();
-                $this->paginate();
-            }
-
-            $data = $this->transform($this->getProcessedData($mDataSupport));
-
-            return $this->render($data);
-        } catch (\Exception $exception) {
-            return $this->errorResponse($exception);
-        }
-    }
-
+    
     /**
      * Perform necessary filters.
      *

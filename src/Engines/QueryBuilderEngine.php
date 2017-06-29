@@ -74,46 +74,6 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Count total items.
-     *
-     * @return integer
-     */
-    public function totalCount()
-    {
-        return $this->totalRecords ? $this->totalRecords : $this->count();
-    }
-
-    /**
-     * Counts current query.
-     *
-     * @return int
-     */
-    public function count()
-    {
-        $myQuery = clone $this->query;
-        // if its a normal query ( no union, having and distinct word )
-        // replace the select with static text to improve performance
-        if (!Str::contains(Str::lower($myQuery->toSql()), ['union', 'having', 'distinct', 'order by', 'group by'])) {
-            $row_count = $this->wrap('row_count');
-            $myQuery->select($this->connection->raw("'1' as {$row_count}"));
-        }
-
-        return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
-                                ->setBindings($myQuery->getBindings())->count();
-    }
-
-    /**
-     * Wrap column with DB grammar.
-     *
-     * @param string $column
-     * @return string
-     */
-    protected function wrap($column)
-    {
-        return $this->connection->getQueryGrammar()->wrap($column);
-    }
-
-    /**
      * Perform global search.
      *
      * @return void
@@ -386,6 +346,17 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
+     * Wrap column with DB grammar.
+     *
+     * @param string $column
+     * @return string
+     */
+    protected function wrap($column)
+    {
+        return $this->connection->getQueryGrammar()->wrap($column);
+    }
+
+    /**
      * Wrap a column and cast based on database driver.
      *
      * @param  string $column
@@ -426,177 +397,58 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Perform column search.
+     * Organizes works.
      *
-     * @return void
+     * @param bool $mDataSupport
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function columnSearch()
+    public function make($mDataSupport = false)
     {
-        $columns = $this->request->columns();
+        try {
+            $this->totalRecords = $this->totalCount();
 
-        foreach ($columns as $index => $column) {
-            if (!$this->request->isColumnSearchable($index)) {
-                continue;
+            if ($this->totalRecords) {
+                $this->filterRecords();
+                $this->ordering();
+                $this->paginate();
             }
 
-            $column = $this->getColumnName($index);
+            $data = $this->transform($this->getProcessedData($mDataSupport));
 
-            if ($this->hasCustomFilter($column)) {
-                // get a raw keyword (without wildcards)
-                $keyword  = $this->getColumnSearchKeyword($index, true);
-                $callback = $this->columnDef['filter'][$column]['method'];
-                $builder  = $this->query->newQuery();
-                $callback($builder, $keyword);
-                $this->query->addNestedWhereQuery($builder);
-            } else {
-                if (count(explode('.', $column)) > 1) {
-                    $eagerLoads     = $this->getEagerLoads();
-                    $parts          = explode('.', $column);
-                    $relationColumn = array_pop($parts);
-                    $relation       = implode('.', $parts);
-                    if (in_array($relation, $eagerLoads)) {
-                        $column = $this->joinEagerLoadedColumn($relation, $relationColumn);
-                    }
-                }
-
-                $keyword = $this->getColumnSearchKeyword($index);
-                $this->compileColumnSearch($index, $column, $keyword);
-            }
-
-            $this->isFilterApplied = true;
+            return $this->render($data);
+        } catch (\Exception $exception) {
+            return $this->errorResponse($exception);
         }
     }
 
     /**
-     * Get column keyword to use for search.
+     * Count total items.
      *
-     * @param int  $i
-     * @param bool $raw
-     * @return string
+     * @return integer
      */
-    protected function getColumnSearchKeyword($i, $raw = false)
+    public function totalCount()
     {
-        $keyword = $this->request->columnKeyword($i);
-        if ($raw || $this->request->isRegex($i)) {
-            return $keyword;
-        }
-
-        return $this->setupKeyword($keyword);
+        return $this->totalRecords ? $this->totalRecords : $this->count();
     }
 
     /**
-     * Join eager loaded relation and get the related column name.
+     * Counts current query.
      *
-     * @param string $relation
-     * @param string $relationColumn
-     * @return string
+     * @return int
      */
-    protected function joinEagerLoadedColumn($relation, $relationColumn)
+    public function count()
     {
-        $lastQuery = $this->query;
-        foreach (explode('.', $relation) as $eachRelation) {
-            $model = $lastQuery->getRelation($eachRelation);
-            switch (true) {
-                case $model instanceof BelongsToMany:
-                    $pivot   = $model->getTable();
-                    $pivotPK = $model->getExistenceCompareKey();
-                    $pivotFK = $model->getQualifiedParentKeyName();
-                    $this->performJoin($pivot, $pivotPK, $pivotFK);
-
-                    $related = $model->getRelated();
-                    $table   = $related->getTable();
-                    $tablePK = $related->getForeignKey();
-                    $foreign = $pivot . '.' . $tablePK;
-                    $other   = $related->getQualifiedKeyName();
-
-                    $lastQuery->addSelect($table . '.' . $relationColumn);
-                    $this->performJoin($table, $foreign, $other);
-
-                    break;
-
-                case $model instanceof HasOneOrMany:
-                    $table   = $model->getRelated()->getTable();
-                    $foreign = $model->getQualifiedForeignKeyName();
-                    $other   = $model->getQualifiedParentKeyName();
-                    break;
-
-                case $model instanceof BelongsTo:
-                    $table   = $model->getRelated()->getTable();
-                    $foreign = $model->getQualifiedForeignKey();
-                    $other   = $model->getQualifiedOwnerKeyName();
-                    break;
-
-                default:
-                    $table = $model->getRelated()->getTable();
-                    if ($model instanceof HasOneOrMany) {
-                        $foreign = $model->getForeignKey();
-                        $other   = $model->getQualifiedParentKeyName();
-                    } else {
-                        $foreign = $model->getQualifiedForeignKey();
-                        $other   = $model->getQualifiedOtherKeyName();
-                    }
-            }
-            $this->performJoin($table, $foreign, $other);
-            $lastQuery = $model->getQuery();
+        $myQuery = clone $this->query;
+        // if its a normal query ( no union, having and distinct word )
+        // replace the select with static text to improve performance
+        if (!Str::contains(Str::lower($myQuery->toSql()), ['union', 'having', 'distinct', 'order by', 'group by'])) {
+            $row_count = $this->wrap('row_count');
+            $myQuery->select($this->connection->raw("'1' as {$row_count}"));
         }
 
-        return $table . '.' . $relationColumn;
-    }
-
-    /**
-     * Perform join query.
-     *
-     * @param string $table
-     * @param string $foreign
-     * @param string $other
-     */
-    protected function performJoin($table, $foreign, $other)
-    {
-        $joins = [];
-        foreach ((array) $this->getBaseQueryBuilder()->joins as $key => $join) {
-            $joins[] = $join->table;
-        }
-
-        if (!in_array($table, $joins)) {
-            $this->getBaseQueryBuilder()->leftJoin($table, $foreign, '=', $other);
-        }
-    }
-
-    /**
-     * Compile queries for column search.
-     *
-     * @param int    $i
-     * @param string $column
-     * @param string $keyword
-     */
-    protected function compileColumnSearch($i, $column, $keyword)
-    {
-        if ($this->request->isRegex($i)) {
-            $column = strstr($column, '(') ? $this->connection->raw($column) : $column;
-            $this->regexColumnSearch($column, $keyword);
-        } else {
-            $this->compileQuerySearch($this->query, $column, $keyword, '');
-        }
-    }
-
-    /**
-     * Compile regex query column search.
-     *
-     * @param mixed  $column
-     * @param string $keyword
-     */
-    protected function regexColumnSearch($column, $keyword)
-    {
-        if ($this->isOracleSql()) {
-            $sql = !$this->isCaseInsensitive() ? 'REGEXP_LIKE( ' . $column . ' , ? )' : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
-            $this->query->whereRaw($sql, [$keyword]);
-        } elseif ($this->database == 'pgsql') {
-            $sql = !$this->isCaseInsensitive() ? $column . ' ~ ?' : $column . ' ~* ? ';
-            $this->query->whereRaw($sql, [$keyword]);
-        } else {
-            $sql = !$this->isCaseInsensitive() ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
-            $this->query->whereRaw($sql, [Str::lower($keyword)]);
-        }
+        return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
+                                ->setBindings($myQuery->getBindings())->count();
     }
 
     /**
@@ -678,6 +530,84 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
+     * Join eager loaded relation and get the related column name.
+     *
+     * @param string $relation
+     * @param string $relationColumn
+     * @return string
+     */
+    protected function joinEagerLoadedColumn($relation, $relationColumn)
+    {
+        $lastQuery = $this->query;
+        foreach (explode('.', $relation) as $eachRelation) {
+            $model = $lastQuery->getRelation($eachRelation);
+            switch (true) {
+                case $model instanceof BelongsToMany:
+                    $pivot   = $model->getTable();
+                    $pivotPK = $model->getExistenceCompareKey();
+                    $pivotFK = $model->getQualifiedParentKeyName();
+                    $this->performJoin($pivot, $pivotPK, $pivotFK);
+
+                    $related = $model->getRelated();
+                    $table   = $related->getTable();
+                    $tablePK = $related->getForeignKey();
+                    $foreign = $pivot . '.' . $tablePK;
+                    $other   = $related->getQualifiedKeyName();
+
+                    $lastQuery->addSelect($table . '.' . $relationColumn);
+                    $this->performJoin($table, $foreign, $other);
+
+                    break;
+
+                case $model instanceof HasOneOrMany:
+                    $table   = $model->getRelated()->getTable();
+                    $foreign = $model->getQualifiedForeignKeyName();
+                    $other   = $model->getQualifiedParentKeyName();
+                    break;
+
+                case $model instanceof BelongsTo:
+                    $table   = $model->getRelated()->getTable();
+                    $foreign = $model->getQualifiedForeignKey();
+                    $other   = $model->getQualifiedOwnerKeyName();
+                    break;
+
+                default:
+                    $table = $model->getRelated()->getTable();
+                    if ($model instanceof HasOneOrMany) {
+                        $foreign = $model->getForeignKey();
+                        $other   = $model->getQualifiedParentKeyName();
+                    } else {
+                        $foreign = $model->getQualifiedForeignKey();
+                        $other   = $model->getQualifiedOtherKeyName();
+                    }
+            }
+            $this->performJoin($table, $foreign, $other);
+            $lastQuery = $model->getQuery();
+        }
+
+        return $table . '.' . $relationColumn;
+    }
+
+    /**
+     * Perform join query.
+     *
+     * @param string $table
+     * @param string $foreign
+     * @param string $other
+     */
+    protected function performJoin($table, $foreign, $other)
+    {
+        $joins = [];
+        foreach ((array) $this->getBaseQueryBuilder()->joins as $key => $join) {
+            $joins[] = $join->table;
+        }
+
+        if (!in_array($table, $joins)) {
+            $this->getBaseQueryBuilder()->leftJoin($table, $foreign, '=', $other);
+        }
+    }
+
+    /**
      * Get NULLS LAST SQL.
      *
      * @param  string $column
@@ -689,6 +619,102 @@ class QueryBuilderEngine extends BaseEngine
         $sql = config('datatables.nulls_last_sql', '%s %s NULLS LAST');
 
         return sprintf($sql, $column, $direction);
+    }
+
+    /**
+     * Perform column search.
+     *
+     * @return void
+     */
+    public function columnSearch()
+    {
+        $columns = $this->request->columns();
+
+        foreach ($columns as $index => $column) {
+            if (!$this->request->isColumnSearchable($index)) {
+                continue;
+            }
+
+            $column = $this->getColumnName($index);
+
+            if ($this->hasCustomFilter($column)) {
+                // get a raw keyword (without wildcards)
+                $keyword  = $this->getColumnSearchKeyword($index, true);
+                $callback = $this->columnDef['filter'][$column]['method'];
+                $builder  = $this->query->newQuery();
+                $callback($builder, $keyword);
+                $this->query->addNestedWhereQuery($builder);
+            } else {
+                if (count(explode('.', $column)) > 1) {
+                    $eagerLoads     = $this->getEagerLoads();
+                    $parts          = explode('.', $column);
+                    $relationColumn = array_pop($parts);
+                    $relation       = implode('.', $parts);
+                    if (in_array($relation, $eagerLoads)) {
+                        $column = $this->joinEagerLoadedColumn($relation, $relationColumn);
+                    }
+                }
+
+                $keyword = $this->getColumnSearchKeyword($index);
+                $this->compileColumnSearch($index, $column, $keyword);
+            }
+
+            $this->isFilterApplied = true;
+        }
+    }
+
+    /**
+     * Get column keyword to use for search.
+     *
+     * @param int  $i
+     * @param bool $raw
+     * @return string
+     */
+    protected function getColumnSearchKeyword($i, $raw = false)
+    {
+        $keyword = $this->request->columnKeyword($i);
+        if ($raw || $this->request->isRegex($i)) {
+            return $keyword;
+        }
+
+        return $this->setupKeyword($keyword);
+    }
+
+    /**
+     * Compile queries for column search.
+     *
+     * @param int    $i
+     * @param string $column
+     * @param string $keyword
+     */
+    protected function compileColumnSearch($i, $column, $keyword)
+    {
+        if ($this->request->isRegex($i)) {
+            $column = strstr($column, '(') ? $this->connection->raw($column) : $column;
+            $this->regexColumnSearch($column, $keyword);
+        } else {
+            $this->compileQuerySearch($this->query, $column, $keyword, '');
+        }
+    }
+
+    /**
+     * Compile regex query column search.
+     *
+     * @param mixed  $column
+     * @param string $keyword
+     */
+    protected function regexColumnSearch($column, $keyword)
+    {
+        if ($this->isOracleSql()) {
+            $sql = !$this->isCaseInsensitive() ? 'REGEXP_LIKE( ' . $column . ' , ? )' : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
+            $this->query->whereRaw($sql, [$keyword]);
+        } elseif ($this->database == 'pgsql') {
+            $sql = !$this->isCaseInsensitive() ? $column . ' ~ ?' : $column . ' ~* ? ';
+            $this->query->whereRaw($sql, [$keyword]);
+        } else {
+            $sql = !$this->isCaseInsensitive() ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
+            $this->query->whereRaw($sql, [Str::lower($keyword)]);
+        }
     }
 
     /**
