@@ -71,7 +71,7 @@ class DataProcessor
      * @param mixed $results
      * @param array $columnDef
      * @param array $templates
-     * @param int $start
+     * @param int   $start
      */
     public function __construct($results, array $columnDef, array $templates, $start)
     {

@@ -168,7 +168,7 @@ class Request
      * Check if a column is searchable.
      *
      * @param integer $i
-     * @param bool $column_search
+     * @param bool    $column_search
      * @return bool
      */
     public function isColumnSearchable($i, $column_search = true)

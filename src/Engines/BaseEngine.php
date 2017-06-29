@@ -175,9 +175,9 @@ abstract class BaseEngine implements DataTableEngineContract
     /**
      * Add column in collection.
      *
-     * @param string $name
+     * @param string          $name
      * @param string|callable $content
-     * @param bool|int $order
+     * @param bool|int        $order
      * @return $this
      */
     public function addColumn($name, $content, $order = false)
@@ -204,7 +204,7 @@ abstract class BaseEngine implements DataTableEngineContract
     /**
      * Edit column's content.
      *
-     * @param string $name
+     * @param string          $name
      * @param string|callable $content
      * @return $this
      */
@@ -298,7 +298,7 @@ abstract class BaseEngine implements DataTableEngineContract
     /**
      * Add DT_RowData template.
      *
-     * @param string $key
+     * @param string          $key
      * @param string|callable $value
      * @return $this
      */
@@ -326,7 +326,7 @@ abstract class BaseEngine implements DataTableEngineContract
     /**
      * Add DT_RowAttr template.
      *
-     * @param string $key
+     * @param string          $key
      * @param string|callable $value
      * @return $this
      */
@@ -340,7 +340,7 @@ abstract class BaseEngine implements DataTableEngineContract
     /**
      * Add custom filter handler for the give column.
      *
-     * @param string $column
+     * @param string   $column
      * @param callable $callback
      * @return $this
      */
@@ -354,9 +354,9 @@ abstract class BaseEngine implements DataTableEngineContract
     /**
      * Order each given columns versus the given custom sql.
      *
-     * @param array $columns
+     * @param array  $columns
      * @param string $sql
-     * @param array $bindings
+     * @param array  $bindings
      * @return $this
      */
     public function orderColumns(array $columns, $sql, $bindings = [])
@@ -373,7 +373,7 @@ abstract class BaseEngine implements DataTableEngineContract
      *
      * @param string $column
      * @param string $sql
-     * @param array $bindings
+     * @param array  $bindings
      * @return $this
      * @internal string $1 Special variable that returns the requested order direction of the column.
      */
@@ -869,7 +869,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * Adds % wildcards to the given string.
      *
      * @param string $str
-     * @param bool $lowercase
+     * @param bool   $lowercase
      * @return string
      */
     protected function wildcardLikeString($str, $lowercase = true)
@@ -894,8 +894,8 @@ abstract class BaseEngine implements DataTableEngineContract
      * Update flags to disable global search.
      *
      * @param  callable $callback
-     * @param  mixed $parameters
-     * @param  bool $autoFilter
+     * @param  mixed    $parameters
+     * @param  bool     $autoFilter
      */
     protected function overrideGlobalSearch(callable $callback, $parameters, $autoFilter = false)
     {
@@ -909,7 +909,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * Get column name to be use for filtering and sorting.
      *
      * @param integer $index
-     * @param bool $wantsAlias
+     * @param bool    $wantsAlias
      * @return string
      */
     protected function getColumnName($index, $wantsAlias = false)
@@ -955,7 +955,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * Get column name from string.
      *
      * @param string $str
-     * @param bool $wantsAlias
+     * @param bool   $wantsAlias
      * @return string
      */
     protected function extractColumnName($str, $wantsAlias)

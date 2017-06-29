@@ -31,7 +31,7 @@ class EloquentEngine extends QueryBuilderEngine
     protected $onlyTrashed = false;
 
     /**
-     * @param mixed $model
+     * @param mixed                     $model
      * @param \Yajra\Datatables\Request $request
      */
     public function __construct($model, Request $request)

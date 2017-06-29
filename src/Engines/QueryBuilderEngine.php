@@ -43,7 +43,7 @@ class QueryBuilderEngine extends BaseEngine
 
     /**
      * @param \Illuminate\Database\Query\Builder $builder
-     * @param \Yajra\Datatables\Request $request
+     * @param \Yajra\Datatables\Request          $request
      */
     public function __construct(Builder $builder, Request $request)
     {
@@ -63,7 +63,7 @@ class QueryBuilderEngine extends BaseEngine
      * Overrides global search.
      *
      * @param callable $callback
-     * @param bool $globalSearch
+     * @param bool     $globalSearch
      * @return $this
      */
     public function filter(callable $callback, $globalSearch = false)
@@ -240,7 +240,7 @@ class QueryBuilderEngine extends BaseEngine
     /**
      * Add relation query on global search.
      *
-     * @param mixed $query
+     * @param mixed  $query
      * @param string $relation
      * @param string $column
      * @param string $keyword
@@ -339,7 +339,7 @@ class QueryBuilderEngine extends BaseEngine
     /**
      * Compile query builder where clause depending on configurations.
      *
-     * @param mixed $query
+     * @param mixed  $query
      * @param string $column
      * @param string $keyword
      * @param string $relation
@@ -361,7 +361,7 @@ class QueryBuilderEngine extends BaseEngine
      * Patch for fix about ambiguous field.
      * Ambiguous field error will appear when query use join table and search with keyword.
      *
-     * @param mixed $query
+     * @param mixed  $query
      * @param string $column
      * @return string
      */
@@ -470,7 +470,7 @@ class QueryBuilderEngine extends BaseEngine
     /**
      * Get column keyword to use for search.
      *
-     * @param int $i
+     * @param int  $i
      * @param bool $raw
      * @return string
      */
@@ -565,7 +565,7 @@ class QueryBuilderEngine extends BaseEngine
     /**
      * Compile queries for column search.
      *
-     * @param int $i
+     * @param int    $i
      * @param string $column
      * @param string $keyword
      */
@@ -582,7 +582,7 @@ class QueryBuilderEngine extends BaseEngine
     /**
      * Compile regex query column search.
      *
-     * @param mixed $column
+     * @param mixed  $column
      * @param string $keyword
      */
     protected function regexColumnSearch($column, $keyword)
@@ -715,9 +715,9 @@ class QueryBuilderEngine extends BaseEngine
     /**
      * Add column in collection.
      *
-     * @param string $name
+     * @param string          $name
      * @param string|callable $content
-     * @param bool|int $order
+     * @param bool|int        $order
      * @return \Yajra\Datatables\Engines\BaseEngine|\Yajra\Datatables\Engines\QueryBuilderEngine
      */
     public function addColumn($name, $content, $order = false)

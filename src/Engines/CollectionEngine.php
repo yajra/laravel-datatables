@@ -34,7 +34,7 @@ class CollectionEngine extends BaseEngine
      * CollectionEngine constructor.
      *
      * @param \Illuminate\Support\Collection $collection
-     * @param \Yajra\Datatables\Request $request
+     * @param \Yajra\Datatables\Request      $request
      */
     public function __construct(Collection $collection, Request $request)
     {
@@ -60,7 +60,7 @@ class CollectionEngine extends BaseEngine
      * Overrides global search.
      *
      * @param callable $callback
-     * @param bool $globalSearch
+     * @param bool     $globalSearch
      * @return $this
      */
     public function filter(callable $callback, $globalSearch = false)

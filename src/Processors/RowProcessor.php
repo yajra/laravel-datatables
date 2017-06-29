@@ -36,7 +36,7 @@ class RowProcessor
     /**
      * Process DT RowId and Class value.
      *
-     * @param string $attribute
+     * @param string          $attribute
      * @param string|callable $template
      * @return $this
      */
@@ -57,7 +57,7 @@ class RowProcessor
      * Process DT Row Data and Attr.
      *
      * @param string $attribute
-     * @param array $template
+     * @param array  $template
      * @return $this
      */
     public function rowData($attribute, array $template)

@@ -60,8 +60,8 @@ class Helper
      * Determines if content is callable or blade string, processes and returns.
      *
      * @param string|callable $content Pre-processed content
-     * @param array $data data to use with blade template
-     * @param mixed $param parameter to call with callable
+     * @param array           $data data to use with blade template
+     * @param mixed           $param parameter to call with callable
      * @return string Processed content
      */
     public static function compileContent($content, array $data, $param)
@@ -79,7 +79,7 @@ class Helper
      * Parses and compiles strings by using Blade Template System.
      *
      * @param string $str
-     * @param array $data
+     * @param array  $data
      * @return string
      * @throws \Exception
      */
@@ -294,7 +294,7 @@ class Helper
     /**
      * Replace all pattern occurrences with keyword
      *
-     * @param array $subject
+     * @param array  $subject
      * @param string $keyword
      * @param string $pattern
      * @return array
