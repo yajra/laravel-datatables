@@ -200,7 +200,13 @@ class Request
      */
     public function keyword()
     {
-        return $this->request->input('search.value');
+        $keyword = $this->request->input('search.value');
+
+        if (is_array($keyword)) {
+            return implode(' ', $keyword);
+        }
+
+        return $keyword;
     }
 
     /**
