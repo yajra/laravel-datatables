@@ -30,6 +30,11 @@ class EloquentEngine extends QueryBuilderEngine
     protected $onlyTrashed = false;
 
     /**
+     * @var \Illuminate\Database\Eloquent\Builder
+     */
+    protected $query;
+
+    /**
      * EloquentEngine constructor.
      *
      * @param mixed                     $model
