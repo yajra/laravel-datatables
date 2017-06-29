@@ -134,7 +134,7 @@ class QueryBuilderEngine extends BaseEngine
      * Get the base query builder instance.
      *
      * @param mixed $instance
-     * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
+     * @return \Illuminate\Database\Query\Builder
      */
     protected function getBaseQueryBuilder($instance = null)
     {
