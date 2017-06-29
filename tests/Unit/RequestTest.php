@@ -8,28 +8,6 @@ use Yajra\Datatables\Tests\TestCase;
 
 class RequestTest extends TestCase
 {
-    public function test_check_legacy_code()
-    {
-        request()->merge(['sEcho' => 1]);
-        $request       = $this->getRequest();
-        try {
-            $request->checkLegacyCode();
-        } catch (Exception $e) {
-            $this->assertContains('DataTables legacy code is not supported!', $e->getMessage());
-        }
-    }
-
-    public function test_check_legacy_code_insufficient_parameters()
-    {
-        request()->merge(['draw' => 1]);
-        $request       = $this->getRequest();
-        try {
-            $request->checkLegacyCode();
-        } catch (Exception $e) {
-            $this->assertContains('Insufficient parameters', $e->getMessage());
-        }
-    }
-
     public function test_is_searchable()
     {
         $_GET['search']['value'] = '';

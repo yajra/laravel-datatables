@@ -2,7 +2,6 @@
 
 namespace Yajra\Datatables;
 
-use Exception;
 use Illuminate\Http\Request as IlluminateRequest;
 
 /**
@@ -68,20 +67,6 @@ class Request
     public function columns()
     {
         return (array) $this->request->input('columns');
-    }
-
-    /**
-     * Check if request uses legacy code
-     *
-     * @throws Exception
-     */
-    public function checkLegacyCode()
-    {
-        if (!$this->request->input('draw') && $this->request->input('sEcho')) {
-            throw new Exception('DataTables legacy code is not supported! Please use DataTables 1.10++ coding convention.');
-        } elseif (!$this->request->input('draw') && !$this->request->input('columns')) {
-            throw new Exception('Insufficient parameters');
-        }
     }
 
     /**
