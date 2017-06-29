@@ -74,18 +74,6 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Organizes works.
-     *
-     * @param bool $mDataSupport
-     * @param bool $orderFirst
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function make($mDataSupport = false, $orderFirst = false)
-    {
-        return parent::make($mDataSupport, $orderFirst);
-    }
-
-    /**
      * Count total items.
      *
      * @return integer

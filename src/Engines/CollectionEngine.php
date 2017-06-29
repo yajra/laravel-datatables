@@ -278,11 +278,26 @@ class CollectionEngine extends BaseEngine
      * Organizes works.
      *
      * @param bool $mDataSupport
-     * @param bool $orderFirst
      * @return \Illuminate\Http\JsonResponse
      */
-    public function make($mDataSupport = false, $orderFirst = true)
+    public function make($mDataSupport = false)
     {
-        return parent::make($mDataSupport, $orderFirst);
+        try {
+            $this->totalRecords = $this->totalCount();
+
+            if ($this->totalRecords) {
+                $data   = $this->getProcessedData($mDataSupport);
+                $output = $this->transform($data);
+
+                $this->collection = collect($output);
+                $this->ordering();
+                $this->filterRecords();
+                $this->paginate();
+            }
+
+            return $this->render($this->collection->values()->all());
+        } catch (\Exception $exception) {
+            return $this->errorResponse($exception);
+        }
     }
 }

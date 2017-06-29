@@ -414,51 +414,25 @@ abstract class BaseEngine implements DataTableEngineContract
      * Organizes works.
      *
      * @param bool $mDataSupport
-     * @param bool $orderFirst
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function make($mDataSupport = false, $orderFirst = false)
+    public function make($mDataSupport = false)
     {
         try {
             $this->totalRecords = $this->totalCount();
 
             if ($this->totalRecords) {
-                $this->orderRecords(!$orderFirst);
                 $this->filterRecords();
-                $this->orderRecords($orderFirst);
+                $this->ordering();
                 $this->paginate();
             }
 
-            return $this->render($mDataSupport);
+            $data = $this->transform($this->getProcessedData($mDataSupport));
+
+            return $this->render($data);
         } catch (\Exception $exception) {
-            $error = config('datatables.error');
-            if ($error === 'throw') {
-                throw new Exception($exception->getMessage(), $code = 0, $exception);
-            }
-
-            $this->getLogger()->error($exception);
-
-            return new JsonResponse([
-                'draw'            => (int) $this->request->input('draw'),
-                'recordsTotal'    => (int) $this->totalRecords,
-                'recordsFiltered' => 0,
-                'data'            => [],
-                'error'           => $error ? __($error) : "Exception Message:\n\n" . $exception->getMessage(),
-            ]);
-        }
-    }
-
-    /**
-     * Sort records.
-     *
-     * @param  boolean $skip
-     * @return void
-     */
-    protected function orderRecords($skip)
-    {
-        if (!$skip) {
-            $this->ordering();
+            return $this->errorResponse($exception);
         }
     }
 
@@ -494,54 +468,68 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
+     * Transform output.
+     *
+     * @param mixed $output
+     * @return array
+     */
+    protected function transform($output)
+    {
+        if (!isset($this->transformer)) {
+            return Helper::transform($output);
+        }
+
+        $fractal = app('datatables.fractal');
+
+        if ($this->serializer) {
+            $fractal->setSerializer($this->createSerializer());
+        }
+
+        //Get transformer reflection
+        //Firs method parameter should be data/object to transform
+        $reflection = new \ReflectionMethod($this->transformer, 'transform');
+        $parameter  = $reflection->getParameters()[0];
+
+        //If parameter is class assuming it requires object
+        //Else just pass array by default
+        if ($parameter->getClass()) {
+            $resource = new Collection($output, $this->createTransformer());
+        } else {
+            $resource = new Collection(
+                $output,
+                $this->createTransformer()
+            );
+        }
+
+        $collection = $fractal->createData($resource)->toArray();
+
+        return $collection['data'];
+    }
+
+    /**
      * Render json response.
      *
-     * @param bool $object
+     * @param array $data
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function render($object = false)
+    protected function render(array $data)
     {
         $output = array_merge([
             'draw'            => (int) $this->request->input('draw'),
             'recordsTotal'    => $this->totalRecords,
             'recordsFiltered' => $this->filteredRecords,
+            'data'            => $data,
         ], $this->appends);
-
-        if (isset($this->transformer)) {
-            $fractal = app('datatables.fractal');
-
-            if ($this->serializer) {
-                $fractal->setSerializer($this->createSerializer());
-            }
-
-            //Get transformer reflection
-            //Firs method parameter should be data/object to transform
-            $reflection = new \ReflectionMethod($this->transformer, 'transform');
-            $parameter  = $reflection->getParameters()[0];
-
-            //If parameter is class assuming it requires object
-            //Else just pass array by default
-            if ($parameter->getClass()) {
-                $resource = new \League\Fractal\Resource\Collection($this->results(), $this->createTransformer());
-            } else {
-                $resource = new \League\Fractal\Resource\Collection(
-                    $this->getProcessedData($object),
-                    $this->createTransformer()
-                );
-            }
-
-            $collection     = $fractal->createData($resource)->toArray();
-            $output['data'] = $collection['data'];
-        } else {
-            $output['data'] = Helper::transform($this->getProcessedData($object));
-        }
 
         if ($this->isDebugging()) {
             $output = $this->showDebugger($output);
         }
 
         return new JsonResponse(
-            $output, 200, config('datatables.json.header', []), config('datatables.json.options', 0)
+            $output,
+            200,
+            config('datatables.json.header', []),
+            config('datatables.json.options', 0)
         );
     }
 
@@ -612,6 +600,31 @@ abstract class BaseEngine implements DataTableEngineContract
     public function isDebugging()
     {
         return config('app.debug', false);
+    }
+
+    /**
+     * Return an error json response.
+     *
+     * @param \Exception $exception
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Yajra\Datatables\Exception
+     */
+    protected function errorResponse(\Exception $exception)
+    {
+        $error = config('datatables.error');
+        if ($error === 'throw') {
+            throw new Exception($exception->getMessage(), $code = 0, $exception);
+        }
+
+        $this->getLogger()->error($exception);
+
+        return new JsonResponse([
+            'draw'            => (int) $this->request->input('draw'),
+            'recordsTotal'    => (int) $this->totalRecords,
+            'recordsFiltered' => 0,
+            'data'            => [],
+            'error'           => $error ? __($error) : "Exception Message:\n\n" . $exception->getMessage(),
+        ]);
     }
 
     /**
