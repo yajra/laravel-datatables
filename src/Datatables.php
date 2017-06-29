@@ -60,7 +60,7 @@ class Datatables
      */
     public function getRequest()
     {
-        return $this->request;
+        return app('datatables.request');
     }
 
     /**
