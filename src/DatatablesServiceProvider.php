@@ -67,7 +67,7 @@ class DatatablesServiceProvider extends ServiceProvider
             return new Datatables;
         });
 
-        $this->app->bind('datatables.request', function () {
+        $this->app->singleton('datatables.request', function () {
             return new Request(app('request'));
         });
 
