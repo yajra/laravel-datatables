@@ -726,18 +726,18 @@ class QueryBuilderEngine extends BaseEngine
         switch ($this->connection->getDriverName()) {
             case 'oracle':
                 $sql = !$this->isCaseInsensitive() ? 'REGEXP_LIKE( ' . $column . ' , ? )' : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
-                $this->query->whereRaw($sql, [$keyword]);
                 break;
 
             case 'pgsql':
                 $sql = !$this->isCaseInsensitive() ? $column . ' ~ ?' : $column . ' ~* ? ';
-                $this->query->whereRaw($sql, [$keyword]);
                 break;
 
             default:
-                $sql = !$this->isCaseInsensitive() ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
-                $this->query->whereRaw($sql, [Str::lower($keyword)]);
+                $sql     = !$this->isCaseInsensitive() ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
+                $keyword = Str::lower($keyword);
         }
+
+        $this->query->whereRaw($sql, [$keyword]);
     }
 
     /**
