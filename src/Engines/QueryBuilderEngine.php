@@ -572,14 +572,9 @@ class QueryBuilderEngine extends BaseEngine
                     break;
 
                 default:
-                    $table = $model->getRelated()->getTable();
-                    if ($model instanceof HasOneOrMany) {
-                        $foreign = $model->getForeignKey();
-                        $other   = $model->getQualifiedParentKeyName();
-                    } else {
-                        $foreign = $model->getQualifiedForeignKey();
-                        $other   = $model->getQualifiedOtherKeyName();
-                    }
+                    $table   = $model->getRelated()->getTable();
+                    $foreign = $model->getQualifiedForeignKey();
+                    $other   = $model->getQualifiedOtherKeyName();
             }
             $this->performJoin($table, $foreign, $other);
             $lastQuery = $model->getQuery();
