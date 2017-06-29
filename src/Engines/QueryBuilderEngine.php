@@ -22,16 +22,9 @@ class QueryBuilderEngine extends BaseEngine
     /**
      * Builder object.
      *
-     * @var \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
-     */
-    protected $query;
-
-    /**
-     * Query builder object.
-     *
      * @var \Illuminate\Database\Query\Builder
      */
-    protected $builder;
+    protected $query;
 
     /**
      * Database connection used.
