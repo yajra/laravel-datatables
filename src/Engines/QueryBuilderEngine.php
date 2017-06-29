@@ -237,15 +237,14 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function castColumn($column)
     {
-        $driver = $this->connection->getDriverName();
-
-        if ($driver === 'pgsql') {
-            $column = 'CAST(' . $column . ' as TEXT)';
-        } elseif ($driver === 'firebird') {
-            $column = 'CAST(' . $column . ' as VARCHAR(255))';
+        switch ($this->connection->getDriverName()) {
+            case 'pgsql':
+                return 'CAST(' . $column . ' as TEXT)';
+            case 'firebird':
+                return 'CAST(' . $column . ' as VARCHAR(255))';
+            default:
+                return $column;
         }
-
-        return $column;
     }
 
     /**
