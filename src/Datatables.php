@@ -60,7 +60,7 @@ class Datatables
      */
     public function getRequest()
     {
-        return app('datatables.request');
+        return resolve('datatables.request');
     }
 
     /**
@@ -112,6 +112,6 @@ class Datatables
             throw new \Exception('Please install yajra/laravel-datatables-html to be able to use this function.');
         }
 
-        return $this->html ?: $this->html = app('datatables.html');
+        return $this->html ?: $this->html = resolve('datatables.html');
     }
 }
