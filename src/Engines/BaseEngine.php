@@ -601,7 +601,7 @@ abstract class BaseEngine implements DataTableEngineContract
         $config  = config('datatables.columns');
         $allowed = ['excess', 'escape', 'raw', 'blacklist', 'whitelist'];
 
-        return array_merge_recursive($this->columnDef, array_only($config, $allowed));
+        return array_merge(array_only($config, $allowed), $this->columnDef);
     }
 
     /**
