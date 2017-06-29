@@ -208,17 +208,9 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function addTablePrefix($query, $column)
     {
-        // Check if field does not have a table prefix
         if (strpos($column, '.') === false) {
-            // Alternative method to check instanceof \Illuminate\Database\Eloquent\Builder
-            if (method_exists($query, 'getQuery')) {
-                $q = $query->getQuery();
-            } else {
-                $q = $query;
-            }
-
+            $q = $this->getBaseQueryBuilder($query);
             if (!$q->from instanceof Expression) {
-                // Get table from query and add it.
                 $column = $q->from . '.' . $column;
             }
         }
