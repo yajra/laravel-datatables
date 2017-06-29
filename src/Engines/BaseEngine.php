@@ -112,20 +112,6 @@ abstract class BaseEngine implements DataTableEngine
     protected $transformer = null;
 
     /**
-     * Database prefix.
-     *
-     * @var string
-     */
-    protected $prefix;
-
-    /**
-     * Database driver used.
-     *
-     * @var string
-     */
-    protected $database;
-
-    /**
      * [internal] Track if any filter was applied for at least one column.
      *
      * @var boolean
@@ -510,16 +496,6 @@ abstract class BaseEngine implements DataTableEngine
         $this->skipPaging = true;
 
         return $this;
-    }
-
-    /**
-     * Check if the current sql language is based on oracle syntax.
-     *
-     * @return bool
-     */
-    public function isOracleSql()
-    {
-        return in_array($this->database, ['oracle', 'oci8']);
     }
 
     /**

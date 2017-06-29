@@ -51,8 +51,6 @@ class QueryBuilderEngine extends BaseEngine
         $this->request    = $request;
         $this->columns    = $builder->columns;
         $this->connection = $builder->getConnection();
-        $this->prefix     = $this->connection->getTablePrefix();
-        $this->database   = $this->connection->getDriverName();
         if ($this->isDebugging()) {
             $this->connection->enableQueryLog();
         }
@@ -364,9 +362,11 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function castColumn($column)
     {
-        if ($this->database === 'pgsql') {
+        $driver = $this->connection->getDriverName();
+
+        if ($driver === 'pgsql') {
             $column = 'CAST(' . $column . ' as TEXT)';
-        } elseif ($this->database === 'firebird') {
+        } elseif ($driver === 'firebird') {
             $column = 'CAST(' . $column . ' as VARCHAR(255))';
         }
 
@@ -705,15 +705,20 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function regexColumnSearch($column, $keyword)
     {
-        if ($this->isOracleSql()) {
-            $sql = !$this->isCaseInsensitive() ? 'REGEXP_LIKE( ' . $column . ' , ? )' : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
-            $this->query->whereRaw($sql, [$keyword]);
-        } elseif ($this->database == 'pgsql') {
-            $sql = !$this->isCaseInsensitive() ? $column . ' ~ ?' : $column . ' ~* ? ';
-            $this->query->whereRaw($sql, [$keyword]);
-        } else {
-            $sql = !$this->isCaseInsensitive() ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
-            $this->query->whereRaw($sql, [Str::lower($keyword)]);
+        switch ($this->connection->getDriverName()) {
+            case 'oracle':
+                $sql = !$this->isCaseInsensitive() ? 'REGEXP_LIKE( ' . $column . ' , ? )' : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
+                $this->query->whereRaw($sql, [$keyword]);
+                break;
+
+            case 'pgsql':
+                $sql = !$this->isCaseInsensitive() ? $column . ' ~ ?' : $column . ' ~* ? ';
+                $this->query->whereRaw($sql, [$keyword]);
+                break;
+
+            default:
+                $sql = !$this->isCaseInsensitive() ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
+                $this->query->whereRaw($sql, [Str::lower($keyword)]);
         }
     }
 
