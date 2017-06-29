@@ -329,10 +329,7 @@ class QueryBuilderEngine extends BaseEngine
             }
 
             if ($this->hasCustomOrder($column)) {
-                $sql      = $this->columnDef['order'][$column]['sql'];
-                $sql      = str_replace('$1', $orderable['direction'], $sql);
-                $bindings = $this->columnDef['order'][$column]['bindings'];
-                $this->query->orderByRaw($sql, $bindings);
+                $this->applyOrderColumn($column, $orderable);
             } else {
                 $valid = 1;
                 if (count(explode('.', $column)) > 1) {
@@ -384,6 +381,20 @@ class QueryBuilderEngine extends BaseEngine
     protected function hasCustomOrder($column)
     {
         return isset($this->columnDef['order'][$column]);
+    }
+
+    /**
+     * Apply orderColumn custom query.
+     *
+     * @param string $column
+     * @param array $orderable
+     */
+    protected function applyOrderColumn($column, $orderable): void
+    {
+        $sql      = $this->columnDef['order'][$column]['sql'];
+        $sql      = str_replace('$1', $orderable['direction'], $sql);
+        $bindings = $this->columnDef['order'][$column]['bindings'];
+        $this->query->orderByRaw($sql, $bindings);
     }
 
     /**
