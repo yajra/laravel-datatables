@@ -9,6 +9,7 @@ use Yajra\Datatables\Contracts\DataTableEngine;
 use Yajra\Datatables\Exception;
 use Yajra\Datatables\Helper;
 use Yajra\Datatables\Processors\DataProcessor;
+use Yajra\Datatables\Transformers\FractalTransformer;
 
 /**
  * Class BaseEngine.
@@ -597,59 +598,7 @@ abstract class BaseEngine implements DataTableEngine
             return Helper::transform($output);
         }
 
-        $fractal = app('datatables.fractal');
-
-        if ($this->serializer) {
-            $fractal->setSerializer($this->createSerializer());
-        }
-
-        //Get transformer reflection
-        //Firs method parameter should be data/object to transform
-        $reflection = new \ReflectionMethod($this->transformer, 'transform');
-        $parameter  = $reflection->getParameters()[0];
-
-        //If parameter is class assuming it requires object
-        //Else just pass array by default
-        if ($parameter->getClass()) {
-            $resource = new Collection($output, $this->createTransformer());
-        } else {
-            $resource = new Collection(
-                $output,
-                $this->createTransformer()
-            );
-        }
-
-        $collection = $fractal->createData($resource)->toArray();
-
-        return $collection['data'];
-    }
-
-    /**
-     * Get or create transformer serializer instance.
-     *
-     * @return \League\Fractal\Serializer\SerializerAbstract
-     */
-    protected function createSerializer()
-    {
-        if ($this->serializer instanceof \League\Fractal\Serializer\SerializerAbstract) {
-            return $this->serializer;
-        }
-
-        return new $this->serializer();
-    }
-
-    /**
-     * Get or create transformer instance.
-     *
-     * @return \League\Fractal\TransformerAbstract
-     */
-    protected function createTransformer()
-    {
-        if ($this->transformer instanceof \League\Fractal\TransformerAbstract) {
-            return $this->transformer;
-        }
-
-        return new $this->transformer();
+        return (new FractalTransformer)->transform($output, $this->transformer, $this->serializer);
     }
 
     /**
