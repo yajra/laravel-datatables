@@ -73,20 +73,19 @@ class QueryBuilderEngine extends BaseEngine
         $this->query->where(function ($query) use ($keyword) {
             $query = $this->getBaseQueryBuilder($query);
 
-            foreach ($this->request->searchableColumnIndex() as $index) {
-                $columnName = $this->getColumnName($index);
-                if ($this->isBlacklisted($columnName) && !$this->hasCustomFilter($columnName)) {
-                    continue;
-                }
-
-                if ($this->hasCustomFilter($columnName)) {
-                    $this->applyFilterColumn($query, $columnName, $keyword, 'or');
+            collect($this->request->searchableColumnIndex())->map(function ($index) {
+                return $this->getColumnName($index);
+            })->reject(function($column) {
+                return $this->isBlacklisted($column) && !$this->hasCustomFilter($column);
+            })->each(function ($column) use ($keyword, $query) {
+                if ($this->hasCustomFilter($column)) {
+                    $this->applyFilterColumn($query, $column, $keyword, 'or');
                 } else {
-                    $this->compileQuerySearch($query, $columnName, $keyword);
+                    $this->compileQuerySearch($query, $column, $keyword);
                 }
 
                 $this->isFilterApplied = true;
-            }
+            });
         });
     }
 
