@@ -51,7 +51,7 @@ class QueryBuilderEngine extends BaseEngine
         $this->request    = $request;
         $this->columns    = $builder->columns;
         $this->connection = $builder->getConnection();
-        if ($this->isDebugging()) {
+        if ($this->config()->isDebugging()) {
             $this->connection->enableQueryLog();
         }
     }
@@ -80,7 +80,7 @@ class QueryBuilderEngine extends BaseEngine
     {
         $keyword = $this->request->keyword();
 
-        if ($this->isSmartSearch()) {
+        if ($this->config()->isSmartSearch()) {
             $this->smartGlobalSearch($keyword);
 
             return;
@@ -191,7 +191,7 @@ class QueryBuilderEngine extends BaseEngine
         $column = $this->castColumn($column);
         $sql    = $column . ' LIKE ?';
 
-        if ($this->isCaseInsensitive()) {
+        if ($this->config()->isCaseInsensitive()) {
             $sql = 'LOWER(' . $column . ') LIKE ?';
         }
 
@@ -255,15 +255,15 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function prepareKeyword($keyword)
     {
-        if ($this->isCaseInsensitive()) {
+        if ($this->config()->isCaseInsensitive()) {
             $keyword = Str::lower($keyword);
         }
 
-        if ($this->isWildcard()) {
+        if ($this->config()->isWildcard()) {
             $keyword = $this->wildcardLikeString($keyword);
         }
 
-        if ($this->isSmartSearch()) {
+        if ($this->config()->isSmartSearch()) {
             $keyword = "%$keyword%";
         }
 
@@ -524,7 +524,7 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function getNullsLastSql($column, $direction)
     {
-        $sql = config('datatables.nulls_last_sql', '%s %s NULLS LAST');
+        $sql = $this->config()->get('datatables.nulls_last_sql', '%s %s NULLS LAST');
 
         return sprintf($sql, $column, $direction);
     }
@@ -611,15 +611,15 @@ class QueryBuilderEngine extends BaseEngine
     {
         switch ($this->connection->getDriverName()) {
             case 'oracle':
-                $sql = !$this->isCaseInsensitive() ? 'REGEXP_LIKE( ' . $column . ' , ? )' : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
+                $sql = !$this->config()->isCaseInsensitive() ? 'REGEXP_LIKE( ' . $column . ' , ? )' : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
                 break;
 
             case 'pgsql':
-                $sql = !$this->isCaseInsensitive() ? $column . ' ~ ?' : $column . ' ~* ? ';
+                $sql = !$this->config()->isCaseInsensitive() ? $column . ' ~ ?' : $column . ' ~* ? ';
                 break;
 
             default:
-                $sql     = !$this->isCaseInsensitive() ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
+                $sql     = !$this->config()->isCaseInsensitive() ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
                 $keyword = Str::lower($keyword);
         }
 

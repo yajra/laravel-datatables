@@ -5,6 +5,7 @@ namespace Yajra\Datatables\Engines;
 use Illuminate\Contracts\Logging\Log;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
+use Yajra\Datatables\Config;
 use Yajra\Datatables\Contracts\DataTableEngine;
 use Yajra\Datatables\Exception;
 use Yajra\Datatables\Helper;
@@ -392,16 +393,6 @@ abstract class BaseEngine implements DataTableEngine
     }
 
     /**
-     * Check if config uses case insensitive search.
-     *
-     * @return bool
-     */
-    public function isCaseInsensitive()
-    {
-        return config('datatables.search.case_insensitive', false);
-    }
-
-    /**
      * Append data on json response.
      *
      * @param mixed $key
@@ -547,6 +538,29 @@ abstract class BaseEngine implements DataTableEngine
     }
 
     /**
+     * Get columns definition.
+     *
+     * @return array
+     */
+    protected function getColumnsDefinition()
+    {
+        $config  = $this->config()->get('datatables.columns');
+        $allowed = ['excess', 'escape', 'raw', 'blacklist', 'whitelist'];
+
+        return array_merge(array_only($config, $allowed), $this->columnDef);
+    }
+
+    /**
+     * Get dataTables config instance.
+     *
+     * @return \Yajra\Datatables\Config
+     */
+    protected function config()
+    {
+        return resolve('datatables.config');
+    }
+
+    /**
      * Perform necessary filters.
      *
      * @return void
@@ -663,19 +677,6 @@ abstract class BaseEngine implements DataTableEngine
     }
 
     /**
-     * Get columns definition.
-     *
-     * @return array
-     */
-    protected function getColumnsDefinition()
-    {
-        $config  = config('datatables.columns');
-        $allowed = ['excess', 'escape', 'raw', 'blacklist', 'whitelist'];
-
-        return array_merge(array_only($config, $allowed), $this->columnDef);
-    }
-
-    /**
      * Render json response.
      *
      * @param array $data
@@ -690,26 +691,16 @@ abstract class BaseEngine implements DataTableEngine
             'data'            => $data,
         ], $this->appends);
 
-        if ($this->isDebugging()) {
+        if ($this->config()->isDebugging()) {
             $output = $this->showDebugger($output);
         }
 
         return new JsonResponse(
             $output,
             200,
-            config('datatables.json.header', []),
-            config('datatables.json.options', 0)
+            $this->config()->get('datatables.json.header', []),
+            $this->config()->get('datatables.json.options', 0)
         );
-    }
-
-    /**
-     * Check if app is in debug mode.
-     *
-     * @return bool
-     */
-    public function isDebugging()
-    {
-        return config('app.debug', false);
     }
 
     /**
@@ -729,7 +720,7 @@ abstract class BaseEngine implements DataTableEngine
      */
     protected function errorResponse(\Exception $exception)
     {
-        $error = config('datatables.error');
+        $error = $this->config()->get('datatables.error');
         if ($error === 'throw') {
             throw new Exception($exception->getMessage(), $code = 0, $exception);
         }
@@ -778,9 +769,9 @@ abstract class BaseEngine implements DataTableEngine
      */
     protected function setupKeyword($value)
     {
-        if ($this->isSmartSearch()) {
+        if ($this->config()->isSmartSearch()) {
             $keyword = '%' . $value . '%';
-            if ($this->isWildcard()) {
+            if ($this->config()->isWildcard()) {
                 $keyword = $this->wildcardLikeString($value);
             }
             // remove escaping slash added on js script request
@@ -790,26 +781,6 @@ abstract class BaseEngine implements DataTableEngine
         }
 
         return $value;
-    }
-
-    /**
-     * Check if config uses smart search.
-     *
-     * @return bool
-     */
-    public function isSmartSearch()
-    {
-        return config('datatables.search.smart', true);
-    }
-
-    /**
-     * Check if config uses wild card search.
-     *
-     * @return bool
-     */
-    public function isWildcard()
-    {
-        return config('datatables.search.use_wildcards', false);
     }
 
     /**

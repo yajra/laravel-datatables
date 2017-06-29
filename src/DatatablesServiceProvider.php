@@ -66,6 +66,10 @@ class DatatablesServiceProvider extends ServiceProvider
         $this->app->singleton('datatables', function () {
             return new Datatables(new Request(app('request')));
         });
+
+        $this->app->singleton('datatables.config', function () {
+            return $this->app->make(Config::class);
+        });
     }
 
     /**
@@ -85,6 +89,10 @@ class DatatablesServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['datatables', 'datatables.fractal'];
+        return [
+            'datatables',
+            'datatables.fractal',
+            'datatables.config',
+        ];
     }
 }
