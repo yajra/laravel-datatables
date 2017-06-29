@@ -140,6 +140,47 @@ class CollectionEngineTest extends TestCase
     }
 
     /** @test */
+    public function it_can_search_on_added_columns()
+    {
+        config()->set('app.debug', false);
+        request()->merge([
+            'columns' => [
+                ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
+                ['data' => 'foo',  'name' => 'foo', 'searchable' => "true", 'orderable' => "true"],
+            ],
+            'order'   => [["column" => 0, "dir" => "asc"]],
+            'start'   => 0,
+            'search'  => [
+                'value' => 'bar aaa'
+            ],
+            'length'  => 10,
+            'draw'    => 1,
+        ]);
+
+        $collection = collect([
+            ['name' => 'ABC'],
+            ['name' => 'BCD'],
+            ['name' => 'ZXY'],
+            ['name' => 'aaa'],
+            ['name' => 'bbb'],
+            ['name' => 'zzz'],
+        ]);
+
+        $dataTable = app('datatables')->collection($collection);
+        /** @var JsonResponse $response */
+        $response = $dataTable->addColumn('foo', 'bar {{$name}}')->make('true');
+
+        $this->assertEquals([
+            'draw'            => 1,
+            'recordsTotal'    => 6,
+            'recordsFiltered' => 1,
+            'data'            => [
+                ['name' => 'aaa', 'foo' => 'bar aaa'],
+            ],
+        ], $response->getData(true));
+    }
+
+    /** @test */
     public function it_accepts_array_data_source()
     {
         $source = [
