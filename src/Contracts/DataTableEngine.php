@@ -2,13 +2,7 @@
 
 namespace Yajra\Datatables\Contracts;
 
-/**
- * Interface DataTableEngineContract
- *
- * @package Yajra\Datatables\Contracts
- * @author  Arjay Angeles <aqangeles@gmail.com>
- */
-interface DataTableEngineContract
+interface DataTableEngine
 {
     /**
      * Get results.

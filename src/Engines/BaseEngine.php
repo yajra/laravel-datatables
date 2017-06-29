@@ -5,7 +5,7 @@ namespace Yajra\Datatables\Engines;
 use Illuminate\Contracts\Logging\Log;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
-use Yajra\Datatables\Contracts\DataTableEngineContract;
+use Yajra\Datatables\Contracts\DataTableEngine;
 use Yajra\Datatables\Exception;
 use Yajra\Datatables\Helper;
 use Yajra\Datatables\Processors\DataProcessor;
@@ -16,7 +16,7 @@ use Yajra\Datatables\Processors\DataProcessor;
  * @package Yajra\Datatables\Engines
  * @author  Arjay Angeles <aqangeles@gmail.com>
  */
-abstract class BaseEngine implements DataTableEngineContract
+abstract class BaseEngine implements DataTableEngine
 {
     /**
      * Datatables Request object.
