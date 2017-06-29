@@ -31,6 +31,8 @@ class EloquentEngine extends QueryBuilderEngine
     protected $onlyTrashed = false;
 
     /**
+     * EloquentEngine constructor.
+     *
      * @param mixed                     $model
      * @param \Yajra\Datatables\Request $request
      */
@@ -49,25 +51,44 @@ class EloquentEngine extends QueryBuilderEngine
      */
     public function count()
     {
-        $myQuery = clone $this->query;
-        // if its a normal query ( no union, having and distinct word )
-        // replace the select with static text to improve performance
-        if (!Str::contains(Str::lower($myQuery->toSql()), ['union', 'having', 'distinct', 'order by', 'group by'])) {
+        $builder = clone $this->query;
+
+        if ($this->isComplexQuery($builder)) {
             $row_count = $this->wrap('row_count');
-            $myQuery->select($this->connection->raw("'1' as {$row_count}"));
+            $builder->select($this->connection->raw("'1' as {$row_count}"));
         }
 
-        // check for select soft deleted records
-        if (!$this->withTrashed && !$this->onlyTrashed && $this->modelUseSoftDeletes()) {
-            $myQuery->whereNull($myQuery->getModel()->getQualifiedDeletedAtColumn());
+        if ($this->isSoftDeleting()) {
+            $builder->whereNull($builder->getModel()->getQualifiedDeletedAtColumn());
         }
 
-        if ($this->onlyTrashed && $this->modelUseSoftDeletes()) {
-            $myQuery->whereNotNull($myQuery->getModel()->getQualifiedDeletedAtColumn());
+        if ($this->isOnlyTrashed()) {
+            $builder->whereNotNull($builder->getModel()->getQualifiedDeletedAtColumn());
         }
 
-        return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
-                                ->setBindings($myQuery->getBindings())->count();
+        return $this->connection->table($this->connection->raw('(' . $builder->toSql() . ') count_row_table'))
+                                ->setBindings($builder->getBindings())->count();
+    }
+
+    /**
+     * Check if builder query uses complex sql.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $builder
+     * @return bool
+     */
+    private function isComplexQuery($builder)
+    {
+        return !Str::contains(Str::lower($builder->toSql()), ['union', 'having', 'distinct', 'order by', 'group by']);
+    }
+
+    /**
+     * Check if engine uses soft deletes.
+     *
+     * @return bool
+     */
+    private function isSoftDeleting()
+    {
+        return !$this->withTrashed && !$this->onlyTrashed && $this->modelUseSoftDeletes();
     }
 
     /**
@@ -75,9 +96,19 @@ class EloquentEngine extends QueryBuilderEngine
      *
      * @return boolean
      */
-    protected function modelUseSoftDeletes()
+    private function modelUseSoftDeletes()
     {
         return in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->query->getModel()));
+    }
+
+    /**
+     * Check if engine uses only trashed.
+     *
+     * @return bool
+     */
+    private function isOnlyTrashed()
+    {
+        return $this->onlyTrashed && $this->modelUseSoftDeletes();
     }
 
     /**
