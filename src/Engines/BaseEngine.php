@@ -507,33 +507,6 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
-     * Render json response.
-     *
-     * @param array $data
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function render(array $data)
-    {
-        $output = array_merge([
-            'draw'            => (int) $this->request->input('draw'),
-            'recordsTotal'    => $this->totalRecords,
-            'recordsFiltered' => $this->filteredRecords,
-            'data'            => $data,
-        ], $this->appends);
-
-        if ($this->isDebugging()) {
-            $output = $this->showDebugger($output);
-        }
-
-        return new JsonResponse(
-            $output,
-            200,
-            config('datatables.json.header', []),
-            config('datatables.json.options', 0)
-        );
-    }
-
-    /**
      * Get or create transformer serializer instance.
      *
      * @return \League\Fractal\Serializer\SerializerAbstract
@@ -593,6 +566,33 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
+     * Render json response.
+     *
+     * @param array $data
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function render(array $data)
+    {
+        $output = array_merge([
+            'draw'            => (int) $this->request->input('draw'),
+            'recordsTotal'    => $this->totalRecords,
+            'recordsFiltered' => $this->filteredRecords,
+            'data'            => $data,
+        ], $this->appends);
+
+        if ($this->isDebugging()) {
+            $output = $this->showDebugger($output);
+        }
+
+        return new JsonResponse(
+            $output,
+            200,
+            config('datatables.json.header', []),
+            config('datatables.json.options', 0)
+        );
+    }
+
+    /**
      * Check if app is in debug mode.
      *
      * @return bool
@@ -601,6 +601,14 @@ abstract class BaseEngine implements DataTableEngineContract
     {
         return config('app.debug', false);
     }
+
+    /**
+     * Append debug parameters on output.
+     *
+     * @param  array $output
+     * @return array
+     */
+    abstract protected function showDebugger(array $output);
 
     /**
      * Return an error json response.
