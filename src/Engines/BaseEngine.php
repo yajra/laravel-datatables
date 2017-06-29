@@ -5,7 +5,6 @@ namespace Yajra\Datatables\Engines;
 use Illuminate\Contracts\Logging\Log;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
-use Yajra\Datatables\Config;
 use Yajra\Datatables\Contracts\DataTableEngine;
 use Yajra\Datatables\Exception;
 use Yajra\Datatables\Helper;
@@ -153,6 +152,11 @@ abstract class BaseEngine implements DataTableEngine
      * @var bool
      */
     protected $nullsLast = false;
+
+    /**
+     * @var \Yajra\Datatables\Config
+     */
+    protected $config;
 
     /**
      * Add column in collection.

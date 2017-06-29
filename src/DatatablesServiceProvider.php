@@ -63,13 +63,15 @@ class DatatablesServiceProvider extends ServiceProvider
         });
 
         $this->app->alias('datatables', Datatables::class);
-        $this->app->singleton('datatables', function () {
-            return new Datatables(new Request(app('request')));
+        $this->app->singleton('datatables', function() {
+            return new Datatables(app('datatables.request'));
         });
 
-        $this->app->singleton('datatables.config', function () {
-            return $this->app->make(Config::class);
+        $this->app->bind('datatables.request', function () {
+            return new Request(app('request'));
         });
+
+        $this->app->singleton('datatables.config', Config::class);
     }
 
     /**
@@ -93,6 +95,7 @@ class DatatablesServiceProvider extends ServiceProvider
             'datatables',
             'datatables.fractal',
             'datatables.config',
+            'datatables.request',
         ];
     }
 }

@@ -6,7 +6,6 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Yajra\Datatables\Request;
 
 /**
  * Class CollectionEngine.
@@ -28,7 +27,7 @@ class CollectionEngine extends BaseEngine
      *
      * @var \Illuminate\Support\Collection
      */
-    public $original_collection;
+    public $original;
 
     /**
      * CollectionEngine constructor.
@@ -36,12 +35,13 @@ class CollectionEngine extends BaseEngine
      * @param \Illuminate\Support\Collection $collection
      * @param \Yajra\Datatables\Request      $request
      */
-    public function __construct(Collection $collection, Request $request)
+    public function __construct(Collection $collection)
     {
-        $this->request             = $request;
-        $this->collection          = $collection;
-        $this->original_collection = $collection;
-        $this->columns             = array_keys($this->serialize($collection->first()));
+        $this->request    = resolve('datatables.request');
+        $this->config     = resolve('datatables.config');
+        $this->collection = $collection;
+        $this->original   = $collection;
+        $this->columns    = array_keys($this->serialize($collection->first()));
     }
 
     /**

@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Str;
-use Yajra\Datatables\Request;
 
 /**
  * Class QueryBuilderEngine.
@@ -43,12 +42,12 @@ class QueryBuilderEngine extends BaseEngine
 
     /**
      * @param \Illuminate\Database\Query\Builder $builder
-     * @param \Yajra\Datatables\Request          $request
      */
-    public function __construct(Builder $builder, Request $request)
+    public function __construct(Builder $builder)
     {
         $this->query      = $builder;
-        $this->request    = $request;
+        $this->request    = resolve('datatables.request');
+        $this->config     = resolve('datatables.config');
         $this->columns    = $builder->columns;
         $this->connection = $builder->getConnection();
         if ($this->config()->isDebugging()) {
@@ -450,7 +449,7 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function joinEagerLoadedColumn($relation, $relationColumn)
     {
-        $table = '';
+        $table     = '';
         $lastQuery = $this->query;
         foreach (explode('.', $relation) as $eachRelation) {
             $model = $lastQuery->getRelation($eachRelation);
@@ -546,7 +545,7 @@ class QueryBuilderEngine extends BaseEngine
             $column = $this->getColumnName($index);
 
             if ($this->hasCustomFilter($column)) {
-                $keyword  = $this->getColumnSearchKeyword($index, $raw = true);
+                $keyword = $this->getColumnSearchKeyword($index, $raw = true);
                 $this->applyFilterColumn($this->query, $column, $keyword);
             } else {
                 if (count(explode('.', $column)) > 1) {
@@ -611,7 +610,8 @@ class QueryBuilderEngine extends BaseEngine
     {
         switch ($this->connection->getDriverName()) {
             case 'oracle':
-                $sql = !$this->config()->isCaseInsensitive() ? 'REGEXP_LIKE( ' . $column . ' , ? )' : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
+                $sql = !$this->config()
+                             ->isCaseInsensitive() ? 'REGEXP_LIKE( ' . $column . ' , ? )' : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
                 break;
 
             case 'pgsql':
@@ -619,7 +619,8 @@ class QueryBuilderEngine extends BaseEngine
                 break;
 
             default:
-                $sql     = !$this->config()->isCaseInsensitive() ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
+                $sql     = !$this->config()
+                                 ->isCaseInsensitive() ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
                 $keyword = Str::lower($keyword);
         }
 

@@ -27,16 +27,6 @@ class Datatables
     protected $html;
 
     /**
-     * Datatables constructor.
-     *
-     * @param \Yajra\Datatables\Request $request
-     */
-    public function __construct(Request $request)
-    {
-        $this->request = $request;
-    }
-
-    /**
      * Gets query and returns instance of class.
      *
      * @param  mixed $source
@@ -45,10 +35,8 @@ class Datatables
      */
     public static function of($source)
     {
-        $datatables = app('datatables');
-        $config     = app('config');
-        $engines    = $config->get('datatables.engines');
-        $builders   = $config->get('datatables.builders');
+        $engines  = config('datatables.engines');
+        $builders = config('datatables.builders');
 
         if (is_array($source)) {
             $source = new Collection($source);
@@ -58,7 +46,7 @@ class Datatables
             if ($source instanceof $class) {
                 $class = $engines[$engine];
 
-                return new $class($source, $datatables->getRequest());
+                return new $class($source);
             }
         }
 
@@ -83,7 +71,7 @@ class Datatables
      */
     public function queryBuilder($builder)
     {
-        return new Engines\QueryBuilderEngine($builder, $this->request);
+        return new Engines\QueryBuilderEngine($builder);
     }
 
     /**
@@ -94,7 +82,7 @@ class Datatables
      */
     public function eloquent($builder)
     {
-        return new Engines\EloquentEngine($builder, $this->request);
+        return new Engines\EloquentEngine($builder);
     }
 
     /**
@@ -109,7 +97,7 @@ class Datatables
             $collection = new Collection($collection);
         }
 
-        return new Engines\CollectionEngine($collection, $this->request);
+        return new Engines\CollectionEngine($collection);
     }
 
     /**

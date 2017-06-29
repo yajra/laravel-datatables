@@ -3,7 +3,6 @@
 namespace Yajra\Datatables\Engines;
 
 use Illuminate\Database\Eloquent\Builder;
-use Yajra\Datatables\Request;
 
 /**
  * Class EloquentEngine.
@@ -37,13 +36,12 @@ class EloquentEngine extends QueryBuilderEngine
     /**
      * EloquentEngine constructor.
      *
-     * @param mixed                     $model
-     * @param \Yajra\Datatables\Request $request
+     * @param mixed $model
      */
-    public function __construct($model, Request $request)
+    public function __construct($model)
     {
         $builder = $model instanceof Builder ? $model : $model->getQuery();
-        parent::__construct($builder->getQuery(), $request);
+        parent::__construct($builder->getQuery());
 
         $this->query = $builder;
     }
@@ -173,8 +171,8 @@ class EloquentEngine extends QueryBuilderEngine
      * Perform search on eager loaded relation column.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $columnName
-     * @param string $keyword
+     * @param string                                $columnName
+     * @param string                                $keyword
      */
     private function eagerLoadSearch($query, $columnName, $keyword)
     {
