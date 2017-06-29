@@ -84,16 +84,6 @@ class CollectionEngine extends BaseEngine
     }
 
     /**
-     * Count total items.
-     *
-     * @return integer
-     */
-    public function totalCount()
-    {
-        return $this->totalRecords ? $this->totalRecords : $this->collection->count();
-    }
-
-    /**
      * Count results.
      *
      * @return integer
@@ -101,39 +91,6 @@ class CollectionEngine extends BaseEngine
     public function count()
     {
         return $this->collection->count() > $this->totalRecords ? $this->totalRecords : $this->collection->count();
-    }
-
-    /**
-     * Perform sorting of columns.
-     *
-     * @return void
-     */
-    public function ordering()
-    {
-        if ($this->orderCallback) {
-            call_user_func($this->orderCallback, $this);
-
-            return;
-        }
-
-        foreach ($this->request->orderableColumns() as $orderable) {
-            $column = $this->getColumnName($orderable['column']);
-
-            $options = SORT_NATURAL;
-            if ($this->isCaseInsensitive()) {
-                $options = SORT_NATURAL | SORT_FLAG_CASE;
-            }
-
-            $this->collection = $this->collection->sortBy(function ($row) use ($column) {
-                $data = $this->serialize($row);
-
-                return Arr::get($data, $column);
-            }, $options);
-
-            if ($orderable['direction'] == 'desc') {
-                $this->collection = $this->collection->reverse();
-            }
-        }
     }
 
     /**
@@ -298,6 +255,49 @@ class CollectionEngine extends BaseEngine
             return $this->render($this->collection->values()->all());
         } catch (\Exception $exception) {
             return $this->errorResponse($exception);
+        }
+    }
+
+    /**
+     * Count total items.
+     *
+     * @return integer
+     */
+    public function totalCount()
+    {
+        return $this->totalRecords ? $this->totalRecords : $this->collection->count();
+    }
+
+    /**
+     * Perform sorting of columns.
+     *
+     * @return void
+     */
+    public function ordering()
+    {
+        if ($this->orderCallback) {
+            call_user_func($this->orderCallback, $this);
+
+            return;
+        }
+
+        foreach ($this->request->orderableColumns() as $orderable) {
+            $column = $this->getColumnName($orderable['column']);
+
+            $options = SORT_NATURAL;
+            if ($this->isCaseInsensitive()) {
+                $options = SORT_NATURAL | SORT_FLAG_CASE;
+            }
+
+            $this->collection = $this->collection->sortBy(function ($row) use ($column) {
+                $data = $this->serialize($row);
+
+                return Arr::get($data, $column);
+            }, $options);
+
+            if ($orderable['direction'] == 'desc') {
+                $this->collection = $this->collection->reverse();
+            }
         }
     }
 }
