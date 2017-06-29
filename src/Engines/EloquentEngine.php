@@ -3,7 +3,6 @@
 namespace Yajra\Datatables\Engines;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Str;
 use Yajra\Datatables\Request;
 
 /**
