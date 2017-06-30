@@ -25,11 +25,11 @@
 - Fractal integration extracted to own plugin [laravel-datatables-fractal](https://github.com/yajra/laravel-datatables-fractal).
 
 ### REMOVED
-- Remove filterColumn api magic query method in favor of closure.
-- Remove support on older snake_case methods.
+- Remove `filterColumn` api magic query method in favor of closure.
+- Remove support on older `snake_case` methods.
 - Remove silly implementation of proxying query builder calls via magic method. 
 - Removed unused methods.
-- Remove withTrashed and onlyTrashed api.
+- Remove `withTrashed` and `onlyTrashed` api.
 
 ### FIXED
 - Fix #1068.
