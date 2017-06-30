@@ -17,6 +17,7 @@
 - Make multi-term search configurable.
 - Source code clean-up, refactoring and type-hinting.
 - Improved scrutinizer code quality score from 6 to ~9 pts.
+- On the fly support for `SoftDeletes`. No need to use `withTrashed` and `onlyTrashed`.
 
 ### CHANGED
 - Preserve `Eloquent\Builder` when overriding the default ordering of dataTables when using `EloquentEngine`.
@@ -28,6 +29,7 @@
 - Remove support on older snake_case methods.
 - Remove silly implementation of proxying query builder calls via magic method. 
 - Removed unused methods.
+- Remove withTrashed and onlyTrashed api.
 
 ### FIXED
 - Fix #1068.

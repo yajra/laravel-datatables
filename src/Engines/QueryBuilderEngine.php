@@ -106,7 +106,7 @@ class QueryBuilderEngine extends BaseEngine
     /**
      * Prepare count query builder.
      *
-     * @return \Illuminate\Database\Query\Builder
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     protected function prepareCountQuery()
     {
