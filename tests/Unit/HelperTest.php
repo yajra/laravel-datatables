@@ -170,46 +170,6 @@ class HelperTest extends TestCase
         $this->assertEquals('orWhereIn', $result);
     }
 
-    public function test_wrap_mysql_database_value()
-    {
-        $db     = 'mysql';
-        $value  = 'users.name';
-        $result = Helper::wrapDatabaseValue($db, $value);
-        $this->assertEquals('`users`.`name`', $result);
-    }
-
-    public function test_wrap_sqlsrv_database_value()
-    {
-        $db     = 'sqlsrv';
-        $value  = 'users.name';
-        $result = Helper::wrapDatabaseValue($db, $value);
-        $this->assertEquals('[users].[name]', $result);
-    }
-
-    public function test_wrap_pgsql_database_value()
-    {
-        $db     = 'pgsql';
-        $value  = 'users.name';
-        $result = Helper::wrapDatabaseValue($db, $value);
-        $this->assertEquals('"users"."name"', $result);
-    }
-
-    public function test_wrap_sqlite_database_value()
-    {
-        $db     = 'sqlite';
-        $value  = 'users.name';
-        $result = Helper::wrapDatabaseValue($db, $value);
-        $this->assertEquals('"users"."name"', $result);
-    }
-
-    public function test_wrap_oracle_database_value()
-    {
-        $db     = 'oracle';
-        $value  = 'users.name';
-        $result = Helper::wrapDatabaseValue($db, $value);
-        $this->assertEquals('users.name', $result);
-    }
-
     public function test_convert_to_array()
     {
         $row          = new stdClass();

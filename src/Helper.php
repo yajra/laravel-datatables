@@ -154,55 +154,6 @@ class Helper
     }
 
     /**
-     * Wrap value depending on database type.
-     *
-     * @param string $database
-     * @param string $value
-     * @return string
-     */
-    public static function wrapDatabaseValue($database, $value)
-    {
-        $parts  = explode('.', $value);
-        $column = '';
-        foreach ($parts as $key) {
-            $column = static::wrapDatabaseColumn($database, $key, $column);
-        }
-
-        return substr($column, 0, strlen($column) - 1);
-    }
-
-    /**
-     * Database column wrapper.
-     *
-     * @param string $database
-     * @param string $key
-     * @param string $column
-     * @return string
-     */
-    public static function wrapDatabaseColumn($database, $key, $column)
-    {
-        switch ($database) {
-            case 'mysql':
-                $column .= '`' . str_replace('`', '``', $key) . '`' . '.';
-                break;
-
-            case 'sqlsrv':
-                $column .= '[' . str_replace(']', ']]', $key) . ']' . '.';
-                break;
-
-            case 'pgsql':
-            case 'sqlite':
-                $column .= '"' . str_replace('"', '""', $key) . '"' . '.';
-                break;
-
-            default:
-                $column .= $key . '.';
-        }
-
-        return $column;
-    }
-
-    /**
      * Converts array object values to associative array.
      *
      * @param mixed $row
