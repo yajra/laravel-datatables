@@ -507,6 +507,23 @@ abstract class BaseEngine implements DataTableEngine
     abstract protected function defaultOrdering();
 
     /**
+     * Set auto filter off and run your own filter.
+     * Overrides global search.
+     *
+     * @param callable $callback
+     * @param bool     $globalSearch
+     * @return $this
+     */
+    public function filter(callable $callback, $globalSearch = false)
+    {
+        $this->autoFilter      = $globalSearch;
+        $this->isFilterApplied = true;
+        $this->filterCallback  = $callback;
+
+        return $this;
+    }
+
+    /**
      * Perform necessary filters.
      *
      * @return void
@@ -715,23 +732,6 @@ abstract class BaseEngine implements DataTableEngine
         }
 
         return $value;
-    }
-
-    /**
-     * Set auto filter off and run your own filter.
-     * Overrides global search.
-     *
-     * @param callable $callback
-     * @param bool     $globalSearch
-     * @return $this
-     */
-    public function filter(callable $callback, $globalSearch = false)
-    {
-        $this->autoFilter               = $globalSearch;
-        $this->isFilterApplied          = true;
-        $this->filterCallback           = $callback;
-
-        return $this;
     }
 
     /**
