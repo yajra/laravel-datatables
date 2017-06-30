@@ -94,14 +94,7 @@ class Helper
         $parsed_string             = $blade->compileString($str);
 
         ob_start() && extract($data, EXTR_SKIP);
-
-        try {
-            eval('?>' . $parsed_string);
-        } catch (\Exception $e) {
-            ob_end_clean();
-            throw $e;
-        }
-
+        eval('?>' . $parsed_string);
         $str = ob_get_contents();
         ob_end_clean();
 
