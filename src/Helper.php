@@ -86,7 +86,7 @@ class Helper
     public static function compileBlade($str, $data = [])
     {
         if (view()->exists($str)) {
-            return view($str, $data)->render();
+            return view($str, $data);
         }
 
         $empty_filesystem_instance = new Filesystem();
