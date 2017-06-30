@@ -3,6 +3,11 @@
 namespace Yajra\Datatables\Engines;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Yajra\Datatables\Exception;
 
 /**
  * Class EloquentEngine.
@@ -290,6 +295,118 @@ class EloquentEngine extends QueryBuilderEngine
             }
 
             $query->{$relationMethod}($builder, $bindings);
+        }
+    }
+
+    /**
+     * Resolve the proper column name be used.
+     *
+     * @param string $column
+     * @return string
+     */
+    protected function resolveOrderByColumn($column)
+    {
+        if (count(explode('.', $column)) > 1) {
+            $eagerLoads     = $this->getEagerLoads();
+            $parts          = explode('.', $column);
+            $relationColumn = array_pop($parts);
+            $relation       = implode('.', $parts);
+
+            if (in_array($relation, $eagerLoads)) {
+                // Loop for nested relations
+                // This code is check morph many or not.
+                // If one of nested relation is MorphToMany
+                // we will call joinEagerLoadedColumn.
+                $lastQuery     = $this->query;
+                $isMorphToMany = false;
+                foreach (explode('.', $relation) as $eachRelation) {
+                    $relationship = $lastQuery->getRelation($eachRelation);
+                    if (!($relationship instanceof MorphToMany)) {
+                        $isMorphToMany = true;
+                    }
+                    $lastQuery = $relationship;
+                }
+
+                if ($isMorphToMany) {
+                    return $this->joinEagerLoadedColumn($relation, $relationColumn);
+                }
+            }
+        }
+
+        return $column;
+    }
+
+    /**
+     * Join eager loaded relation and get the related column name.
+     *
+     * @param string $relation
+     * @param string $relationColumn
+     * @return string
+     * @throws \Yajra\Datatables\Exception
+     */
+    protected function joinEagerLoadedColumn($relation, $relationColumn)
+    {
+        $table     = '';
+        $lastQuery = $this->query;
+        foreach (explode('.', $relation) as $eachRelation) {
+            $model = $lastQuery->getRelation($eachRelation);
+            switch (true) {
+                case $model instanceof BelongsToMany:
+                    $pivot   = $model->getTable();
+                    $pivotPK = $model->getExistenceCompareKey();
+                    $pivotFK = $model->getQualifiedParentKeyName();
+                    $this->performJoin($pivot, $pivotPK, $pivotFK);
+
+                    $related = $model->getRelated();
+                    $table   = $related->getTable();
+                    $tablePK = $related->getForeignKey();
+                    $foreign = $pivot . '.' . $tablePK;
+                    $other   = $related->getQualifiedKeyName();
+
+                    $lastQuery->addSelect($table . '.' . $relationColumn);
+                    $this->performJoin($table, $foreign, $other);
+
+                    break;
+
+                case $model instanceof HasOneOrMany:
+                    $table   = $model->getRelated()->getTable();
+                    $foreign = $model->getQualifiedForeignKeyName();
+                    $other   = $model->getQualifiedParentKeyName();
+                    break;
+
+                case $model instanceof BelongsTo:
+                    $table   = $model->getRelated()->getTable();
+                    $foreign = $model->getQualifiedForeignKey();
+                    $other   = $model->getQualifiedOwnerKeyName();
+                    break;
+
+                default:
+                    throw new Exception('Relation ' . get_class($model) . ' is not yet supported.');
+            }
+            $this->performJoin($table, $foreign, $other);
+            $lastQuery = $model->getQuery();
+        }
+
+        return $table . '.' . $relationColumn;
+    }
+
+    /**
+     * Perform join query.
+     *
+     * @param string $table
+     * @param string $foreign
+     * @param string $other
+     * @param string $type
+     */
+    protected function performJoin($table, $foreign, $other, $type = 'left')
+    {
+        $joins = [];
+        foreach ((array) $this->getBaseQueryBuilder()->joins as $key => $join) {
+            $joins[] = $join->table;
+        }
+
+        if (!in_array($table, $joins)) {
+            $this->getBaseQueryBuilder()->join($table, $foreign, '=', $other, $type);
         }
     }
 }

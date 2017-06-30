@@ -3,10 +3,6 @@
 namespace Yajra\Datatables\Engines;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Str;
@@ -175,44 +171,14 @@ class QueryBuilderEngine extends BaseEngine
 
             if ($this->hasCustomOrder($column)) {
                 $this->applyOrderColumn($column, $orderable);
+                continue;
+            }
+
+            $column = $this->resolveOrderByColumn($column);
+            if ($this->nullsLast) {
+                $this->getBaseQueryBuilder()->orderByRaw($this->getNullsLastSql($column, $orderable['direction']));
             } else {
-                $valid = 1;
-                if (count(explode('.', $column)) > 1) {
-                    $eagerLoads     = $this->getEagerLoads();
-                    $parts          = explode('.', $column);
-                    $relationColumn = array_pop($parts);
-                    $relation       = implode('.', $parts);
-
-                    if (in_array($relation, $eagerLoads)) {
-                        // Loop for nested relations
-                        // This code is check morph many or not.
-                        // If one of nested relation is MorphToMany
-                        // we will call joinEagerLoadedColumn.
-                        $lastQuery     = $this->query;
-                        $isMorphToMany = false;
-                        foreach (explode('.', $relation) as $eachRelation) {
-                            $relationship = $lastQuery->getRelation($eachRelation);
-                            if (!($relationship instanceof MorphToMany)) {
-                                $isMorphToMany = true;
-                            }
-                            $lastQuery = $relationship;
-                        }
-                        if ($isMorphToMany) {
-                            $column = $this->joinEagerLoadedColumn($relation, $relationColumn);
-                        } else {
-                            $valid = 0;
-                        }
-                    }
-                }
-
-                if ($valid == 1) {
-                    if ($this->nullsLast) {
-                        $this->getBaseQueryBuilder()->orderByRaw($this->getNullsLastSql($column,
-                            $orderable['direction']));
-                    } else {
-                        $this->getBaseQueryBuilder()->orderBy($column, $orderable['direction']);
-                    }
-                }
+                $this->getBaseQueryBuilder()->orderBy($column, $orderable['direction']);
             }
         }
     }
@@ -262,91 +228,14 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Get eager loads keys if eloquent.
+     * Resolve the proper column name be used.
      *
-     * @return array
-     */
-    protected function getEagerLoads()
-    {
-        if ($this->query instanceof EloquentBuilder) {
-            return array_keys($this->query->getEagerLoads());
-        }
-
-        return [];
-    }
-
-    /**
-     * Join eager loaded relation and get the related column name.
-     *
-     * @param string $relation
-     * @param string $relationColumn
+     * @param string $column
      * @return string
      */
-    protected function joinEagerLoadedColumn($relation, $relationColumn)
+    protected function resolveOrderByColumn($column)
     {
-        $table     = '';
-        $lastQuery = $this->query;
-        foreach (explode('.', $relation) as $eachRelation) {
-            $model = $lastQuery->getRelation($eachRelation);
-            switch (true) {
-                case $model instanceof BelongsToMany:
-                    $pivot   = $model->getTable();
-                    $pivotPK = $model->getExistenceCompareKey();
-                    $pivotFK = $model->getQualifiedParentKeyName();
-                    $this->performJoin($pivot, $pivotPK, $pivotFK);
-
-                    $related = $model->getRelated();
-                    $table   = $related->getTable();
-                    $tablePK = $related->getForeignKey();
-                    $foreign = $pivot . '.' . $tablePK;
-                    $other   = $related->getQualifiedKeyName();
-
-                    $lastQuery->addSelect($table . '.' . $relationColumn);
-                    $this->performJoin($table, $foreign, $other);
-
-                    break;
-
-                case $model instanceof HasOneOrMany:
-                    $table   = $model->getRelated()->getTable();
-                    $foreign = $model->getQualifiedForeignKeyName();
-                    $other   = $model->getQualifiedParentKeyName();
-                    break;
-
-                case $model instanceof BelongsTo:
-                    $table   = $model->getRelated()->getTable();
-                    $foreign = $model->getQualifiedForeignKey();
-                    $other   = $model->getQualifiedOwnerKeyName();
-                    break;
-
-                default:
-                    $table   = $model->getRelated()->getTable();
-                    $foreign = $model->getQualifiedForeignKey();
-                    $other   = $model->getQualifiedOtherKeyName();
-            }
-            $this->performJoin($table, $foreign, $other);
-            $lastQuery = $model->getQuery();
-        }
-
-        return $table . '.' . $relationColumn;
-    }
-
-    /**
-     * Perform join query.
-     *
-     * @param string $table
-     * @param string $foreign
-     * @param string $other
-     */
-    protected function performJoin($table, $foreign, $other)
-    {
-        $joins = [];
-        foreach ((array) $this->getBaseQueryBuilder()->joins as $key => $join) {
-            $joins[] = $join->table;
-        }
-
-        if (!in_array($table, $joins)) {
-            $this->getBaseQueryBuilder()->leftJoin($table, $foreign, '=', $other);
-        }
+        return $column;
     }
 
     /**
@@ -443,6 +332,20 @@ class QueryBuilderEngine extends BaseEngine
         $builder  = $query->newQuery();
         $callback($builder, $keyword);
         $query->addNestedWhereQuery($builder, $boolean);
+    }
+
+    /**
+     * Get eager loads keys if eloquent.
+     *
+     * @return array
+     */
+    protected function getEagerLoads()
+    {
+        if ($this->query instanceof EloquentBuilder) {
+            return array_keys($this->query->getEagerLoads());
+        }
+
+        return [];
     }
 
     /**
