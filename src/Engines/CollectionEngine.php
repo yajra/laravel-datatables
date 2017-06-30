@@ -55,21 +55,6 @@ class CollectionEngine extends BaseEngine
     }
 
     /**
-     * Set auto filter off and run your own filter.
-     * Overrides global search.
-     *
-     * @param callable $callback
-     * @param bool     $globalSearch
-     * @return $this
-     */
-    public function filter(callable $callback, $globalSearch = false)
-    {
-        $this->overrideGlobalSearch($callback, $this, $globalSearch);
-
-        return $this;
-    }
-
-    /**
      * Append debug parameters on output.
      *
      * @param  array $output

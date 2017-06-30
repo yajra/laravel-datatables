@@ -53,21 +53,6 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Set auto filter off and run your own filter.
-     * Overrides global search.
-     *
-     * @param callable $callback
-     * @param bool     $globalSearch
-     * @return $this
-     */
-    public function filter(callable $callback, $globalSearch = false)
-    {
-        $this->overrideGlobalSearch($callback, $this->query, $globalSearch);
-
-        return $this;
-    }
-
-    /**
      * Organizes works.
      *
      * @param bool $mDataSupport

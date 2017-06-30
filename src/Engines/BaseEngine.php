@@ -87,13 +87,6 @@ abstract class BaseEngine implements DataTableEngine
     protected $filterCallback;
 
     /**
-     * Parameters to passed on filterCallback.
-     *
-     * @var mixed
-     */
-    protected $filterCallbackParameters;
-
-    /**
      * DT row templates container.
      *
      * @var array
@@ -525,7 +518,7 @@ abstract class BaseEngine implements DataTableEngine
         }
 
         if (is_callable($this->filterCallback)) {
-            call_user_func($this->filterCallback, $this->filterCallbackParameters);
+            call_user_func($this->filterCallback, $this->resolveCallbackParameter());
         }
 
         $this->columnSearch();
@@ -725,18 +718,20 @@ abstract class BaseEngine implements DataTableEngine
     }
 
     /**
-     * Update flags to disable global search.
+     * Set auto filter off and run your own filter.
+     * Overrides global search.
      *
-     * @param  callable $callback
-     * @param  mixed    $parameters
-     * @param  bool     $autoFilter
+     * @param callable $callback
+     * @param bool     $globalSearch
+     * @return $this
      */
-    protected function overrideGlobalSearch(callable $callback, $parameters, $autoFilter = false)
+    public function filter(callable $callback, $globalSearch = false)
     {
-        $this->autoFilter               = $autoFilter;
+        $this->autoFilter               = $globalSearch;
         $this->isFilterApplied          = true;
         $this->filterCallback           = $callback;
-        $this->filterCallbackParameters = $parameters;
+
+        return $this;
     }
 
     /**
