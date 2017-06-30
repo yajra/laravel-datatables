@@ -312,4 +312,30 @@ class Helper
 
         return $parameters;
     }
+
+    /**
+     * Get column name from string.
+     *
+     * @param string $str
+     * @param bool   $wantsAlias
+     * @return string
+     */
+    public static function extractColumnName($str, $wantsAlias)
+    {
+        $matches = explode(' as ', Str::lower($str));
+
+        if (!empty($matches)) {
+            if ($wantsAlias) {
+                return array_pop($matches);
+            } else {
+                return array_shift($matches);
+            }
+        } elseif (strpos($str, '.')) {
+            $array = explode('.', $str);
+
+            return array_pop($array);
+        }
+
+        return $str;
+    }
 }

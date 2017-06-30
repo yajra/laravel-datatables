@@ -847,7 +847,7 @@ abstract class BaseEngine implements DataTableEngine
         }
 
         if (Str::contains(Str::upper($column), ' AS ')) {
-            $column = $this->extractColumnName($column, $wantsAlias);
+            $column = Helper::extractColumnName($column, $wantsAlias);
         }
 
         return $column;
@@ -874,31 +874,5 @@ abstract class BaseEngine implements DataTableEngine
     protected function getPrimaryKeyName()
     {
         return 'id';
-    }
-
-    /**
-     * Get column name from string.
-     *
-     * @param string $str
-     * @param bool   $wantsAlias
-     * @return string
-     */
-    protected function extractColumnName($str, $wantsAlias)
-    {
-        $matches = explode(' as ', Str::lower($str));
-
-        if (!empty($matches)) {
-            if ($wantsAlias) {
-                return array_pop($matches);
-            } else {
-                return array_shift($matches);
-            }
-        } elseif (strpos($str, '.')) {
-            $array = explode('.', $str);
-
-            return array_pop($array);
-        }
-
-        return $str;
     }
 }
