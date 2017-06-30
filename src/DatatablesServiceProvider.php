@@ -3,8 +3,6 @@
 namespace Yajra\Datatables;
 
 use Illuminate\Support\ServiceProvider;
-use League\Fractal\Manager;
-use League\Fractal\Serializer\DataArraySerializer;
 
 /**
  * Class DatatablesServiceProvider.
@@ -46,22 +44,6 @@ class DatatablesServiceProvider extends ServiceProvider
             require_once 'fallback.php';
         }
 
-        $this->app->singleton('datatables.fractal', function () {
-            $fractal = new Manager;
-            $config  = $this->app['config'];
-            $request = $this->app['request'];
-
-            $includesKey = $config->get('datatables.fractal.includes', 'include');
-            if ($request->get($includesKey)) {
-                $fractal->parseIncludes($request->get($includesKey));
-            }
-
-            $serializer = $config->get('datatables.fractal.serializer', DataArraySerializer::class);
-            $fractal->setSerializer(new $serializer);
-
-            return $fractal;
-        });
-
         $this->app->alias('datatables', Datatables::class);
         $this->app->singleton('datatables', function () {
             return new Datatables;
@@ -93,7 +75,6 @@ class DatatablesServiceProvider extends ServiceProvider
     {
         return [
             'datatables',
-            'datatables.fractal',
             'datatables.config',
             'datatables.request',
         ];

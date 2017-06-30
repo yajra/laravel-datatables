@@ -5,20 +5,25 @@ namespace Yajra\Datatables\Engines;
 use Illuminate\Contracts\Logging\Log;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
+use Illuminate\Support\Traits\Macroable;
 use Yajra\Datatables\Contracts\DataTableEngine;
 use Yajra\Datatables\Exception;
 use Yajra\Datatables\Helper;
 use Yajra\Datatables\Processors\DataProcessor;
-use Yajra\Datatables\Transformers\FractalTransformer;
 
 /**
  * Class BaseEngine.
  *
  * @package Yajra\Datatables\Engines
+ * @method setTransformer($transformer)
+ * @method setSerializer($transformer)
+ * @see https://github.com/yajra/laravel-datatables-fractal for transformer related methods.
  * @author  Arjay Angeles <aqangeles@gmail.com>
  */
 abstract class BaseEngine implements DataTableEngine
 {
+    use Macroable;
+
     /**
      * Datatables Request object.
      *
@@ -99,25 +104,11 @@ abstract class BaseEngine implements DataTableEngine
     ];
 
     /**
-     * Output transformer.
-     *
-     * @var mixed
-     */
-    protected $transformer = null;
-
-    /**
      * [internal] Track if any filter was applied for at least one column.
      *
      * @var boolean
      */
     protected $isFilterApplied = false;
-
-    /**
-     * Fractal serializer class.
-     *
-     * @var mixed
-     */
-    protected $serializer = null;
 
     /**
      * Custom ordering callback.
@@ -306,32 +297,6 @@ abstract class BaseEngine implements DataTableEngine
     public function addRowAttr($key, $value)
     {
         $this->templates['DT_RowAttr'][$key] = $value;
-
-        return $this;
-    }
-
-    /**
-     * Set data output transformer.
-     *
-     * @param mixed $transformer
-     * @return $this
-     */
-    public function setTransformer($transformer)
-    {
-        $this->transformer = $transformer;
-
-        return $this;
-    }
-
-    /**
-     * Set fractal serializer class.
-     *
-     * @param string $serializer
-     * @return $this
-     */
-    public function setSerializer($serializer)
-    {
-        $this->serializer = $serializer;
 
         return $this;
     }
@@ -602,11 +567,11 @@ abstract class BaseEngine implements DataTableEngine
      */
     protected function transform($output)
     {
-        if (!isset($this->transformer)) {
-            return Helper::transform($output);
+        if (isset($this->transformer) && class_exists('Yajra\\Datatables\\Transformers\\FractalTransformer')) {
+            return resolve('datatables.transformer')->transform($output, $this->transformer, $this->serializer ?? null);
         }
 
-        return (new FractalTransformer)->transform($output, $this->transformer, $this->serializer);
+        return Helper::transform($output);
     }
 
     /**

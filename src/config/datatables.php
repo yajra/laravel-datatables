@@ -35,21 +35,6 @@ return [
     'index_column'   => 'DT_Row_Index',
 
     /**
-     * DataTables fractal configurations.
-     */
-    'fractal'        => [
-        /**
-         * Request key name to parse includes on fractal.
-         */
-        'includes'   => 'include',
-
-        /**
-         * Default fractal serializer.
-         */
-        'serializer' => 'League\Fractal\Serializer\DataArraySerializer',
-    ],
-
-    /**
      * Datatables list of available engines.
      * This is where you can register your custom datatables engine.
      */
