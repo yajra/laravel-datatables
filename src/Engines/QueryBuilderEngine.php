@@ -270,7 +270,7 @@ class QueryBuilderEngine extends BaseEngine
 
             if ($this->hasFilterColumn($column)) {
                 $keyword = $this->getColumnSearchKeyword($index, $raw = true);
-                $this->applyFilterColumn($this->query, $column, $keyword);
+                $this->applyFilterColumn($this->getBaseQueryBuilder(), $column, $keyword);
                 continue;
             }
 
@@ -313,31 +313,17 @@ class QueryBuilderEngine extends BaseEngine
     /**
      * Apply filterColumn api search.
      *
-     * @param mixed  $query
-     * @param string $columnName
-     * @param string $keyword
-     * @param string $boolean
+     * @param Builder $query
+     * @param string  $columnName
+     * @param string  $keyword
+     * @param string  $boolean
      */
-    protected function applyFilterColumn($query, $columnName, $keyword, $boolean = 'and')
+    protected function applyFilterColumn(Builder $query, $columnName, $keyword, $boolean = 'and')
     {
         $callback = $this->columnDef['filter'][$columnName]['method'];
         $builder  = $query->newQuery();
         $callback($builder, $keyword);
         $query->addNestedWhereQuery($builder, $boolean);
-    }
-
-    /**
-     * Get eager loads keys if eloquent.
-     *
-     * @return array
-     */
-    protected function getEagerLoads()
-    {
-        if ($this->query instanceof EloquentBuilder) {
-            return array_keys($this->query->getEagerLoads());
-        }
-
-        return [];
     }
 
     /**
@@ -510,6 +496,20 @@ class QueryBuilderEngine extends BaseEngine
     public function getQuery()
     {
         return $this->query;
+    }
+
+    /**
+     * Get eager loads keys if eloquent.
+     *
+     * @return array
+     */
+    protected function getEagerLoads()
+    {
+        if ($this->query instanceof EloquentBuilder) {
+            return array_keys($this->query->getEagerLoads());
+        }
+
+        return [];
     }
 
     /**
