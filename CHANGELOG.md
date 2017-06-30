@@ -8,6 +8,9 @@
 
 ## Change Log
 
+### v7.9.1 - 06-30-2017
+- Fix transformer implementation when parameter requires an object. #1235
+
 ### v7.9.0 - 06-29-2017
 - Process and transform data first before filtering and ordering collection #1232
 - Support searching and sorting of added/edited columns when using collection.
