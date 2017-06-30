@@ -57,10 +57,10 @@ class Helper
     /**
      * Determines if content is callable or blade string, processes and returns.
      *
-     * @param string|callable $content Pre-processed content
-     * @param array           $data data to use with blade template
-     * @param mixed           $param parameter to call with callable
-     * @return string Processed content
+     * @param mixed $content Pre-processed content
+     * @param array $data    data to use with blade template
+     * @param mixed $param   parameter to call with callable
+     * @return mixed
      */
     public static function compileContent($content, array $data, $param)
     {
