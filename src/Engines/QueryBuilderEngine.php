@@ -162,44 +162,27 @@ class QueryBuilderEngine extends BaseEngine
             return;
         }
 
-        foreach ($this->request->orderableColumns() as $orderable) {
-            $column = $this->getColumnName($orderable['column'], true);
+        collect($this->request->orderableColumns())
+            ->map(function ($orderable) {
+                $orderable['name'] = $this->getColumnName($orderable['column'], true);
 
-            if ($this->isBlacklisted($column) && !$this->hasOrderColumn($column)) {
-                continue;
-            }
+                return $orderable;
+            })
+            ->reject(function ($orderable) {
+                return $this->isBlacklisted($orderable['name']) && !$this->hasOrderColumn($orderable['name']);
+            })
+            ->each(function ($orderable) {
+                $column = $this->resolveRelationColumn($orderable['name']);
 
-            if ($this->hasOrderColumn($column)) {
-                $this->applyOrderColumn($column, $orderable);
-                continue;
-            }
-
-            $column = $this->resolveRelationColumn($column);
-            if ($this->nullsLast) {
-                $this->getBaseQueryBuilder()->orderByRaw($this->getNullsLastSql($column, $orderable['direction']));
-            } else {
-                $this->getBaseQueryBuilder()->orderBy($column, $orderable['direction']);
-            }
-        }
-    }
-
-    /**
-     * Get the base query builder instance.
-     *
-     * @param mixed $instance
-     * @return \Illuminate\Database\Query\Builder
-     */
-    protected function getBaseQueryBuilder($instance = null)
-    {
-        if (!$instance) {
-            $instance = $this->query;
-        }
-
-        if ($instance instanceof EloquentBuilder) {
-            return $instance->getQuery();
-        }
-
-        return $instance;
+                if ($this->hasOrderColumn($column)) {
+                    $this->applyOrderColumn($column, $orderable);
+                } else {
+                    $nullsLastSql = $this->getNullsLastSql($column, $orderable['direction']);
+                    $normalSql    = $this->wrap($column) . ' ' . $orderable['direction'];
+                    $sql          = $this->nullsLast ? $nullsLastSql : $normalSql;
+                    $this->query->orderByRaw($sql);
+                }
+            });
     }
 
     /**
@@ -214,6 +197,17 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
+     * Resolve the proper column name be used.
+     *
+     * @param string $column
+     * @return string
+     */
+    protected function resolveRelationColumn($column)
+    {
+        return $column;
+    }
+
+    /**
      * Apply orderColumn custom query.
      *
      * @param string $column
@@ -225,17 +219,6 @@ class QueryBuilderEngine extends BaseEngine
         $sql      = str_replace('$1', $orderable['direction'], $sql);
         $bindings = $this->columnDef['order'][$column]['bindings'];
         $this->query->orderByRaw($sql, $bindings);
-    }
-
-    /**
-     * Resolve the proper column name be used.
-     *
-     * @param string $column
-     * @return string
-     */
-    protected function resolveRelationColumn($column)
-    {
-        return $column;
     }
 
     /**
@@ -324,6 +307,25 @@ class QueryBuilderEngine extends BaseEngine
         $builder  = $query->newQuery();
         $callback($builder, $keyword);
         $query->addNestedWhereQuery($builder, $boolean);
+    }
+
+    /**
+     * Get the base query builder instance.
+     *
+     * @param mixed $instance
+     * @return \Illuminate\Database\Query\Builder
+     */
+    protected function getBaseQueryBuilder($instance = null)
+    {
+        if (!$instance) {
+            $instance = $this->query;
+        }
+
+        if ($instance instanceof EloquentBuilder) {
+            return $instance->getQuery();
+        }
+
+        return $instance;
     }
 
     /**

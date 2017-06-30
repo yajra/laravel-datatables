@@ -25,3 +25,4 @@
 
 ### FIXED
 - Fix #1068.
+- Fix orderColumn api where related tables are not joined. 
