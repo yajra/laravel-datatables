@@ -19,7 +19,7 @@ use Yajra\Datatables\Processors\DataProcessor;
  * @method setSerializer($transformer)
  * @property mixed transformer
  * @property mixed serializer
- * @see https://github.com/yajra/laravel-datatables-fractal for transformer related methods.
+ * @see     https://github.com/yajra/laravel-datatables-fractal for transformer related methods.
  * @author  Arjay Angeles <aqangeles@gmail.com>
  */
 abstract class BaseEngine implements DataTableEngine
@@ -564,28 +564,30 @@ abstract class BaseEngine implements DataTableEngine
     /**
      * Transform output.
      *
-     * @param mixed $output
+     * @param mixed $results
+     * @param mixed $processed
      * @return array
      */
-    protected function transform($output)
+    protected function transform($results, $processed)
     {
         if (isset($this->transformer) && class_exists('Yajra\\Datatables\\Transformers\\FractalTransformer')) {
-            return resolve('datatables.transformer')->transform($output, $this->transformer, $this->serializer ?? null);
+            return resolve('datatables.transformer')->transform($results, $this->transformer, $this->serializer ?? null);
         }
 
-        return Helper::transform($output);
+        return Helper::transform($processed);
     }
 
     /**
      * Get processed data.
      *
-     * @param bool|false $object
+     * @param mixed $results
+     * @param bool  $object
      * @return array
      */
-    protected function getProcessedData($object = false)
+    protected function processResults($results, $object = false)
     {
         $processor = new DataProcessor(
-            $this->results(),
+            $results,
             $this->getColumnsDefinition(),
             $this->templates,
             $this->request->input('start')

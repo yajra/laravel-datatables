@@ -70,7 +70,9 @@ class QueryBuilderEngine extends BaseEngine
                 $this->paginate();
             }
 
-            $data = $this->transform($this->getProcessedData($mDataSupport));
+            $results   = $this->results();
+            $processed = $this->processResults($results, $mDataSupport);
+            $data      = $this->transform($results, $processed);
 
             return $this->render($data);
         } catch (\Exception $exception) {
@@ -140,6 +142,16 @@ class QueryBuilderEngine extends BaseEngine
     protected function wrap($column)
     {
         return $this->connection->getQueryGrammar()->wrap($column);
+    }
+
+    /**
+     * Get paginated results.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function results()
+    {
+        return $this->query->get();
     }
 
     /**
@@ -447,16 +459,6 @@ class QueryBuilderEngine extends BaseEngine
     {
         $this->query->skip($this->request->input('start'))
                     ->take((int) $this->request->input('length') > 0 ? $this->request->input('length') : 10);
-    }
-
-    /**
-     * Get paginated results.
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public function results()
-    {
-        return $this->query->get();
     }
 
     /**

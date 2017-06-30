@@ -132,16 +132,6 @@ class CollectionEngine extends BaseEngine
     }
 
     /**
-     * Get results.
-     *
-     * @return mixed
-     */
-    public function results()
-    {
-        return $this->collection->all();
-    }
-
-    /**
      * Organizes works.
      *
      * @param bool $mDataSupport
@@ -153,8 +143,9 @@ class CollectionEngine extends BaseEngine
             $this->totalRecords = $this->totalCount();
 
             if ($this->totalRecords) {
-                $data   = $this->getProcessedData($mDataSupport);
-                $output = $this->transform($data);
+                $results   = $this->results();
+                $processed = $this->processResults($results, $mDataSupport);
+                $output    = $this->transform($results, $processed);
 
                 $this->collection = collect($output);
                 $this->ordering();
@@ -176,6 +167,16 @@ class CollectionEngine extends BaseEngine
     public function totalCount()
     {
         return $this->totalRecords ? $this->totalRecords : $this->collection->count();
+    }
+
+    /**
+     * Get results.
+     *
+     * @return mixed
+     */
+    public function results()
+    {
+        return $this->collection->all();
     }
 
     /**
