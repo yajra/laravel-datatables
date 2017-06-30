@@ -150,18 +150,20 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Perform sorting of columns.
+     * Resolve callback parameter instance.
      *
-     * @return void
+     * @return \Illuminate\Database\Query\Builder
      */
-    public function ordering()
+    protected function resolveCallbackParameter()
     {
-        if ($this->orderCallback) {
-            call_user_func($this->orderCallback, $this->query);
+        return $this->query;
+    }
 
-            return;
-        }
-
+    /**
+     * Perform default query orderBy clause.
+     */
+    protected function defaultOrdering()
+    {
         collect($this->request->orderableColumns())
             ->map(function ($orderable) {
                 $orderable['name'] = $this->getColumnName($orderable['column'], true);

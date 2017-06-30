@@ -556,6 +556,30 @@ abstract class BaseEngine implements DataTableEngine
     }
 
     /**
+     * Perform sorting of columns.
+     */
+    public function ordering()
+    {
+        if ($this->orderCallback) {
+            return call_user_func($this->orderCallback, $this->resolveCallbackParameter());
+        }
+
+        return $this->defaultOrdering();
+    }
+
+    /**
+     * Resolve callback parameter instance.
+     *
+     * @return mixed
+     */
+    abstract protected function resolveCallbackParameter();
+
+    /**
+     * Perform default query orderBy clause.
+     */
+    abstract protected function defaultOrdering();
+
+    /**
      * Perform necessary filters.
      *
      * @return void

@@ -93,47 +93,6 @@ class CollectionEngine extends BaseEngine
     }
 
     /**
-     * Perform global search for the given keyword.
-     *
-     * @param string $keyword
-     */
-    protected function globalSearch($keyword)
-    {
-        if ($this->config->isCaseInsensitive()) {
-            $keyword = Str::lower($keyword);
-        }
-
-        $columns          = $this->request->columns();
-        $this->collection = $this->collection->filter(
-            function ($row) use ($columns, $keyword) {
-                $data                  = $this->serialize($row);
-                $this->isFilterApplied = true;
-
-                foreach ($this->request->searchableColumnIndex() as $index) {
-                    $column = $this->getColumnName($index);
-                    if (!$value = Arr::get($data, $column)) {
-                        continue;
-                    }
-
-                    if (is_array($value)) {
-                        continue;
-                    }
-
-                    if ($this->config->isCaseInsensitive()) {
-                        $value = Str::lower($value);
-                    }
-
-                    if (Str::contains($value, $keyword)) {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-        );
-    }
-
-    /**
      * Perform column search.
      *
      * @return void
@@ -235,18 +194,51 @@ class CollectionEngine extends BaseEngine
     }
 
     /**
-     * Perform sorting of columns.
+     * Perform global search for the given keyword.
      *
-     * @return void
+     * @param string $keyword
      */
-    public function ordering()
+    protected function globalSearch($keyword)
     {
-        if ($this->orderCallback) {
-            call_user_func($this->orderCallback, $this);
-
-            return;
+        if ($this->config->isCaseInsensitive()) {
+            $keyword = Str::lower($keyword);
         }
 
+        $columns          = $this->request->columns();
+        $this->collection = $this->collection->filter(
+            function ($row) use ($columns, $keyword) {
+                $data                  = $this->serialize($row);
+                $this->isFilterApplied = true;
+
+                foreach ($this->request->searchableColumnIndex() as $index) {
+                    $column = $this->getColumnName($index);
+                    if (!$value = Arr::get($data, $column)) {
+                        continue;
+                    }
+
+                    if (is_array($value)) {
+                        continue;
+                    }
+
+                    if ($this->config->isCaseInsensitive()) {
+                        $value = Str::lower($value);
+                    }
+
+                    if (Str::contains($value, $keyword)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        );
+    }
+
+    /**
+     * Perform default query orderBy clause.
+     */
+    protected function defaultOrdering()
+    {
         foreach ($this->request->orderableColumns() as $orderable) {
             $column = $this->getColumnName($orderable['column']);
 
@@ -265,5 +257,15 @@ class CollectionEngine extends BaseEngine
                 $this->collection = $this->collection->reverse();
             }
         }
+    }
+
+    /**
+     * Resolve callback parameter instance.
+     *
+     * @return mixed
+     */
+    protected function resolveCallbackParameter()
+    {
+        return $this;
     }
 }
