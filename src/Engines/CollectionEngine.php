@@ -211,7 +211,8 @@ class CollectionEngine extends BaseEngine
             $data = $this->serialize($row);
             foreach ($this->request->searchableColumnIndex() as $index) {
                 $column = $this->getColumnName($index);
-                if (!$value = Arr::get($data, $column) or is_array($value)) {
+                $value  = Arr::get($data, $column);
+                if (!$value || is_array($value)) {
                     continue;
                 }
 
