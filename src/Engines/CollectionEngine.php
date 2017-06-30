@@ -262,7 +262,7 @@ class CollectionEngine extends BaseEngine
     /**
      * Resolve callback parameter instance.
      *
-     * @return mixed
+     * @return $this
      */
     protected function resolveCallbackParameter()
     {
