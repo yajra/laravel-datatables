@@ -91,12 +91,7 @@ class EloquentEngine extends QueryBuilderEngine
         $relationColumn = array_pop($parts);
         $relation       = implode('.', $parts);
         if (in_array($relation, $eagerLoads)) {
-            $this->compileRelationSearch(
-                $query,
-                $relation,
-                $relationColumn,
-                $keyword
-            );
+            $this->compileRelationSearch($query, $relation, $relationColumn, $keyword);
         } else {
             $this->compileQuerySearch($query, $columnName, $keyword);
         }
