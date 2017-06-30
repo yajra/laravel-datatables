@@ -17,6 +17,8 @@ use Yajra\Datatables\Processors\DataProcessor;
  * @package Yajra\Datatables\Engines
  * @method setTransformer($transformer)
  * @method setSerializer($transformer)
+ * @property mixed transformer
+ * @property mixed serializer
  * @see https://github.com/yajra/laravel-datatables-fractal for transformer related methods.
  * @author  Arjay Angeles <aqangeles@gmail.com>
  */
