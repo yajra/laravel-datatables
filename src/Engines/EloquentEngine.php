@@ -156,10 +156,10 @@ class EloquentEngine extends QueryBuilderEngine
                     return $this->getColumnName($index);
                 })
                 ->reject(function ($column) {
-                    return $this->isBlacklisted($column) && !$this->hasCustomFilter($column);
+                    return $this->isBlacklisted($column) && !$this->hasFilterColumn($column);
                 })
                 ->each(function ($column) use ($keyword, $query) {
-                    if ($this->hasCustomFilter($column)) {
+                    if ($this->hasFilterColumn($column)) {
                         $this->applyFilterColumn($query, $column, $keyword);
                     } else {
                         if (count(explode('.', $column)) > 1) {

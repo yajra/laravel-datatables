@@ -165,11 +165,11 @@ class QueryBuilderEngine extends BaseEngine
         foreach ($this->request->orderableColumns() as $orderable) {
             $column = $this->getColumnName($orderable['column'], true);
 
-            if ($this->isBlacklisted($column) && !$this->hasCustomOrder($column)) {
+            if ($this->isBlacklisted($column) && !$this->hasOrderColumn($column)) {
                 continue;
             }
 
-            if ($this->hasCustomOrder($column)) {
+            if ($this->hasOrderColumn($column)) {
                 $this->applyOrderColumn($column, $orderable);
                 continue;
             }
@@ -208,7 +208,7 @@ class QueryBuilderEngine extends BaseEngine
      * @param string $column
      * @return bool
      */
-    protected function hasCustomOrder($column)
+    protected function hasOrderColumn($column)
     {
         return isset($this->columnDef['order'][$column]);
     }
@@ -268,7 +268,7 @@ class QueryBuilderEngine extends BaseEngine
 
             $column = $this->getColumnName($index);
 
-            if ($this->hasCustomFilter($column)) {
+            if ($this->hasFilterColumn($column)) {
                 $keyword = $this->getColumnSearchKeyword($index, $raw = true);
                 $this->applyFilterColumn($this->query, $column, $keyword);
             } else {
@@ -296,7 +296,7 @@ class QueryBuilderEngine extends BaseEngine
      * @param  string $columnName
      * @return bool
      */
-    public function hasCustomFilter($columnName)
+    public function hasFilterColumn($columnName)
     {
         return isset($this->columnDef['filter'][$columnName]);
     }
@@ -535,10 +535,10 @@ class QueryBuilderEngine extends BaseEngine
                     return $this->getColumnName($index);
                 })
                 ->reject(function ($column) {
-                    return $this->isBlacklisted($column) && !$this->hasCustomFilter($column);
+                    return $this->isBlacklisted($column) && !$this->hasFilterColumn($column);
                 })
                 ->each(function ($column) use ($keyword, $query) {
-                    if ($this->hasCustomFilter($column)) {
+                    if ($this->hasFilterColumn($column)) {
                         $this->applyFilterColumn($query, $column, $keyword, 'or');
                     } else {
                         $this->compileQuerySearch($query, $column, $keyword);
