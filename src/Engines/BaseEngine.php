@@ -607,7 +607,7 @@ abstract class BaseEngine implements DataTableEngine
     {
         $keyword = $this->request->keyword();
 
-        if ($this->config->isSmartSearch()) {
+        if ($this->config->isMultiTerm()) {
             $this->smartGlobalSearch($keyword);
 
             return;

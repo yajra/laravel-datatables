@@ -84,4 +84,14 @@ class Config
     {
         $this->repository->set($key, $value);
     }
+
+    /**
+     * Check if dataTable config uses multi-term searching.
+     *
+     * @return bool
+     */
+    public function isMultiTerm()
+    {
+        return $this->repository->get('datatables.search.multi_term', true);
+    }
 }

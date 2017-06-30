@@ -14,6 +14,7 @@
 - Package auto-discovery implemented.
 - Add method to get the query used by dataTable.
 - Add the raw data to model key when compiling views when using addColumn and editColumn.
+- Make multi-term search configurable.
 
 ### CHANGED
 - Preserve `Eloquent\Builder` when overriding the default ordering of dataTables when using `EloquentEngine`.
