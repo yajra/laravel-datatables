@@ -779,7 +779,7 @@ abstract class BaseEngine implements DataTableEngine
         if ($this->config->isSmartSearch()) {
             $keyword = '%' . $value . '%';
             if ($this->config->isWildcard()) {
-                $keyword = $this->wildcardLikeString($value);
+                $keyword = Helper::wildcardLikeString($value);
             }
             // remove escaping slash added on js script request
             $keyword = str_replace('\\', '%', $keyword);
@@ -788,31 +788,6 @@ abstract class BaseEngine implements DataTableEngine
         }
 
         return $value;
-    }
-
-    /**
-     * Adds % wildcards to the given string.
-     *
-     * @param string $str
-     * @param bool   $lowercase
-     * @return string
-     */
-    protected function wildcardLikeString($str, $lowercase = true)
-    {
-        $wild  = '%';
-        $chars = preg_split('//u', $str, -1, PREG_SPLIT_NO_EMPTY);
-
-        if (count($chars) > 0) {
-            foreach ($chars as $char) {
-                $wild .= $char . '%';
-            }
-        }
-
-        if ($lowercase) {
-            $wild = Str::lower($wild);
-        }
-
-        return $wild;
     }
 
     /**

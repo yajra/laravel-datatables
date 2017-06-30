@@ -338,4 +338,29 @@ class Helper
 
         return $str;
     }
+
+    /**
+     * Adds % wildcards to the given string.
+     *
+     * @param string $str
+     * @param bool   $lowercase
+     * @return string
+     */
+    public static function wildcardLikeString($str, $lowercase = true)
+    {
+        $wild  = '%';
+        $chars = preg_split('//u', $str, -1, PREG_SPLIT_NO_EMPTY);
+
+        if (count($chars) > 0) {
+            foreach ($chars as $char) {
+                $wild .= $char . '%';
+            }
+        }
+
+        if ($lowercase) {
+            $wild = Str::lower($wild);
+        }
+
+        return $wild;
+    }
 }

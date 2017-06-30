@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Str;
+use Yajra\Datatables\Helper;
 
 /**
  * Class QueryBuilderEngine.
@@ -446,7 +447,7 @@ class QueryBuilderEngine extends BaseEngine
         }
 
         if ($this->config->isWildcard()) {
-            $keyword = $this->wildcardLikeString($keyword);
+            $keyword = Helper::wildcardLikeString($keyword);
         }
 
         if ($this->config->isSmartSearch()) {
