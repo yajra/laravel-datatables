@@ -103,8 +103,8 @@ class CollectionEngine extends BaseEngine
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($this->request->isColumnSearchable($i)) {
                 $this->isFilterApplied = true;
-                $regex                 = $this->request->isRegex($i);
 
+                $regex   = $this->request->isRegex($i);
                 $column  = $this->getColumnName($i);
                 $keyword = $this->request->columnKeyword($i);
 
@@ -200,38 +200,29 @@ class CollectionEngine extends BaseEngine
      */
     protected function globalSearch($keyword)
     {
+        $columns = $this->request->columns();
         if ($this->config->isCaseInsensitive()) {
             $keyword = Str::lower($keyword);
         }
 
-        $columns          = $this->request->columns();
-        $this->collection = $this->collection->filter(
-            function ($row) use ($columns, $keyword) {
-                $data                  = $this->serialize($row);
-                $this->isFilterApplied = true;
+        $this->collection = $this->collection->filter(function ($row) use ($columns, $keyword) {
+            $this->isFilterApplied = true;
 
-                foreach ($this->request->searchableColumnIndex() as $index) {
-                    $column = $this->getColumnName($index);
-                    if (!$value = Arr::get($data, $column)) {
-                        continue;
-                    }
-
-                    if (is_array($value)) {
-                        continue;
-                    }
-
-                    if ($this->config->isCaseInsensitive()) {
-                        $value = Str::lower($value);
-                    }
-
-                    if (Str::contains($value, $keyword)) {
-                        return true;
-                    }
+            $data = $this->serialize($row);
+            foreach ($this->request->searchableColumnIndex() as $index) {
+                $column = $this->getColumnName($index);
+                if (!$value = Arr::get($data, $column) or is_array($value)) {
+                    continue;
                 }
 
-                return false;
+                $value = $this->config->isCaseInsensitive() ? Str::lower($value) : $value;
+                if (Str::contains($value, $keyword)) {
+                    return true;
+                }
             }
-        );
+
+            return false;
+        });
     }
 
     /**
