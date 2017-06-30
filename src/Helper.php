@@ -4,9 +4,7 @@ namespace Yajra\Datatables;
 
 use DateTime;
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
-use Illuminate\View\Compilers\BladeCompiler;
 
 /**
  * Class Helper.
@@ -89,12 +87,8 @@ class Helper
             return view($str, $data);
         }
 
-        $filesystem = new Filesystem();
-        $blade      = new BladeCompiler($filesystem, 'datatables');
-        $compiled   = $blade->compileString($str);
-
         ob_start() && extract($data, EXTR_SKIP);
-        eval('?>' . $compiled);
+        eval('?>' . resolve('blade.compiler')->compileString($str));
         $str = ob_get_contents();
         ob_end_clean();
 
