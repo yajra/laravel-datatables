@@ -186,9 +186,7 @@ class CollectionEngine extends BaseEngine
     protected function globalSearch($keyword)
     {
         $columns = $this->request->columns();
-        if ($this->config->isCaseInsensitive()) {
-            $keyword = Str::lower($keyword);
-        }
+        $keyword = $this->config->isCaseInsensitive() ? Str::lower($keyword) : $keyword;
 
         $this->collection = $this->collection->filter(function ($row) use ($columns, $keyword) {
             $this->isFilterApplied = true;
