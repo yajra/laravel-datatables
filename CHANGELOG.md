@@ -18,6 +18,7 @@
 
 ### CHANGED
 - Preserve `Eloquent\Builder` when overriding the default ordering of dataTables when using `EloquentEngine`.
+- Preserve `Eloquent\Builder` when using filterColumn api. Allows us to use model scope and any eloquent magics.
 
 ### REMOVED
 - Remove filterColumn api magic query method in favor of closure.

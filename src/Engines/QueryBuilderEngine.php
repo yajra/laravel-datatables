@@ -211,9 +211,16 @@ class QueryBuilderEngine extends BaseEngine
     protected function applyFilterColumn(Builder $query, $columnName, $keyword, $boolean = 'and')
     {
         $callback = $this->columnDef['filter'][$columnName]['method'];
-        $builder  = $query->newQuery();
+
+        if ($this->query instanceof EloquentBuilder) {
+            $builder  = $this->query->newModelInstance()->newQuery();
+        } else {
+            $builder = $this->query->newQuery();
+        }
+
         $callback($builder, $keyword);
-        $query->addNestedWhereQuery($builder, $boolean);
+
+        $query->addNestedWhereQuery($this->getBaseQueryBuilder($builder), $boolean);
     }
 
     /**
