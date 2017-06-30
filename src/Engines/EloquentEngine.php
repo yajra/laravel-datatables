@@ -304,7 +304,7 @@ class EloquentEngine extends QueryBuilderEngine
      * @param string $column
      * @return string
      */
-    protected function resolveOrderByColumn($column)
+    protected function resolveRelationColumn($column)
     {
         if (count(explode('.', $column)) > 1) {
             $eagerLoads     = $this->getEagerLoads();

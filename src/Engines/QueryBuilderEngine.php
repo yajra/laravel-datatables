@@ -174,7 +174,7 @@ class QueryBuilderEngine extends BaseEngine
                 continue;
             }
 
-            $column = $this->resolveOrderByColumn($column);
+            $column = $this->resolveRelationColumn($column);
             if ($this->nullsLast) {
                 $this->getBaseQueryBuilder()->orderByRaw($this->getNullsLastSql($column, $orderable['direction']));
             } else {
@@ -233,7 +233,7 @@ class QueryBuilderEngine extends BaseEngine
      * @param string $column
      * @return string
      */
-    protected function resolveOrderByColumn($column)
+    protected function resolveRelationColumn($column)
     {
         return $column;
     }
