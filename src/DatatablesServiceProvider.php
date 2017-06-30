@@ -63,7 +63,7 @@ class DatatablesServiceProvider extends ServiceProvider
         });
 
         $this->app->alias('datatables', Datatables::class);
-        $this->app->singleton('datatables', function() {
+        $this->app->singleton('datatables', function () {
             return new Datatables;
         });
 
