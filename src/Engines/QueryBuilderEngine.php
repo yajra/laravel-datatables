@@ -157,7 +157,7 @@ class QueryBuilderEngine extends BaseEngine
     public function ordering()
     {
         if ($this->orderCallback) {
-            call_user_func($this->orderCallback, $this->getBaseQueryBuilder());
+            call_user_func($this->orderCallback, $this->query);
 
             return;
         }

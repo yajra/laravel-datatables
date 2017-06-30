@@ -15,6 +15,9 @@
 - Add method to get the query used by dataTable.
 - Add the raw data to model key when compiling views when using addColumn and editColumn.
 
+### CHANGED
+- Preserve `Eloquent\Builder` when overriding the default ordering of dataTables when using `EloquentEngine`.
+
 ### REMOVED
 - Remove filterColumn api magic query method in favor of closure.
 - Remove support on older snake_case methods.
