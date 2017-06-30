@@ -80,7 +80,7 @@ class Helper
      *
      * @param string $str
      * @param array  $data
-     * @return string
+     * @return mixed
      * @throws \Exception
      */
     public static function compileBlade($str, $data = [])
@@ -89,12 +89,12 @@ class Helper
             return view($str, $data);
         }
 
-        $empty_filesystem_instance = new Filesystem();
-        $blade                     = new BladeCompiler($empty_filesystem_instance, 'datatables');
-        $parsed_string             = $blade->compileString($str);
+        $filesystem = new Filesystem();
+        $blade      = new BladeCompiler($filesystem, 'datatables');
+        $compiled   = $blade->compileString($str);
 
         ob_start() && extract($data, EXTR_SKIP);
-        eval('?>' . $parsed_string);
+        eval('?>' . $compiled);
         $str = ob_get_contents();
         ob_end_clean();
 
