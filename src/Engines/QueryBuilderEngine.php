@@ -31,6 +31,13 @@ class QueryBuilderEngine extends BaseEngine
     protected $connection;
 
     /**
+     * Flag for ordering NULLS LAST option.
+     *
+     * @var bool
+     */
+    protected $nullsLast = false;
+
+    /**
      * @param \Illuminate\Database\Query\Builder $builder
      */
     public function __construct(Builder $builder)
@@ -151,94 +158,6 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Resolve callback parameter instance.
-     *
-     * @return \Illuminate\Database\Query\Builder
-     */
-    protected function resolveCallbackParameter()
-    {
-        return $this->query;
-    }
-
-    /**
-     * Perform default query orderBy clause.
-     */
-    protected function defaultOrdering()
-    {
-        collect($this->request->orderableColumns())
-            ->map(function ($orderable) {
-                $orderable['name'] = $this->getColumnName($orderable['column'], true);
-
-                return $orderable;
-            })
-            ->reject(function ($orderable) {
-                return $this->isBlacklisted($orderable['name']) && !$this->hasOrderColumn($orderable['name']);
-            })
-            ->each(function ($orderable) {
-                $column = $this->resolveRelationColumn($orderable['name']);
-
-                if ($this->hasOrderColumn($column)) {
-                    $this->applyOrderColumn($column, $orderable);
-                } else {
-                    $nullsLastSql = $this->getNullsLastSql($column, $orderable['direction']);
-                    $normalSql    = $this->wrap($column) . ' ' . $orderable['direction'];
-                    $sql          = $this->nullsLast ? $nullsLastSql : $normalSql;
-                    $this->query->orderByRaw($sql);
-                }
-            });
-    }
-
-    /**
-     * Check if column has custom sort handler.
-     *
-     * @param string $column
-     * @return bool
-     */
-    protected function hasOrderColumn($column)
-    {
-        return isset($this->columnDef['order'][$column]);
-    }
-
-    /**
-     * Resolve the proper column name be used.
-     *
-     * @param string $column
-     * @return string
-     */
-    protected function resolveRelationColumn($column)
-    {
-        return $column;
-    }
-
-    /**
-     * Apply orderColumn custom query.
-     *
-     * @param string $column
-     * @param array  $orderable
-     */
-    protected function applyOrderColumn($column, $orderable): void
-    {
-        $sql      = $this->columnDef['order'][$column]['sql'];
-        $sql      = str_replace('$1', $orderable['direction'], $sql);
-        $bindings = $this->columnDef['order'][$column]['bindings'];
-        $this->query->orderByRaw($sql, $bindings);
-    }
-
-    /**
-     * Get NULLS LAST SQL.
-     *
-     * @param  string $column
-     * @param  string $direction
-     * @return string
-     */
-    protected function getNullsLastSql($column, $direction)
-    {
-        $sql = $this->config->get('datatables.nulls_last_sql', '%s %s NULLS LAST');
-
-        return sprintf($sql, $column, $direction);
-    }
-
-    /**
      * Perform column search.
      *
      * @return void
@@ -329,6 +248,17 @@ class QueryBuilderEngine extends BaseEngine
         }
 
         return $instance;
+    }
+
+    /**
+     * Resolve the proper column name be used.
+     *
+     * @param string $column
+     * @return string
+     */
+    protected function resolveRelationColumn($column)
+    {
+        return $column;
     }
 
     /**
@@ -458,6 +388,65 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
+     * Add custom filter handler for the give column.
+     *
+     * @param string   $column
+     * @param callable $callback
+     * @return $this
+     */
+    public function filterColumn($column, callable $callback)
+    {
+        $this->columnDef['filter'][$column] = ['method' => $callback];
+
+        return $this;
+    }
+
+    /**
+     * Order each given columns versus the given custom sql.
+     *
+     * @param array  $columns
+     * @param string $sql
+     * @param array  $bindings
+     * @return $this
+     */
+    public function orderColumns(array $columns, $sql, $bindings = [])
+    {
+        foreach ($columns as $column) {
+            $this->orderColumn($column, str_replace(':column', $column, $sql), $bindings);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Override default column ordering.
+     *
+     * @param string $column
+     * @param string $sql
+     * @param array  $bindings
+     * @return $this
+     * @internal string $1 Special variable that returns the requested order direction of the column.
+     */
+    public function orderColumn($column, $sql, $bindings = [])
+    {
+        $this->columnDef['order'][$column] = compact('sql', 'bindings');
+
+        return $this;
+    }
+
+    /**
+     * Set datatables to do ordering with NULLS LAST option.
+     *
+     * @return $this
+     */
+    public function orderByNullsLast()
+    {
+        $this->nullsLast = true;
+
+        return $this;
+    }
+
+    /**
      * Perform pagination.
      *
      * @return void
@@ -501,6 +490,83 @@ class QueryBuilderEngine extends BaseEngine
     public function getQuery()
     {
         return $this->query;
+    }
+
+    /**
+     * Resolve callback parameter instance.
+     *
+     * @return \Illuminate\Database\Query\Builder
+     */
+    protected function resolveCallbackParameter()
+    {
+        return $this->query;
+    }
+
+    /**
+     * Perform default query orderBy clause.
+     */
+    protected function defaultOrdering()
+    {
+        collect($this->request->orderableColumns())
+            ->map(function ($orderable) {
+                $orderable['name'] = $this->getColumnName($orderable['column'], true);
+
+                return $orderable;
+            })
+            ->reject(function ($orderable) {
+                return $this->isBlacklisted($orderable['name']) && !$this->hasOrderColumn($orderable['name']);
+            })
+            ->each(function ($orderable) {
+                $column = $this->resolveRelationColumn($orderable['name']);
+
+                if ($this->hasOrderColumn($column)) {
+                    $this->applyOrderColumn($column, $orderable);
+                } else {
+                    $nullsLastSql = $this->getNullsLastSql($column, $orderable['direction']);
+                    $normalSql    = $this->wrap($column) . ' ' . $orderable['direction'];
+                    $sql          = $this->nullsLast ? $nullsLastSql : $normalSql;
+                    $this->query->orderByRaw($sql);
+                }
+            });
+    }
+
+    /**
+     * Check if column has custom sort handler.
+     *
+     * @param string $column
+     * @return bool
+     */
+    protected function hasOrderColumn($column)
+    {
+        return isset($this->columnDef['order'][$column]);
+    }
+
+    /**
+     * Apply orderColumn custom query.
+     *
+     * @param string $column
+     * @param array  $orderable
+     */
+    protected function applyOrderColumn($column, $orderable): void
+    {
+        $sql      = $this->columnDef['order'][$column]['sql'];
+        $sql      = str_replace('$1', $orderable['direction'], $sql);
+        $bindings = $this->columnDef['order'][$column]['bindings'];
+        $this->query->orderByRaw($sql, $bindings);
+    }
+
+    /**
+     * Get NULLS LAST SQL.
+     *
+     * @param  string $column
+     * @param  string $direction
+     * @return string
+     */
+    protected function getNullsLastSql($column, $direction)
+    {
+        $sql = $this->config->get('datatables.nulls_last_sql', '%s %s NULLS LAST');
+
+        return sprintf($sql, $column, $direction);
     }
 
     /**

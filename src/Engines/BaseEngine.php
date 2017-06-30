@@ -148,13 +148,6 @@ abstract class BaseEngine implements DataTableEngine
     protected $appends = [];
 
     /**
-     * Flag for ordering NULLS LAST option.
-     *
-     * @var bool
-     */
-    protected $nullsLast = false;
-
-    /**
      * @var \Yajra\Datatables\Config
      */
     protected $config;
@@ -325,53 +318,6 @@ abstract class BaseEngine implements DataTableEngine
     }
 
     /**
-     * Add custom filter handler for the give column.
-     *
-     * @param string   $column
-     * @param callable $callback
-     * @return $this
-     */
-    public function filterColumn($column, callable $callback)
-    {
-        $this->columnDef['filter'][$column] = ['method' => $callback];
-
-        return $this;
-    }
-
-    /**
-     * Order each given columns versus the given custom sql.
-     *
-     * @param array  $columns
-     * @param string $sql
-     * @param array  $bindings
-     * @return $this
-     */
-    public function orderColumns(array $columns, $sql, $bindings = [])
-    {
-        foreach ($columns as $column) {
-            $this->orderColumn($column, str_replace(':column', $column, $sql), $bindings);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Override default column ordering.
-     *
-     * @param string $column
-     * @param string $sql
-     * @param array  $bindings
-     * @return $this
-     * @internal string $1 Special variable that returns the requested order direction of the column.
-     */
-    public function orderColumn($column, $sql, $bindings = [])
-    {
-        $this->columnDef['order'][$column] = compact('sql', 'bindings');
-
-        return $this;
-    }
-
-    /**
      * Set data output transformer.
      *
      * @param mixed $transformer
@@ -490,18 +436,6 @@ abstract class BaseEngine implements DataTableEngine
     public function skipPaging()
     {
         $this->skipPaging = true;
-
-        return $this;
-    }
-
-    /**
-     * Set datatables to do ordering with NULLS LAST option.
-     *
-     * @return $this
-     */
-    public function orderByNullsLast()
-    {
-        $this->nullsLast = true;
 
         return $this;
     }
