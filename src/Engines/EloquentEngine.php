@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Yajra\Datatables\Exception;
 
 /**
@@ -197,6 +196,16 @@ class EloquentEngine extends QueryBuilderEngine
         } else {
             $this->compileQuerySearch($query, $columnName, $keyword);
         }
+    }
+
+    /**
+     * Get eager loads keys if eloquent.
+     *
+     * @return array
+     */
+    protected function getEagerLoads()
+    {
+        return array_keys($this->query->getEagerLoads());
     }
 
     /**

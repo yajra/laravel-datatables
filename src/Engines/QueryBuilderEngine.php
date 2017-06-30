@@ -499,20 +499,6 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Get eager loads keys if eloquent.
-     *
-     * @return array
-     */
-    protected function getEagerLoads()
-    {
-        if ($this->query instanceof EloquentBuilder) {
-            return array_keys($this->query->getEagerLoads());
-        }
-
-        return [];
-    }
-
-    /**
      * Perform global search for the given keyword.
      *
      * @param string $keyword
