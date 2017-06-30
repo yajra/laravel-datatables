@@ -271,20 +271,12 @@ class QueryBuilderEngine extends BaseEngine
             if ($this->hasFilterColumn($column)) {
                 $keyword = $this->getColumnSearchKeyword($index, $raw = true);
                 $this->applyFilterColumn($this->query, $column, $keyword);
-            } else {
-                if (count(explode('.', $column)) > 1) {
-                    $eagerLoads     = $this->getEagerLoads();
-                    $parts          = explode('.', $column);
-                    $relationColumn = array_pop($parts);
-                    $relation       = implode('.', $parts);
-                    if (in_array($relation, $eagerLoads)) {
-                        $column = $this->joinEagerLoadedColumn($relation, $relationColumn);
-                    }
-                }
-
-                $keyword = $this->getColumnSearchKeyword($index);
-                $this->compileColumnSearch($index, $column, $keyword);
+                continue;
             }
+
+            $column  = $this->resolveRelationColumn($column);
+            $keyword = $this->getColumnSearchKeyword($index);
+            $this->compileColumnSearch($index, $column, $keyword);
 
             $this->isFilterApplied = true;
         }

@@ -313,23 +313,7 @@ class EloquentEngine extends QueryBuilderEngine
             $relation       = implode('.', $parts);
 
             if (in_array($relation, $eagerLoads)) {
-                // Loop for nested relations
-                // This code is check morph many or not.
-                // If one of nested relation is MorphToMany
-                // we will call joinEagerLoadedColumn.
-                $lastQuery     = $this->query;
-                $isMorphToMany = false;
-                foreach (explode('.', $relation) as $eachRelation) {
-                    $relationship = $lastQuery->getRelation($eachRelation);
-                    if (!($relationship instanceof MorphToMany)) {
-                        $isMorphToMany = true;
-                    }
-                    $lastQuery = $relationship;
-                }
-
-                if ($isMorphToMany) {
-                    return $this->joinEagerLoadedColumn($relation, $relationColumn);
-                }
+                $column = $this->joinEagerLoadedColumn($relation, $relationColumn);
             }
         }
 
