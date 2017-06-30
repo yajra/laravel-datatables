@@ -2,8 +2,6 @@
 
 namespace Yajra\Datatables;
 
-use Illuminate\Http\Request as IlluminateRequest;
-
 /**
  * Class Request.
  *
@@ -24,12 +22,10 @@ class Request
 
     /**
      * Request constructor.
-     *
-     * @param \Illuminate\Http\Request $request
      */
-    public function __construct(IlluminateRequest $request)
+    public function __construct()
     {
-        $this->request = $request;
+        $this->request = resolve('request');
     }
 
     /**
