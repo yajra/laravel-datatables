@@ -137,7 +137,7 @@ class CollectionEngine extends BaseEngine
      * @param bool $mDataSupport
      * @return \Illuminate\Http\JsonResponse
      */
-    public function make($mDataSupport = false)
+    public function make($mDataSupport = true)
     {
         try {
             $this->totalRecords = $this->totalCount();

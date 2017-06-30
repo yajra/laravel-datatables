@@ -59,7 +59,7 @@ class QueryBuilderEngine extends BaseEngine
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function make($mDataSupport = false)
+    public function make($mDataSupport = true)
     {
         try {
             $this->totalRecords = $this->totalCount();

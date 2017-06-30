@@ -69,5 +69,5 @@ interface DataTableEngine
      * @param bool $mDataSupport
      * @return \Illuminate\Http\JsonResponse
      */
-    public function make($mDataSupport = false);
+    public function make($mDataSupport = true);
 }
