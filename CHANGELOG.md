@@ -15,6 +15,8 @@
 - Add method to get the query used by dataTable.
 - Add the raw data to model key when compiling views when using addColumn and editColumn.
 - Make multi-term search configurable.
+- Source code clean-up, refactoring and type-hinting.
+- Improved scrutinizer code quality score from 6 to ~9 pts.
 
 ### CHANGED
 - Preserve `Eloquent\Builder` when overriding the default ordering of dataTables when using `EloquentEngine`.
