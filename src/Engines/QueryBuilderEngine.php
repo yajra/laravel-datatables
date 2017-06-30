@@ -213,7 +213,7 @@ class QueryBuilderEngine extends BaseEngine
         $callback = $this->columnDef['filter'][$columnName]['method'];
 
         if ($this->query instanceof EloquentBuilder) {
-            $builder  = $this->query->newModelInstance()->newQuery();
+            $builder = $this->query->newModelInstance()->newQuery();
         } else {
             $builder = $this->query->newQuery();
         }
