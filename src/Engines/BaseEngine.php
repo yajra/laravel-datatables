@@ -108,7 +108,7 @@ abstract class BaseEngine implements DataTableEngine
     /**
      * Output transformer.
      *
-     * @var \League\Fractal\TransformerAbstract
+     * @var mixed
      */
     protected $transformer = null;
 
@@ -122,7 +122,7 @@ abstract class BaseEngine implements DataTableEngine
     /**
      * Fractal serializer class.
      *
-     * @var string|null
+     * @var mixed
      */
     protected $serializer = null;
 
@@ -374,7 +374,7 @@ abstract class BaseEngine implements DataTableEngine
     /**
      * Set data output transformer.
      *
-     * @param \League\Fractal\TransformerAbstract $transformer
+     * @param mixed $transformer
      * @return $this
      */
     public function setTransformer($transformer)
