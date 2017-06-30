@@ -38,6 +38,13 @@ class QueryBuilderEngine extends BaseEngine
     protected $nullsLast = false;
 
     /**
+     * Flag to check if query preparation was already done.
+     *
+     * @var bool
+     */
+    protected $prepared = false;
+
+    /**
      * @param \Illuminate\Database\Query\Builder $builder
      */
     public function __construct(Builder $builder)
@@ -62,13 +69,7 @@ class QueryBuilderEngine extends BaseEngine
     public function make($mDataSupport = true)
     {
         try {
-            $this->totalRecords = $this->totalCount();
-
-            if ($this->totalRecords) {
-                $this->filterRecords();
-                $this->ordering();
-                $this->paginate();
-            }
+            $this->prepareQuery();
 
             $results   = $this->results();
             $processed = $this->processResults($results, $mDataSupport);
@@ -78,6 +79,24 @@ class QueryBuilderEngine extends BaseEngine
         } catch (\Exception $exception) {
             return $this->errorResponse($exception);
         }
+    }
+
+    /**
+     * Prepare query by executing count, filter, order and paginate.
+     */
+    protected function prepareQuery()
+    {
+        if (!$this->prepared) {
+            $this->totalRecords = $this->totalCount();
+
+            if ($this->totalRecords) {
+                $this->filterRecords();
+                $this->ordering();
+                $this->paginate();
+            }
+        }
+
+        $this->prepared = true;
     }
 
     /**
@@ -152,6 +171,28 @@ class QueryBuilderEngine extends BaseEngine
     public function results()
     {
         return $this->query->get();
+    }
+
+    /**
+     * Get filtered, ordered and paginated query.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
+     */
+    public function getFilteredQuery()
+    {
+        $this->prepareQuery();
+
+        return $this->getQuery();
+    }
+
+    /**
+     * Get query builder instance.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
+     */
+    public function getQuery()
+    {
+        return $this->query;
     }
 
     /**
@@ -474,16 +515,6 @@ class QueryBuilderEngine extends BaseEngine
         $this->pushToBlacklist($name);
 
         return parent::addColumn($name, $content, $order);
-    }
-
-    /**
-     * Get query builder instance.
-     *
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
-     */
-    public function getQuery()
-    {
-        return $this->query;
     }
 
     /**

@@ -12,12 +12,13 @@
 ### ADDED
 - Add support for Laravel 5.5.
 - Package auto-discovery implemented.
-- Add method to get the query used by dataTable.
 - Add the raw data to model key when compiling views when using addColumn and editColumn.
 - Make multi-term search configurable.
 - Source code clean-up, refactoring and type-hinting.
 - Improved scrutinizer code quality score from 6 to ~9 pts.
 - On the fly support for `SoftDeletes`. No need to use `withTrashed` and `onlyTrashed`.
+- Add `getQuery` api to get the query used by dataTable.
+- Add `getFilteredQuery` api to get the prepared (filtered, ordered & paginated) query.
 
 ### CHANGED
 - Preserve `Eloquent\Builder` when overriding the default ordering of dataTables when using `EloquentEngine`.
@@ -34,5 +35,6 @@
 - Remove `withTrashed` and `onlyTrashed` api.
 
 ### FIXED
-- Fix #1068.
+- How to get full used query ? #1068
+- Is there a way to build the query (with filtering and sorting) but without execute it? #1234 
 - Fix orderColumn api where related tables are not joined. 
