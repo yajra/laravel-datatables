@@ -577,7 +577,7 @@ abstract class BaseEngine implements DataTableEngineContract
         //If parameter is class assuming it requires object
         //Else just pass array by default
         if ($parameter->getClass()) {
-            $resource = new Collection($output, $this->createTransformer());
+            $resource = new Collection($this->results(), $this->createTransformer());
         } else {
             $resource = new Collection(
                 $output,
