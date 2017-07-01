@@ -765,7 +765,7 @@ abstract class BaseEngine implements DataTableEngine, Arrayable, Jsonable
      * Convert the object to its JSON representation.
      *
      * @param  int $options
-     * @return string|JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function toJson($options = 0)
     {
