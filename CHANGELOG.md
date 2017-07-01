@@ -24,6 +24,14 @@
 return Datatables::eloquent(User::query())->toJson();
 return Datatables::eloquent(User::query())->toArray();
 ```
+- Add singular `DataTable` alias of `Datatables` class for a more appropriate name.
+- Introducing a new OOP / intuitive syntax.
+```php
+-- via DataTable Factory
+return (new DataTable)->eloquent(User::query())->toJson();
+return (new DataTable)->queryBuilder(DB::table('users'))->toJson();
+return (new DataTable)->collection(User::all())->toJson();
+```
 
 ### CHANGED
 - Preserve `Eloquent\Builder` when overriding the default ordering of dataTables when using `EloquentEngine`.
