@@ -215,23 +215,32 @@ class CollectionEngine extends BaseEngine
      */
     protected function defaultOrdering()
     {
-        foreach ($this->request->orderableColumns() as $orderable) {
-            $column = $this->getColumnName($orderable['column']);
-
-            $options = SORT_NATURAL;
-            if ($this->config->isCaseInsensitive()) {
-                $options = SORT_NATURAL | SORT_FLAG_CASE;
-            }
-
-            $this->collection = $this->collection->sortBy(function ($row) use ($column) {
-                $data = $this->serialize($row);
-
-                return Arr::get($data, $column);
-            }, $options);
-
-            if ($orderable['direction'] == 'desc') {
-                $this->collection = $this->collection->reverse();
-            }
+        $criteria = $this->request->orderableColumns();
+        if ($criteria) {
+            $comparer = function ($a, $b) use ($criteria) {
+                foreach ($criteria as $orderable) {
+                    $column = $this->getColumnName($orderable['column']);
+                    $direction = $orderable['direction'];
+                    if ($direction === 'desc') {
+                        $first = $b;
+                        $second = $a;
+                    } else {
+                        $first = $a;
+                        $second = $b;
+                    }
+                    if ($this->config->isCaseInsensitive()) {
+                        $cmp = strnatcasecmp($first[$column], $second[$column]);
+                    } else {
+                        $cmp = strnatcmp($first[$column], $second[$column]);
+                    }
+                    if ($cmp != 0) {
+                        return $cmp;
+                    }
+                }
+                // all elements were equal
+                return 0;
+            };
+            $this->collection = $this->collection->sort($comparer);
         }
     }
 
