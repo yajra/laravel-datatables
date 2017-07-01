@@ -754,18 +754,18 @@ abstract class BaseEngine implements DataTableEngine, Arrayable, Jsonable
     /**
      * Convert instance to array.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return array
      */
     public function toArray()
     {
-        return $this->make();
+        return $this->make()->getData(true);
     }
 
     /**
      * Convert the object to its JSON representation.
      *
      * @param  int $options
-     * @return string
+     * @return string|JsonResponse
      */
     public function toJson($options = 0)
     {
