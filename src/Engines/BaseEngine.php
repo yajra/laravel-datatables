@@ -3,6 +3,8 @@
 namespace Yajra\Datatables\Engines;
 
 use Illuminate\Contracts\Logging\Log;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
@@ -22,7 +24,7 @@ use Yajra\Datatables\Processors\DataProcessor;
  * @see     https://github.com/yajra/laravel-datatables-fractal for transformer related methods.
  * @author  Arjay Angeles <aqangeles@gmail.com>
  */
-abstract class BaseEngine implements DataTableEngine
+abstract class BaseEngine implements DataTableEngine, Arrayable, Jsonable
 {
     use Macroable;
 
@@ -747,5 +749,30 @@ abstract class BaseEngine implements DataTableEngine
     protected function getPrimaryKeyName()
     {
         return 'id';
+    }
+
+    /**
+     * Convert instance to array.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function toArray()
+    {
+        return $this->make();
+    }
+
+    /**
+     * Convert the object to its JSON representation.
+     *
+     * @param  int $options
+     * @return string
+     */
+    public function toJson($options = 0)
+    {
+        if ($options) {
+            $this->config->set('datatables.json.options', $options);
+        }
+
+        return $this->make();
     }
 }

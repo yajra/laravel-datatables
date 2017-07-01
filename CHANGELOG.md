@@ -19,6 +19,11 @@
 - On the fly support for `SoftDeletes`. No need to use `withTrashed` and `onlyTrashed`.
 - Add `getQuery` api to get the query used by dataTable.
 - Add `getFilteredQuery` api to get the prepared (filtered, ordered & paginated) query.
+- Add `Arrayable` and `Jsonable` interface for a more Laravel like response.
+```php
+return Datatables::eloquent(User::query())->toJson();
+return Datatables::eloquent(User::query())->toArray();
+```
 
 ### CHANGED
 - Preserve `Eloquent\Builder` when overriding the default ordering of dataTables when using `EloquentEngine`.
