@@ -493,6 +493,31 @@ abstract class BaseEngine implements DataTableEngine, Arrayable, Jsonable
     }
 
     /**
+     * Convert instance to array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->make()->getData(true);
+    }
+
+    /**
+     * Convert the object to its JSON representation.
+     *
+     * @param  int $options
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function toJson($options = 0)
+    {
+        if ($options) {
+            $this->config->set('datatables.json.options', $options);
+        }
+
+        return $this->make();
+    }
+
+    /**
      * Perform necessary filters.
      *
      * @return void
@@ -573,7 +598,11 @@ abstract class BaseEngine implements DataTableEngine, Arrayable, Jsonable
     protected function transform($results, $processed)
     {
         if (isset($this->transformer) && class_exists('Yajra\\Datatables\\Transformers\\FractalTransformer')) {
-            return resolve('datatables.transformer')->transform($results, $this->transformer, $this->serializer ?? null);
+            return resolve('datatables.transformer')->transform(
+                $results,
+                $this->transformer,
+                $this->serializer ?? null
+            );
         }
 
         return Helper::transform($processed);
@@ -749,30 +778,5 @@ abstract class BaseEngine implements DataTableEngine, Arrayable, Jsonable
     protected function getPrimaryKeyName()
     {
         return 'id';
-    }
-
-    /**
-     * Convert instance to array.
-     *
-     * @return array
-     */
-    public function toArray()
-    {
-        return $this->make()->getData(true);
-    }
-
-    /**
-     * Convert the object to its JSON representation.
-     *
-     * @param  int $options
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function toJson($options = 0)
-    {
-        if ($options) {
-            $this->config->set('datatables.json.options', $options);
-        }
-
-        return $this->make();
     }
 }
