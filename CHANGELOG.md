@@ -31,6 +31,11 @@ return Datatables::eloquent(User::query())->toArray();
 return (new DataTable)->eloquent(User::query())->toJson();
 return (new DataTable)->queryBuilder(DB::table('users'))->toJson();
 return (new DataTable)->collection(User::all())->toJson();
+
+-- using engine directly
+return (new EloquentEngine(User::query())->toJson();
+return (new QueryBuilderEngine(DB::table('users'))->toJson();
+return (new CollectionEngine(User::all())->toJson();
 ```
 
 ### CHANGED
