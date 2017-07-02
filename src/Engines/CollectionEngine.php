@@ -122,20 +122,21 @@ class CollectionEngine extends BaseEngine
             $comparer = function ($a, $b) use ($criteria) {
                 foreach ($criteria as $orderable) {
                     $column = $this->getColumnName($orderable['column']);
-                    if (strnatcasecmp($a[$column], $b[$column]) != 0) {
-                        $direction = $orderable['direction'];
-                        if ($direction === 'desc') {
-                            $first = $b;
-                            $second = $a;
-                        } else {
-                            $first = $a;
-                            $second = $b;
-                        }
-                        if ($this->isCaseInsensitive()) {
-                            return strnatcasecmp($first[$column], $second[$column]);
-                        } else {
-                            return strnatcmp($first[$column], $second[$column]);
-                        }
+                    $direction = $orderable['direction'];
+                    if ($direction === 'desc') {
+                        $first = $b;
+                        $second = $a;
+                    } else {
+                        $first = $a;
+                        $second = $b;
+                    }
+                    if ($this->isCaseInsensitive()) {
+                        $cmp = strnatcasecmp($first[$column], $second[$column]);
+                    } else {
+                        $cmp = strnatcmp($first[$column], $second[$column]);
+                    }
+                    if ($cmp != 0) {
+                        return $cmp;
                     }
                 }
                 // all elements were equal
