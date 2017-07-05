@@ -3,7 +3,7 @@
 namespace Yajra\DataTables\Tests\Integration;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Yajra\DataTables\DataTablesFactory;
+use Yajra\DataTables\Factory;
 use Yajra\DataTables\Tests\Models\Post;
 use Yajra\DataTables\Tests\TestCase;
 
@@ -83,7 +83,7 @@ class BelongsToRelationTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['router']->get('/relations/belongsTo', function (DataTablesFactory $datatables) {
+        $this->app['router']->get('/relations/belongsTo', function (Factory $datatables) {
             return $datatables->eloquent(Post::with('user')->select('posts.*'))->make('true');
         });
     }

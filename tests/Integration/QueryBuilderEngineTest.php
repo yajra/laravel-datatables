@@ -6,7 +6,7 @@ use DB;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
-use Yajra\DataTables\DataTablesFactory;
+use Yajra\DataTables\Factory;
 use Yajra\DataTables\Facades\Datatables as DatatablesFacade;
 use Yajra\DataTables\QueryDataTable;
 use Yajra\DataTables\Tests\TestCase;
@@ -65,7 +65,7 @@ class QueryBuilderEngineTest extends TestCase
     /** @test */
     public function it_accepts_a_query_builder_using_of_factory()
     {
-        $dataTable = DataTablesFactory::of(DB::table('users'));
+        $dataTable = Factory::of(DB::table('users'));
         $response  = $dataTable->make(true);
         $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
@@ -173,23 +173,23 @@ class QueryBuilderEngineTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['router']->get('/queryBuilder/users', function (DataTablesFactory $dataTable) {
+        $this->app['router']->get('/queryBuilder/users', function (Factory $dataTable) {
             return $dataTable->queryBuilder(DB::table('users'))->make('true');
         });
 
-        $this->app['router']->get('/queryBuilder/addColumn', function (DataTablesFactory $dataTable) {
+        $this->app['router']->get('/queryBuilder/addColumn', function (Factory $dataTable) {
             return $dataTable->queryBuilder(DB::table('users'))
                              ->addColumn('foo', 'bar')
                              ->make('true');
         });
 
-        $this->app['router']->get('/queryBuilder/indexColumn', function (DataTablesFactory $dataTable) {
+        $this->app['router']->get('/queryBuilder/indexColumn', function (Factory $dataTable) {
             return $dataTable->queryBuilder(DB::table('users'))
                              ->addIndexColumn()
                              ->make('true');
         });
 
-        $this->app['router']->get('/queryBuilder/filterColumn', function (DataTablesFactory $dataTable) {
+        $this->app['router']->get('/queryBuilder/filterColumn', function (Factory $dataTable) {
             return $dataTable->queryBuilder(DB::table('users'))
                              ->addColumn('foo', 'bar')
                              ->filterColumn('foo', function (Builder $builder, $keyword) {
