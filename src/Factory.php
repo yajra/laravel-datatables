@@ -21,13 +21,26 @@ class Factory
     protected $html;
 
     /**
-     * Gets query and returns instance of class.
+     * Make a DataTable instance from source.
      *
      * @param  mixed $source
      * @return mixed
      * @throws \Exception
+     * @deprecated in favor of make.
      */
     public static function of($source)
+    {
+        return self::make($source);
+    }
+
+    /**
+     * Make a DataTable instance from source.
+     *
+     * @param mixed $source
+     * @return mixed
+     * @throws \Exception
+     */
+    public static function make($source)
     {
         $engines  = config('datatables.engines');
         $builders = config('datatables.builders');

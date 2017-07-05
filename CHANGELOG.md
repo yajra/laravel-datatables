@@ -31,6 +31,7 @@ return DataTables::eloquent(User::query())->toArray();
 // using DataTables Factory
 use Yajra\DataTables\Factory;
 
+return Factory::make(User::query())->toJson();
 return (new Factory)->eloquent(User::query())->toJson();
 return (new Factory)->queryBuilder(DB::table('users'))->toJson();
 return (new Factory)->collection(User::all())->toJson();
@@ -50,6 +51,7 @@ return (new CollectionDataTable(User::all())->toJson();
 - Namespace changed from `Yajra\Datatables` to `Yajra\DataTables`.
 - Rename `Datatables` to `Factory` class.
 - Rename Facade from `Datatables` to `DataTables` class.
+- `Datatables::of()` deprecated and replaced with `Factory::make()`.
 - Preserve `Eloquent\Builder` when overriding the default ordering of dataTables when using `EloquentEngine`.
 - Preserve `Eloquent\Builder` when using filterColumn api. Allows us to use model scope and any eloquent magics.
 - Fractal integration extracted to own plugin [laravel-datatables-fractal](https://github.com/yajra/laravel-datatables-fractal).
