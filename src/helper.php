@@ -1,5 +1,7 @@
 <?php
 
+use Yajra\DataTables\Factory;
+
 if (!function_exists('config_path')) {
     /**
      * Get the configuration path.
@@ -23,5 +25,23 @@ if (!function_exists('public_path')) {
     function public_path($path = null)
     {
         return rtrim(app()->basePath('public/' . $path), '/');
+    }
+}
+
+if (!function_exists('datatable')) {
+    /**
+     * Helper to make a new DataTable instance from source.
+     * Or return a new factory is source is not set.
+     *
+     * @param mixed $source
+     * @return \Yajra\DataTables\DataTableAbstract|\Yajra\DataTables\Factory
+     */
+    function datatable($source = null)
+    {
+        if ($source) {
+            return Factory::make($source);
+        }
+
+        return new Factory;
     }
 }

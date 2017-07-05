@@ -46,6 +46,7 @@ return (new QueryDataTable(DB::table('users'))->toJson();
 use Yajra\DataTables\CollectionDataTable;
 return (new CollectionDataTable(User::all())->toJson();
 ```
+- Add `datatable()` function helper.
 
 ### CHANGED
 - Namespace changed from `Yajra\Datatables` to `Yajra\DataTables`.
