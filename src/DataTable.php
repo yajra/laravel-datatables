@@ -1,7 +1,7 @@
 <?php
 
-namespace Yajra\Datatables;
+namespace Yajra\DataTables;
 
-class DataTable extends Datatables
+class DataTable extends DataTables
 {
 }

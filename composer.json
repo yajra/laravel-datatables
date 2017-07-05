@@ -31,12 +31,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Yajra\\Datatables\\": "src/"
+      "Yajra\\DataTables\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Yajra\\Datatables\\Tests\\": "tests/"
+      "Yajra\\DataTables\\Tests\\": "tests/"
     }
   },
   "extra": {
@@ -45,10 +45,10 @@
     },
     "laravel": {
       "providers": [
-        "Yajra\\Datatables\\DatatablesServiceProvider"
+        "Yajra\\DataTables\\DataTablesServiceProvider"
       ],
       "aliases": {
-        "Datatables": "Yajra\\Datatables\\Facades\\Datatables"
+        "DataTables": "Yajra\\DataTables\\Facades\\DataTables"
       }
     }
   },

@@ -1,6 +1,6 @@
 <?php
 
-namespace Yajra\Datatables;
+namespace Yajra\DataTables;
 
 use Illuminate\Contracts\Config\Repository;
 

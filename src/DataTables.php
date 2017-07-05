@@ -1,28 +1,22 @@
 <?php
 
-namespace Yajra\Datatables;
+namespace Yajra\DataTables;
 
 use Illuminate\Support\Collection;
 
-/**
- * Class Datatables.
- *
- * @package Yajra\Datatables
- * @author  Arjay Angeles <aqangeles@gmail.com>
- */
-class Datatables
+class DataTables
 {
     /**
      * Datatables request object.
      *
-     * @var \Yajra\Datatables\Request
+     * @var \Yajra\DataTables\Request
      */
     protected $request;
 
     /**
      * HTML builder instance.
      *
-     * @var \Yajra\Datatables\Html\Builder
+     * @var \Yajra\DataTables\Html\Builder
      */
     protected $html;
 
@@ -56,7 +50,7 @@ class Datatables
     /**
      * Get request object.
      *
-     * @return \Yajra\Datatables\Request
+     * @return \Yajra\DataTables\Request
      */
     public function getRequest()
     {
@@ -67,7 +61,7 @@ class Datatables
      * Datatables using Query Builder.
      *
      * @param \Illuminate\Database\Query\Builder|mixed $builder
-     * @return \Yajra\Datatables\Engines\QueryBuilderEngine
+     * @return \Yajra\DataTables\Engines\QueryBuilderEngine
      */
     public function queryBuilder($builder)
     {
@@ -78,7 +72,7 @@ class Datatables
      * Datatables using Eloquent Builder.
      *
      * @param \Illuminate\Database\Eloquent\Builder|mixed $builder
-     * @return \Yajra\Datatables\Engines\EloquentEngine
+     * @return \Yajra\DataTables\Engines\EloquentEngine
      */
     public function eloquent($builder)
     {
@@ -89,7 +83,7 @@ class Datatables
      * Datatables using Collection.
      *
      * @param \Illuminate\Support\Collection|mixed $collection
-     * @return \Yajra\Datatables\Engines\CollectionEngine
+     * @return \Yajra\DataTables\Engines\CollectionEngine
      */
     public function collection($collection)
     {
@@ -103,12 +97,12 @@ class Datatables
     /**
      * Get html builder instance.
      *
-     * @return \Yajra\Datatables\Html\Builder
+     * @return \Yajra\DataTables\Html\Builder
      * @throws \Exception
      */
     public function getHtmlBuilder()
     {
-        if (!class_exists('\Yajra\Datatables\Html\Builder')) {
+        if (!class_exists('\Yajra\DataTables\Html\Builder')) {
             throw new \Exception('Please install yajra/laravel-datatables-html to be able to use this function.');
         }
 

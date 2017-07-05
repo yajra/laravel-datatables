@@ -1,16 +1,10 @@
 <?php
 
-namespace Yajra\Datatables\Processors;
+namespace Yajra\DataTables\Processors;
 
 use Illuminate\Support\Arr;
-use Yajra\Datatables\Helper;
+use Yajra\DataTables\Helper;
 
-/**
- * Class RowProcessor.
- *
- * @package Yajra\Datatables
- * @author  Arjay Angeles <aqangeles@gmail.com>
- */
 class RowProcessor
 {
     /**

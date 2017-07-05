@@ -1,6 +1,6 @@
 <?php
 
-namespace Yajra\Datatables;
+namespace Yajra\DataTables;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -44,9 +44,9 @@ class DatatablesServiceProvider extends ServiceProvider
             require_once 'fallback.php';
         }
 
-        $this->app->alias('datatables', Datatables::class);
+        $this->app->alias('datatables', DataTables::class);
         $this->app->singleton('datatables', function () {
-            return new Datatables;
+            return new DataTables;
         });
 
         $this->app->singleton('datatables.request', function () {

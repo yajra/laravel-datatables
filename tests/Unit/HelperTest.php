@@ -1,11 +1,11 @@
 <?php
 
-namespace Yajra\Datatables\Tests\Unit;
+namespace Yajra\DataTables\Tests\Unit;
 
 use Carbon\Carbon;
 use stdClass;
-use Yajra\Datatables\Helper;
-use Yajra\Datatables\Tests\TestCase;
+use Yajra\DataTables\Helper;
+use Yajra\DataTables\Tests\TestCase;
 
 class HelperTest extends TestCase
 {

@@ -1,18 +1,7 @@
 <?php
 
-namespace Yajra\Datatables;
+namespace Yajra\DataTables;
 
-/**
- * Class Request.
- *
- * @package Yajra\Datatables
- * @method input($key, $default = null)
- * @method get($key, $default = null)
- * @method query($key, $default = null)
- * @method has($key)
- * @method all()
- * @author  Arjay Angeles <aqangeles@gmail.com>
- */
 class Request
 {
     /**

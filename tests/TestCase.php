@@ -1,10 +1,10 @@
 <?php
 
-namespace Yajra\Datatables\Tests;
+namespace Yajra\DataTables\Tests;
 
 use Illuminate\Database\Schema\Blueprint;
-use Yajra\Datatables\Tests\Models\Role;
-use Yajra\Datatables\Tests\Models\User;
+use Yajra\DataTables\Tests\Models\Role;
+use Yajra\DataTables\Tests\Models\User;
 
 abstract class TestCase extends \Orchestra\Testbench\TestCase
 {
@@ -100,14 +100,14 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
     protected function getPackageProviders($app)
     {
         return [
-            \Yajra\Datatables\DatatablesServiceProvider::class,
+            \Yajra\DataTables\DatatablesServiceProvider::class,
         ];
     }
 
     protected function getPackageAliases($app)
     {
         return [
-            'Datatables' => \Yajra\Datatables\Facades\Datatables::class,
+            'Datatables' => \Yajra\DataTables\Facades\Datatables::class,
         ];
     }
 }

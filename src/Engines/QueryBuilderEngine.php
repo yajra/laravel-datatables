@@ -1,12 +1,12 @@
 <?php
 
-namespace Yajra\Datatables\Engines;
+namespace Yajra\DataTables\Engines;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Str;
-use Yajra\Datatables\Helper;
+use Yajra\DataTables\Helper;
 
 /**
  * Class QueryBuilderEngine.
@@ -508,7 +508,7 @@ class QueryBuilderEngine extends BaseEngine
      * @param string          $name
      * @param string|callable $content
      * @param bool|int        $order
-     * @return \Yajra\Datatables\Engines\BaseEngine|\Yajra\Datatables\Engines\QueryBuilderEngine
+     * @return \Yajra\DataTables\Engines\BaseEngine|\Yajra\DataTables\Engines\QueryBuilderEngine
      */
     public function addColumn($name, $content, $order = false)
     {

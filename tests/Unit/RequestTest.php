@@ -1,10 +1,10 @@
 <?php
 
-namespace Yajra\Datatables\Tests\Unit;
+namespace Yajra\DataTables\Tests\Unit;
 
 use Exception;
-use Yajra\Datatables\Request;
-use Yajra\Datatables\Tests\TestCase;
+use Yajra\DataTables\Request;
+use Yajra\DataTables\Tests\TestCase;
 
 class RequestTest extends TestCase
 {
@@ -120,7 +120,7 @@ class RequestTest extends TestCase
     }
 
     /**
-     * @return \Yajra\Datatables\Request
+     * @return \Yajra\DataTables\Request
      */
     protected function getRequest()
     {

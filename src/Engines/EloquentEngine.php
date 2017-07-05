@@ -1,12 +1,12 @@
 <?php
 
-namespace Yajra\Datatables\Engines;
+namespace Yajra\DataTables\Engines;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
-use Yajra\Datatables\Exception;
+use Yajra\DataTables\Exception;
 
 /**
  * Class EloquentEngine.
@@ -234,7 +234,7 @@ class EloquentEngine extends QueryBuilderEngine
      * @param string $relation
      * @param string $relationColumn
      * @return string
-     * @throws \Yajra\Datatables\Exception
+     * @throws \Yajra\DataTables\Exception
      */
     protected function joinEagerLoadedColumn($relation, $relationColumn)
     {

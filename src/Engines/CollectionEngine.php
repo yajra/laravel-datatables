@@ -1,6 +1,6 @@
 <?php
 
-namespace Yajra\Datatables\Engines;
+namespace Yajra\DataTables\Engines;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;

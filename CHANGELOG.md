@@ -39,6 +39,7 @@ return (new CollectionEngine(User::all())->toJson();
 ```
 
 ### CHANGED
+- Namespace changed from `Yajra\Datatables` to `Yajra\DataTables`.
 - Preserve `Eloquent\Builder` when overriding the default ordering of dataTables when using `EloquentEngine`.
 - Preserve `Eloquent\Builder` when using filterColumn api. Allows us to use model scope and any eloquent magics.
 - Fractal integration extracted to own plugin [laravel-datatables-fractal](https://github.com/yajra/laravel-datatables-fractal).

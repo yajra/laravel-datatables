@@ -1,6 +1,6 @@
 <?php
 
-namespace Yajra\Datatables\Engines;
+namespace Yajra\DataTables\Engines;
 
 use Illuminate\Contracts\Logging\Log;
 use Illuminate\Contracts\Support\Arrayable;
@@ -8,21 +8,17 @@ use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
-use Yajra\Datatables\Contracts\DataTableEngine;
-use Yajra\Datatables\Exception;
-use Yajra\Datatables\Helper;
-use Yajra\Datatables\Processors\DataProcessor;
+use Yajra\DataTables\Contracts\DataTableEngine;
+use Yajra\DataTables\Exception;
+use Yajra\DataTables\Helper;
+use Yajra\DataTables\Processors\DataProcessor;
 
 /**
- * Class BaseEngine.
- *
- * @package Yajra\Datatables\Engines
  * @method setTransformer($transformer)
  * @method setSerializer($transformer)
  * @property mixed transformer
  * @property mixed serializer
  * @see     https://github.com/yajra/laravel-datatables-fractal for transformer related methods.
- * @author  Arjay Angeles <aqangeles@gmail.com>
  */
 abstract class BaseEngine implements DataTableEngine, Arrayable, Jsonable
 {
@@ -31,7 +27,7 @@ abstract class BaseEngine implements DataTableEngine, Arrayable, Jsonable
     /**
      * Datatables Request object.
      *
-     * @var \Yajra\Datatables\Request
+     * @var \Yajra\DataTables\Request
      */
     public $request;
 
@@ -136,7 +132,7 @@ abstract class BaseEngine implements DataTableEngine, Arrayable, Jsonable
     protected $appends = [];
 
     /**
-     * @var \Yajra\Datatables\Config
+     * @var \Yajra\DataTables\Config
      */
     protected $config;
 
@@ -667,7 +663,7 @@ abstract class BaseEngine implements DataTableEngine, Arrayable, Jsonable
      *
      * @param \Exception $exception
      * @return \Illuminate\Http\JsonResponse
-     * @throws \Yajra\Datatables\Exception
+     * @throws \Yajra\DataTables\Exception
      */
     protected function errorResponse(\Exception $exception)
     {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Yajra\Datatables\Tests\Integration;
+namespace Yajra\DataTables\Tests\Integration;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Yajra\Datatables\Datatables;
-use Yajra\Datatables\Tests\Models\Post;
-use Yajra\Datatables\Tests\TestCase;
+use Yajra\DataTables\DataTables;
+use Yajra\DataTables\Tests\Models\Post;
+use Yajra\DataTables\Tests\TestCase;
 
 class BelongsToRelationTest extends TestCase
 {
@@ -83,7 +83,7 @@ class BelongsToRelationTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['router']->get('/relations/belongsTo', function (Datatables $datatables) {
+        $this->app['router']->get('/relations/belongsTo', function (DataTables $datatables) {
             return $datatables->eloquent(Post::with('user')->select('posts.*'))->make('true');
         });
     }
