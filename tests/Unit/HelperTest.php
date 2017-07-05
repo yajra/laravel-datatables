@@ -4,8 +4,8 @@ namespace Yajra\DataTables\Tests\Unit;
 
 use Carbon\Carbon;
 use stdClass;
-use Yajra\DataTables\Helper;
 use Yajra\DataTables\Tests\TestCase;
+use Yajra\DataTables\Utilities\Helper;
 
 class HelperTest extends TestCase
 {

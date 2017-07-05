@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
 use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\Processors\DataProcessor;
+use Yajra\DataTables\Utilities\Helper;
 
 /**
  * @method setTransformer($transformer)
@@ -25,7 +26,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     /**
      * Datatables Request object.
      *
-     * @var \Yajra\DataTables\Request
+     * @var \Yajra\DataTables\Utilities\Request
      */
     public $request;
 
@@ -130,7 +131,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     protected $appends = [];
 
     /**
-     * @var \Yajra\DataTables\Config
+     * @var \Yajra\DataTables\Utilities\Config
      */
     protected $config;
 

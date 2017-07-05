@@ -3,13 +3,9 @@
 namespace Yajra\DataTables;
 
 use Illuminate\Support\ServiceProvider;
+use Yajra\DataTables\Utilities\Config;
+use Yajra\DataTables\Utilities\Request;
 
-/**
- * Class DatatablesServiceProvider.
- *
- * @package Yajra\Datatables
- * @author  Arjay Angeles <aqangeles@gmail.com>
- */
 class DatatablesServiceProvider extends ServiceProvider
 {
     /**

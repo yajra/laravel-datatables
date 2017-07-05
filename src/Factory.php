@@ -9,7 +9,7 @@ class Factory
     /**
      * Datatables request object.
      *
-     * @var \Yajra\DataTables\Request
+     * @var \Yajra\DataTables\Utilities\Request
      */
     protected $request;
 
@@ -50,7 +50,7 @@ class Factory
     /**
      * Get request object.
      *
-     * @return \Yajra\DataTables\Request
+     * @return \Yajra\DataTables\Utilities\Request
      */
     public function getRequest()
     {
@@ -60,7 +60,7 @@ class Factory
     /**
      * Get config instance.
      *
-     * @return \Yajra\DataTables\Config
+     * @return \Yajra\DataTables\Utilities\Config
      */
     public function getConfig()
     {

@@ -2,9 +2,8 @@
 
 namespace Yajra\DataTables\Tests\Unit;
 
-use Exception;
-use Yajra\DataTables\Request;
 use Yajra\DataTables\Tests\TestCase;
+use Yajra\DataTables\Utilities\Request;
 
 class RequestTest extends TestCase
 {
@@ -120,7 +119,7 @@ class RequestTest extends TestCase
     }
 
     /**
-     * @return \Yajra\DataTables\Request
+     * @return \Yajra\DataTables\Utilities\Request
      */
     protected function getRequest()
     {
