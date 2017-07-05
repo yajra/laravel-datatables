@@ -32,7 +32,10 @@
   "autoload": {
     "psr-4": {
       "Yajra\\DataTables\\": "src/"
-    }
+    },
+    "files": [
+      "src/helper.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {
