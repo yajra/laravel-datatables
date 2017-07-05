@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 class Factory
 {
     /**
-     * Datatables request object.
+     * DataTables request object.
      *
      * @var \Yajra\DataTables\Utilities\Request
      */
@@ -68,7 +68,7 @@ class Factory
     }
 
     /**
-     * Datatables using Query Builder.
+     * DataTables using Query Builder.
      *
      * @param \Illuminate\Database\Query\Builder|mixed $builder
      * @return \Yajra\DataTables\QueryDataTable
@@ -79,7 +79,7 @@ class Factory
     }
 
     /**
-     * Datatables using Eloquent Builder.
+     * DataTables using Eloquent Builder.
      *
      * @param \Illuminate\Database\Eloquent\Builder|mixed $builder
      * @return \Yajra\DataTables\EloquentDataTable
@@ -90,9 +90,9 @@ class Factory
     }
 
     /**
-     * Datatables using Collection.
+     * DataTables using Collection.
      *
-     * @param \Illuminate\Support\Collection|mixed $collection
+     * @param \Illuminate\Support\Collection|array $collection
      * @return \Yajra\DataTables\CollectionDataTable
      */
     public function collection($collection)
