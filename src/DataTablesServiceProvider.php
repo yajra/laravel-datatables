@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Yajra\DataTables\Utilities\Config;
 use Yajra\DataTables\Utilities\Request;
 
-class DatatablesServiceProvider extends ServiceProvider
+class DataTablesServiceProvider extends ServiceProvider
 {
     /**
      * Indicates if loading of the provider is deferred.
