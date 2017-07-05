@@ -216,8 +216,8 @@ class CollectionEngine extends BaseEngine
     protected function defaultOrdering()
     {
         $criteria = $this->request->orderableColumns();
-        if ($criteria) {
-            $comparer = function ($a, $b) use ($criteria) {
+        if (! empty($criteria)) {
+            $sorter = function ($a, $b) use ($criteria) {
                 foreach ($criteria as $orderable) {
                     $column = $this->getColumnName($orderable['column']);
                     $direction = $orderable['direction'];
@@ -240,7 +240,7 @@ class CollectionEngine extends BaseEngine
                 // all elements were equal
                 return 0;
             };
-            $this->collection = $this->collection->sort($comparer);
+            $this->collection = $this->collection->sort($sorter);
         }
     }
 
