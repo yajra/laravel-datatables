@@ -75,7 +75,7 @@ class Factory
      */
     public function queryBuilder($builder)
     {
-        return new \Yajra\DataTables\QueryDataTable($builder);
+        return new QueryDataTable($builder);
     }
 
     /**
@@ -86,7 +86,7 @@ class Factory
      */
     public function eloquent($builder)
     {
-        return new \Yajra\DataTables\EloquentDataTable($builder);
+        return new EloquentDataTable($builder);
     }
 
     /**
@@ -101,7 +101,7 @@ class Factory
             $collection = new Collection($collection);
         }
 
-        return new \Yajra\DataTables\CollectionDataTable($collection);
+        return new CollectionDataTable($collection);
     }
 
     /**
