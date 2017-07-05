@@ -28,14 +28,14 @@ return DataTables::eloquent(User::query())->toArray();
 ```
 - Introducing a new OOP / intuitive syntax.
 ```php
--- via DataTables Factory
+// using DataTables Factory
 use Yajra\DataTables\Factory;
 
 return (new Factory)->eloquent(User::query())->toJson();
 return (new Factory)->queryBuilder(DB::table('users'))->toJson();
 return (new Factory)->collection(User::all())->toJson();
 
--- using engine directly
+// using DataTable class directly
 use Yajra\DataTables\EloquentDataTable;
 return (new EloquentDataTable(User::query())->toJson();
 
