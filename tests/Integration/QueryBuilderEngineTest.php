@@ -7,7 +7,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
 use Yajra\DataTables\Factory;
-use Yajra\DataTables\Facades\Datatables as DatatablesFacade;
+use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
 use Yajra\DataTables\QueryDataTable;
 use Yajra\DataTables\Tests\TestCase;
 

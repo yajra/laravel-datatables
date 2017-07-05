@@ -4,13 +4,7 @@ namespace Yajra\DataTables\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-/**
- * Class Datatables.
- *
- * @package Yajra\Datatables\Facades
- * @author  Arjay Angeles <aqangeles@gmail.com>
- */
-class Datatables extends Facade
+class DataTables extends Facade
 {
     /**
      * Get the registered name of the component.

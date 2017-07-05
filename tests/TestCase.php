@@ -100,14 +100,14 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
     protected function getPackageProviders($app)
     {
         return [
-            \Yajra\DataTables\DatatablesServiceProvider::class,
+            \Yajra\DataTables\DataTablesServiceProvider::class,
         ];
     }
 
     protected function getPackageAliases($app)
     {
         return [
-            'Datatables' => \Yajra\DataTables\Facades\Datatables::class,
+            'DataTables' => \Yajra\DataTables\Facades\DataTables::class,
         ];
     }
 }

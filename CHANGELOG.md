@@ -21,15 +21,15 @@
 - Add `getFilteredQuery` api to get the prepared (filtered, ordered & paginated) query.
 - Add `Arrayable` and `Jsonable` interface for a more Laravel like response.
 ```php
-return DataTablesFactory::eloquent(User::query())->toJson();
-return DataTablesFactory::eloquent(User::query())->toArray();
+return Factory::eloquent(User::query())->toJson();
+return Factory::eloquent(User::query())->toArray();
 ```
 - Introducing a new OOP / intuitive syntax.
 ```php
--- via DataTable Factory
-return (new DataTablesFactory)->eloquent(User::query())->toJson();
-return (new DataTablesFactory)->queryBuilder(DB::table('users'))->toJson();
-return (new DataTablesFactory)->collection(User::all())->toJson();
+-- via DataTables Factory
+return (new Factory)->eloquent(User::query())->toJson();
+return (new Factory)->queryBuilder(DB::table('users'))->toJson();
+return (new Factory)->collection(User::all())->toJson();
 
 -- using engine directly
 return (new EloquentDataTable(User::query())->toJson();
@@ -39,6 +39,8 @@ return (new CollectionDataTable(User::all())->toJson();
 
 ### CHANGED
 - Namespace changed from `Yajra\Datatables` to `Yajra\DataTables`.
+- Rename `Datatables` to `Factory` class.
+- Rename Facade from `Datatables` to `DataTables` class.
 - Preserve `Eloquent\Builder` when overriding the default ordering of dataTables when using `EloquentEngine`.
 - Preserve `Eloquent\Builder` when using filterColumn api. Allows us to use model scope and any eloquent magics.
 - Fractal integration extracted to own plugin [laravel-datatables-fractal](https://github.com/yajra/laravel-datatables-fractal).

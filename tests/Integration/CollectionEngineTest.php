@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
 use Yajra\DataTables\CollectionDataTable;
 use Yajra\DataTables\Factory;
-use Yajra\DataTables\Facades\Datatables as DatatablesFacade;
+use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
 use Yajra\DataTables\Tests\Models\User;
 use Yajra\DataTables\Tests\TestCase;
 
