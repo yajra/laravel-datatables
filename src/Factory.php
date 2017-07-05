@@ -58,6 +58,16 @@ class Factory
     }
 
     /**
+     * Get config instance.
+     *
+     * @return \Yajra\DataTables\Config
+     */
+    public function getConfig()
+    {
+        return resolve('datatables.config');
+    }
+
+    /**
      * Datatables using Query Builder.
      *
      * @param \Illuminate\Database\Query\Builder|mixed $builder
