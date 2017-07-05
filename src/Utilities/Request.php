@@ -7,6 +7,9 @@ namespace Yajra\DataTables\Utilities;
  * @method get($key, $default = null)
  * @method query($key, $default = null)
  * @method has($key)
+ * @method merge(array $values)
+ * @method wantsJson()
+ * @method ajax()
  * @method all()
  */
 class Request
