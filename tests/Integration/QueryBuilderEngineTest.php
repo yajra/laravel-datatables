@@ -7,8 +7,8 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
 use Yajra\DataTables\DataTablesFactory;
-use Yajra\DataTables\Engines\QueryBuilderEngine;
 use Yajra\DataTables\Facades\Datatables as DatatablesFacade;
+use Yajra\DataTables\QueryDataTable;
 use Yajra\DataTables\Tests\TestCase;
 
 class QueryBuilderEngineTest extends TestCase
@@ -67,7 +67,7 @@ class QueryBuilderEngineTest extends TestCase
     {
         $dataTable = DataTablesFactory::of(DB::table('users'));
         $response  = $dataTable->make(true);
-        $this->assertInstanceOf(QueryBuilderEngine::class, $dataTable);
+        $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
@@ -76,7 +76,7 @@ class QueryBuilderEngineTest extends TestCase
     {
         $dataTable = DatatablesFacade::of(DB::table('users'));
         $response  = $dataTable->make(true);
-        $this->assertInstanceOf(QueryBuilderEngine::class, $dataTable);
+        $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
@@ -85,7 +85,7 @@ class QueryBuilderEngineTest extends TestCase
     {
         $dataTable = DatatablesFacade::queryBuilder(DB::table('users'));
         $response  = $dataTable->make(true);
-        $this->assertInstanceOf(QueryBuilderEngine::class, $dataTable);
+        $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
@@ -94,7 +94,7 @@ class QueryBuilderEngineTest extends TestCase
     {
         $dataTable = app('datatables')->queryBuilder(DB::table('users'));
         $response  = $dataTable->make(true);
-        $this->assertInstanceOf(QueryBuilderEngine::class, $dataTable);
+        $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
@@ -103,7 +103,7 @@ class QueryBuilderEngineTest extends TestCase
     {
         $dataTable = app('datatables')->of(DB::table('users'));
         $response  = $dataTable->make(true);
-        $this->assertInstanceOf(QueryBuilderEngine::class, $dataTable);
+        $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 

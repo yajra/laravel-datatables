@@ -35,17 +35,17 @@ return [
     'index_column'   => 'DT_Row_Index',
 
     /**
-     * Datatables list of available engines.
-     * This is where you can register your custom datatables engine.
+     * List of available builders for DataTables.
+     * This is where you can register your custom dataTables builder.
      */
     'engines'        => [
-        'eloquent'   => Yajra\DataTables\Engines\EloquentEngine::class,
-        'query'      => Yajra\DataTables\Engines\QueryBuilderEngine::class,
-        'collection' => Yajra\DataTables\Engines\CollectionEngine::class,
+        'eloquent'   => \Yajra\DataTables\EloquentDataTable::class,
+        'query'      => \Yajra\DataTables\QueryDataTable::class,
+        'collection' => \Yajra\DataTables\CollectionDataTable::class,
     ],
 
     /**
-     * Datatables accepted builder to engine mapping.
+     * DataTables accepted builder to engine mapping.
      */
     'builders'       => [
         Illuminate\Database\Eloquent\Relations\Relation::class => 'eloquent',

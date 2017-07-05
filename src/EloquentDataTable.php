@@ -1,20 +1,13 @@
 <?php
 
-namespace Yajra\DataTables\Engines;
+namespace Yajra\DataTables;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
-use Yajra\DataTables\Exception;
 
-/**
- * Class EloquentEngine.
- *
- * @package Yajra\Datatables\Engines
- * @author  Arjay Angeles <aqangeles@gmail.com>
- */
-class EloquentEngine extends QueryBuilderEngine
+class EloquentDataTable extends QueryDataTable
 {
     /**
      * @var \Illuminate\Database\Eloquent\Builder

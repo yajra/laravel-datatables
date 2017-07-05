@@ -32,9 +32,9 @@ return (new DataTablesFactory)->queryBuilder(DB::table('users'))->toJson();
 return (new DataTablesFactory)->collection(User::all())->toJson();
 
 -- using engine directly
-return (new EloquentEngine(User::query())->toJson();
-return (new QueryBuilderEngine(DB::table('users'))->toJson();
-return (new CollectionEngine(User::all())->toJson();
+return (new EloquentDataTable(User::query())->toJson();
+return (new QueryDataTable(DB::table('users'))->toJson();
+return (new CollectionDataTable(User::all())->toJson();
 ```
 
 ### CHANGED

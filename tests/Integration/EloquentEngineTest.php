@@ -5,7 +5,7 @@ namespace Yajra\DataTables\Tests\Integration;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
 use Yajra\DataTables\DataTablesFactory;
-use Yajra\DataTables\Engines\EloquentEngine;
+use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Facades\Datatables as DatatablesFacade;
 use Yajra\DataTables\Tests\Models\User;
 use Yajra\DataTables\Tests\TestCase;
@@ -48,7 +48,7 @@ class EloquentEngineTest extends TestCase
     {
         $dataTable = DataTablesFactory::of(User::query());
         $response  = $dataTable->make(true);
-        $this->assertInstanceOf(EloquentEngine::class, $dataTable);
+        $this->assertInstanceOf(EloquentDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
@@ -57,7 +57,7 @@ class EloquentEngineTest extends TestCase
     {
         $dataTable = DatatablesFacade::of(User::query());
         $response  = $dataTable->make(true);
-        $this->assertInstanceOf(EloquentEngine::class, $dataTable);
+        $this->assertInstanceOf(EloquentDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
@@ -66,7 +66,7 @@ class EloquentEngineTest extends TestCase
     {
         $dataTable = DatatablesFacade::eloquent(User::query());
         $response  = $dataTable->make(true);
-        $this->assertInstanceOf(EloquentEngine::class, $dataTable);
+        $this->assertInstanceOf(EloquentDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
@@ -75,7 +75,7 @@ class EloquentEngineTest extends TestCase
     {
         $dataTable = app('datatables')->eloquent(User::query());
         $response  = $dataTable->make(true);
-        $this->assertInstanceOf(EloquentEngine::class, $dataTable);
+        $this->assertInstanceOf(EloquentDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
@@ -84,7 +84,7 @@ class EloquentEngineTest extends TestCase
     {
         $dataTable = app('datatables')->of(User::query());
         $response  = $dataTable->make(true);
-        $this->assertInstanceOf(EloquentEngine::class, $dataTable);
+        $this->assertInstanceOf(EloquentDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 

@@ -61,29 +61,29 @@ class DataTablesFactory
      * Datatables using Query Builder.
      *
      * @param \Illuminate\Database\Query\Builder|mixed $builder
-     * @return \Yajra\DataTables\Engines\QueryBuilderEngine
+     * @return \Yajra\DataTables\QueryDataTable
      */
     public function queryBuilder($builder)
     {
-        return new Engines\QueryBuilderEngine($builder);
+        return new \Yajra\DataTables\QueryDataTable($builder);
     }
 
     /**
      * Datatables using Eloquent Builder.
      *
      * @param \Illuminate\Database\Eloquent\Builder|mixed $builder
-     * @return \Yajra\DataTables\Engines\EloquentEngine
+     * @return \Yajra\DataTables\EloquentDataTable
      */
     public function eloquent($builder)
     {
-        return new Engines\EloquentEngine($builder);
+        return new \Yajra\DataTables\EloquentDataTable($builder);
     }
 
     /**
      * Datatables using Collection.
      *
      * @param \Illuminate\Support\Collection|mixed $collection
-     * @return \Yajra\DataTables\Engines\CollectionEngine
+     * @return \Yajra\DataTables\CollectionDataTable
      */
     public function collection($collection)
     {
@@ -91,7 +91,7 @@ class DataTablesFactory
             $collection = new Collection($collection);
         }
 
-        return new Engines\CollectionEngine($collection);
+        return new \Yajra\DataTables\CollectionDataTable($collection);
     }
 
     /**

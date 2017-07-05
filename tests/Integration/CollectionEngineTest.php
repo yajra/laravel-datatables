@@ -4,8 +4,8 @@ namespace Yajra\DataTables\Tests\Integration;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
+use Yajra\DataTables\CollectionDataTable;
 use Yajra\DataTables\DataTablesFactory;
-use Yajra\DataTables\Engines\CollectionEngine;
 use Yajra\DataTables\Facades\Datatables as DatatablesFacade;
 use Yajra\DataTables\Tests\Models\User;
 use Yajra\DataTables\Tests\TestCase;
@@ -48,7 +48,7 @@ class CollectionEngineTest extends TestCase
     {
         $dataTable = DataTablesFactory::of(User::all());
         $response  = $dataTable->make(true);
-        $this->assertInstanceOf(CollectionEngine::class, $dataTable);
+        $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
@@ -57,7 +57,7 @@ class CollectionEngineTest extends TestCase
     {
         $dataTable = DataTablesFactory::of(collect());
         $response  = $dataTable->make(true);
-        $this->assertInstanceOf(CollectionEngine::class, $dataTable);
+        $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
@@ -66,7 +66,7 @@ class CollectionEngineTest extends TestCase
     {
         $dataTable = DatatablesFacade::of(User::all());
         $response  = $dataTable->make(true);
-        $this->assertInstanceOf(CollectionEngine::class, $dataTable);
+        $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
@@ -75,7 +75,7 @@ class CollectionEngineTest extends TestCase
     {
         $dataTable = DatatablesFacade::of(collect());
         $response  = $dataTable->make(true);
-        $this->assertInstanceOf(CollectionEngine::class, $dataTable);
+        $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
@@ -84,7 +84,7 @@ class CollectionEngineTest extends TestCase
     {
         $dataTable = app('datatables')->collection(User::all());
         $response  = $dataTable->make(true);
-        $this->assertInstanceOf(CollectionEngine::class, $dataTable);
+        $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
@@ -135,7 +135,7 @@ class CollectionEngineTest extends TestCase
     {
         $dataTable = app('datatables')->of(User::all());
         $response  = $dataTable->make(true);
-        $this->assertInstanceOf(CollectionEngine::class, $dataTable);
+        $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
@@ -189,7 +189,7 @@ class CollectionEngineTest extends TestCase
         ];
         $dataTable = app('datatables')->of($source);
         $response  = $dataTable->make(true);
-        $this->assertInstanceOf(CollectionEngine::class, $dataTable);
+        $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 

@@ -1,19 +1,13 @@
 <?php
 
-namespace Yajra\DataTables\Engines;
+namespace Yajra\DataTables;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
-/**
- * Class CollectionEngine.
- *
- * @package Yajra\Datatables\Engines
- * @author  Arjay Angeles <aqangeles@gmail.com>
- */
-class CollectionEngine extends BaseEngine
+class CollectionDataTable extends DataTableAbstract
 {
     /**
      * Collection object

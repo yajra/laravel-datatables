@@ -1,6 +1,6 @@
 <?php
 
-namespace Yajra\DataTables\Engines;
+namespace Yajra\DataTables;
 
 use Illuminate\Contracts\Logging\Log;
 use Illuminate\Contracts\Support\Arrayable;
@@ -8,9 +8,7 @@ use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
-use Yajra\DataTables\Contracts\DataTableEngine;
-use Yajra\DataTables\Exception;
-use Yajra\DataTables\Helper;
+use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\Processors\DataProcessor;
 
 /**
@@ -20,7 +18,7 @@ use Yajra\DataTables\Processors\DataProcessor;
  * @property mixed serializer
  * @see     https://github.com/yajra/laravel-datatables-fractal for transformer related methods.
  */
-abstract class BaseEngine implements DataTableEngine, Arrayable, Jsonable
+abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
 {
     use Macroable;
 
