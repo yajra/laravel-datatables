@@ -2,6 +2,13 @@
 
 namespace Yajra\DataTables\Utilities;
 
+/**
+ * @method input($key, $default = null)
+ * @method get($key, $default = null)
+ * @method query($key, $default = null)
+ * @method has($key)
+ * @method all()
+ */
 class Request
 {
     /**
