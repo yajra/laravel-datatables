@@ -8,6 +8,10 @@
 
 ## Change Log
 
+### v7.9.2 - 07-05-2017
+- Fix multi-column sort of collection #1238. 
+- Fix #1237, credits to @jond64
+
 ### v7.9.1 - 06-30-2017
 - Fix transformer implementation when parameter requires an object. #1235
 
