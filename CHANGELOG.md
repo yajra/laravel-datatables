@@ -21,19 +21,28 @@
 - Add `getFilteredQuery` api to get the prepared (filtered, ordered & paginated) query.
 - Add `Arrayable` and `Jsonable` interface for a more Laravel like response.
 ```php
-return Factory::eloquent(User::query())->toJson();
-return Factory::eloquent(User::query())->toArray();
+use Yajra\DataTables\Facades\DataTables;
+
+return DataTables::eloquent(User::query())->toJson();
+return DataTables::eloquent(User::query())->toArray();
 ```
 - Introducing a new OOP / intuitive syntax.
 ```php
 -- via DataTables Factory
+use Yajra\DataTables\Factory;
+
 return (new Factory)->eloquent(User::query())->toJson();
 return (new Factory)->queryBuilder(DB::table('users'))->toJson();
 return (new Factory)->collection(User::all())->toJson();
 
 -- using engine directly
+use Yajra\DataTables\EloquentDataTable;
 return (new EloquentDataTable(User::query())->toJson();
+
+use Yajra\DataTables\QueryDataTable;
 return (new QueryDataTable(DB::table('users'))->toJson();
+
+use Yajra\DataTables\CollectionDataTable;
 return (new CollectionDataTable(User::all())->toJson();
 ```
 
