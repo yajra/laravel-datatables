@@ -1,6 +1,6 @@
 <?php
 
-namespace Yajra\DataTables;
+namespace Yajra\DataTables\Exceptions;
 
 class Exception extends \Exception
 {

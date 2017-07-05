@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
 use Yajra\DataTables\Contracts\DataTable;
+use Yajra\DataTables\Exceptions\Exception;
 use Yajra\DataTables\Processors\DataProcessor;
 use Yajra\DataTables\Utilities\Helper;
 
@@ -662,7 +663,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      *
      * @param \Exception $exception
      * @return \Illuminate\Http\JsonResponse
-     * @throws \Yajra\DataTables\Exception
+     * @throws \Yajra\DataTables\Exceptions\Exception
      */
     protected function errorResponse(\Exception $exception)
     {

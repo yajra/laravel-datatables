@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
+use Yajra\DataTables\Exceptions\Exception;
 
 class EloquentDataTable extends QueryDataTable
 {
@@ -227,7 +228,7 @@ class EloquentDataTable extends QueryDataTable
      * @param string $relation
      * @param string $relationColumn
      * @return string
-     * @throws \Yajra\DataTables\Exception
+     * @throws \Yajra\DataTables\Exceptions\Exception
      */
     protected function joinEagerLoadedColumn($relation, $relationColumn)
     {
