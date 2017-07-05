@@ -4,6 +4,12 @@ namespace Yajra\DataTables\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
+/**
+ * @mixin \Yajra\DataTables\Factory
+ * @method eloquent($builder)
+ * @method queryBuilder($builder)
+ * @method collection($collection)
+ */
 class DataTables extends Facade
 {
     /**
