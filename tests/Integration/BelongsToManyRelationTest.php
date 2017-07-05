@@ -3,7 +3,7 @@
 namespace Yajra\DataTables\Tests\Integration;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Yajra\DataTables\DataTables;
+use Yajra\DataTables\DataTablesFactory;
 use Yajra\DataTables\Tests\Models\User;
 use Yajra\DataTables\Tests\TestCase;
 
@@ -86,7 +86,7 @@ class BelongsToManyRelationTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['router']->get('/relations/belongsToMany', function (DataTables $datatables) {
+        $this->app['router']->get('/relations/belongsToMany', function (DataTablesFactory $datatables) {
             return $datatables->eloquent(User::with('roles')->select('users.*'))->make('true');
         });
     }

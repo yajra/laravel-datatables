@@ -4,7 +4,7 @@ namespace Yajra\DataTables;
 
 use Illuminate\Support\Collection;
 
-class DataTables
+class DataTablesFactory
 {
     /**
      * Datatables request object.

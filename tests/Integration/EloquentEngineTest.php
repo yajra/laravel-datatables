@@ -4,7 +4,7 @@ namespace Yajra\DataTables\Tests\Integration;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
-use Yajra\DataTables\DataTables;
+use Yajra\DataTables\DataTablesFactory;
 use Yajra\DataTables\Engines\EloquentEngine;
 use Yajra\DataTables\Facades\Datatables as DatatablesFacade;
 use Yajra\DataTables\Tests\Models\User;
@@ -46,7 +46,7 @@ class EloquentEngineTest extends TestCase
     /** @test */
     public function it_accepts_a_model_using_of_factory()
     {
-        $dataTable = DataTables::of(User::query());
+        $dataTable = DataTablesFactory::of(User::query());
         $response  = $dataTable->make(true);
         $this->assertInstanceOf(EloquentEngine::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
@@ -92,7 +92,7 @@ class EloquentEngineTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['router']->get('/eloquent/users', function (DataTables $datatables) {
+        $this->app['router']->get('/eloquent/users', function (DataTablesFactory $datatables) {
             return $datatables->eloquent(User::query())->make('true');
         });
     }

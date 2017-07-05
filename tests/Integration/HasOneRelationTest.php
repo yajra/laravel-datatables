@@ -3,7 +3,7 @@
 namespace Yajra\DataTables\Tests\Integration;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Yajra\DataTables\DataTables;
+use Yajra\DataTables\DataTablesFactory;
 use Yajra\DataTables\Tests\Models\User;
 use Yajra\DataTables\Tests\TestCase;
 
@@ -83,7 +83,7 @@ class HasOneRelationTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['router']->get('/relations/hasOne', function (DataTables $datatables) {
+        $this->app['router']->get('/relations/hasOne', function (DataTablesFactory $datatables) {
             return $datatables->eloquent(User::with('heart')->select('users.*'))->make('true');
         });
     }

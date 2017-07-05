@@ -21,16 +21,15 @@
 - Add `getFilteredQuery` api to get the prepared (filtered, ordered & paginated) query.
 - Add `Arrayable` and `Jsonable` interface for a more Laravel like response.
 ```php
-return Datatables::eloquent(User::query())->toJson();
-return Datatables::eloquent(User::query())->toArray();
+return DataTablesFactory::eloquent(User::query())->toJson();
+return DataTablesFactory::eloquent(User::query())->toArray();
 ```
-- Add singular `DataTable` alias of `Datatables` class for a more appropriate name.
 - Introducing a new OOP / intuitive syntax.
 ```php
 -- via DataTable Factory
-return (new DataTable)->eloquent(User::query())->toJson();
-return (new DataTable)->queryBuilder(DB::table('users'))->toJson();
-return (new DataTable)->collection(User::all())->toJson();
+return (new DataTablesFactory)->eloquent(User::query())->toJson();
+return (new DataTablesFactory)->queryBuilder(DB::table('users'))->toJson();
+return (new DataTablesFactory)->collection(User::all())->toJson();
 
 -- using engine directly
 return (new EloquentEngine(User::query())->toJson();

@@ -4,7 +4,7 @@ namespace Yajra\DataTables\Tests\Integration;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
-use Yajra\DataTables\DataTables;
+use Yajra\DataTables\DataTablesFactory;
 use Yajra\DataTables\Engines\CollectionEngine;
 use Yajra\DataTables\Facades\Datatables as DatatablesFacade;
 use Yajra\DataTables\Tests\Models\User;
@@ -46,7 +46,7 @@ class CollectionEngineTest extends TestCase
     /** @test */
     public function it_accepts_a_model_collection_using_of_factory()
     {
-        $dataTable = DataTables::of(User::all());
+        $dataTable = DataTablesFactory::of(User::all());
         $response  = $dataTable->make(true);
         $this->assertInstanceOf(CollectionEngine::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
@@ -55,7 +55,7 @@ class CollectionEngineTest extends TestCase
     /** @test */
     public function it_accepts_a_collection_using_of_factory()
     {
-        $dataTable = DataTables::of(collect());
+        $dataTable = DataTablesFactory::of(collect());
         $response  = $dataTable->make(true);
         $this->assertInstanceOf(CollectionEngine::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
@@ -197,7 +197,7 @@ class CollectionEngineTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['router']->get('/collection/users', function (DataTables $datatables) {
+        $this->app['router']->get('/collection/users', function (DataTablesFactory $datatables) {
             return $datatables->collection(User::all())->make('true');
         });
     }
