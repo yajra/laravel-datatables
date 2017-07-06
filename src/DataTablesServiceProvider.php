@@ -40,9 +40,9 @@ class DataTablesServiceProvider extends ServiceProvider
             require_once 'fallback.php';
         }
 
-        $this->app->alias('datatables', Factory::class);
+        $this->app->alias('datatables', DataTables::class);
         $this->app->singleton('datatables', function () {
-            return new Factory;
+            return new DataTables;
         });
 
         $this->app->singleton('datatables.request', function () {

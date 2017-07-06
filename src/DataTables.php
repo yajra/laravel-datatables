@@ -4,7 +4,7 @@ namespace Yajra\DataTables;
 
 use Illuminate\Support\Collection;
 
-class Factory
+class DataTables
 {
     /**
      * DataTables request object.
@@ -22,11 +22,11 @@ class Factory
 
     /**
      * Make a DataTable instance from source.
+     * Alias of make for backward compatibility.
      *
      * @param  mixed $source
      * @return mixed
      * @throws \Exception
-     * @deprecated in favor of make.
      */
     public static function of($source)
     {

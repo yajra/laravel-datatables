@@ -3,7 +3,7 @@
 namespace Yajra\DataTables\Tests\Integration;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Yajra\DataTables\Factory;
+use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Tests\Models\User;
 use Yajra\DataTables\Tests\TestCase;
 
@@ -57,7 +57,7 @@ class HasManyRelationTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['router']->get('/relations/hasMany', function (Factory $datatables) {
+        $this->app['router']->get('/relations/hasMany', function (DataTables $datatables) {
             return $datatables->eloquent(User::with('posts')->select('users.*'))->make('true');
         });
     }

@@ -1,6 +1,6 @@
 <?php
 
-use Yajra\DataTables\Factory;
+use Yajra\DataTables\DataTables;
 
 if (!function_exists('config_path')) {
     /**
@@ -34,14 +34,14 @@ if (!function_exists('datatable')) {
      * Or return a new factory is source is not set.
      *
      * @param mixed $source
-     * @return \Yajra\DataTables\DataTableAbstract|\Yajra\DataTables\Factory
+     * @return \Yajra\DataTables\DataTableAbstract|\Yajra\DataTables\DataTables
      */
     function datatable($source = null)
     {
         if ($source) {
-            return Factory::make($source);
+            return DataTables::make($source);
         }
 
-        return new Factory;
+        return new DataTables;
     }
 }

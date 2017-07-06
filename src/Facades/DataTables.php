@@ -5,7 +5,7 @@ namespace Yajra\DataTables\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @mixin \Yajra\DataTables\Factory
+ * @mixin \Yajra\DataTables\DataTables
  * @method eloquent($builder)
  * @method queryBuilder($builder)
  * @method collection($collection)
