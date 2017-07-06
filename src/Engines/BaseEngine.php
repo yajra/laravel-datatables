@@ -540,6 +540,48 @@ abstract class BaseEngine implements DataTableEngineContract
     }
 
     /**
+     * Perform global search.
+     *
+     * @return void
+     */
+    public function filtering()
+    {
+        $keyword = $this->request->keyword();
+
+        if ($this->isSmartSearch()) {
+            $this->smartGlobalSearch($keyword);
+
+            return;
+        }
+
+        $this->globalSearch($keyword);
+    }
+
+    /**
+     * Perform multi-term search by splitting keyword into
+     * individual words and searches for each of them.
+     *
+     * @param string $keyword
+     */
+    protected function smartGlobalSearch($keyword)
+    {
+        collect(explode(' ', $keyword))
+            ->reject(function ($keyword) {
+                return trim($keyword) === '';
+            })
+            ->each(function ($keyword) {
+                $this->globalSearch($keyword);
+            });
+    }
+
+    /**
+     * Perform global search for the given keyword.
+     *
+     * @param string $keyword
+     */
+    abstract protected function globalSearch($keyword);
+
+    /**
      * Apply pagination.
      *
      * @return void
