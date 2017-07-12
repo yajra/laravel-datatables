@@ -558,11 +558,13 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      */
     protected function smartGlobalSearch($keyword)
     {
-        $keywords = array_filter(explode(' ', $keyword));
-
-        foreach ($keywords as $keyword) {
-            $this->globalSearch($keyword);
-        }
+        collect(explode(' ', $keyword))
+            ->reject(function ($keyword) {
+                return trim($keyword) === '';
+            })
+            ->each(function ($keyword) {
+                $this->globalSearch($keyword);
+            });
     }
 
     /**
