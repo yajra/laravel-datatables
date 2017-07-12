@@ -52,7 +52,7 @@ class EloquentDataTable extends QueryDataTable
         $column   = array_pop($parts);
         $relation = implode('.', $parts);
 
-        if (! $relation || $relation === $this->query->getModel()->getTable()) {
+        if (!$relation || $relation === $this->query->getModel()->getTable()) {
             return parent::compileQuerySearch($query, $columnName, $keyword, $boolean);
         }
 
@@ -74,18 +74,19 @@ class EloquentDataTable extends QueryDataTable
      */
     protected function resolveRelationColumn($column)
     {
-        if (count(explode('.', $column)) > 1) {
-            $eagerLoads     = $this->getEagerLoads();
-            $parts          = explode('.', $column);
-            $relationColumn = array_pop($parts);
-            $relation       = implode('.', $parts);
+        $parts      = explode('.', $column);
+        $columnName = array_pop($parts);
+        $relation   = implode('.', $parts);
 
-            if (in_array($relation, $eagerLoads)) {
-                $column = $this->joinEagerLoadedColumn($relation, $relationColumn);
-            }
+        if (!$relation || $relation === $this->query->getModel()->getTable()) {
+            return $columnName;
         }
 
-        return $column;
+        $parts          = explode('.', $column);
+        $relationColumn = array_pop($parts);
+        $relation       = implode('.', $parts);
+
+        return $this->joinEagerLoadedColumn($relation, $relationColumn);
     }
 
     /**
