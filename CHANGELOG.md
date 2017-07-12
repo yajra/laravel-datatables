@@ -8,6 +8,11 @@
 
 ## Change Log
 
+### v7.9.3 - 07-12-2017
+- Revert transformed `DT_Row_Index` back to it's original values. #1259
+- Fix searching not triggered with zero value. #1257
+- Fix #1243, #1223.
+
 ### v7.9.2 - 07-05-2017
 - Fix multi-column sort of collection #1238. 
 - Fix #1237, credits to @jond64
