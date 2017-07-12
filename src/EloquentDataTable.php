@@ -46,8 +46,6 @@ class EloquentDataTable extends QueryDataTable
     protected function globalSearch($keyword)
     {
         $this->query->where(function ($query) use ($keyword) {
-            $query = $this->getBaseQueryBuilder($query);
-
             collect($this->request->searchableColumnIndex())
                 ->map(function ($index) {
                     return $this->getColumnName($index);
@@ -57,13 +55,9 @@ class EloquentDataTable extends QueryDataTable
                 })
                 ->each(function ($column) use ($keyword, $query) {
                     if ($this->hasFilterColumn($column)) {
-                        $this->applyFilterColumn($query, $column, $keyword);
+                        $this->applyFilterColumn($this->getBaseQueryBuilder($query), $column, $keyword);
                     } else {
-                        if (count(explode('.', $column)) > 1) {
-                            $this->eagerLoadSearch($query, $column, $keyword);
-                        } else {
-                            $this->compileQuerySearch($query, $column, $keyword);
-                        }
+                        $this->compileQuerySearch($query, $column, $keyword);
                     }
 
                     $this->isFilterApplied = true;
@@ -72,132 +66,31 @@ class EloquentDataTable extends QueryDataTable
     }
 
     /**
-     * Perform search on eager loaded relation column.
+     * Compile query builder where clause depending on configurations.
      *
      * @param mixed  $query
      * @param string $columnName
      * @param string $keyword
+     * @param string $boolean
      */
-    private function eagerLoadSearch($query, $columnName, $keyword)
+    protected function compileQuerySearch($query, $columnName, $keyword, $boolean = 'or')
     {
-        $eagerLoads     = $this->getEagerLoads();
-        $parts          = explode('.', $columnName);
-        $relationColumn = array_pop($parts);
-        $relation       = implode('.', $parts);
-        if (in_array($relation, $eagerLoads)) {
-            $this->compileRelationSearch($query, $relation, $relationColumn, $keyword);
-        } else {
-            $this->compileQuerySearch($query, $columnName, $keyword);
-        }
-    }
+        $parts    = explode('.', $columnName);
+        $column   = array_pop($parts);
+        $relation = implode('.', $parts);
 
-    /**
-     * Get eager loads keys if eloquent.
-     *
-     * @return array
-     */
-    protected function getEagerLoads()
-    {
-        return array_keys($this->query->getEagerLoads());
-    }
-
-    /**
-     * Add relation query on global search.
-     *
-     * @param Builder $query
-     * @param string  $relation
-     * @param string  $column
-     * @param string  $keyword
-     */
-    private function compileRelationSearch($query, $relation, $column, $keyword)
-    {
-        $myQuery = clone $this->query;
-
-        /**
-         * For compile nested relation, we need store all nested relation as array
-         * and reverse order to apply where query.
-         * With this method we can create nested sub query with properly relation.
-         */
-
-        /**
-         * Store all relation data that require in next step
-         */
-        $relationChunk = [];
-
-        /**
-         * Store last eloquent query builder for get next relation.
-         */
-        $lastQuery = $query;
-
-        $relations    = explode('.', $relation);
-        $lastRelation = end($relations);
-        foreach ($relations as $relation) {
-            $relationType = $myQuery->getModel()->{$relation}();
-            $myQuery->orWhereHas($relation, function ($builder) use (
-                $column,
-                $keyword,
-                $query,
-                $relationType,
-                $relation,
-                $lastRelation,
-                &$relationChunk,
-                &$lastQuery
-            ) {
-                $builder->select($this->connection->raw('count(1)'));
-
-                // We will perform search on last relation only.
-                if ($relation == $lastRelation) {
-                    $this->compileQuerySearch($builder, $column, $keyword, '');
-                }
-
-                // Put require object to next step!!
-                $relationChunk[$relation] = [
-                    'builder'      => $builder,
-                    'relationType' => $relationType,
-                    'query'        => $lastQuery,
-                ];
-
-                // This is trick make sub query.
-                $lastQuery = $builder;
-            });
-
-            // This is trick to make nested relation by pass previous relation to be next query eloquent builder
-            $myQuery = $relationType;
+        if (! $relation || $relation === $this->query->getModel()->getTable()) {
+            return parent::compileQuerySearch($query, $columnName, $keyword, $boolean);
         }
 
-        /**
-         * Reverse them all
-         */
-        $relationChunk = array_reverse($relationChunk, true);
-
-        /**
-         * Create valuable for use in check last relation
-         */
-        end($relationChunk);
-        $lastRelation = key($relationChunk);
-        reset($relationChunk);
-
-        /**
-         * Walking ...
-         */
-        foreach ($relationChunk as $relation => $chunk) {
-            /** @var Builder $builder */
-            $builder  = $chunk['builder'];
-            $query    = $chunk['query'];
-            $bindings = $builder->getBindings();
-            $builder  = "({$builder->toSql()}) >= 1";
-
-            // Check if it last relation we will use orWhereRaw
-            if ($lastRelation == $relation) {
-                $relationMethod = "orWhereRaw";
-            } else {
-                // For case parent relation of nested relation.
-                // We must use and for properly query and get correct result
-                $relationMethod = "whereRaw";
-            }
-
-            $query->{$relationMethod}($builder, $bindings);
+        $sql = "{$column} LIKE ?";
+        if ($this->config->isCaseInsensitive()) {
+            $sql = 'LOWER(' . $column . ') LIKE ?';
         }
+
+        $query->orWhereHas($relation, function (Builder $query) use ($sql, $keyword) {
+            $query->whereRaw($sql, [$this->prepareKeyword($keyword)]);
+        });
     }
 
     /**
@@ -220,6 +113,16 @@ class EloquentDataTable extends QueryDataTable
         }
 
         return $column;
+    }
+
+    /**
+     * Get eager loads keys if eloquent.
+     *
+     * @return array
+     */
+    protected function getEagerLoads()
+    {
+        return array_keys($this->query->getEagerLoads());
     }
 
     /**
