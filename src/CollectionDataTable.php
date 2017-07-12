@@ -145,11 +145,31 @@ class CollectionDataTable extends DataTableAbstract
                 $this->ordering();
                 $this->filterRecords();
                 $this->paginate();
+
+                $this->revertIndexColumn($mDataSupport);
             }
 
             return $this->render($this->collection->values()->all());
         } catch (\Exception $exception) {
             return $this->errorResponse($exception);
+        }
+    }
+
+    /**
+     * Revert transformed DT_Row_Index back to it's original values.
+     *
+     * @param bool $mDataSupport
+     */
+    private function revertIndexColumn($mDataSupport)
+    {
+        if ($this->columnDef['index']) {
+            $index = $mDataSupport ? config('datatables.index_column', 'DT_Row_Index') : 0;
+            $start = (int) $this->request->input('start');
+            $this->collection->transform(function ($data) use ($index, &$start) {
+                $data[$index] = ++$start;
+
+                return $data;
+            });
         }
     }
 
