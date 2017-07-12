@@ -250,13 +250,14 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Apply filterColumn api search.
      *
-     * @param Builder $query
-     * @param string  $columnName
-     * @param string  $keyword
-     * @param string  $boolean
+     * @param mixed  $query
+     * @param string $columnName
+     * @param string $keyword
+     * @param string $boolean
      */
-    protected function applyFilterColumn(Builder $query, $columnName, $keyword, $boolean = 'and')
+    protected function applyFilterColumn($query, $columnName, $keyword, $boolean = 'and')
     {
+        $query    = $this->getBaseQueryBuilder($query);
         $callback = $this->columnDef['filter'][$columnName]['method'];
 
         if ($this->query instanceof EloquentBuilder) {
@@ -336,8 +337,7 @@ class QueryDataTable extends DataTableAbstract
                 break;
 
             default:
-                $sql     = !$this->config
-                    ->isCaseInsensitive() ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
+                $sql     = !$this->config->isCaseInsensitive() ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
                 $keyword = Str::lower($keyword);
         }
 
@@ -350,9 +350,9 @@ class QueryDataTable extends DataTableAbstract
      * @param mixed  $query
      * @param string $column
      * @param string $keyword
-     * @param string $relation
+     * @param string $boolean
      */
-    protected function compileQuerySearch($query, $column, $keyword, $relation = 'or')
+    protected function compileQuerySearch($query, $column, $keyword, $boolean = 'or')
     {
         $column = $this->addTablePrefix($query, $column);
         $column = $this->castColumn($column);
@@ -362,7 +362,7 @@ class QueryDataTable extends DataTableAbstract
             $sql = 'LOWER(' . $column . ') LIKE ?';
         }
 
-        $query->{$relation . 'WhereRaw'}($sql, [$this->prepareKeyword($keyword)]);
+        $query->{$boolean . 'WhereRaw'}($sql, [$this->prepareKeyword($keyword)]);
     }
 
     /**
@@ -596,8 +596,6 @@ class QueryDataTable extends DataTableAbstract
     protected function globalSearch($keyword)
     {
         $this->query->where(function ($query) use ($keyword) {
-            $query = $this->getBaseQueryBuilder($query);
-
             collect($this->request->searchableColumnIndex())
                 ->map(function ($index) {
                     return $this->getColumnName($index);

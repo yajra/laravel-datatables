@@ -39,33 +39,6 @@ class EloquentDataTable extends QueryDataTable
     }
 
     /**
-     * Perform global search for the given keyword.
-     *
-     * @param string $keyword
-     */
-    protected function globalSearch($keyword)
-    {
-        $this->query->where(function ($query) use ($keyword) {
-            collect($this->request->searchableColumnIndex())
-                ->map(function ($index) {
-                    return $this->getColumnName($index);
-                })
-                ->reject(function ($column) {
-                    return $this->isBlacklisted($column) && !$this->hasFilterColumn($column);
-                })
-                ->each(function ($column) use ($keyword, $query) {
-                    if ($this->hasFilterColumn($column)) {
-                        $this->applyFilterColumn($this->getBaseQueryBuilder($query), $column, $keyword);
-                    } else {
-                        $this->compileQuerySearch($query, $column, $keyword);
-                    }
-
-                    $this->isFilterApplied = true;
-                });
-        });
-    }
-
-    /**
      * Compile query builder where clause depending on configurations.
      *
      * @param mixed  $query
