@@ -56,13 +56,8 @@ class EloquentDataTable extends QueryDataTable
             return parent::compileQuerySearch($query, $columnName, $keyword, $boolean);
         }
 
-        $sql = "{$column} LIKE ?";
-        if ($this->config->isCaseInsensitive()) {
-            $sql = 'LOWER(' . $column . ') LIKE ?';
-        }
-
-        $query->{$boolean . 'WhereHas'}($relation, function (Builder $query) use ($sql, $keyword) {
-            $query->whereRaw($sql, [$this->prepareKeyword($keyword)]);
+        $query->{$boolean . 'WhereHas'}($relation, function (Builder $query) use ($column, $keyword) {
+            parent::compileQuerySearch($query, $column, $keyword, '');
         });
     }
 
