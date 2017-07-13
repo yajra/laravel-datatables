@@ -77,11 +77,7 @@ class EloquentDataTable extends QueryDataTable
             return $columnName;
         }
 
-        $parts          = explode('.', $column);
-        $relationColumn = array_pop($parts);
-        $relation       = implode('.', $parts);
-
-        return $this->joinEagerLoadedColumn($relation, $relationColumn);
+        return $this->joinEagerLoadedColumn($relation, $columnName);
     }
 
     /**
@@ -156,15 +152,5 @@ class EloquentDataTable extends QueryDataTable
         if (!in_array($table, $joins)) {
             $this->getBaseQueryBuilder()->join($table, $foreign, '=', $other, $type);
         }
-    }
-
-    /**
-     * Get eager loads keys if eloquent.
-     *
-     * @return array
-     */
-    protected function getEagerLoads()
-    {
-        return array_keys($this->query->getEagerLoads());
     }
 }
