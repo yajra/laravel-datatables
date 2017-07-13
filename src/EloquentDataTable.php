@@ -61,7 +61,7 @@ class EloquentDataTable extends QueryDataTable
             $sql = 'LOWER(' . $column . ') LIKE ?';
         }
 
-        $query->orWhereHas($relation, function (Builder $query) use ($sql, $keyword) {
+        $query->{$boolean . 'WhereHas'}($relation, function (Builder $query) use ($sql, $keyword) {
             $query->whereRaw($sql, [$this->prepareKeyword($keyword)]);
         });
     }
@@ -87,16 +87,6 @@ class EloquentDataTable extends QueryDataTable
         $relation       = implode('.', $parts);
 
         return $this->joinEagerLoadedColumn($relation, $relationColumn);
-    }
-
-    /**
-     * Get eager loads keys if eloquent.
-     *
-     * @return array
-     */
-    protected function getEagerLoads()
-    {
-        return array_keys($this->query->getEagerLoads());
     }
 
     /**
@@ -171,5 +161,15 @@ class EloquentDataTable extends QueryDataTable
         if (!in_array($table, $joins)) {
             $this->getBaseQueryBuilder()->join($table, $foreign, '=', $other, $type);
         }
+    }
+
+    /**
+     * Get eager loads keys if eloquent.
+     *
+     * @return array
+     */
+    protected function getEagerLoads()
+    {
+        return array_keys($this->query->getEagerLoads());
     }
 }
