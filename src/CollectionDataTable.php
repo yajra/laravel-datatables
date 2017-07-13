@@ -231,7 +231,7 @@ class CollectionDataTable extends DataTableAbstract
     {
         $criteria = $this->request->orderableColumns();
         if (!empty($criteria)) {
-            $sorter           = function ($a, $b) use ($criteria) {
+            $sorter = function ($a, $b) use ($criteria) {
                 foreach ($criteria as $orderable) {
                     $column    = $this->getColumnName($orderable['column']);
                     $direction = $orderable['direction'];
@@ -255,6 +255,7 @@ class CollectionDataTable extends DataTableAbstract
                 // all elements were equal
                 return 0;
             };
+
             $this->collection = $this->collection->sort($sorter);
         }
     }
