@@ -156,24 +156,6 @@ class CollectionDataTable extends DataTableAbstract
     }
 
     /**
-     * Revert transformed DT_Row_Index back to it's original values.
-     *
-     * @param bool $mDataSupport
-     */
-    private function revertIndexColumn($mDataSupport)
-    {
-        if ($this->columnDef['index']) {
-            $index = $mDataSupport ? config('datatables.index_column', 'DT_Row_Index') : 0;
-            $start = (int) $this->request->input('start');
-            $this->collection->transform(function ($data) use ($index, &$start) {
-                $data[$index] = ++$start;
-
-                return $data;
-            });
-        }
-    }
-
-    /**
      * Count total items.
      *
      * @return integer
@@ -191,6 +173,24 @@ class CollectionDataTable extends DataTableAbstract
     public function results()
     {
         return $this->collection->all();
+    }
+
+    /**
+     * Revert transformed DT_Row_Index back to it's original values.
+     *
+     * @param bool $mDataSupport
+     */
+    private function revertIndexColumn($mDataSupport)
+    {
+        if ($this->columnDef['index']) {
+            $index = $mDataSupport ? config('datatables.index_column', 'DT_Row_Index') : 0;
+            $start = (int) $this->request->input('start');
+            $this->collection->transform(function ($data) use ($index, &$start) {
+                $data[$index] = ++$start;
+
+                return $data;
+            });
+        }
     }
 
     /**
@@ -230,16 +230,16 @@ class CollectionDataTable extends DataTableAbstract
     protected function defaultOrdering()
     {
         $criteria = $this->request->orderableColumns();
-        if (! empty($criteria)) {
-            $sorter = function ($a, $b) use ($criteria) {
+        if (!empty($criteria)) {
+            $sorter           = function ($a, $b) use ($criteria) {
                 foreach ($criteria as $orderable) {
-                    $column = $this->getColumnName($orderable['column']);
+                    $column    = $this->getColumnName($orderable['column']);
                     $direction = $orderable['direction'];
                     if ($direction === 'desc') {
-                        $first = $b;
+                        $first  = $b;
                         $second = $a;
                     } else {
-                        $first = $a;
+                        $first  = $a;
                         $second = $b;
                     }
                     if ($this->config->isCaseInsensitive()) {
@@ -251,6 +251,7 @@ class CollectionDataTable extends DataTableAbstract
                         return $cmp;
                     }
                 }
+
                 // all elements were equal
                 return 0;
             };
