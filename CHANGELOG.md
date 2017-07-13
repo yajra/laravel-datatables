@@ -69,3 +69,4 @@ return (new CollectionDataTable(User::all())->toJson();
 - How to get full used query ? #1068
 - Is there a way to build the query (with filtering and sorting) but without execute it? #1234 
 - Fix orderColumn api where related tables are not joined. 
+- Fix nested with relation search and sort function.
