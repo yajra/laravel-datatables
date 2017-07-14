@@ -551,7 +551,7 @@ class QueryBuilderEngine extends BaseEngine
                         $other   = $model->getQualifiedParentKeyName();
                     } else {
                         $foreign = $model->getQualifiedForeignKey();
-                        $other   = $model->getQualifiedOtherKeyName();
+                        $other   = $model->getQualifiedOwnerKeyName();
                     }
             }
             $this->performJoin($table, $foreign, $other);
