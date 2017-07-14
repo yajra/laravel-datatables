@@ -8,6 +8,10 @@
 
 ## Change Log
 
+### v7.9.4 - 07-14-2017
+- Change getQualifiedOtherKeyName to getQualifiedOwnerKeyName #1254. Credits to @zizohassan.
+- Readme: implictly set "--provider" when publishing #1255. Credits to @uniconstructor.
+
 ### v7.9.3 - 07-12-2017
 - Revert transformed `DT_Row_Index` back to it's original values. #1259
 - Fix searching not triggered with zero value. #1257
