@@ -3,14 +3,14 @@
 namespace Yajra\DataTables\Utilities;
 
 /**
- * @method input($key, $default = null)
- * @method get($key, $default = null)
- * @method query($key, $default = null)
- * @method has($key)
- * @method merge(array $values)
- * @method wantsJson()
- * @method ajax()
- * @method all()
+ * @method mixed input($key, $default = null)
+ * @method mixed get($key, $default = null)
+ * @method mixed query($key, $default = null)
+ * @method mixed has($key)
+ * @method mixed merge(array $values)
+ * @method bool wantsJson()
+ * @method bool ajax()
+ * @method array all()
  */
 class Request
 {
