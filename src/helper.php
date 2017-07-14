@@ -28,7 +28,7 @@ if (!function_exists('public_path')) {
     }
 }
 
-if (!function_exists('datatable')) {
+if (!function_exists('datatables')) {
     /**
      * Helper to make a new DataTable instance from source.
      * Or return a new factory is source is not set.
@@ -36,7 +36,7 @@ if (!function_exists('datatable')) {
      * @param mixed $source
      * @return \Yajra\DataTables\DataTableAbstract|\Yajra\DataTables\DataTables
      */
-    function datatable($source = null)
+    function datatables($source = null)
     {
         if ($source) {
             return DataTables::make($source);

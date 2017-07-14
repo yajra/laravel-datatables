@@ -47,6 +47,9 @@ return (new DataTables)->queryBuilder(DB::table('users'))->toJson();
 
 return DataTables::of(User::all())->toJson();
 return (new DataTables)->collection(User::all())->toJson();
+
+// Using helper function
+return datatables()->of(User::query())->toJson();
 ```
 
 ## Requirements
