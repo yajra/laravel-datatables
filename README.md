@@ -14,42 +14,14 @@
 This package is created to handle [server-side](https://www.datatables.net/manual/server-side) works of [DataTables](http://datatables.net) jQuery Plugin via [AJAX option](https://datatables.net/reference/option/ajax) by using Eloquent ORM, Fluent Query Builder or Collection.
 
 ```php
-use Yajra\DataTables\Facades\DataTables;
-
-// Using Eloquent
-return DataTables::eloquent(User::query())->toJson();
-// OR
-use Yajra\DataTables\EloquentDataTable;
-return (new EloquentDataTable(User::query())->toJson();
-
-// Using Query Builder
-return DataTables::queryBuilder(DB::table('users'))->toJson();
-// OR
-use Yajra\DataTables\QueryDataTable;
-return (new QueryDataTable(DB::table('users'))->toJson();
-
-// Using Collection or Array
-return DataTables::collection(User::all())->toJson();
-return DataTables::collection([
-    ['id' => 1, 'name' => 'Foo'],
-    ['id' => 2, 'name' => 'Bar'],
-])->toJson();
-// OR
-use Yajra\DataTables\CollectionDataTable;
-return (new CollectionDataTable(User::all())->toJson();
-
-// Using the Engine Factory
-return DataTables::of(User::query())->toJson();
-return (new DataTables)->eloquent(User::query())->toJson();
-
-return DataTables::of(DB::table('users'))->toJson();
-return (new DataTables)->queryBuilder(DB::table('users'))->toJson();
-
-return DataTables::of(User::all())->toJson();
-return (new DataTables)->collection(User::all())->toJson();
-
-// Using helper function
 return datatables()->of(User::query())->toJson();
+return datatables()->of(DB::table('users'))->toJson();
+return datatables()->of(User::all())->toJson();
+
+return datatables()->eloquent(User::query())->toJson();
+return datatables()->queryBuilder(DB::table('users'))->toJson();
+return datatables()->collection(User::all())->toJson();
+
 ```
 
 ## Requirements
