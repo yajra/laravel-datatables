@@ -14,36 +14,49 @@
 This package is created to handle [server-side](https://www.datatables.net/manual/server-side) works of [DataTables](http://datatables.net) jQuery Plugin via [AJAX option](https://datatables.net/reference/option/ajax) by using Eloquent ORM, Fluent Query Builder or Collection.
 
 ```php
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 
 // Using Eloquent
-return Datatables::eloquent(User::query())->make(true);
+return DataTables::eloquent(User::query())->toJson();
+// OR
+use Yajra\DataTables\EloquentDataTable;
+return (new EloquentDataTable(User::query())->toJson();
 
 // Using Query Builder
-return Datatables::queryBuilder(DB::table('users'))->make(true);
+return DataTables::queryBuilder(DB::table('users'))->toJson();
+// OR
+use Yajra\DataTables\QueryDataTable;
+return (new QueryDataTable(DB::table('users'))->toJson();
 
 // Using Collection or Array
-return Datatables::collection(User::all())->make(true);
-return Datatables::collection([
+return DataTables::collection(User::all())->toJson();
+return DataTables::collection([
     ['id' => 1, 'name' => 'Foo'],
     ['id' => 2, 'name' => 'Bar'],
-])->make(true);
+])->toJson();
+// OR
+use Yajra\DataTables\CollectionDataTable;
+return (new CollectionDataTable(User::all())->toJson();
 
 // Using the Engine Factory
-return Datatables::of(User::query())->make(true);
-return Datatables::of(DB::table('users'))->make(true);
-return Datatables::of(User::all())->make(true);
-return Datatables::of(DB::select('select * from users'))->make(true);
+return DataTables::of(User::query())->toJson();
+return (new DataTables)->eloquent(User::query())->toJson();
+
+return DataTables::of(DB::table('users'))->toJson();
+return (new DataTables)->queryBuilder(DB::table('users'))->toJson();
+
+return DataTables::of(User::all())->toJson();
+return (new DataTables)->collection(User::all())->toJson();
 ```
 
 ## Requirements
 - [PHP >= 7.0](http://php.net/)
-- [Laravel 5.5+](https://github.com/laravel/framework)
+- [Laravel 5.4|5.5](https://github.com/laravel/framework)
 - [jQuery DataTables v1.10.x](http://datatables.net/)
 
 ## Documentations
-- [Laravel Datatables Documentation](http://yajrabox.com/docs/laravel-datatables)
-- [Laravel Datatables API](http://yajra.github.io/laravel-datatables/api/)
+- [Laravel DataTables Documentation](http://yajrabox.com/docs/laravel-datatables)
+- [Laravel DataTables API](http://yajra.github.io/laravel-datatables/api/)
 - [Laravel 5.0 - 5.3 Demo Application](http://datatables.yajrabox.com)
 - [Laravel 5.4 Demo Application](http://dt54.yajrabox.com)
 
@@ -60,7 +73,7 @@ return Datatables::of(DB::select('select * from users'))->make(true);
  5.5.x    | 8.x
 
 ## Laravel 5.5 Upgrade Guide
-There are breaking changes since Laravel 5.5 and Datatables v8.0.
+There are breaking changes since Laravel 5.5 and DataTables v8.0.
 If you are upgrading from v7.x to v8.x, please see [upgrade guide](https://yajrabox.com/docs/laravel-datatables/master/upgrade).
 
 ## Quick Installation
@@ -108,4 +121,4 @@ If you discover any security related issues, please email [aqangeles@gmail.com](
 The MIT License (MIT). Please see [License File](https://github.com/yajra/laravel-datatables/blob/master/LICENSE.md) for more information.
 
 ## Buy me a coffee
-<a href='https://pledgie.com/campaigns/29515'><img alt='Click here to lend your support to: Laravel Datatables and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/29515.png?skin_name=chrome' border='0' ></a>
+<a href='https://pledgie.com/campaigns/29515'><img alt='Click here to lend your support to: Laravel DataTables and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/29515.png?skin_name=chrome' border='0' ></a>
