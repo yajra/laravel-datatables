@@ -117,6 +117,10 @@ class Helper
      */
     public static function getMixedValue(array $data, $param)
     {
+        if($param instanceof \Illuminate\Database\Eloquent\Model) {
+            $data[lcfirst(class_basename(get_class($param)))] = $param;
+        }
+
         $param = self::castToArray($param);
 
         foreach ($data as $key => $value) {
