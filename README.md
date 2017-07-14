@@ -22,6 +22,9 @@ return datatables()->eloquent(User::query())->toJson();
 return datatables()->queryBuilder(DB::table('users'))->toJson();
 return datatables()->collection(User::all())->toJson();
 
+return datatables(User::query())->toJson();
+return datatables(DB::table('users'))->toJson();
+return datatables(User::all())->toJson();
 ```
 
 ## Requirements
