@@ -75,7 +75,7 @@ $ composer require yajra/laravel-datatables-oracle:^7.5
 
 #### Configuration and Assets
 ```bash
-$ php artisan vendor:publish --tag=datatables
+$ php artisan vendor:publish --provider="Yajra\Datatables\DatatablesServiceProvider"
 ```
 
 And that's it! Start building out some awesome DataTables!
