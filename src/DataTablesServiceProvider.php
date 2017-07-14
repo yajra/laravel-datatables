@@ -37,7 +37,7 @@ class DataTablesServiceProvider extends ServiceProvider
     public function register()
     {
         if ($this->isLumen()) {
-            require_once 'fallback.php';
+            require_once 'helper.php';
         }
 
         $this->app->alias('datatables', DataTables::class);
