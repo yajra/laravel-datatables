@@ -4,8 +4,10 @@ namespace Yajra\Datatables\Engines;
 
 use Closure;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Str;
 use Yajra\Datatables\Helper;
 use Yajra\Datatables\Request;
@@ -53,11 +55,12 @@ class QueryBuilderEngine extends BaseEngine
      * Overrides global search
      *
      * @param \Closure $callback
+     * @param bool $globalSearch
      * @return $this
      */
-    public function filter(Closure $callback)
+    public function filter(Closure $callback, $globalSearch = false)
     {
-        $this->overrideGlobalSearch($callback, $this->query);
+        $this->overrideGlobalSearch($callback, $this->query, $globalSearch);
 
         return $this;
     }
@@ -81,7 +84,7 @@ class QueryBuilderEngine extends BaseEngine
      */
     public function totalCount()
     {
-        return $this->count();
+        return $this->totalRecords ? $this->totalRecords : $this->count();
     }
 
     /**
@@ -95,12 +98,23 @@ class QueryBuilderEngine extends BaseEngine
         // if its a normal query ( no union, having and distinct word )
         // replace the select with static text to improve performance
         if (! Str::contains(Str::lower($myQuery->toSql()), ['union', 'having', 'distinct', 'order by', 'group by'])) {
-            $row_count = $this->connection->getQueryGrammar()->wrap('row_count');
+            $row_count = $this->wrap('row_count');
             $myQuery->select($this->connection->raw("'1' as {$row_count}"));
         }
 
         return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
                                 ->setBindings($myQuery->getBindings())->count();
+    }
+
+    /**
+     * Wrap column with DB grammar.
+     *
+     * @param string $column
+     * @return string
+     */
+    protected function wrap($column)
+    {
+        return $this->connection->getQueryGrammar()->wrap($column);
     }
 
     /**
@@ -112,7 +126,7 @@ class QueryBuilderEngine extends BaseEngine
     {
         $this->query->where(
             function ($query) {
-                $globalKeyword = $this->setupKeyword($this->request->keyword());
+                $globalKeyword = $this->request->keyword();
                 $queryBuilder  = $this->getQueryBuilder($query);
 
                 foreach ($this->request->searchableColumnIndex() as $index) {
@@ -132,7 +146,7 @@ class QueryBuilderEngine extends BaseEngine
 
                         if ($columnDef['method'] instanceof Closure) {
                             $whereQuery = $queryBuilder->newQuery();
-                            call_user_func_array($columnDef['method'], [$whereQuery, $this->request->keyword()]);
+                            call_user_func_array($columnDef['method'], [$whereQuery, $globalKeyword]);
                             $queryBuilder->addNestedWhereQuery($whereQuery, 'or');
                         } else {
                             $this->compileColumnQuery(
@@ -140,7 +154,7 @@ class QueryBuilderEngine extends BaseEngine
                                 Helper::getOrMethod($columnDef['method']),
                                 $columnDef['parameters'],
                                 $columnName,
-                                $this->request->keyword()
+                                $globalKeyword
                             );
                         }
                     } else {
@@ -157,10 +171,10 @@ class QueryBuilderEngine extends BaseEngine
                                     $globalKeyword
                                 );
                             } else {
-                                $this->compileGlobalSearch($queryBuilder, $columnName, $globalKeyword);
+                                $this->compileQuerySearch($queryBuilder, $columnName, $globalKeyword);
                             }
                         } else {
-                            $this->compileGlobalSearch($queryBuilder, $columnName, $globalKeyword);
+                            $this->compileQuerySearch($queryBuilder, $columnName, $globalKeyword);
                         }
                     }
 
@@ -240,36 +254,141 @@ class QueryBuilderEngine extends BaseEngine
     protected function compileRelationSearch($query, $relation, $column, $keyword)
     {
         $myQuery = clone $this->query;
-        $myQuery->orWhereHas($relation, function ($q) use ($column, $keyword, $query) {
-            $sql = $q->select($this->connection->raw('count(1)'))
-                     ->where($column, 'like', $keyword)
-                     ->toSql();
-            $sql = "($sql) >= 1";
-            $query->orWhereRaw($sql, [$keyword]);
-        });
+
+        /**
+         * For compile nested relation, we need store all nested relation as array
+         * and reverse order to apply where query.
+         * With this method we can create nested sub query with properly relation.
+         */
+
+        /**
+         * Store all relation data that require in next step
+         */
+        $relationChunk = [];
+
+        /**
+         * Store last eloquent query builder for get next relation.
+         */
+        $lastQuery = $query;
+
+        $relations    = explode('.', $relation);
+        $lastRelation = end($relations);
+        foreach ($relations as $relation) {
+            $relationType = $myQuery->getModel()->{$relation}();
+            $myQuery->orWhereHas($relation, function ($builder) use (
+                $column,
+                $keyword,
+                $query,
+                $relationType,
+                $relation,
+                $lastRelation,
+                &$relationChunk,
+                &$lastQuery
+            ) {
+                $builder->select($this->connection->raw('count(1)'));
+
+                // We will perform search on last relation only.
+                if ($relation == $lastRelation) {
+                    $this->compileQuerySearch($builder, $column, $keyword, '');
+                }
+
+                // Put require object to next step!!
+                $relationChunk[$relation] = [
+                    'builder'      => $builder,
+                    'relationType' => $relationType,
+                    'query'        => $lastQuery,
+                ];
+
+                // This is trick make sub query.
+                $lastQuery = $builder;
+            });
+
+            // This is trick to make nested relation by pass previous relation to be next query eloquent builder
+            $myQuery = $relationType;
+        }
+
+        /**
+         * Reverse them all
+         */
+        $relationChunk = array_reverse($relationChunk, true);
+
+        /**
+         * Create valuable for use in check last relation
+         */
+        end($relationChunk);
+        $lastRelation = key($relationChunk);
+        reset($relationChunk);
+
+        /**
+         * Walking ...
+         */
+        foreach ($relationChunk as $relation => $chunk) {
+            // Prepare variables
+            $builder  = $chunk['builder'];
+            $query    = $chunk['query'];
+            $bindings = $builder->getBindings();
+            $sql      = "({$builder->toSql()}) >= 1";
+
+            // Check if it last relation we will use orWhereRaw
+            if ($lastRelation == $relation) {
+                $relationMethod = "orWhereRaw";
+            } else {
+                // For case parent relation of nested relation.
+                // We must use and for properly query and get correct result
+                $relationMethod = "whereRaw";
+            }
+
+            $query->{$relationMethod}($sql, $bindings);
+        }
     }
 
     /**
-     * Add a query on global search.
+     * Compile query builder where clause depending on configurations.
      *
      * @param mixed $query
      * @param string $column
      * @param string $keyword
+     * @param string $relation
      */
-    protected function compileGlobalSearch($query, $column, $keyword)
+    protected function compileQuerySearch($query, $column, $keyword, $relation = 'or')
     {
-        if ($this->isSmartSearch()) {
-            $column = $this->castColumn($column);
-            $sql    = $column . ' LIKE ?';
-            if ($this->isCaseInsensitive()) {
-                $sql     = 'LOWER(' . $column . ') LIKE ?';
-                $keyword = Str::lower($keyword);
+        $column = $this->addTablePrefix($query, $column);
+        $column = $this->castColumn($column);
+        $sql    = $column . ' LIKE ?';
+
+        if ($this->isCaseInsensitive()) {
+            $sql = 'LOWER(' . $column . ') LIKE ?';
+        }
+
+        $query->{$relation . 'WhereRaw'}($sql, [$this->prepareKeyword($keyword)]);
+    }
+
+    /**
+     * Patch for fix about ambiguous field.
+     * Ambiguous field error will appear when query use join table and search with keyword.
+     *
+     * @param mixed $query
+     * @param string $column
+     * @return string
+     */
+    protected function addTablePrefix($query, $column)
+    {
+        // Check if field does not have a table prefix
+        if (strpos($column, '.') === false) {
+            // Alternative method to check instanceof \Illuminate\Database\Eloquent\Builder
+            if (method_exists($query, 'getQuery')) {
+                $q = $query->getQuery();
+            } else {
+                $q = $query;
             }
 
-            $query->orWhereRaw($sql, [$keyword]);
-        } else { // exact match
-            $query->orWhereRaw("$column like ?", [$keyword]);
+            if (! $q->from instanceof Expression) {
+                // Get table from query and add it.
+                $column = $q->from . '.' . $column;
+            }
         }
+
+        return $this->wrap($column);
     }
 
     /**
@@ -278,9 +397,8 @@ class QueryBuilderEngine extends BaseEngine
      * @param  string $column
      * @return string
      */
-    public function castColumn($column)
+    protected function castColumn($column)
     {
-        $column = $this->connection->getQueryGrammar()->wrap($column);
         if ($this->database === 'pgsql') {
             $column = 'CAST(' . $column . ' as TEXT)';
         } elseif ($this->database === 'firebird') {
@@ -291,13 +409,36 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
+     * Prepare search keyword based on configurations.
+     *
+     * @param string $keyword
+     * @return string
+     */
+    protected function prepareKeyword($keyword)
+    {
+        if ($this->isCaseInsensitive()) {
+            $keyword = Str::lower($keyword);
+        }
+
+        if ($this->isWildcard()) {
+            $keyword = $this->wildcardLikeString($keyword);
+        }
+
+        if ($this->isSmartSearch()) {
+            $keyword = "%$keyword%";
+        }
+
+        return $keyword;
+    }
+
+    /**
      * Perform column search.
      *
      * @return void
      */
     public function columnSearch()
     {
-        $columns = $this->request->get('columns', []);
+        $columns = (array) $this->request->input('columns');
 
         foreach ($columns as $index => $column) {
             if (! $this->request->isColumnSearchable($index)) {
@@ -336,15 +477,8 @@ class QueryBuilderEngine extends BaseEngine
                     }
                 }
 
-                $column          = $this->castColumn($column);
-                $keyword         = $this->getSearchKeyword($index);
-                $caseInsensitive = $this->isCaseInsensitive();
-
-                if (! $caseInsensitive) {
-                    $column = strstr($column, '(') ? $this->connection->raw($column) : $column;
-                }
-
-                $this->compileColumnSearch($index, $column, $keyword, $caseInsensitive);
+                $keyword = $this->getSearchKeyword($index);
+                $this->compileColumnSearch($index, $column, $keyword);
             }
 
             $this->isFilterApplied = true;
@@ -369,23 +503,77 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
+     * Join eager loaded relation and get the related column name.
+     *
+     * @param string $relation
+     * @param string $relationColumn
+     * @return string
+     */
+    protected function joinEagerLoadedColumn($relation, $relationColumn)
+    {
+        $joins = [];
+        foreach ((array) $this->getQueryBuilder()->joins as $key => $join) {
+            $joins[] = $join->table;
+        }
+
+        /**
+         * Add support nested relations.
+         */
+        $lastQuery = $this->query;
+
+        foreach (explode('.', $relation) as $eachRelation) {
+            $model = $lastQuery->getRelation($eachRelation);
+
+            if ($model instanceof BelongsToMany) {
+                $pivot   = $model->getTable();
+                $pivotPK = $model->getForeignKey();
+                $pivotFK = $model->getQualifiedParentKeyName();
+                if (! in_array($pivot, $joins)) {
+                    $this->getQueryBuilder()->leftJoin($pivot, $pivotPK, '=', $pivotFK);
+                }
+                $related = $model->getRelated();
+                $table   = $related->getTable();
+                $tablePK = $related->getForeignKey();
+                $tableFK = $related->getQualifiedKeyName();
+                if (! in_array($table, $joins)) {
+                    $this->getQueryBuilder()->leftJoin($table, $pivot . '.' . $tablePK, '=', $tableFK);
+                }
+            } else {
+                $table = $model->getRelated()->getTable();
+                if ($model instanceof HasOneOrMany) {
+                    $foreign = $model->getForeignKey();
+                    $other   = $model->getQualifiedParentKeyName();
+                } else {
+                    $foreign = $model->getQualifiedForeignKey();
+                    $other   = $model->getQualifiedOtherKeyName();
+                }
+                if (! in_array($table, $joins)) {
+                    $this->getQueryBuilder()->leftJoin($table, $foreign, '=', $other);
+                }
+            }
+
+            $lastQuery = $model->getQuery();
+        }
+
+        $column = $table . '.' . $relationColumn;
+
+        return $column;
+    }
+
+    /**
      * Compile queries for column search.
      *
      * @param int $i
      * @param mixed $column
      * @param string $keyword
-     * @param bool $caseSensitive
      */
-    protected function compileColumnSearch($i, $column, $keyword, $caseSensitive = true)
+    protected function compileColumnSearch($i, $column, $keyword)
     {
         if ($this->request->isRegex($i)) {
-            $this->regexColumnSearch($column, $keyword, $caseSensitive);
-        } elseif ($this->isSmartSearch()) {
-            $sql     = $caseSensitive ? $column . ' LIKE ?' : 'LOWER(' . $column . ') LIKE ?';
-            $keyword = $caseSensitive ? $keyword : Str::lower($keyword);
-            $this->query->whereRaw($sql, [$keyword]);
-        } else { // exact match
-            $this->query->whereRaw("$column LIKE ?", [$keyword]);
+            $column = strstr($column, '(') ? $this->connection->raw($column) : $column;
+            $this->regexColumnSearch($column, $keyword);
+        } else {
+            $this->compileQuerySearch($this->query, $column, $keyword, '');
         }
     }
 
@@ -394,15 +582,17 @@ class QueryBuilderEngine extends BaseEngine
      *
      * @param mixed $column
      * @param string $keyword
-     * @param bool $caseSensitive
      */
-    protected function regexColumnSearch($column, $keyword, $caseSensitive = true)
+    protected function regexColumnSearch($column, $keyword)
     {
         if ($this->isOracleSql()) {
-            $sql = $caseSensitive ? 'REGEXP_LIKE( ' . $column . ' , ? )' : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
+            $sql = ! $this->isCaseInsensitive() ? 'REGEXP_LIKE( ' . $column . ' , ? )' : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
+            $this->query->whereRaw($sql, [$keyword]);
+        } elseif ($this->database == 'pgsql') {
+            $sql = ! $this->isCaseInsensitive() ? $column . ' ~ ?' : $column . ' ~* ? ';
             $this->query->whereRaw($sql, [$keyword]);
         } else {
-            $sql = $caseSensitive ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
+            $sql = ! $this->isCaseInsensitive() ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
             $this->query->whereRaw($sql, [Str::lower($keyword)]);
         }
     }
@@ -438,6 +628,7 @@ class QueryBuilderEngine extends BaseEngine
                     $orderable['direction']
                 );
             } else {
+                $valid = 1;
                 if (count(explode('.', $column)) > 1) {
                     $eagerLoads     = $this->getEagerLoads();
                     $parts          = explode('.', $column);
@@ -445,65 +636,32 @@ class QueryBuilderEngine extends BaseEngine
                     $relation       = implode('.', $parts);
 
                     if (in_array($relation, $eagerLoads)) {
-                        $column = $this->joinEagerLoadedColumn($relation, $relationColumn);
+                        // Loop for nested relations
+                        // This code is check morph many or not.
+                        // If one of nested relation is MorphToMany
+                        // we will call joinEagerLoadedColumn.
+                        $lastQuery = $this->query;
+                        $isMorphToMany = false;
+                        foreach (explode('.', $relation) as $eachRelation) {
+                            $relationship = $lastQuery->getRelation($eachRelation);
+                            if (! ($relationship instanceof MorphToMany)) {
+                                $isMorphToMany = true;
+                            }
+                            $lastQuery = $relationship;
+                        }
+                        if ($isMorphToMany) {
+                            $column = $this->joinEagerLoadedColumn($relation, $relationColumn);
+                        } else {
+                            $valid = 0;
+                        }
                     }
                 }
 
-                $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
+                if ($valid == 1) {
+                    $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
+                }
             }
         }
-    }
-
-    /**
-     * Join eager loaded relation and get the related column name.
-     *
-     * @param string $relation
-     * @param string $relationColumn
-     * @return string
-     */
-    protected function joinEagerLoadedColumn($relation, $relationColumn)
-    {
-        $joins = [];
-        foreach ((array) $this->getQueryBuilder()->joins as $key => $join) {
-            $joins[] = $join->table;
-        }
-
-        $model = $this->query->getRelation($relation);
-        if ($model instanceof BelongsToMany) {
-            $pivot   = $model->getTable();
-            $pivotPK = $model->getForeignKey();
-            $pivotFK = $model->getQualifiedParentKeyName();
-
-            if (! in_array($pivot, $joins)) {
-                $this->getQueryBuilder()->leftJoin($pivot, $pivotPK, '=', $pivotFK);
-            }
-
-            $related = $model->getRelated();
-            $table   = $related->getTable();
-            $tablePK = $related->getForeignKey();
-            $tableFK = $related->getQualifiedKeyName();
-
-            if (! in_array($table, $joins)) {
-                $this->getQueryBuilder()->leftJoin($table, $pivot . '.' . $tablePK, '=', $tableFK);
-            }
-        } else {
-            $table = $model->getRelated()->getTable();
-            if ($model instanceof HasOne) {
-                $foreign = $model->getForeignKey();
-                $other   = $model->getQualifiedParentKeyName();
-            } else {
-                $foreign = $model->getQualifiedForeignKey();
-                $other   = $model->getQualifiedOtherKeyName();
-            }
-
-            if (! in_array($table, $joins)) {
-                $this->getQueryBuilder()->leftJoin($table, $foreign, '=', $other);
-            }
-        }
-
-        $column = $table . '.' . $relationColumn;
-
-        return $column;
     }
 
     /**
@@ -513,8 +671,8 @@ class QueryBuilderEngine extends BaseEngine
      */
     public function paging()
     {
-        $this->query->skip($this->request['start'])
-                    ->take((int) $this->request['length'] > 0 ? $this->request['length'] : 10);
+        $this->query->skip($this->request->input('start'))
+                    ->take((int) $this->request->input('length') > 0 ? $this->request->input('length') : 10);
     }
 
     /**

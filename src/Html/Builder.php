@@ -8,6 +8,7 @@ use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 
 /**
@@ -159,15 +160,54 @@ class Builder
     {
         $parameters = (new Parameters($attributes))->toArray();
 
+        $values = [];
+        $replacements = [];
+        foreach($parameters as $key => &$value){
+            if (!is_array($value)) {
+                if (strpos($value, '$.') === 0)
+                {
+                    // Store function string.
+                    $values[] = $value;
+                    // Replace function string in $foo with a 'unique' special key.
+                    $value = '%' . $key . '%';
+                    // Later on, we'll look for the value, and replace it.
+                    $replacements[] = '"' . $value . '"';
+                }
+            }
+        }
+
+        list($ajaxDataFunction, $parameters) = $this->encodeAjaxDataFunction($parameters);
         list($columnFunctions, $parameters) = $this->encodeColumnFunctions($parameters);
         list($callbackFunctions, $parameters) = $this->encodeCallbackFunctions($parameters);
+        list($editorButtons, $parameters) = $this->encodeEditorButtons($parameters);
 
         $json = json_encode($parameters);
 
+        $json = str_replace($replacements, $values, $json);
+
+        $json = $this->decodeAjaxDataFunction($ajaxDataFunction, $json);
         $json = $this->decodeColumnFunctions($columnFunctions, $json);
         $json = $this->decodeCallbackFunctions($callbackFunctions, $json);
-
+        $json = $this->decodeEditorButtons($editorButtons, $json);
+        
         return $json;
+    }
+
+    /**
+     * Encode ajax data function param.
+     *
+     * @param array $parameters
+     * @return mixed
+     */
+    protected function encodeAjaxDataFunction($parameters)
+    {
+        $ajaxData = '';
+        if (isset($parameters['ajax']['data'])) {
+            $ajaxData                   = $parameters['ajax']['data'];
+            $parameters['ajax']['data'] = "#ajax_data#";
+        }
+
+        return [$ajaxData, $parameters];
     }
 
     /**
@@ -211,6 +251,28 @@ class Builder
 
         return [$callbackFunctions, $parameters];
     }
+    
+    /**
+	 * Encode DataTables editor buttons.
+	 *
+	 * @param array $parameters
+	 * @return array
+	 */
+	protected function encodeEditorButtons(array $parameters)
+	{
+		$editorButtons = [];
+		if (isset($parameters['buttons'])) {
+			foreach ($parameters['buttons'] as $i => $button) {
+				if (isset($button['editor'])) {
+					$editorButtons[$i] = $this->compileCallback($button['editor']);
+					$parameters['buttons'][$i]['editor']        = "#editor_button.{$i}#";
+				}
+			}
+		}
+
+
+		return [$editorButtons, $parameters];
+	}
 
     /**
      * Compile DataTable callback value.
@@ -227,6 +289,18 @@ class Builder
         }
 
         return $callback;
+    }
+
+    /**
+     * Decode ajax data method.
+     *
+     * @param string $function
+     * @param string $json
+     * @return string
+     */
+    protected function decodeAjaxDataFunction($function, $json)
+    {
+        return str_replace("\"#ajax_data#\"", $function, $json);
     }
 
     /**
@@ -260,6 +334,22 @@ class Builder
 
         return $json;
     }
+    
+    /**
+     * Decode DataTables Editor buttons.
+     *
+     * @param array $editorButtons
+     * @param string $json
+     * @return string
+     */
+    protected function decodeEditorButtons(array $editorButtons, $json)
+    {
+        foreach ($editorButtons as $i => $function) {
+            $json = str_replace("\"#editor_button.{$i}#\"", $function, $json);
+        }
+
+        return $json;
+    }
 
     /**
      * Get javascript template to use.
@@ -271,6 +361,55 @@ class Builder
         return $this->view->make(
             $this->template ?: $this->config->get('datatables.script_template', 'datatables::script')
         )->render();
+    }
+
+    /**
+     * Sets HTML table attribute(s).
+     *
+     * @param string|array $attribute
+     * @param mixed $value
+     * @return $this
+     */
+    public function setTableAttribute($attribute, $value = null)
+    {
+        if (is_array($attribute)) {
+            $this->setTableAttributes($attribute);
+        } else {
+            $this->tableAttributes[$attribute] = $value;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Sets multiple HTML table attributes at once.
+     *
+     * @param array $attributes
+     * @return $this
+     */
+    public function setTableAttributes(array $attributes)
+    {
+        foreach ($attributes as $attribute => $value) {
+            $this->setTableAttribute($attribute, $value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Retrieves HTML table attribute value.
+     *
+     * @param string $attribute
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getTableAttribute($attribute)
+    {
+        if (! array_key_exists($attribute, $this->tableAttributes)) {
+            throw new \Exception("Table attribute '{$attribute}' does not exist.");
+        }
+
+        return $this->tableAttributes[$attribute];
     }
 
     /**
@@ -400,6 +539,46 @@ class Builder
             'footer'         => '',
         ], $attributes);
         $this->collection->push(new Column($attributes));
+
+        return $this;
+    }
+
+    /**
+     * Add a index column.
+     *
+     * @param  array $attributes
+     * @return $this
+     */
+    public function addIndex(array $attributes = [])
+    {
+        $indexColumn = Config::get('datatables.index_column', 'DT_Row_Index');
+        $attributes  = array_merge([
+            'defaultContent' => '',
+            'data'           => $indexColumn,
+            'name'           => $indexColumn,
+            'title'          => '',
+            'render'         => null,
+            'orderable'      => false,
+            'searchable'     => false,
+            'exportable'     => false,
+            'printable'      => true,
+            'footer'         => '',
+        ], $attributes);
+        $this->collection->push(new Column($attributes));
+
+        return $this;
+    }
+
+    /**
+     * Setup ajax parameter for datatables pipeline plugin.
+     *
+     * @param  string $url
+     * @param  string $pages
+     * @return $this
+     */
+    public function pipeline($url, $pages)
+    {
+        $this->ajax = "$.fn.dataTable.pipeline({ url: '{$url}', pages: {$pages} })";
 
         return $this;
     }

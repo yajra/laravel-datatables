@@ -36,9 +36,10 @@ interface DataTableEngineContract
      * Overrides global search.
      *
      * @param \Closure $callback
+     * @param bool $globalSearch
      * @return $this
      */
-    public function filter(\Closure $callback);
+    public function filter(\Closure $callback, $globalSearch = false);
 
     /**
      * Perform global search.

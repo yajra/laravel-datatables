@@ -3,6 +3,7 @@
 namespace Yajra\Datatables\Processors;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Config;
 use Yajra\Datatables\Helper;
 
 /**
@@ -14,57 +15,70 @@ use Yajra\Datatables\Helper;
 class DataProcessor
 {
     /**
+     * @var int
+     */
+    protected $start;
+
+    /**
      * Columns to escape value.
      *
      * @var array
      */
-    private $escapeColumns = [];
+    protected $escapeColumns = [];
 
     /**
      * Processed data output
      *
      * @var array
      */
-    private $output = [];
+    protected $output = [];
 
     /**
      * @var array
      */
-    private $appendColumns = [];
+    protected $appendColumns = [];
 
     /**
      * @var array
      */
-    private $editColumns = [];
+    protected $editColumns = [];
 
     /**
      * @var array
      */
-    private $excessColumns = [];
+    protected $excessColumns = [];
 
     /**
      * @var mixed
      */
-    private $results;
+    protected $results;
 
     /**
      * @var array
      */
-    private $templates;
+    protected $templates;
+
+    /**
+     * @var bool
+     */
+    protected $includeIndex;
 
     /**
      * @param mixed $results
      * @param array $columnDef
      * @param array $templates
+     * @param int $start
      */
-    public function __construct($results, array $columnDef, array $templates)
+    public function __construct($results, array $columnDef, array $templates, $start)
     {
         $this->results       = $results;
         $this->appendColumns = $columnDef['append'];
         $this->editColumns   = $columnDef['edit'];
         $this->excessColumns = $columnDef['excess'];
         $this->escapeColumns = $columnDef['escape'];
+        $this->includeIndex  = $columnDef['index'];
         $this->templates     = $templates;
+        $this->start         = $start;
     }
 
     /**
@@ -76,12 +90,18 @@ class DataProcessor
     public function process($object = false)
     {
         $this->output = [];
+        $indexColumn  = Config::get('datatables.index_column', 'DT_Row_Index');
+
         foreach ($this->results as $row) {
             $data  = Helper::convertToArray($row);
             $value = $this->addColumns($data, $row);
             $value = $this->editColumns($value, $row);
             $value = $this->setupRowVariables($value, $row);
             $value = $this->removeExcessColumns($value);
+
+            if ($this->includeIndex) {
+                $value[$indexColumn] = ++$this->start;
+            }
 
             $this->output[] = $object ? $value : $this->flatten($value);
         }
@@ -116,7 +136,7 @@ class DataProcessor
     protected function editColumns($data, $row)
     {
         foreach ($this->editColumns as $key => $value) {
-            $value['content']     = Helper::compileContent($value['content'], $data, $row);
+            $value['content'] = Helper::compileContent($value['content'], $data, $row);
             Arr::set($data, $value['name'], $value['content']);
         }
 

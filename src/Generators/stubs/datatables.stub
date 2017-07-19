@@ -2,13 +2,11 @@
 
 namespace DummyNamespace;
 
-use App\User;
+use DummyModel;
 use Yajra\Datatables\Services\DataTable;
 
 class DummyClass extends DataTable
 {
-    // protected $printPreview  = 'path.to.print.preview.view';
-
     /**
      * Display ajax response.
      *
@@ -23,15 +21,15 @@ class DummyClass extends DataTable
     }
 
     /**
-     * Get the query object to be processed by datatables.
+     * Get the query object to be processed by dataTables.
      *
-     * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder|\Illuminate\Support\Collection
      */
     public function query()
     {
-        $users = User::query();
+        $query = ModelName::query();
 
-        return $this->applyScopes($users);
+        return $this->applyScopes($query);
     }
 
     /**
@@ -53,7 +51,7 @@ class DummyClass extends DataTable
      *
      * @return array
      */
-    private function getColumns()
+    protected function getColumns()
     {
         return [
             'id',
@@ -70,6 +68,6 @@ class DummyClass extends DataTable
      */
     protected function filename()
     {
-        return 'users';
+        return 'DummyFilename_' . time();
     }
 }

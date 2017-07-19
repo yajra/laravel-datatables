@@ -5,9 +5,7 @@ namespace Yajra\Datatables\Engines;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
-use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
-use League\Fractal\Serializer\DataArraySerializer;
 use Yajra\Datatables\Contracts\DataTableEngineContract;
 use Yajra\Datatables\Helper;
 use Yajra\Datatables\Processors\DataProcessor;
@@ -61,6 +59,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * @var array
      */
     protected $columnDef = [
+        'index'     => false,
         'append'    => [],
         'edit'      => [],
         'excess'    => ['rn', 'row_num'],
@@ -109,7 +108,7 @@ abstract class BaseEngine implements DataTableEngineContract
     /**
      * Callback to override global search.
      *
-     * @var \Closure
+     * @var callable
      */
     protected $filterCallback;
 
@@ -163,16 +162,23 @@ abstract class BaseEngine implements DataTableEngineContract
     /**
      * Fractal serializer class.
      *
-     * @var string
+     * @var string|null
      */
-    protected $serializer;
+    protected $serializer = null;
 
     /**
      * Custom ordering callback.
      *
-     * @var \Closure
+     * @var callable
      */
     protected $orderCallback;
+
+    /**
+     * Skip paginate as needed.
+     *
+     * @var bool
+     */
+    protected $skipPaging = false;
 
     /**
      * Array of data to append on json response.
@@ -233,12 +239,14 @@ abstract class BaseEngine implements DataTableEngineContract
     public function wildcardLikeString($str, $lowercase = true)
     {
         $wild   = '%';
-        $length = Str::length($str);
-        if ($length) {
-            for ($i = 0; $i < $length; $i++) {
-                $wild .= $str[$i] . '%';
+        $chars = preg_split('//u', $str, -1, PREG_SPLIT_NO_EMPTY);
+        
+        if (count($chars) > 0) {
+            foreach ($chars as $char) {
+                $wild .= $char . '%';
             }
         }
+
         if ($lowercase) {
             $wild = Str::lower($wild);
         }
@@ -332,6 +340,18 @@ abstract class BaseEngine implements DataTableEngineContract
         $this->extraColumns[] = $name;
 
         $this->columnDef['append'][] = ['name' => $name, 'content' => $content, 'order' => $order];
+
+        return $this;
+    }
+
+    /**
+     * Add DT row index column on response.
+     *
+     * @return $this
+     */
+    public function addIndexColumn()
+    {
+        $this->columnDef['index'] = true;
 
         return $this;
     }
@@ -486,7 +506,7 @@ abstract class BaseEngine implements DataTableEngineContract
      * Override default column filter search.
      *
      * @param string $column
-     * @param string|Closure $method
+     * @param string|callable $method
      * @return $this
      * @internal param $mixed ...,... All the individual parameters required for specified $method
      * @internal string $1 Special variable that returns the requested search keyword.
@@ -495,6 +515,23 @@ abstract class BaseEngine implements DataTableEngineContract
     {
         $params                             = func_get_args();
         $this->columnDef['filter'][$column] = ['method' => $method, 'parameters' => array_splice($params, 2)];
+
+        return $this;
+    }
+
+    /**
+     * Order each given columns versus the given custom sql.
+     *
+     * @param array $columns
+     * @param string $sql
+     * @param array $bindings
+     * @return $this
+     */
+    public function orderColumns(array $columns, $sql, $bindings = [])
+    {
+        foreach ($columns as $column) {
+            $this->orderColumn($column, str_replace(':column', $column, $sql), $bindings);
+        }
 
         return $this;
     }
@@ -584,10 +621,10 @@ abstract class BaseEngine implements DataTableEngineContract
     {
         if ($this->autoFilter && $this->request->isSearchable()) {
             $this->filtering();
-        } else {
-            if (is_callable($this->filterCallback)) {
-                call_user_func($this->filterCallback, $this->filterCallbackParameters);
-            }
+        }
+
+        if (is_callable($this->filterCallback)) {
+            call_user_func($this->filterCallback, $this->filterCallbackParameters);
         }
 
         $this->columnSearch();
@@ -601,7 +638,7 @@ abstract class BaseEngine implements DataTableEngineContract
      */
     public function paginate()
     {
-        if ($this->request->isPaginationable()) {
+        if ($this->request->isPaginationable() && ! $this->skipPaging) {
             $this->paging();
         }
     }
@@ -621,13 +658,11 @@ abstract class BaseEngine implements DataTableEngineContract
         ], $this->appends);
 
         if (isset($this->transformer)) {
-            $fractal = new Manager();
-            if ($this->request->get('include')) {
-                $fractal->parseIncludes($this->request->get('include'));
-            }
+            $fractal = app('datatables.fractal');
 
-            $serializer = $this->serializer ?: Config::get('datatables.fractal.serializer', DataArraySerializer::class);
-            $fractal->setSerializer(new $serializer);
+            if ($this->serializer) {
+                $fractal->setSerializer($this->createSerializer());
+            }
 
             //Get transformer reflection
             //Firs method parameter should be data/object to transform
@@ -637,11 +672,11 @@ abstract class BaseEngine implements DataTableEngineContract
             //If parameter is class assuming it requires object
             //Else just pass array by default
             if ($parameter->getClass()) {
-                $resource = new Collection($this->results(), new $this->transformer());
+                $resource = new Collection($this->results(), $this->createTransformer());
             } else {
                 $resource = new Collection(
                     $this->getProcessedData($object),
-                    new $this->transformer()
+                    $this->createTransformer()
                 );
             }
 
@@ -655,7 +690,35 @@ abstract class BaseEngine implements DataTableEngineContract
             $output = $this->showDebugger($output);
         }
 
-        return new JsonResponse($output);
+        return new JsonResponse($output, 200, Config::get('datatables.json.header', []), Config::get('datatables.json.options', 0));
+    }
+
+    /**
+     * Get or create transformer serializer instance.
+     *
+     * @return \League\Fractal\Serializer\SerializerAbstract
+     */
+    protected function createSerializer()
+    {
+        if ($this->serializer instanceof \League\Fractal\Serializer\SerializerAbstract) {
+            return $this->serializer;
+        }
+
+        return new $this->serializer();
+    }
+
+    /**
+     * Get or create transformer instance.
+     *
+     * @return \League\Fractal\TransformerAbstract
+     */
+    protected function createTransformer()
+    {
+        if ($this->transformer instanceof \League\Fractal\TransformerAbstract) {
+            return $this->transformer;
+        }
+
+        return new $this->transformer();
     }
 
     /**
@@ -669,7 +732,8 @@ abstract class BaseEngine implements DataTableEngineContract
         $processor = new DataProcessor(
             $this->results(),
             $this->columnDef,
-            $this->templates
+            $this->templates,
+            $this->request['start']
         );
 
         return $processor->process($object);
@@ -702,13 +766,13 @@ abstract class BaseEngine implements DataTableEngineContract
     /**
      * Update flags to disable global search
      *
-     * @param  \Closure $callback
+     * @param  callable $callback
      * @param  mixed $parameters
-     * @return void
+     * @param  bool $autoFilter
      */
-    public function overrideGlobalSearch(\Closure $callback, $parameters)
+    public function overrideGlobalSearch(callable $callback, $parameters, $autoFilter = false)
     {
-        $this->autoFilter               = false;
+        $this->autoFilter               = $autoFilter;
         $this->isFilterApplied          = true;
         $this->filterCallback           = $callback;
         $this->filterCallbackParameters = $parameters;
@@ -747,10 +811,10 @@ abstract class BaseEngine implements DataTableEngineContract
     /**
      * Override default ordering method with a closure callback.
      *
-     * @param \Closure $closure
+     * @param callable $closure
      * @return $this
      */
-    public function order(\Closure $closure)
+    public function order(callable $closure)
     {
         $this->orderCallback = $closure;
 
@@ -792,6 +856,29 @@ abstract class BaseEngine implements DataTableEngineContract
     public function smart($bool = true)
     {
         Config::set('datatables.search.smart', $bool);
+
+        return $this;
+    }
+
+    /**
+     * Set total records manually.
+     *
+     * @param int $total
+     * @return $this
+     */
+    public function setTotalRecords($total)
+    {
+        $this->totalRecords = $total;
+
+        return $this;
+    }
+
+    /**
+     * Skip pagination as needed.
+     */
+    public function skipPaging()
+    {
+        $this->skipPaging = true;
 
         return $this;
     }

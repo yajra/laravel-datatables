@@ -2,12 +2,12 @@
 
 [![Join the chat at https://gitter.im/yajra/laravel-datatables](https://badges.gitter.im/yajra/laravel-datatables.svg)](https://gitter.im/yajra/laravel-datatables?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![Laravel 4.2|5.0|5.1|5.2](https://img.shields.io/badge/Laravel-4.2|5.0|5.1|5.2-orange.svg)](http://laravel.com)
-[![Latest Stable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/stable)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
+[![Laravel 4.2|5.x](https://img.shields.io/badge/Laravel-4.2|5.x-orange.svg)](http://laravel.com)
+[![Latest Stable Version](https://img.shields.io/packagist/v/yajra/laravel-datatables-oracle.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![Build Status](https://travis-ci.org/yajra/laravel-datatables.svg?branch=master)](https://travis-ci.org/yajra/laravel-datatables)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/yajra/laravel-datatables/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/yajra/laravel-datatables/?branch=master)
-[![Total Downloads](https://poser.pugx.org/yajra/laravel-datatables-oracle/downloads)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
-[![License](https://poser.pugx.org/yajra/laravel-datatables-oracle/license)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
+[![Total Downloads](https://img.shields.io/packagist/dt/yajra/laravel-datatables-oracle.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
+[![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 
 This package is created to handle [server-side](https://www.datatables.net/manual/server-side) works of [DataTables](http://datatables.net) jQuery Plugin via [AJAX option](https://datatables.net/reference/option/ajax) by using Eloquent ORM, Fluent Query Builder or Collection.
 
@@ -30,13 +30,13 @@ return Datatables::of(User::all())->make(true);
 ```
 
 ## Requirements
-- [PHP 5.5.9 or later](http://php.net/)
-- [Laravel 5.0 or later](https://github.com/laravel/framework)
-- [DataTables jQuery Plugin](http://datatables.net/) **Version 1.10.xx**
+- [PHP >=5.5.9](http://php.net/)
+- [Laravel 5.x](https://github.com/laravel/framework)
+- [jQuery DataTables v1.10.x](http://datatables.net/)
 
 ## Documentations
-- You will find user friendly and updated documentation in the wiki here: [Laravel Datatables Wiki](https://github.com/yajra/laravel-datatables/wiki)
-- You will find the API Documentation here: [Laravel Datatables API](http://yajra.github.io/laravel-datatables/api/)
+- [Laravel Datatables Documentation](https://yajrabox.com/docs/laravel-datatables/6.0)
+- [Laravel Datatables API](http://yajra.github.io/laravel-datatables/api/6.0)
 - [Demo Application](http://datatables.yajrabox.com) is available for artisan's reference.
 
 ## Quick Installation
@@ -46,19 +46,17 @@ return Datatables::of(User::all())->make(true);
 `Yajra\Datatables\DatatablesServiceProvider::class`
 
 #### Facade
-`Datatables` facade is automatically registered as an alias for `Yajra\Datatables\Facades\Datatables` class. 
+`Datatables` facade is automatically registered as an alias for `Yajra\Datatables\Facades\Datatables` class.
 
 #### Configuration and Assets
 `$ php artisan vendor:publish --tag=datatables`
 
 And that's it! Start building out some awesome DataTables!
 
-## Upgrading from v5.x to v6.x
-  - Change all occurrences of `yajra\Datatables` to `Yajra\Datatables`. (Use Sublime's find and replace all for faster update). 
-  - Remove `Datatables` facade registration.
-  - Temporarily comment out `Yajra\Datatables\DatatablesServiceProvider`.
-  - Update package version on your composer.json and use `yajra/laravel-datatables-oracle: ~6.0`
-  - Uncomment the provider `Yajra\Datatables\DatatablesServiceProvider`. 
+## Debugging Mode
+To enable debugging mode, just set `APP_DEBUG=true` and the package will include the queries and inputs used when processing the table.
+
+**IMPORTANT:** Please make sure that APP_DEBUG is set to false when your app is on production.
 
 ## Contributing
 
@@ -78,5 +76,6 @@ If you discover any security related issues, please email [aqangeles@gmail.com](
 
 The MIT License (MIT). Please see [License File](https://github.com/yajra/laravel-datatables/blob/master/LICENSE.md) for more information.
 
-## Buy me a beer
-<a href='https://pledgie.com/campaigns/29515'><img alt='Click here to lend your support to: Laravel Datatables and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/29515.png?skin_name=chrome' border='0' ></a>
+## Buy me a coffee
+- <a href='https://pledgie.com/campaigns/29515'><img alt='Click here to lend your support to: Laravel Datatables and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/29515.png?skin_name=chrome' border='0' ></a>
+- <a href='https://www.patreon.com/bePatron?u=4521203'><img alt='Become a Patron' src='https://s3.amazonaws.com/patreon_public_assets/toolbox/patreon.png' border='0' width='200px' ></a>

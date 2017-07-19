@@ -64,8 +64,17 @@ class DataTransformer
      */
     protected function decodeContent($data)
     {
-        $decoded = html_entity_decode(strip_tags($data), ENT_QUOTES, 'UTF-8');
+        preg_match_all('/<a[^>]+href=([\'"])(.+?)\1[^>]*>/i', $data, $result);
+        if ($result[2] && $result[2][0]) {
+            return $data;
+        }
 
-        return str_replace("\xc2\xa0", ' ', $decoded);
+        try {
+            $decoded = html_entity_decode(strip_tags($data), ENT_QUOTES, 'UTF-8');
+
+            return str_replace("\xc2\xa0", ' ', $decoded);
+        } catch (\Exception $e) {
+            return $data;
+        }
     }
 }
