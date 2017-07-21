@@ -47,11 +47,11 @@ return datatables(User::all())->toJson();
  5.1.x    | 6.x
  5.2.x    | 6.x
  5.3.x    | 6.x
- 5.4.x    | 7.x,8.x
+ 5.4.x    | 7.x, 8.x
  5.5.x    | 8.x
 
-## Laravel 5.5 Upgrade Guide
-There are breaking changes since Laravel 5.5 and DataTables v8.0.
+## DataTables 8.x Upgrade Guide
+There are breaking changes since DataTables v8.x.
 If you are upgrading from v7.x to v8.x, please see [upgrade guide](https://yajrabox.com/docs/laravel-datatables/master/upgrade).
 
 ## Quick Installation
