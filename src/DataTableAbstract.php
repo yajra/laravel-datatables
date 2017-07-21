@@ -25,7 +25,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     use Macroable;
 
     /**
-     * Datatables Request object.
+     * DataTables Request object.
      *
      * @var \Yajra\DataTables\Utilities\Request
      */
@@ -595,7 +595,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      */
     protected function transform($results, $processed)
     {
-        if (isset($this->transformer) && class_exists('Yajra\\Datatables\\Transformers\\FractalTransformer')) {
+        if (isset($this->transformer) && class_exists('Yajra\\DataTables\\Transformers\\FractalTransformer')) {
             return resolve('datatables.transformer')->transform(
                 $results,
                 $this->transformer,
