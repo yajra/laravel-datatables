@@ -63,13 +63,13 @@ $ composer require yajra/laravel-datatables-oracle:"~8.0"
 Register provider and facade on your `config/app.php` file.
 ```php
 'providers' => [
-	...,
-	Yajra\DataTables\DataTablesServiceProvider::class,
+    ...,
+    Yajra\DataTables\DataTablesServiceProvider::class,
 ]
 
 'aliases' => [
-	...,
-	'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+    ...,
+    'DataTables' => Yajra\DataTables\Facades\DataTables::class,
 ]
 ```
 
