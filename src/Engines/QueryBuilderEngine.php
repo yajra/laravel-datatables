@@ -23,6 +23,13 @@ use Yajra\Datatables\Request;
 class QueryBuilderEngine extends BaseEngine
 {
     /**
+     * Filtered query results.
+     *
+     * @var mixed
+     */
+    protected $results;
+
+    /**
      * @param \Illuminate\Database\Query\Builder $builder
      * @param \Yajra\Datatables\Request $request
      */
@@ -731,7 +738,7 @@ class QueryBuilderEngine extends BaseEngine
      */
     public function results()
     {
-        return $this->query->get();
+        return $this->results ?: $this->results = $this->query->get();
     }
 
     /**
