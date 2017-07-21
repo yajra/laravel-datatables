@@ -45,7 +45,7 @@ class Datatables
      */
     public static function of($source)
     {
-        $datatables = app('datatables');
+        $datatables = app(static::class);
         $config     = app('config');
         $engines    = $config->get('datatables.engines');
         $builders   = $config->get('datatables.builders');
