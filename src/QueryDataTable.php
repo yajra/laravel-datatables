@@ -328,12 +328,14 @@ class QueryDataTable extends DataTableAbstract
     {
         switch ($this->connection->getDriverName()) {
             case 'oracle':
-                $sql = !$this->config
-                    ->isCaseInsensitive() ? 'REGEXP_LIKE( ' . $column . ' , ? )' : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
+                $sql = !$this->config->isCaseInsensitive()
+                    ? 'REGEXP_LIKE( ' . $column . ' , ? )'
+                    : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
                 break;
 
             case 'pgsql':
-                $sql = !$this->config->isCaseInsensitive() ? $column . ' ~ ?' : $column . ' ~* ? ';
+                $column = $this->castColumn($column);
+                $sql    = !$this->config->isCaseInsensitive() ? $column . ' ~ ?' : $column . ' ~* ? ';
                 break;
 
             default:
@@ -342,6 +344,24 @@ class QueryDataTable extends DataTableAbstract
         }
 
         $this->query->whereRaw($sql, [$keyword]);
+    }
+
+    /**
+     * Wrap a column and cast based on database driver.
+     *
+     * @param  string $column
+     * @return string
+     */
+    protected function castColumn($column)
+    {
+        switch ($this->connection->getDriverName()) {
+            case 'pgsql':
+                return 'CAST(' . $column . ' as TEXT)';
+            case 'firebird':
+                return 'CAST(' . $column . ' as VARCHAR(255))';
+            default:
+                return $column;
+        }
     }
 
     /**
@@ -383,24 +403,6 @@ class QueryDataTable extends DataTableAbstract
         }
 
         return $this->wrap($column);
-    }
-
-    /**
-     * Wrap a column and cast based on database driver.
-     *
-     * @param  string $column
-     * @return string
-     */
-    protected function castColumn($column)
-    {
-        switch ($this->connection->getDriverName()) {
-            case 'pgsql':
-                return 'CAST(' . $column . ' as TEXT)';
-            case 'firebird':
-                return 'CAST(' . $column . ' as VARCHAR(255))';
-            default:
-                return $column;
-        }
     }
 
     /**
