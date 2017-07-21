@@ -59,12 +59,23 @@ If you are upgrading from v7.x to v8.x, please see [upgrade guide](https://yajra
 $ composer require yajra/laravel-datatables-oracle:"~8.0"
 ```
 
-#### Service Provider & Facade
-Service provider and facade are automatically registered using Laravel automatic package discovery.
+#### Service Provider & Facade (Optional on Laravel 5.5)
+Register provider and facade on your `config/app.php` file.
+```php
+'providers' => [
+	...,
+	Yajra\DataTables\DataTablesServiceProvider::class,
+]
+
+'aliases' => [
+	...,
+	'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+]
+```
 
 #### Configuration (Optional)
 ```bash
-$ php artisan vendor:publish --tag=datatables
+$ php artisan vendor:publish --provider=Yajra\DataTables\DataTablesServiceProvider
 ```
 
 And that's it! Start building out some awesome DataTables!
