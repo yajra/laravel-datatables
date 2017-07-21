@@ -65,7 +65,7 @@ class Request
     }
 
     /**
-     * Check if Datatables is searchable.
+     * Check if DataTables is searchable.
      *
      * @return bool
      */
@@ -75,7 +75,7 @@ class Request
     }
 
     /**
-     * Check if Datatables must uses regular expressions
+     * Check if DataTables must uses regular expressions
      *
      * @param integer $index
      * @return bool
@@ -109,7 +109,7 @@ class Request
     }
 
     /**
-     * Check if Datatables ordering is enabled.
+     * Check if DataTables ordering is enabled.
      *
      * @return bool
      */
@@ -216,7 +216,7 @@ class Request
     }
 
     /**
-     * Check if Datatables allow pagination.
+     * Check if DataTables allow pagination.
      *
      * @return bool
      */
