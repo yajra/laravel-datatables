@@ -49,19 +49,6 @@ class CollectionDataTable extends DataTableAbstract
     }
 
     /**
-     * Append debug parameters on output.
-     *
-     * @param  array $output
-     * @return array
-     */
-    public function showDebugger(array $output)
-    {
-        $output["input"] = $this->request->all();
-
-        return $output;
-    }
-
-    /**
      * Count results.
      *
      * @return integer

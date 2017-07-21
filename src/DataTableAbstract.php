@@ -658,7 +658,12 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      * @param  array $output
      * @return array
      */
-    abstract protected function showDebugger(array $output);
+    protected function showDebugger(array $output)
+    {
+        $output["input"] = $this->request->all();
+
+        return $output;
+    }
 
     /**
      * Return an error json response.
