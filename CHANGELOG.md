@@ -8,6 +8,10 @@
 
 ## Change Log
 
+### v7.9.6 - 07-29-2017
+- Whitelisting src directory in phpunit.xml #1298, credits to @lk77.
+- Fixed configuration override issue. #1293, credits to @zgldh.
+
 ### v7.9.5 - 07-21-2017
 - Add text cast for pgsql regex search #1279, credits to @martimarkov.
 - Use static class to resolve datatables instance. #1282, Re-apply fix for #464, #465.
