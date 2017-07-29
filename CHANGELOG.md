@@ -8,6 +8,9 @@
 
 ## Change Log
 
+### v7.9.7 - 07-29-2017
+- Merge array recursive. #1303
+
 ### v7.9.6 - 07-29-2017
 - Whitelisting src directory in phpunit.xml #1298, credits to @lk77.
 - Fixed configuration override issue. #1293, credits to @zgldh.
