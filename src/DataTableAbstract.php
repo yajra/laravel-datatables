@@ -444,7 +444,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
         $config  = $this->config->get('datatables.columns');
         $allowed = ['excess', 'escape', 'raw', 'blacklist', 'whitelist'];
 
-        return array_merge(array_only($config, $allowed), $this->columnDef);
+        return array_merge_recursive($this->columnDef, array_only($config, $allowed));
     }
 
     /**
