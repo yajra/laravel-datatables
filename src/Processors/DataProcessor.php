@@ -210,7 +210,7 @@ class DataProcessor
             if ($this->escapeColumns == '*') {
                 $row = $this->escapeRow($row);
             } elseif (is_array($this->escapeColumns)) {
-                $columns = array_diff_key($this->escapeColumns, $this->rawColumns);
+                $columns = array_diff($this->escapeColumns, $this->rawColumns);
                 foreach ($columns as $key) {
                     array_set($row, $key, e(array_get($row, $key)));
                 }
