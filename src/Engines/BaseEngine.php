@@ -68,13 +68,8 @@ abstract class BaseEngine implements DataTableEngineContract
         'index'     => false,
         'append'    => [],
         'edit'      => [],
-        'excess'    => ['rn', 'row_num'],
         'filter'    => [],
         'order'     => [],
-        'escape'    => '*',
-        'raw'       => ['action'],
-        'blacklist' => ['password', 'remember_token'],
-        'whitelist' => '*',
     ];
 
     /**
