@@ -187,7 +187,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     public function removeColumn()
     {
         $names                     = func_get_args();
-        $this->columnDef['excess'] = array_merge($this->columnDef['excess'], $names);
+        $this->columnDef['excess'] = array_merge($this->getColumnsDefinition()['excess'], $names);
 
         return $this;
     }
