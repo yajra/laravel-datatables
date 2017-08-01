@@ -8,6 +8,10 @@
 
 ## Change Log
 
+### v7.9.9 - 08-01-2017
+- Patch configuration override issue. #1311
+- Fix escapeColumns bug. #1306, credits to @lk77.
+
 ### v7.9.8 - 08-01-2017
 - Fix fetching of column definitions. #1310
 - Fix #1307, #1305, #1306, #1302.
