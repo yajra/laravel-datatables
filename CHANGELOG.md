@@ -8,6 +8,10 @@
 
 ## Change Log
 
+### v7.9.8 - 08-01-2017
+- Fix fetching of column definitions. #1310
+- Fix #1307, #1305, #1306, #1302.
+
 ### v7.9.7 - 07-29-2017
 - Merge array recursive. #1303
 
