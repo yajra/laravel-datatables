@@ -39,6 +39,13 @@ class QueryDataTable extends DataTableAbstract
     protected $prepared = false;
 
     /**
+     * Query callback for custom pagination using limit without offset.
+     *
+     * @var callable
+     */
+    protected $limitCallback;
+
+    /**
      * @param \Illuminate\Database\Query\Builder $builder
      */
     public function __construct(Builder $builder)
@@ -488,14 +495,32 @@ class QueryDataTable extends DataTableAbstract
     }
 
     /**
+     * Paginate dataTable using limit without offset
+     * with additional where clause via callback.
+     *
+     * @param callable $callback
+     * @return $this
+     */
+    public function limit(callable $callback)
+    {
+        $this->limitCallback = $callback;
+        return $this;
+    }
+
+    /**
      * Perform pagination.
      *
      * @return void
      */
     public function paging()
     {
-        $this->query->skip($this->request->input('start'))
-                    ->take((int) $this->request->input('length') > 0 ? $this->request->input('length') : 10);
+        $limit = (int) $this->request->input('length') > 0 ? $this->request->input('length') : 10;
+        if (is_callable($this->limitCallback)) {
+            $this->query->limit($limit);
+            call_user_func_array($this->limitCallback, [$this->query]);
+        } else {
+            $this->query->skip($this->request->input('start'))->take($limit);
+        }
     }
 
     /**
