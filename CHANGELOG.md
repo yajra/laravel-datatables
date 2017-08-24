@@ -8,6 +8,11 @@
 
 ## Change Log
 
+### v7.10.0 - 08-24-2017
+- Add limit query callback method. #1338
+- Disable offset pagination using limit with additional where clause.
+- Fix #1332.
+
 ### v7.9.9 - 08-01-2017
 - Patch configuration override issue. #1311
 - Fix escapeColumns bug. #1306, credits to @lk77.
