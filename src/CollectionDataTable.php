@@ -218,30 +218,7 @@ class CollectionDataTable extends DataTableAbstract
     {
         $criteria = $this->request->orderableColumns();
         if (!empty($criteria)) {
-            $sorter = function ($a, $b) use ($criteria) {
-                foreach ($criteria as $orderable) {
-                    $column    = $this->getColumnName($orderable['column']);
-                    $direction = $orderable['direction'];
-                    if ($direction === 'desc') {
-                        $first  = $b;
-                        $second = $a;
-                    } else {
-                        $first  = $a;
-                        $second = $b;
-                    }
-                    if ($this->config->isCaseInsensitive()) {
-                        $cmp = strnatcasecmp($first[$column], $second[$column]);
-                    } else {
-                        $cmp = strnatcmp($first[$column], $second[$column]);
-                    }
-                    if ($cmp != 0) {
-                        return $cmp;
-                    }
-                }
-
-                // all elements were equal
-                return 0;
-            };
+            $sorter = $this->getSorter($criteria);
 
             $this->collection = $this->collection
                 ->map(function ($data) {
@@ -257,6 +234,42 @@ class CollectionDataTable extends DataTableAbstract
                     return $data;
                 });
         }
+    }
+
+    /**
+     * Get array sorter closure.
+     *
+     * @param array $criteria
+     * @return \Closure
+     */
+    protected function getSorter(array $criteria)
+    {
+        $sorter = function ($a, $b) use ($criteria) {
+            foreach ($criteria as $orderable) {
+                $column    = $this->getColumnName($orderable['column']);
+                $direction = $orderable['direction'];
+                if ($direction === 'desc') {
+                    $first  = $b;
+                    $second = $a;
+                } else {
+                    $first  = $a;
+                    $second = $b;
+                }
+                if ($this->config->isCaseInsensitive()) {
+                    $cmp = strnatcasecmp($first[$column], $second[$column]);
+                } else {
+                    $cmp = strnatcmp($first[$column], $second[$column]);
+                }
+                if ($cmp != 0) {
+                    return $cmp;
+                }
+            }
+
+            // all elements were equal
+            return 0;
+        };
+
+        return $sorter;
     }
 
     /**
