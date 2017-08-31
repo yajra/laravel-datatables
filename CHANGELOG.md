@@ -8,7 +8,7 @@
 
 ## Change Log
 
-### v8.0-dev UNRELEASED
+### v8.0.0 (31-AUG-2017)
 ### ADDED
 - Add support for Laravel 5.5.
 - Package auto-discovery implemented.
