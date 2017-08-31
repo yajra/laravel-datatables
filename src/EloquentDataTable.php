@@ -89,7 +89,7 @@ class EloquentDataTable extends QueryDataTable
     protected function isNotEagerLoaded($relation)
     {
         return ! $relation
-            || ! in_array($relation, $this->query->getEagerLoads())
+            || ! in_array($relation, array_keys($this->query->getEagerLoads()))
             || $relation === $this->query->getModel()->getTable();
     }
 
