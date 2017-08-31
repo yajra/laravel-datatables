@@ -142,7 +142,20 @@ class CollectionEngine extends BaseEngine
                 // all elements were equal
                 return 0;
             };
-            $this->collection = $this->collection->sort($comparer);
+
+            $this->collection = $this->collection
+                ->map(function ($data) {
+                    return array_dot($data);
+                })
+                ->sort($comparer)
+                ->map(function ($data) {
+                    foreach ($data as $key => $value) {
+                        unset($data[$key]);
+                        array_set($data, $key, $value);
+                    }
+
+                    return $data;
+                });
         }
     }
 
