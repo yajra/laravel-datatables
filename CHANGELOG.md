@@ -8,6 +8,10 @@
 
 ## Change Log
 
+### v7.10.1 - 08-31-2017
+- Flatten array before comparing then revert to original form. #1340
+- Fix #1337, sorting on collection relation.
+
 ### v7.10.0 - 08-24-2017
 - Add limit query callback method. #1338
 - Disable offset pagination using limit with additional where clause.
