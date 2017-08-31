@@ -73,8 +73,8 @@ class EloquentDataTable extends QueryDataTable
         $columnName = array_pop($parts);
         $relation   = implode('.', $parts);
 
-        if (!$relation || $relation === $this->query->getModel()->getTable()) {
-            return $columnName;
+        if (!$relation || !in_array($relation, $this->query->getEagerLoads()) || $relation === $this->query->getModel()->getTable()) {
+            return $column;
         }
 
         return $this->joinEagerLoadedColumn($relation, $columnName);
