@@ -243,7 +243,19 @@ class CollectionDataTable extends DataTableAbstract
                 return 0;
             };
 
-            $this->collection = $this->collection->sort($sorter);
+            $this->collection = $this->collection
+                ->map(function ($data) {
+                    return array_dot($data);
+                })
+                ->sort($sorter)
+                ->map(function ($data) {
+                    foreach ($data as $key => $value) {
+                        unset($data[$key]);
+                        array_set($data, $key, $value);
+                    }
+
+                    return $data;
+                });
         }
     }
 
