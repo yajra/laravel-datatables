@@ -52,7 +52,7 @@ class EloquentDataTable extends QueryDataTable
         $column   = array_pop($parts);
         $relation = implode('.', $parts);
 
-        if (!$relation || $relation === $this->query->getModel()->getTable()) {
+        if ($this->isNotEagerLoaded($relation)) {
             return parent::compileQuerySearch($query, $columnName, $keyword, $boolean);
         }
 
@@ -73,11 +73,24 @@ class EloquentDataTable extends QueryDataTable
         $columnName = array_pop($parts);
         $relation   = implode('.', $parts);
 
-        if (!$relation || $relation === $this->query->getModel()->getTable()) {
-            return $columnName;
+        if ($this->isNotEagerLoaded($relation)) {
+            return $column;
         }
 
         return $this->joinEagerLoadedColumn($relation, $columnName);
+    }
+
+    /**
+     * Check if a relation was not used on eager loading.
+     *
+     * @param  string $relation
+     * @return bool
+     */
+    protected function isNotEagerLoaded($relation)
+    {
+        return ! $relation
+            || ! in_array($relation, array_keys($this->query->getEagerLoads()))
+            || $relation === $this->query->getModel()->getTable();
     }
 
     /**
@@ -149,7 +162,7 @@ class EloquentDataTable extends QueryDataTable
             $joins[] = $join->table;
         }
 
-        if (!in_array($table, $joins)) {
+        if (! in_array($table, $joins)) {
             $this->getBaseQueryBuilder()->join($table, $foreign, '=', $other, $type);
         }
     }
