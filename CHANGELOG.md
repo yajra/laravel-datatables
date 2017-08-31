@@ -8,6 +8,11 @@
 
 ## Change Log
 
+### v8.0.1 (31-AUG-2017)
+- Do not resolve column if relation is not eager loaded. #1355
+- Fix #1353, sort/search not working when using join statements.
+- Add tests for join statements.
+
 ### v8.0.0 (31-AUG-2017)
 ### ADDED
 - Add support for Laravel 5.5.
