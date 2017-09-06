@@ -593,7 +593,7 @@ class QueryDataTable extends DataTableAbstract
      * @param string $column
      * @param array  $orderable
      */
-    protected function applyOrderColumn($column, $orderable): void
+    protected function applyOrderColumn($column, $orderable)
     {
         $sql      = $this->columnDef['order'][$column]['sql'];
         $sql      = str_replace('$1', $orderable['direction'], $sql);
