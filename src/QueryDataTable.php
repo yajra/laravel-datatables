@@ -51,8 +51,8 @@ class QueryDataTable extends DataTableAbstract
     public function __construct(Builder $builder)
     {
         $this->query      = $builder;
-        $this->request    = resolve('datatables.request');
-        $this->config     = resolve('datatables.config');
+        $this->request    = app('datatables.request');
+        $this->config     = app('datatables.config');
         $this->columns    = $builder->columns;
         $this->connection = $builder->getConnection();
         if ($this->config->isDebugging()) {

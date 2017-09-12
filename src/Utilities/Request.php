@@ -24,7 +24,7 @@ class Request
      */
     public function __construct()
     {
-        $this->request = resolve('request');
+        $this->request = app('request');
     }
 
     /**

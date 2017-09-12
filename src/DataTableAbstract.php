@@ -596,7 +596,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     protected function transform($results, $processed)
     {
         if (isset($this->transformer) && class_exists('Yajra\\DataTables\\Transformers\\FractalTransformer')) {
-            return resolve('datatables.transformer')->transform(
+            return app('datatables.transformer')->transform(
                 $results,
                 $this->transformer,
                 $this->serializer ?? null
@@ -697,7 +697,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      */
     public function getLogger()
     {
-        $this->logger = $this->logger ?: resolve(Log::class);
+        $this->logger = $this->logger ?: app(Log::class);
 
         return $this->logger;
     }
