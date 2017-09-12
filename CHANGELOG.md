@@ -8,6 +8,10 @@
 
 ## Change Log
 
+### v8.0.3 (12-SEP-2017)
+- Fix compatibility with Lumen. #1382
+- Fix #1377.
+
 ### v8.0.2 (06-SEP-2017)
 - Remove void return type. 
 - Fix #1367, PR #1368.
