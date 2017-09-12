@@ -36,6 +36,10 @@ class DataTablesServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        if ($this->isLumen()) {
+            require_once 'lumen.php';
+        }
+
         $this->app->alias('datatables', DataTables::class);
         $this->app->singleton('datatables', function () {
             return new DataTables;
@@ -46,6 +50,16 @@ class DataTablesServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton('datatables.config', Config::class);
+    }
+
+    /**
+     * Check if app uses Lumen.
+     *
+     * @return bool
+     */
+    protected function isLumen()
+    {
+        return str_contains($this->app->version(), 'Lumen');
     }
 
     /**

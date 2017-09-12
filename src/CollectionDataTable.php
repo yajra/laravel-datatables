@@ -30,8 +30,8 @@ class CollectionDataTable extends DataTableAbstract
      */
     public function __construct(Collection $collection)
     {
-        $this->request    = resolve('datatables.request');
-        $this->config     = resolve('datatables.config');
+        $this->request    = app('datatables.request');
+        $this->config     = app('datatables.config');
         $this->collection = $collection;
         $this->original   = $collection;
         $this->columns    = array_keys($this->serialize($collection->first()));

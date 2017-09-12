@@ -82,7 +82,7 @@ class Helper
         }
 
         ob_start() && extract($data, EXTR_SKIP);
-        eval('?>' . resolve('blade.compiler')->compileString($str));
+        eval('?>' . app('blade.compiler')->compileString($str));
         $str = ob_get_contents();
         ob_end_clean();
 

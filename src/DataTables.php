@@ -67,7 +67,7 @@ class DataTables
      */
     public function getRequest()
     {
-        return resolve('datatables.request');
+        return app('datatables.request');
     }
 
     /**
@@ -77,7 +77,7 @@ class DataTables
      */
     public function getConfig()
     {
-        return resolve('datatables.config');
+        return app('datatables.config');
     }
 
     /**
@@ -129,6 +129,6 @@ class DataTables
             throw new \Exception('Please install yajra/laravel-datatables-html to be able to use this function.');
         }
 
-        return $this->html ?: $this->html = resolve('datatables.html');
+        return $this->html ?: $this->html = app('datatables.html');
     }
 }
