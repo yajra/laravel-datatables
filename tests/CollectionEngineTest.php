@@ -17,7 +17,7 @@ class TestDatatablesCollectionEngine extends PHPUnit_Framework_TestCase
         $app->shouldReceive('instance')->once()->andReturn($app);
 
         Illuminate\Support\Facades\Facade::setFacadeApplication($app);
-        Config::swap($config = m::mock('ConfigMock'));
+        Config::swap(new \Illuminate\Config\Repository);
     }
 
     public function tearDown()
@@ -59,7 +59,6 @@ class TestDatatablesCollectionEngine extends PHPUnit_Framework_TestCase
 
     protected function setupBuilder()
     {
-        Config::shouldReceive('get');
         $data = [
             ['id' => 1, 'name' => 'foo'],
             ['id' => 2, 'name' => 'bar'],
