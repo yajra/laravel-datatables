@@ -8,6 +8,9 @@
 
 ##Change Log
 
+### v6.29.1 - 2017-09-26
+- Return true for true, true(string) and 1 in isColumnSearchable method #1395, credits to @joeshee.
+
 ### v6.29.0 - 2017-06-07
 - Add config for setting the default JsonResponse header and options. #1179
 - Fix #1034
