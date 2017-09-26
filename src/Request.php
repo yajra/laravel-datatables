@@ -119,10 +119,10 @@ class Request extends IlluminateRequest
     public function isColumnSearchable($i, $column_search = true)
     {
         if ($column_search) {
-            return $this->input("columns.$i.searchable") === 'true' && $this->columnKeyword($i) != '';
+            return filter_var($this->input("columns.$i.searchable"), FILTER_VALIDATE_BOOLEAN) && $this->columnKeyword($i) != '';
         }
 
-        return $this->input("columns.$i.searchable") === 'true';
+        return filter_var($this->input("columns.$i.searchable"), FILTER_VALIDATE_BOOLEAN);
     }
 
     /**

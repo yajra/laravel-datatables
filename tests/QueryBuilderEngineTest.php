@@ -17,7 +17,7 @@ class TestDatatablesQueryBuilderEngine extends PHPUnit_Framework_TestCase
         $app->shouldReceive('instance')->once()->andReturn($app);
 
         Illuminate\Support\Facades\Facade::setFacadeApplication($app);
-        Config::swap($config = m::mock('ConfigMock'));
+        Config::swap(new \Illuminate\Config\Repository);
     }
 
     public function tearDown()
@@ -76,8 +76,6 @@ class TestDatatablesQueryBuilderEngine extends PHPUnit_Framework_TestCase
 
     protected function setupBuilder($showAllRecords = false)
     {
-        Config::shouldReceive('get');
-
         $cache   = m::mock('stdClass');
         $driver  = m::mock('stdClass');
         $data    = [
