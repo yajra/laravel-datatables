@@ -529,7 +529,7 @@ class QueryDataTable extends DataTableAbstract
      * @param string          $name
      * @param string|callable $content
      * @param bool|int        $order
-     * @return \Yajra\DataTables\DataTableAbstract|\Yajra\DataTables\Builders\QueryDataTable
+     * @return $this
      */
     public function addColumn($name, $content, $order = false)
     {
