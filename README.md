@@ -155,7 +155,7 @@ public function getData()
     $users = $this->users->select('*');
 
     return Datatables::of($users)
-        ->addColumn('action', 'action here')
+        ->addColumn('actions', 'action here')
         ->make(true);
 }
 ```
