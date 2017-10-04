@@ -110,7 +110,7 @@ It is better, you know these:
     $posts = Post::select(array('posts.id','posts.name','posts.created_at','posts.status'));
 
     return Datatables::of($posts)
-        ->editColumn('created_at', function($data){ $data->created_at->toDateTimeString() })
+        ->editColumn('created_at', function($data){ return $data->created_at->toDateTimeString(); })
         ->filter(function($query){
             if (Input::get('id')) {
                 $query->where('id','=',Input::get('id'));
