@@ -1,4 +1,4 @@
-## DataTables Package for Laravel 4|5
+# Laravel DataTables CHANGELOG
 
 [![Latest Stable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/stable.png)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![Total Downloads](https://poser.pugx.org/yajra/laravel-datatables-oracle/downloads.png)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
@@ -6,7 +6,8 @@
 [![Latest Unstable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/unstable.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![License](https://poser.pugx.org/yajra/laravel-datatables-oracle/license.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 
-## Change Log
+### v8.1.0 (08-OCT-2017)
+- Add addColumns() to EloquentDataTable. #1416, credits to @ElfSundae.
 
 ### v8.0.3 (12-SEP-2017)
 - Fix compatibility with Lumen. #1382
