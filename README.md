@@ -34,7 +34,7 @@ return datatables(User::all())->toJson();
 
 ## Documentations
 - [Laravel DataTables Documentation](http://yajrabox.com/docs/laravel-datatables)
-- [Laravel DataTables API](http://yajra.github.io/laravel-datatables/api/)
+- [Laravel DataTables API](https://datatables.net/reference/api/)
 - [Laravel 5.0 - 5.3 Demo Application](http://datatables.yajrabox.com)
 - [Laravel 5.4 Demo Application](http://dt54.yajrabox.com)
 
