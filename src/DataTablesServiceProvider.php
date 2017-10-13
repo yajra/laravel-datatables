@@ -9,13 +9,6 @@ use Yajra\DataTables\Utilities\Request;
 class DataTablesServiceProvider extends ServiceProvider
 {
     /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = false;
-
-    /**
      * Bootstrap the application events.
      *
      * @return void
@@ -60,19 +53,5 @@ class DataTablesServiceProvider extends ServiceProvider
     protected function isLumen()
     {
         return str_contains($this->app->version(), 'Lumen');
-    }
-
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return string[]
-     */
-    public function provides()
-    {
-        return [
-            'datatables',
-            'datatables.config',
-            'datatables.request',
-        ];
     }
 }
