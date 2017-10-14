@@ -67,7 +67,7 @@ class DataTablesServiceProvider extends ServiceProvider
     /**
      * Get the services provided by the provider.
      *
-     * @return string[]
+     * @return array
      */
     public function provides()
     {
