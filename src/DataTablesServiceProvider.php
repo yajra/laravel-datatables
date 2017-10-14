@@ -9,20 +9,6 @@ use Yajra\DataTables\Utilities\Request;
 class DataTablesServiceProvider extends ServiceProvider
 {
     /**
-     * Bootstrap the application events.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        $this->mergeConfigFrom(__DIR__ . '/config/datatables.php', 'datatables');
-
-        $this->publishes([
-            __DIR__ . '/config/datatables.php' => config_path('datatables.php'),
-        ], 'datatables');
-    }
-
-    /**
      * Register the service provider.
      *
      * @return void
@@ -32,6 +18,8 @@ class DataTablesServiceProvider extends ServiceProvider
         if ($this->isLumen()) {
             require_once 'lumen.php';
         }
+
+        $this->setupAssets();
 
         $this->app->alias('datatables', DataTables::class);
         $this->app->singleton('datatables', function () {
@@ -43,6 +31,20 @@ class DataTablesServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton('datatables.config', Config::class);
+    }
+
+    /**
+     * Setup package assets.
+     *
+     * @return void
+     */
+    protected function setupAssets()
+    {
+        $this->mergeConfigFrom($config = __DIR__ . '/config/datatables.php', 'datatables');
+
+        if ($this->app->runningInConsole()) {
+            $this->publishes([$config => config_path('datatables.php')], 'datatables');
+        }
     }
 
     /**
