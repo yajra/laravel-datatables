@@ -94,11 +94,11 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix nested with relation search and sort function.
 
 [Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.1.1...8.0
-[v8.1.1]: https://github.com/yajra/laravel-datatables/compare/v8.1.1...v8.1.0
-[v8.1.0]: https://github.com/yajra/laravel-datatables/compare/v8.1.0...v8.0.3
-[v8.0.3]: https://github.com/yajra/laravel-datatables/compare/v8.0.3...v8.0.2
-[v8.0.2]: https://github.com/yajra/laravel-datatables/compare/v8.0.2...v8.0.1
-[v8.0.1]: https://github.com/yajra/laravel-datatables/compare/v8.0.1...v8.0.0
+[v8.1.1]: https://github.com/yajra/laravel-datatables/compare/v8.1.0...v8.1.1
+[v8.1.0]: https://github.com/yajra/laravel-datatables/compare/v8.0.3...v8.1.0
+[v8.0.3]: https://github.com/yajra/laravel-datatables/compare/v8.0.2...v8.0.3
+[v8.0.2]: https://github.com/yajra/laravel-datatables/compare/v8.0.1...v8.0.2
+[v8.0.1]: https://github.com/yajra/laravel-datatables/compare/v8.0.0...v8.0.1
 [v8.0.0]: https://github.com/yajra/laravel-datatables/compare/v7.10.1...v8.0.0
 
 [#1438]: https://github.com/yajra/laravel-datatables/pull/1438
