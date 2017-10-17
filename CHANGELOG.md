@@ -6,6 +6,12 @@
 [![Latest Unstable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/unstable.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![License](https://poser.pugx.org/yajra/laravel-datatables-oracle/license.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 
+### v8.1.1 (17-OCT-2017)
+- Fix docs API link. PR #1438, credits to @dextermb
+- Fix merging config. PR #1444, credits to @ElfSundae.
+- Fix return type. PR #1446, credits to @gabriel-caruso
+- Remove unused provides() from service provider. PR #1445, credits to @ElfSundae.
+
 ### v8.1.0 (08-OCT-2017)
 - Add addColumns() to EloquentDataTable. #1416, credits to @ElfSundae.
 
