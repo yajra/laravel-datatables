@@ -6,6 +6,8 @@
 [![Latest Unstable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/unstable.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![License](https://poser.pugx.org/yajra/laravel-datatables-oracle/license.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 
+### [Unreleased]
+
 ### [v8.1.1] - 2017-10-17
 - Fix docs API link. [#1438], credits to [@dextermb](https://github.com/dextermb).
 - Fix merging config. [#1444], credits to [@ElfSundae](https://github.com/ElfSundae).
