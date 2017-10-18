@@ -88,9 +88,9 @@ class QueryDataTable extends DataTableAbstract
     protected function prepareQuery()
     {
         if (!$this->prepared) {
-            $this->totalRecords = $this->totalCount();
-
-            if ($this->totalRecords) {
+            if($this->totalRecords===null)
+                $this->totalRecords = $this->totalCount();
+            if ($this->totalRecords!==null) {
                 $this->filterRecords();
                 $this->ordering();
                 $this->paginate();

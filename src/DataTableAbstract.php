@@ -68,7 +68,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      *
      * @var int
      */
-    protected $totalRecords = 0;
+    protected $totalRecords = null;
 
     /**
      * Total filtered records.
