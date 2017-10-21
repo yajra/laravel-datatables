@@ -280,12 +280,25 @@ class Helper
      */
     public static function wildcardLikeString($str, $lowercase = true)
     {
-        $wild  = '%';
+        return static::wildcardString($str, '%', $lowercase);
+    }
+
+    /**
+     * Adds wildcards to the given string.
+     *
+     * @param string $str
+     * @param string $wildcard
+     * @param bool   $lowercase
+     * @return string
+     */
+    public static function wildcardString($str, $wildcard, $lowercase = true)
+    {
+        $wild = $wildcard;
         $chars = preg_split('//u', $str, -1, PREG_SPLIT_NO_EMPTY);
 
         if (count($chars) > 0) {
             foreach ($chars as $char) {
-                $wild .= $char . '%';
+                $wild .= $char . $wildcard;
             }
         }
 
