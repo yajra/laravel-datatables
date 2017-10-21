@@ -45,6 +45,11 @@ class QueryDataTable extends DataTableAbstract
      */
     protected $limitCallback;
 
+    public static function canCreate($source)
+    {
+        return $source instanceof Builder;
+    }
+
     /**
      * @param \Illuminate\Database\Query\Builder $builder
      */
@@ -346,7 +351,9 @@ class QueryDataTable extends DataTableAbstract
                 break;
 
             default:
-                $sql     = !$this->config->isCaseInsensitive() ? $column . ' REGEXP ?' : 'LOWER(' . $column . ') REGEXP ?';
+                $sql     = !$this->config->isCaseInsensitive()
+                    ? $column . ' REGEXP ?'
+                    : 'LOWER(' . $column . ') REGEXP ?';
                 $keyword = Str::lower($keyword);
         }
 

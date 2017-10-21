@@ -23,6 +23,20 @@ class CollectionDataTable extends DataTableAbstract
      */
     public $original;
 
+    public static function canCreate($source)
+    {
+        return is_array($source) || $source instanceof Collection;
+    }
+
+    public static function create($source)
+    {
+        if (is_array($source)) {
+            $source = new Collection($source);
+        }
+
+        return parent::create($source);
+    }
+
     /**
      * CollectionEngine constructor.
      *

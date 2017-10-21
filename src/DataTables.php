@@ -3,9 +3,12 @@
 namespace Yajra\DataTables;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Traits\Macroable;
 
 class DataTables
 {
+    use Macroable;
+
     /**
      * DataTables request object.
      *
@@ -45,15 +48,16 @@ class DataTables
         $engines  = config('datatables.engines');
         $builders = config('datatables.builders');
 
-        if (is_array($source)) {
-            $source = new Collection($source);
-        }
-
+        $args = func_get_args();
         foreach ($builders as $class => $engine) {
             if ($source instanceof $class) {
-                $class = $engines[$engine];
+                return call_user_func_array(array($engines[$engine], 'create'), $args);
+            }
+        }
 
-                return new $class($source);
+        foreach ($engines as $engine => $class) {
+            if (call_user_func_array(array($engines[$engine], 'canCreate'), $args)) {
+                return call_user_func_array(array($engines[$engine], 'create'), $args);
             }
         }
 
@@ -88,10 +92,10 @@ class DataTables
      */
     public function queryBuilder($builder)
     {
-        return new QueryDataTable($builder);
+        return QueryDataTable::create($builder);
     }
 
-    /**
+   /**
      * DataTables using Eloquent Builder.
      *
      * @param \Illuminate\Database\Eloquent\Builder|mixed $builder
@@ -99,7 +103,7 @@ class DataTables
      */
     public function eloquent($builder)
     {
-        return new EloquentDataTable($builder);
+        return EloquentDataTable::create($builder);
     }
 
     /**
@@ -110,11 +114,7 @@ class DataTables
      */
     public function collection($collection)
     {
-        if (is_array($collection)) {
-            $collection = new Collection($collection);
-        }
-
-        return new CollectionDataTable($collection);
+        return CollectionDataTable::create($collection);
     }
 
     /**

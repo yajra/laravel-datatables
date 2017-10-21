@@ -137,6 +137,28 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     protected $config;
 
     /**
+     * Can the DataTable engine be created for these parameters
+     *
+     * @param mixed $source
+     * @return boolean
+     */
+    public static function canCreate($source)
+    {
+        return false;
+    }
+ 
+    /**
+     * Factory method, create and return an instance for the DataTable engine
+     *
+     * @param mixed $source
+     * @return DataTableAbstract
+     */
+    public static function create($source)
+    {
+        return new static($source);
+    }
+
+    /**
      * Add column in collection.
      *
      * @param string          $name
@@ -768,7 +790,8 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      */
     protected function getColumnNameByIndex($index)
     {
-        $name = (isset($this->columns[$index]) && $this->columns[$index] != '*') ? $this->columns[$index] : $this->getPrimaryKeyName();
+        $name = (isset($this->columns[$index]) && $this->columns[$index] != '*')
+            ? $this->columns[$index] : $this->getPrimaryKeyName();
 
         return in_array($name, $this->extraColumns, true) ? $this->getPrimaryKeyName() : $name;
     }
