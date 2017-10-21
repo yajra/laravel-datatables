@@ -222,6 +222,8 @@ class Request
      */
     public function isPaginationable()
     {
-        return !is_null($this->request->input('start')) && !is_null($this->request->input('length')) && $this->request->input('length') != -1;
+        return !is_null($this->request->input('start')) &&
+            !is_null($this->request->input('length')) &&
+            $this->request->input('length') != -1;
     }
 }
