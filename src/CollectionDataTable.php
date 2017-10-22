@@ -23,11 +23,23 @@ class CollectionDataTable extends DataTableAbstract
      */
     public $original;
 
+    /**
+     * Can the DataTable engine be created with these parameters.
+     *
+     * @param mixed $source
+     * @return boolean
+     */
     public static function canCreate($source)
     {
         return is_array($source) || $source instanceof Collection;
     }
 
+    /**
+     * Factory method, create and return an instance for the DataTable engine.
+     *
+     * @param array|\Illuminate\Support\Collection $source
+     * @return \Illuminate\Support\Collection
+     */
     public static function create($source)
     {
         if (is_array($source)) {
