@@ -198,7 +198,12 @@ class CollectionDataTable extends DataTableAbstract
                 $column = $this->getColumnName($index);
                 $value  = Arr::get($data, $column);
                 if (!$value || is_array($value)) {
-                    continue;
+                    if (!is_numeric($value)) {
+                        continue;
+                    } 
+                    else {
+                        $value = (string) $value;
+                    }
                 }
 
                 $value = $this->config->isCaseInsensitive() ? Str::lower($value) : $value;
