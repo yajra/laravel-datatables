@@ -9,9 +9,9 @@ use Yajra\DataTables\QueryDataTable;
 
 /**
  * @mixin \Yajra\DataTables\DataTables
- * @method EloquentDatatable eloquent($builder)
- * @method QueryDataTable queryBuilder($builder)
- * @method CollectionDataTable collection($collection)
+ * @method static EloquentDatatable eloquent($builder)
+ * @method static QueryDataTable queryBuilder($builder)
+ * @method static CollectionDataTable collection($collection)
  */
 class DataTables extends Facade
 {
