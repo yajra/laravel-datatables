@@ -65,7 +65,7 @@ class CollectionDataTable extends DataTableAbstract
      */
     public function columnSearch()
     {
-        $columns = $this->request->get('columns');
+        $columns = $this->request->get('columns', []);
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($this->request->isColumnSearchable($i)) {
                 $this->isFilterApplied = true;
