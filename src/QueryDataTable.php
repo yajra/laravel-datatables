@@ -45,6 +45,12 @@ class QueryDataTable extends DataTableAbstract
      */
     protected $limitCallback;
 
+    /**
+     * Can the DataTable engine be created with these parameters.
+     *
+     * @param mixed $source
+     * @return boolean
+     */
     public static function canCreate($source)
     {
         return $source instanceof Builder;
