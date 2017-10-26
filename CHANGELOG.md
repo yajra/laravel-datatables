@@ -8,6 +8,17 @@
 
 ### [Unreleased]
 
+### [v8.3.0] - 2017-10-26
+**ADDED**
+- `DataTables` factory class is now Macroable. [#1462]
+
+**CHANGED**
+- Support for plugin engine methods. [#1462], credits to [@pimlie](https://github.com/pimlie).
+- `datatables.builders` is now optional/redundant. [#1462]
+
+**FIXED**
+- Support for custom engines (eg for mongodb) [#1294],
+
 ### [v8.2.0] - 2017-10-25
 **FIXED**
 - Fix changelog links. [#1449]
@@ -104,7 +115,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined. 
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.2.0...8.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.3.0...8.0
+[v8.3.0]: https://github.com/yajra/laravel-datatables/compare/v8.2.0...v8.3.0
 [v8.2.0]: https://github.com/yajra/laravel-datatables/compare/v8.1.1...v8.2.0
 [v8.1.1]: https://github.com/yajra/laravel-datatables/compare/v8.1.0...v8.1.1
 [v8.1.0]: https://github.com/yajra/laravel-datatables/compare/v8.0.3...v8.1.0
@@ -113,6 +125,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [v8.0.1]: https://github.com/yajra/laravel-datatables/compare/v8.0.0...v8.0.1
 [v8.0.0]: https://github.com/yajra/laravel-datatables/compare/v7.10.1...v8.0.0
 
+[#1462]: https://github.com/yajra/laravel-datatables/pull/1462
 [#1468]: https://github.com/yajra/laravel-datatables/pull/1468
 [#1467]: https://github.com/yajra/laravel-datatables/pull/1467
 [#1465]: https://github.com/yajra/laravel-datatables/pull/1465
@@ -128,6 +141,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1368]: https://github.com/yajra/laravel-datatables/pull/1368
 [#1355]: https://github.com/yajra/laravel-datatables/pull/1355
 
+[#1294]: https://github.com/yajra/laravel-datatables/issues/1294
 [#1068]: https://github.com/yajra/laravel-datatables/issues/1068
 [#1234]: https://github.com/yajra/laravel-datatables/issues/1234
 [#1353]: https://github.com/yajra/laravel-datatables/issues/1353
