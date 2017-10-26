@@ -38,7 +38,7 @@ class CollectionDataTable extends DataTableAbstract
      * Factory method, create and return an instance for the DataTable engine.
      *
      * @param array|\Illuminate\Support\Collection $source
-     * @return \Illuminate\Support\Collection
+     * @return CollectionDataTable|DataTableAbstract
      */
     public static function create($source)
     {
