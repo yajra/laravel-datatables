@@ -84,7 +84,6 @@ class DataTables
         return app('datatables.config');
     }
 
-
     /**
      * @deprecated Please use query() instead, this method will be removed in a next version.
      */
