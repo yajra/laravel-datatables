@@ -11,10 +11,12 @@
 ### [v8.3.0] - 2017-10-26
 **ADDED**
 - `DataTables` factory class is now Macroable. [#1462]
+- `query()` api added as a replacement for `queryBuilder()`. [#1462]
 
 **CHANGED**
 - Support for plugin engine methods. [#1462], credits to [@pimlie](https://github.com/pimlie).
 - `datatables.builders` is now optional/redundant. [#1462]
+- Deprecate `queryBuilder()` api and replaced with `query()`.
 
 **FIXED**
 - Support for custom engines (eg for mongodb) [#1294],
