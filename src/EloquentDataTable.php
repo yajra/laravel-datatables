@@ -3,6 +3,7 @@
 namespace Yajra\DataTables;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
@@ -14,6 +15,17 @@ class EloquentDataTable extends QueryDataTable
      * @var \Illuminate\Database\Eloquent\Builder
      */
     protected $query;
+
+    /**
+     * Can the DataTable engine be created with these parameters.
+     *
+     * @param mixed $source
+     * @return boolean
+     */
+    public static function canCreate($source)
+    {
+        return $source instanceof Builder || $source instanceof Relation;
+    }
 
     /**
      * EloquentEngine constructor.
