@@ -91,7 +91,7 @@ class CollectionDataTable extends DataTableAbstract
      */
     public function columnSearch()
     {
-        $columns = $this->request->get('columns');
+        $columns = $this->request->get('columns', []);
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($this->request->isColumnSearchable($i)) {
                 $this->isFilterApplied = true;
@@ -224,7 +224,12 @@ class CollectionDataTable extends DataTableAbstract
                 $column = $this->getColumnName($index);
                 $value  = Arr::get($data, $column);
                 if (!$value || is_array($value)) {
-                    continue;
+                    if (!is_numeric($value)) {
+                        continue;
+                    } 
+                    else {
+                        $value = (string) $value;
+                    }
                 }
 
                 $value = $this->config->isCaseInsensitive() ? Str::lower($value) : $value;

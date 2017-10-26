@@ -247,4 +247,22 @@ class HelperTest extends TestCase
         $result  = Helper::replacePatternWithKeyword($subject, $keyword, '$1');
         $this->assertEquals(['foo in ?', ['bar']], $result);
     }
+
+    public function test_wildcard_like_string()
+    {
+        $str = 'keyword';
+
+        $keyword = Helper::wildcardLikeString($str);
+
+        $this->assertEquals('%k%e%y%w%o%r%d%', $keyword);
+    }
+
+    public function test_wildcard_string()
+    {
+        $str = 'Keyword';
+
+        $keyword = Helper::wildcardString($str, '.*', true);
+
+        $this->assertEquals('.*k.*e.*y.*w.*o.*r.*d.*', $keyword);
+    }
 }

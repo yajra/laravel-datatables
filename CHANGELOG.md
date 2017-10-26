@@ -8,6 +8,17 @@
 
 ### [Unreleased]
 
+### [v8.2.0] - 2017-10-25
+**FIXED**
+- Fix changelog links. [#1449]
+- Rename phpunit.xml and add composer script. [#1460], credits to [@pimlie](https://github.com/pimlie).
+- Fix exception/warning for PHP 7.2. [#1465], credits to [@CristianDeluxe](https://github.com/CristianDeluxe).
+- Fix facade method annotations. [#1468], credits to [@Guja1501](https://github.com/Guja1501).
+- Fix globalSearch not working for 0. [#1467], credits to [@lrtr](https://github.com/lrtr).
+
+**ADDED/CHANGED**
+- Make wildcard string a function parameter. [#1461], credits to [@pimlie](https://github.com/pimlie).
+
 ### [v8.1.1] - 2017-10-17
 - Fix docs API link. [#1438], credits to [@dextermb](https://github.com/dextermb).
 - Fix merging config. [#1444], credits to [@ElfSundae](https://github.com/ElfSundae).
@@ -93,7 +104,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined. 
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.1.1...8.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.2.0...8.0
+[v8.2.0]: https://github.com/yajra/laravel-datatables/compare/v8.1.1...v8.2.0
 [v8.1.1]: https://github.com/yajra/laravel-datatables/compare/v8.1.0...v8.1.1
 [v8.1.0]: https://github.com/yajra/laravel-datatables/compare/v8.0.3...v8.1.0
 [v8.0.3]: https://github.com/yajra/laravel-datatables/compare/v8.0.2...v8.0.3
@@ -101,6 +113,12 @@ return (new CollectionDataTable(User::all())->toJson();
 [v8.0.1]: https://github.com/yajra/laravel-datatables/compare/v8.0.0...v8.0.1
 [v8.0.0]: https://github.com/yajra/laravel-datatables/compare/v7.10.1...v8.0.0
 
+[#1468]: https://github.com/yajra/laravel-datatables/pull/1468
+[#1467]: https://github.com/yajra/laravel-datatables/pull/1467
+[#1465]: https://github.com/yajra/laravel-datatables/pull/1465
+[#1461]: https://github.com/yajra/laravel-datatables/pull/1461
+[#1460]: https://github.com/yajra/laravel-datatables/pull/1460
+[#1449]: https://github.com/yajra/laravel-datatables/pull/1449
 [#1438]: https://github.com/yajra/laravel-datatables/pull/1438
 [#1444]: https://github.com/yajra/laravel-datatables/pull/1444
 [#1446]: https://github.com/yajra/laravel-datatables/pull/1446
