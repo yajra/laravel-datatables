@@ -15,7 +15,7 @@
 
 **CHANGED**
 - Support for plugin engine methods. [#1462], credits to [@pimlie](https://github.com/pimlie).
-- `datatables.builders` is now optional/redundant. [#1462]
+- `datatables.builders` config is now optional/redundant. [#1462]
 - Deprecate `queryBuilder()` api and replaced with `query()`.
 
 **FIXED**
