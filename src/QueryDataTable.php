@@ -226,12 +226,11 @@ class QueryDataTable extends DataTableAbstract
             if ($this->hasFilterColumn($column)) {
                 $keyword = $this->getColumnSearchKeyword($index, $raw = true);
                 $this->applyFilterColumn($this->getBaseQueryBuilder(), $column, $keyword);
-                continue;
+            } else {
+                $column  = $this->resolveRelationColumn($column);
+                $keyword = $this->getColumnSearchKeyword($index);
+                $this->compileColumnSearch($index, $column, $keyword);
             }
-
-            $column  = $this->resolveRelationColumn($column);
-            $keyword = $this->getColumnSearchKeyword($index);
-            $this->compileColumnSearch($index, $column, $keyword);
 
             $this->isFilterApplied = true;
         }
