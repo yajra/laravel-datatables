@@ -84,13 +84,22 @@ class DataTables
         return app('datatables.config');
     }
 
+
     /**
-     * DataTables using Query Builder.
+     * @deprecated Please use query() instead, this method will be removed in a next version.
+     */
+    public function queryBuilder($builder)
+    {
+        return $this->query($builder);
+    }
+
+    /**
+     * DataTables using Query.
      *
      * @param \Illuminate\Database\Query\Builder|mixed $builder
      * @return \Yajra\DataTables\QueryDataTable
      */
-    public function queryBuilder($builder)
+    public function query($builder)
     {
         return QueryDataTable::create($builder);
     }
