@@ -53,7 +53,7 @@ class Datatables
     }
 
     /**
-     * Gets query and returns instance of class
+     * Gets query and returns instance of class.
      *
      * @param  mixed $builder
      * @return mixed
@@ -113,7 +113,7 @@ class Datatables
     }
 
     /**
-     * Datatables using Eloquent
+     * Datatables using Eloquent.
      *
      * @param  mixed $builder
      * @return \yajra\Datatables\Engines\EloquentEngine
