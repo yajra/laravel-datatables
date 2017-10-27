@@ -2,7 +2,6 @@
 
 namespace Yajra\DataTables;
 
-use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\Macroable;
 
 class DataTables
@@ -51,13 +50,13 @@ class DataTables
         $args = func_get_args();
         foreach ($builders as $class => $engine) {
             if ($source instanceof $class) {
-                return call_user_func_array(array($engines[$engine], 'create'), $args);
+                return call_user_func_array([$engines[$engine], 'create'], $args);
             }
         }
 
         foreach ($engines as $engine => $class) {
-            if (call_user_func_array(array($engines[$engine], 'canCreate'), $args)) {
-                return call_user_func_array(array($engines[$engine], 'create'), $args);
+            if (call_user_func_array([$engines[$engine], 'canCreate'], $args)) {
+                return call_user_func_array([$engines[$engine], 'create'], $args);
             }
         }
 
@@ -86,6 +85,8 @@ class DataTables
 
     /**
      * @deprecated Please use query() instead, this method will be removed in a next version.
+     * @param $builder
+     * @return QueryDataTable
      */
     public function queryBuilder($builder)
     {
@@ -96,18 +97,18 @@ class DataTables
      * DataTables using Query.
      *
      * @param \Illuminate\Database\Query\Builder|mixed $builder
-     * @return \Yajra\DataTables\QueryDataTable
+     * @return DataTableAbstract|QueryDataTable
      */
     public function query($builder)
     {
         return QueryDataTable::create($builder);
     }
 
-   /**
+    /**
      * DataTables using Eloquent Builder.
      *
      * @param \Illuminate\Database\Eloquent\Builder|mixed $builder
-     * @return \Yajra\DataTables\EloquentDataTable
+     * @return DataTableAbstract|EloquentDataTable
      */
     public function eloquent($builder)
     {
@@ -118,7 +119,7 @@ class DataTables
      * DataTables using Collection.
      *
      * @param \Illuminate\Support\Collection|array $collection
-     * @return \Yajra\DataTables\CollectionDataTable
+     * @return DataTableAbstract|CollectionDataTable
      */
     public function collection($collection)
     {
