@@ -64,7 +64,7 @@ class CollectionDataTable extends DataTableAbstract
     }
 
     /**
-     * Serialize collection
+     * Serialize collection.
      *
      * @param  mixed $collection
      * @return mixed|null

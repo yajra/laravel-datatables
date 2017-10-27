@@ -35,7 +35,7 @@ class DataTablesServiceProvider extends ServiceProvider
     }
 
     /**
-     * Boot the instance, add macros for datatable engines
+     * Boot the instance, add macros for datatable engines.
      *
      * @return void
      */
