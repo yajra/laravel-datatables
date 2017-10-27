@@ -8,6 +8,12 @@
 
 ### [Unreleased]
 
+### [v8.3.1] - 2017-10-27
+- Fix filtered records total when using filterColumn. [#1473], credits to [@wuwx](https://github.com/wuwx).
+- Added Patreon Link. [#1476], credits to [@ChaosPower](https://github.com/ChaosPower).
+- Fix missing periods. [#1478], credits to [@jiwom](https://github.com/jiwom).
+- Fix PHP Docs and minor array fixes. Remove unused import. [#1479], credits to [@jiwom](https://github.com/jiwom).
+
 ### [v8.3.0] - 2017-10-26
 **ADDED**
 - `DataTables` factory class is now Macroable. [#1462]
@@ -117,7 +123,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined. 
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.3.0...8.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.3.1...8.0
+[v8.3.1]: https://github.com/yajra/laravel-datatables/compare/v8.3.0...v8.3.1
 [v8.3.0]: https://github.com/yajra/laravel-datatables/compare/v8.2.0...v8.3.0
 [v8.2.0]: https://github.com/yajra/laravel-datatables/compare/v8.1.1...v8.2.0
 [v8.1.1]: https://github.com/yajra/laravel-datatables/compare/v8.1.0...v8.1.1
@@ -127,6 +134,10 @@ return (new CollectionDataTable(User::all())->toJson();
 [v8.0.1]: https://github.com/yajra/laravel-datatables/compare/v8.0.0...v8.0.1
 [v8.0.0]: https://github.com/yajra/laravel-datatables/compare/v7.10.1...v8.0.0
 
+[#1473]: https://github.com/yajra/laravel-datatables/pull/1473
+[#1476]: https://github.com/yajra/laravel-datatables/pull/1476
+[#1478]: https://github.com/yajra/laravel-datatables/pull/1478
+[#1479]: https://github.com/yajra/laravel-datatables/pull/1479
 [#1462]: https://github.com/yajra/laravel-datatables/pull/1462
 [#1468]: https://github.com/yajra/laravel-datatables/pull/1468
 [#1467]: https://github.com/yajra/laravel-datatables/pull/1467
