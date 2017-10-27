@@ -46,7 +46,7 @@ class CollectionEngine extends BaseEngine
     }
 
     /**
-     * Serialize collection
+     * Serialize collection.
      *
      * @param  mixed $collection
      * @return mixed|null
