@@ -65,7 +65,7 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Organizes works
+     * Organizes works.
      *
      * @param bool $mDataSupport
      * @param bool $orderFirst
@@ -122,7 +122,7 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Check if model use SoftDeletes trait
+     * Check if model use SoftDeletes trait.
      *
      * @return boolean
      */
@@ -560,7 +560,7 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Perform pagination
+     * Performs pagination.
      *
      * @return void
      */
@@ -571,7 +571,7 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Get results
+     * Get results.
      *
      * @return array|static[]
      */
