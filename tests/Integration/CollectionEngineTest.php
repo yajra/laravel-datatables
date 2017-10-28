@@ -46,7 +46,7 @@ class CollectionEngineTest extends TestCase
     /** @test */
     public function it_accepts_a_model_collection_using_of_factory()
     {
-        $dataTable = DataTables::of(User::all());
+        $dataTable = DatatablesFacade::of(User::all());
         $response  = $dataTable->make(true);
         $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
@@ -55,7 +55,7 @@ class CollectionEngineTest extends TestCase
     /** @test */
     public function it_accepts_a_collection_using_of_factory()
     {
-        $dataTable = DataTables::of(collect());
+        $dataTable = DatatablesFacade::of(collect());
         $response  = $dataTable->make(true);
         $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);

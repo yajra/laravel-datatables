@@ -46,7 +46,7 @@ class EloquentEngineTest extends TestCase
     /** @test */
     public function it_accepts_a_model_using_of_factory()
     {
-        $dataTable = DataTables::of(User::query());
+        $dataTable = DatatablesFacade::of(User::query());
         $response  = $dataTable->make(true);
         $this->assertInstanceOf(EloquentDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);

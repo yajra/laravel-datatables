@@ -137,28 +137,6 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     protected $config;
 
     /**
-     * Can the DataTable engine be created with these parameters.
-     *
-     * @param mixed $source
-     * @return bool
-     */
-    public static function canCreate($source)
-    {
-        return false;
-    }
-
-    /**
-     * Factory method, create and return an instance for the DataTable engine.
-     *
-     * @param mixed $source
-     * @return DataTableAbstract
-     */
-    public static function create($source)
-    {
-        return new static($source);
-    }
-
-    /**
      * Add column in collection.
      *
      * @param string          $name
