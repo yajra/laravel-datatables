@@ -39,8 +39,6 @@ class Request
         if (method_exists($this->request, $name)) {
             return call_user_func_array([$this->request, $name], $arguments);
         }
-
-        return null;
     }
 
     /**
@@ -75,9 +73,9 @@ class Request
     }
 
     /**
-     * Check if DataTables must uses regular expressions
+     * Check if DataTables must uses regular expressions.
      *
-     * @param integer $index
+     * @param int $index
      * @return bool
      */
     public function isRegex($index)
@@ -86,13 +84,13 @@ class Request
     }
 
     /**
-     * Get orderable columns
+     * Get orderable columns.
      *
      * @return array
      */
     public function orderableColumns()
     {
-        if (!$this->isOrderable()) {
+        if (! $this->isOrderable()) {
             return [];
         }
 
@@ -121,16 +119,16 @@ class Request
     /**
      * Check if a column is orderable.
      *
-     * @param  integer $index
+     * @param  int $index
      * @return bool
      */
     public function isColumnOrderable($index)
     {
-        return $this->request->input("columns.$index.orderable", "true") == 'true';
+        return $this->request->input("columns.$index.orderable", 'true') == 'true';
     }
 
     /**
-     * Get searchable column indexes
+     * Get searchable column indexes.
      *
      * @return array
      */
@@ -149,23 +147,23 @@ class Request
     /**
      * Check if a column is searchable.
      *
-     * @param integer $i
+     * @param int $i
      * @param bool    $column_search
      * @return bool
      */
     public function isColumnSearchable($i, $column_search = true)
     {
         if ($column_search) {
-            return $this->request->input("columns.$i.searchable", "true") === 'true' && $this->columnKeyword($i) != '';
+            return $this->request->input("columns.$i.searchable", 'true') === 'true' && $this->columnKeyword($i) != '';
         }
 
-        return $this->request->input("columns.$i.searchable", "true") === 'true';
+        return $this->request->input("columns.$i.searchable", 'true') === 'true';
     }
 
     /**
      * Get column's search value.
      *
-     * @param integer $index
+     * @param int $index
      * @return string
      */
     public function columnKeyword($index)
@@ -191,7 +189,7 @@ class Request
     }
 
     /**
-     * Get global search keyword
+     * Get global search keyword.
      *
      * @return string
      */
@@ -205,14 +203,14 @@ class Request
     /**
      * Get column identity from input or database.
      *
-     * @param integer $i
+     * @param int $i
      * @return string
      */
     public function columnName($i)
     {
         $column = $this->request->input("columns.$i");
 
-        return isset($column['name']) && $column['name'] <> '' ? $column['name'] : $column['data'];
+        return isset($column['name']) && $column['name'] != '' ? $column['name'] : $column['data'];
     }
 
     /**
@@ -222,8 +220,8 @@ class Request
      */
     public function isPaginationable()
     {
-        return !is_null($this->request->input('start')) &&
-            !is_null($this->request->input('length')) &&
+        return ! is_null($this->request->input('start')) &&
+            ! is_null($this->request->input('length')) &&
             $this->request->input('length') != -1;
     }
 }

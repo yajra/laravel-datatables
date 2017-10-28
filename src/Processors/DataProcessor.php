@@ -230,7 +230,7 @@ class DataProcessor
     {
         $arrayDot = array_filter(array_dot($row));
         foreach ($arrayDot as $key => $value) {
-            if (!in_array($key, $this->rawColumns)) {
+            if (! in_array($key, $this->rawColumns)) {
                 $arrayDot[$key] = e($value);
             }
         }

@@ -2,11 +2,11 @@
 
 namespace Yajra\DataTables;
 
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Query\Builder;
-use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Str;
+use Illuminate\Database\Query\Builder;
 use Yajra\DataTables\Utilities\Helper;
+use Illuminate\Database\Query\Expression;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 class QueryDataTable extends DataTableAbstract
 {
@@ -49,7 +49,7 @@ class QueryDataTable extends DataTableAbstract
      * Can the DataTable engine be created with these parameters.
      *
      * @param mixed $source
-     * @return boolean
+     * @return bool
      */
     public static function canCreate($source)
     {
@@ -98,7 +98,7 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function prepareQuery()
     {
-        if (!$this->prepared) {
+        if (! $this->prepared) {
             $this->totalRecords = $this->totalCount();
 
             if ($this->totalRecords) {
@@ -114,7 +114,7 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Count total items.
      *
-     * @return integer
+     * @return int
      */
     public function totalCount()
     {
@@ -145,7 +145,7 @@ class QueryDataTable extends DataTableAbstract
     {
         $builder = clone $this->query;
 
-        if (!$this->isComplexQuery($builder)) {
+        if (! $this->isComplexQuery($builder)) {
             $row_count = $this->wrap('row_count');
             $builder->select($this->connection->raw("'1' as {$row_count}"));
         }
@@ -217,7 +217,7 @@ class QueryDataTable extends DataTableAbstract
         $columns = $this->request->columns();
 
         foreach ($columns as $index => $column) {
-            if (!$this->request->isColumnSearchable($index)) {
+            if (! $this->request->isColumnSearchable($index)) {
                 continue;
             }
 
@@ -296,7 +296,7 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function getBaseQueryBuilder($instance = null)
     {
-        if (!$instance) {
+        if (! $instance) {
             $instance = $this->query;
         }
 
@@ -345,18 +345,18 @@ class QueryDataTable extends DataTableAbstract
     {
         switch ($this->connection->getDriverName()) {
             case 'oracle':
-                $sql = !$this->config->isCaseInsensitive()
+                $sql = ! $this->config->isCaseInsensitive()
                     ? 'REGEXP_LIKE( ' . $column . ' , ? )'
                     : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
                 break;
 
             case 'pgsql':
                 $column = $this->castColumn($column);
-                $sql    = !$this->config->isCaseInsensitive() ? $column . ' ~ ?' : $column . ' ~* ? ';
+                $sql    = ! $this->config->isCaseInsensitive() ? $column . ' ~ ?' : $column . ' ~* ? ';
                 break;
 
             default:
-                $sql     = !$this->config->isCaseInsensitive()
+                $sql     = ! $this->config->isCaseInsensitive()
                     ? $column . ' REGEXP ?'
                     : 'LOWER(' . $column . ') REGEXP ?';
                 $keyword = Str::lower($keyword);
@@ -416,7 +416,7 @@ class QueryDataTable extends DataTableAbstract
     {
         if (strpos($column, '.') === false) {
             $q = $this->getBaseQueryBuilder($query);
-            if (!$q->from instanceof Expression) {
+            if (! $q->from instanceof Expression) {
                 $column = $q->from . '.' . $column;
             }
         }
@@ -516,6 +516,7 @@ class QueryDataTable extends DataTableAbstract
     public function limit(callable $callback)
     {
         $this->limitCallback = $callback;
+
         return $this;
     }
 
@@ -572,7 +573,7 @@ class QueryDataTable extends DataTableAbstract
                 return $orderable;
             })
             ->reject(function ($orderable) {
-                return $this->isBlacklisted($orderable['name']) && !$this->hasOrderColumn($orderable['name']);
+                return $this->isBlacklisted($orderable['name']) && ! $this->hasOrderColumn($orderable['name']);
             })
             ->each(function ($orderable) {
                 $column = $this->resolveRelationColumn($orderable['name']);
@@ -640,7 +641,7 @@ class QueryDataTable extends DataTableAbstract
                     return $this->getColumnName($index);
                 })
                 ->reject(function ($column) {
-                    return $this->isBlacklisted($column) && !$this->hasFilterColumn($column);
+                    return $this->isBlacklisted($column) && ! $this->hasFilterColumn($column);
                 })
                 ->each(function ($column) use ($keyword, $query) {
                     if ($this->hasFilterColumn($column)) {

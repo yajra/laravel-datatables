@@ -2,13 +2,13 @@
 
 namespace Yajra\DataTables\Tests\Integration;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Http\JsonResponse;
 use Yajra\DataTables\DataTables;
-use Yajra\DataTables\EloquentDataTable;
-use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
-use Yajra\DataTables\Tests\Models\User;
+use Illuminate\Http\JsonResponse;
 use Yajra\DataTables\Tests\TestCase;
+use Yajra\DataTables\EloquentDataTable;
+use Yajra\DataTables\Tests\Models\User;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
 
 class EloquentEngineTest extends TestCase
 {
@@ -30,8 +30,8 @@ class EloquentEngineTest extends TestCase
     {
         $crawler = $this->call('GET', '/eloquent/users', [
             'columns' => [
-                ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
-                ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
+                ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
             ],
             'search'  => ['value' => 'Record-19'],
         ]);
