@@ -2,10 +2,10 @@
 
 namespace Yajra\DataTables\Tests\Integration;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Yajra\DataTables\DataTables;
-use Yajra\DataTables\Tests\Models\Post;
 use Yajra\DataTables\Tests\TestCase;
+use Yajra\DataTables\Tests\Models\Post;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class EloquentJoinTest extends TestCase
 {
@@ -47,9 +47,9 @@ class EloquentJoinTest extends TestCase
     {
         $data = [
             'columns' => [
-                ['data' => 'name', 'name' => 'users.name', 'searchable' => "true", 'orderable' => "true"],
-                ['data' => 'email', 'name' => 'users.email', 'searchable' => "true", 'orderable' => "true"],
-                ['data' => 'title', 'name' => 'posts.title', 'searchable' => "true", 'orderable' => "true"],
+                ['data' => 'name', 'name' => 'users.name', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'email', 'name' => 'users.email', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'title', 'name' => 'posts.title', 'searchable' => 'true', 'orderable' => 'true'],
             ],
         ];
 

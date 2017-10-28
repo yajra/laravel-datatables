@@ -2,22 +2,22 @@
 
 namespace Yajra\DataTables;
 
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
+use Illuminate\Contracts\Support\Arrayable;
 
 class CollectionDataTable extends DataTableAbstract
 {
     /**
-     * Collection object
+     * Collection object.
      *
      * @var \Illuminate\Support\Collection
      */
     public $collection;
 
     /**
-     * Collection object
+     * Collection object.
      *
      * @var \Illuminate\Support\Collection
      */
@@ -27,7 +27,7 @@ class CollectionDataTable extends DataTableAbstract
      * Can the DataTable engine be created with these parameters.
      *
      * @param mixed $source
-     * @return boolean
+     * @return bool
      */
     public static function canCreate($source)
     {
@@ -77,7 +77,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Count results.
      *
-     * @return integer
+     * @return int
      */
     public function count()
     {
@@ -171,7 +171,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Count total items.
      *
-     * @return integer
+     * @return int
      */
     public function totalCount()
     {
@@ -223,11 +223,10 @@ class CollectionDataTable extends DataTableAbstract
             foreach ($this->request->searchableColumnIndex() as $index) {
                 $column = $this->getColumnName($index);
                 $value  = Arr::get($data, $column);
-                if (!$value || is_array($value)) {
-                    if (!is_numeric($value)) {
+                if (! $value || is_array($value)) {
+                    if (! is_numeric($value)) {
                         continue;
-                    } 
-                    else {
+                    } else {
                         $value = (string) $value;
                     }
                 }
@@ -248,7 +247,7 @@ class CollectionDataTable extends DataTableAbstract
     protected function defaultOrdering()
     {
         $criteria = $this->request->orderableColumns();
-        if (!empty($criteria)) {
+        if (! empty($criteria)) {
             $sorter = $this->getSorter($criteria);
 
             $this->collection = $this->collection

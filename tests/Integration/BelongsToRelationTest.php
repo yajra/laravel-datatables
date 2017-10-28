@@ -2,10 +2,10 @@
 
 namespace Yajra\DataTables\Tests\Integration;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Yajra\DataTables\DataTables;
-use Yajra\DataTables\Tests\Models\Post;
 use Yajra\DataTables\Tests\TestCase;
+use Yajra\DataTables\Tests\Models\Post;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class BelongsToRelationTest extends TestCase
 {
@@ -45,9 +45,9 @@ class BelongsToRelationTest extends TestCase
     {
         $data = [
             'columns' => [
-                ['data' => 'user.name', 'name' => 'user.name', 'searchable' => "true", 'orderable' => "true"],
-                ['data' => 'user.email', 'name' => 'user.email', 'searchable' => "true", 'orderable' => "true"],
-                ['data' => 'title', 'name' => 'posts.title', 'searchable' => "true", 'orderable' => "true"],
+                ['data' => 'user.name', 'name' => 'user.name', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'user.email', 'name' => 'user.email', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'title', 'name' => 'posts.title', 'searchable' => 'true', 'orderable' => 'true'],
             ],
         ];
 

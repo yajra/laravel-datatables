@@ -2,10 +2,10 @@
 
 namespace Yajra\DataTables\Facades;
 
-use Illuminate\Support\Facades\Facade;
-use Yajra\DataTables\CollectionDataTable;
-use Yajra\DataTables\EloquentDatatable;
 use Yajra\DataTables\QueryDataTable;
+use Illuminate\Support\Facades\Facade;
+use Yajra\DataTables\EloquentDatatable;
+use Yajra\DataTables\CollectionDataTable;
 
 /**
  * @mixin \Yajra\DataTables\DataTables

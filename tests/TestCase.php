@@ -2,9 +2,9 @@
 
 namespace Yajra\DataTables\Tests;
 
-use Illuminate\Database\Schema\Blueprint;
 use Yajra\DataTables\Tests\Models\Role;
 use Yajra\DataTables\Tests\Models\User;
+use Illuminate\Database\Schema\Blueprint;
 
 abstract class TestCase extends \Orchestra\Testbench\TestCase
 {

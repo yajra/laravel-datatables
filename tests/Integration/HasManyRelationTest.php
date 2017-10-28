@@ -2,10 +2,10 @@
 
 namespace Yajra\DataTables\Tests\Integration;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Yajra\DataTables\DataTables;
-use Yajra\DataTables\Tests\Models\User;
 use Yajra\DataTables\Tests\TestCase;
+use Yajra\DataTables\Tests\Models\User;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class HasManyRelationTest extends TestCase
 {
@@ -44,9 +44,9 @@ class HasManyRelationTest extends TestCase
     {
         $data = [
             'columns' => [
-                ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
-                ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
-                ['data' => 'posts.title', 'name' => 'posts.title', 'searchable' => "true", 'orderable' => "true"],
+                ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'posts.title', 'name' => 'posts.title', 'searchable' => 'true', 'orderable' => 'true'],
             ],
         ];
 

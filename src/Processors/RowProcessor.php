@@ -36,8 +36,8 @@ class RowProcessor
      */
     public function rowValue($attribute, $template)
     {
-        if (!empty($template)) {
-            if (!is_callable($template) && Arr::get($this->data, $template)) {
+        if (! empty($template)) {
+            if (! is_callable($template) && Arr::get($this->data, $template)) {
                 $this->data[$attribute] = Arr::get($this->data, $template);
             } else {
                 $this->data[$attribute] = Helper::compileContent($template, $this->data, $this->row);

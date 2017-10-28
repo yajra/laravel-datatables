@@ -14,14 +14,14 @@ interface DataTable
     /**
      * Count results.
      *
-     * @return integer
+     * @return int
      */
     public function count();
 
     /**
      * Count total items.
      *
-     * @return integer
+     * @return int
      */
     public function totalCount();
 

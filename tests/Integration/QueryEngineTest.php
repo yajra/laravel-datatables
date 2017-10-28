@@ -3,13 +3,13 @@
 namespace Yajra\DataTables\Tests\Integration;
 
 use DB;
-use Illuminate\Database\Query\Builder;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Http\JsonResponse;
 use Yajra\DataTables\DataTables;
-use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
+use Illuminate\Http\JsonResponse;
 use Yajra\DataTables\QueryDataTable;
 use Yajra\DataTables\Tests\TestCase;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
 
 class QueryEngineTest extends TestCase
 {
@@ -31,8 +31,8 @@ class QueryEngineTest extends TestCase
     {
         $crawler = $this->call('GET', '/query/users', [
             'columns' => [
-                ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
-                ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
+                ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
             ],
             'search'  => ['value' => 'Record-19'],
         ]);
@@ -49,8 +49,8 @@ class QueryEngineTest extends TestCase
     {
         $crawler = $this->call('GET', '/query/users', [
             'columns' => [
-                ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
-                ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
+                ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
             ],
             'search'  => ['value' => 'Record-19 Email-19'],
         ]);
@@ -121,9 +121,9 @@ class QueryEngineTest extends TestCase
     {
         $crawler = $this->call('GET', '/query/addColumn', [
             'columns' => [
-                ['data' => 'foo', 'name' => 'foo', 'searchable' => "true", 'orderable' => "true"],
-                ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
-                ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
+                ['data' => 'foo', 'name' => 'foo', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
             ],
             'search'  => ['value' => 'Record-19'],
         ]);
@@ -140,9 +140,9 @@ class QueryEngineTest extends TestCase
     {
         $crawler = $this->call('GET', '/query/indexColumn', [
             'columns' => [
-                ['data' => 'DT_Row_index', 'name' => 'index', 'searchable' => "false", 'orderable' => "false"],
-                ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
-                ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
+                ['data' => 'DT_Row_index', 'name' => 'index', 'searchable' => 'false', 'orderable' => 'false'],
+                ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
             ],
             'search'  => ['value' => 'Record-19'],
         ]);
@@ -161,9 +161,9 @@ class QueryEngineTest extends TestCase
     {
         $crawler = $this->call('GET', '/query/filterColumn', [
             'columns' => [
-                ['data' => 'foo', 'name' => 'foo', 'searchable' => "true", 'orderable' => "true"],
-                ['data' => 'name', 'name' => 'name', 'searchable' => "true", 'orderable' => "true"],
-                ['data' => 'email', 'name' => 'email', 'searchable' => "true", 'orderable' => "true"],
+                ['data' => 'foo', 'name' => 'foo', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
             ],
             'search'  => ['value' => 'Record-19'],
         ]);

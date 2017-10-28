@@ -2,16 +2,16 @@
 
 namespace Yajra\DataTables;
 
-use Illuminate\Contracts\Logging\Log;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\Support\Jsonable;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Contracts\Logging\Log;
+use Yajra\DataTables\Utilities\Helper;
 use Illuminate\Support\Traits\Macroable;
 use Yajra\DataTables\Contracts\DataTable;
+use Illuminate\Contracts\Support\Jsonable;
 use Yajra\DataTables\Exceptions\Exception;
+use Illuminate\Contracts\Support\Arrayable;
 use Yajra\DataTables\Processors\DataProcessor;
-use Yajra\DataTables\Utilities\Helper;
 
 /**
  * @method DataTableAbstract setTransformer($transformer)
@@ -106,7 +106,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     /**
      * [internal] Track if any filter was applied for at least one column.
      *
-     * @var boolean
+     * @var bool
      */
     protected $isFilterApplied = false;
 
@@ -140,13 +140,13 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      * Can the DataTable engine be created with these parameters.
      *
      * @param mixed $source
-     * @return boolean
+     * @return bool
      */
     public static function canCreate($source)
     {
         return false;
     }
- 
+
     /**
      * Factory method, create and return an instance for the DataTable engine.
      *
@@ -428,7 +428,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      */
     public function pushToBlacklist($column)
     {
-        if (!$this->isBlacklisted($column)) {
+        if (! $this->isBlacklisted($column)) {
             $this->columnDef['blacklist'][] = $column;
         }
 
@@ -603,7 +603,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      */
     protected function paginate()
     {
-        if ($this->request->isPaginationable() && !$this->skipPaging) {
+        if ($this->request->isPaginationable() && ! $this->skipPaging) {
             $this->paging();
         }
     }
@@ -682,7 +682,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      */
     protected function showDebugger(array $output)
     {
-        $output["input"] = $this->request->all();
+        $output['input'] = $this->request->all();
 
         return $output;
     }
@@ -762,7 +762,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     /**
      * Get column name to be use for filtering and sorting.
      *
-     * @param integer $index
+     * @param int $index
      * @param bool    $wantsAlias
      * @return string
      */
