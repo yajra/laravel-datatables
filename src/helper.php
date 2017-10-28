@@ -14,6 +14,6 @@ if (! function_exists('datatables')) {
             return app('datatables');
         }
 
-        return call_user_func_array([app('datatables'), 'make'], func_get_args());
+        return app('datatables')->make($source);
     }
 }
