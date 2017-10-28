@@ -1,0 +1,9 @@
+preset: laravel
+
+enabled:
+  - align_double_arrow
+  - align_equals
+
+disabled:
+  - concat_without_spaces
+  - unalign_equals
