@@ -2,12 +2,11 @@
 
 namespace Yajra\DataTables;
 
-use Illuminate\Support\Traits\Macroable;
+use Exception;
+use Illuminate\Support\Str;
 
 class DataTables
 {
-    use Macroable;
-
     /**
      * DataTables request object.
      *
@@ -30,9 +29,9 @@ class DataTables
      * @return mixed
      * @throws \Exception
      */
-    public static function of($source)
+    public function of($source)
     {
-        return self::make($source);
+        return $this->make($source);
     }
 
     /**
@@ -42,25 +41,56 @@ class DataTables
      * @return mixed
      * @throws \Exception
      */
-    public static function make($source)
+    public function make($source)
     {
-        $engines  = config('datatables.engines');
-        $builders = config('datatables.builders');
-
-        $args = func_get_args();
-        foreach ($builders as $class => $engine) {
-            if ($source instanceof $class) {
-                return call_user_func_array([$engines[$engine], 'create'], $args);
+        foreach (config('datatables.builders') as $engine => $types) {
+            foreach ((array) $types as $type) {
+                if ($this->checkType($source, $type)) {
+                    return $this->createDataTable($engine, $source);
+                }
             }
         }
 
-        foreach ($engines as $engine => $class) {
-            if (call_user_func_array([$engines[$engine], 'canCreate'], $args)) {
-                return call_user_func_array([$engines[$engine], 'create'], $args);
-            }
+        throw new Exception('No available engine for ' . gettype($source));
+    }
+
+    /**
+     * Check whether a variable is the given type.
+     *
+     * @param  mixed  $var
+     * @param  string  $type
+     * @return bool
+     */
+    protected function checkType($var, $type)
+    {
+        if (is_object($var)) {
+            return $var instanceof $type;
         }
 
-        throw new \Exception('No available engine for ' . get_class($source));
+        if (function_exists($func = "is_$type")) {
+            return $func($var);
+        }
+
+        return false;
+    }
+
+    /**
+     * Create a new DataTable instance.
+     *
+     * @param  string  $engine
+     * @param  mixed  $source
+     * @return mixed
+     * @throws \Exception
+     */
+    protected function createDataTable($engine, $source)
+    {
+        $class = class_exists($engine) ? $engine : config("datatables.engines.$engine");
+
+        if (! $class) {
+            throw new Exception("Unsupported DataTable engine [$engine]");
+        }
+
+        return new $class($source);
     }
 
     /**
@@ -94,39 +124,6 @@ class DataTables
     }
 
     /**
-     * DataTables using Query.
-     *
-     * @param \Illuminate\Database\Query\Builder|mixed $builder
-     * @return DataTableAbstract|QueryDataTable
-     */
-    public function query($builder)
-    {
-        return QueryDataTable::create($builder);
-    }
-
-    /**
-     * DataTables using Eloquent Builder.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder|mixed $builder
-     * @return DataTableAbstract|EloquentDataTable
-     */
-    public function eloquent($builder)
-    {
-        return EloquentDataTable::create($builder);
-    }
-
-    /**
-     * DataTables using Collection.
-     *
-     * @param \Illuminate\Support\Collection|array $collection
-     * @return DataTableAbstract|CollectionDataTable
-     */
-    public function collection($collection)
-    {
-        return CollectionDataTable::create($collection);
-    }
-
-    /**
      * Get html builder instance.
      *
      * @return \Yajra\DataTables\Html\Builder
@@ -139,5 +136,17 @@ class DataTables
         }
 
         return $this->html ?: $this->html = app('datatables.html');
+    }
+
+    /**
+     * Make a DataTable instance by using method name as engine.
+     *
+     * @param  string  $method
+     * @param  array  $parameters
+     * @return mixed
+     */
+    public function __call($method, $parameters)
+    {
+        return $this->createDataTable(Str::snake($method), ...$parameters);
     }
 }

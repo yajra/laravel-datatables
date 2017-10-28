@@ -65,7 +65,7 @@ class QueryEngineTest extends TestCase
     /** @test */
     public function it_accepts_a_query_using_of_factory()
     {
-        $dataTable = DataTables::of(DB::table('users'));
+        $dataTable = DatatablesFacade::of(DB::table('users'));
         $response  = $dataTable->make(true);
         $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);

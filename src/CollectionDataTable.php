@@ -17,50 +17,24 @@ class CollectionDataTable extends DataTableAbstract
     public $collection;
 
     /**
-     * Collection object.
+     * The original source.
      *
-     * @var \Illuminate\Support\Collection
+     * @var mixed
      */
     public $original;
 
     /**
-     * Can the DataTable engine be created with these parameters.
+     * CollectionDataTable constructor.
      *
      * @param mixed $source
-     * @return bool
      */
-    public static function canCreate($source)
-    {
-        return is_array($source) || $source instanceof Collection;
-    }
-
-    /**
-     * Factory method, create and return an instance for the DataTable engine.
-     *
-     * @param array|\Illuminate\Support\Collection $source
-     * @return CollectionDataTable|DataTableAbstract
-     */
-    public static function create($source)
-    {
-        if (is_array($source)) {
-            $source = new Collection($source);
-        }
-
-        return parent::create($source);
-    }
-
-    /**
-     * CollectionEngine constructor.
-     *
-     * @param \Illuminate\Support\Collection $collection
-     */
-    public function __construct(Collection $collection)
+    public function __construct($source)
     {
         $this->request    = app('datatables.request');
         $this->config     = app('datatables.config');
-        $this->collection = $collection;
-        $this->original   = $collection;
-        $this->columns    = array_keys($this->serialize($collection->first()));
+        $this->original   = $source;
+        $this->collection = $source instanceof Collection ? $source : new Collection($source);
+        $this->columns    = array_keys($this->serialize($this->collection->first()));
     }
 
     /**
