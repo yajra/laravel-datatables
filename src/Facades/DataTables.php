@@ -2,16 +2,15 @@
 
 namespace Yajra\DataTables\Facades;
 
-use Yajra\DataTables\QueryDataTable;
 use Illuminate\Support\Facades\Facade;
-use Yajra\DataTables\EloquentDatatable;
-use Yajra\DataTables\CollectionDataTable;
 
 /**
  * @mixin \Yajra\DataTables\DataTables
- * @method static EloquentDatatable eloquent($builder)
- * @method static QueryDataTable queryBuilder($builder)
- * @method static CollectionDataTable collection($collection)
+ * @method static \Yajra\DataTables\EloquentDatatable eloquent($builder)
+ * @method static \Yajra\DataTables\QueryDataTable query($builder)
+ * @method static \Yajra\DataTables\CollectionDataTable collection($collection)
+ *
+ * @see \Yajra\DataTables\DataTables
  */
 class DataTables extends Facade
 {
