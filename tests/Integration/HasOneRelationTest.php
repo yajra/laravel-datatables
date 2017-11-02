@@ -58,7 +58,7 @@ class HasOneRelationTest extends TestCase
     public function it_can_sort_using_the_relation_with_pagination()
     {
         $response = $this->getJsonResponse([
-            'order'  => [
+            'order' => [
                 [
                     'column' => 0,
                     'dir'    => 'desc',

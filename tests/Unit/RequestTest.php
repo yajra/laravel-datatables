@@ -11,17 +11,17 @@ class RequestTest extends TestCase
     {
         $_GET['search']['value'] = '';
         request()->merge($_GET);
-        $request       = $this->getRequest();
+        $request = $this->getRequest();
         $this->assertFalse($request->isSearchable());
 
         $_GET['search']['value'] = 'foo';
         request()->merge($_GET);
-        $request       = $this->getRequest();
+        $request = $this->getRequest();
         $this->assertTrue($request->isSearchable());
 
         $_GET['search']['value'] = '0';
         request()->merge($_GET);
-        $request       = $this->getRequest();
+        $request = $this->getRequest();
         $this->assertTrue($request->isSearchable());
     }
 
@@ -40,7 +40,7 @@ class RequestTest extends TestCase
         ];
 
         request()->merge($_GET);
-        $request       = $this->getRequest();
+        $request = $this->getRequest();
         $this->assertEquals('foo', $request->columnKeyword(0));
         $this->assertEquals('bar', $request->columnKeyword(1));
     }
@@ -54,13 +54,13 @@ class RequestTest extends TestCase
                 'value' => 'foo',
             ],
         ];
-        $_GET['order']     = [];
-        $_GET['order'][]   = [
+        $_GET['order']   = [];
+        $_GET['order'][] = [
             'column' => 0,
             'dir'    => 'bar',
         ];
         request()->merge($_GET);
-        $request       = $this->getRequest();
+        $request = $this->getRequest();
         $this->assertEquals([
             ['column' => 0, 'direction' => 'bar'],
         ], $request->orderableColumns());
@@ -75,7 +75,7 @@ class RequestTest extends TestCase
         $_GET['columns'][] = ['name' => 'foo', 'searchable' => 'true', 'search' => ['value' => 'foo']];
         $_GET['columns'][] = ['name' => 'bar', 'searchable' => 'false', 'search' => ['value' => 'foo']];
         request()->merge($_GET);
-        $request       = $this->getRequest();
+        $request = $this->getRequest();
         $this->assertEquals([0], $request->searchableColumnIndex());
 
         $this->assertTrue($request->isColumnSearchable(0, false));
@@ -93,7 +93,7 @@ class RequestTest extends TestCase
         $_GET['search'] = [];
         $_GET['search'] = ['value' => 'foo'];
         request()->merge($_GET);
-        $request       = $this->getRequest();
+        $request = $this->getRequest();
         $this->assertEquals('foo', $request->keyword());
     }
 
@@ -102,19 +102,19 @@ class RequestTest extends TestCase
         $_GET['start']  = 1;
         $_GET['length'] = 10;
         request()->merge($_GET);
-        $request       = $this->getRequest();
+        $request = $this->getRequest();
         $this->assertTrue($request->isPaginationable());
 
         $_GET['start']  = 1;
         $_GET['length'] = -1;
         request()->merge($_GET);
-        $request       = $this->getRequest();
+        $request = $this->getRequest();
         $this->assertFalse($request->isPaginationable());
 
         $_GET['start']  = null;
         $_GET['length'] = 1;
         request()->merge($_GET);
-        $request       = $this->getRequest();
+        $request = $this->getRequest();
         $this->assertFalse($request->isPaginationable());
     }
 

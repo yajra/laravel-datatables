@@ -33,7 +33,7 @@ class CollectionEngineTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'search'  => ['value' => 'Record 19'],
+            'search' => ['value' => 'Record 19'],
         ]);
 
         $crawler->assertJson([
@@ -96,10 +96,10 @@ class CollectionEngineTest extends TestCase
             'columns' => [
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'order'   => [['column' => 0, 'dir' => 'asc']],
-            'start'   => 0,
-            'length'  => 10,
-            'draw'    => 1,
+            'order'  => [['column' => 0, 'dir' => 'asc']],
+            'start'  => 0,
+            'length' => 10,
+            'draw'   => 1,
         ]);
 
         $collection = collect([
@@ -148,13 +148,13 @@ class CollectionEngineTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'foo',  'name' => 'foo', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'order'   => [['column' => 0, 'dir' => 'asc']],
-            'start'   => 0,
-            'search'  => [
+            'order'  => [['column' => 0, 'dir' => 'asc']],
+            'start'  => 0,
+            'search' => [
                 'value' => 'bar aaa',
             ],
-            'length'  => 10,
-            'draw'    => 1,
+            'length' => 10,
+            'draw'   => 1,
         ]);
 
         $collection = collect([

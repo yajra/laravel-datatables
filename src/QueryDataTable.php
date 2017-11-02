@@ -356,7 +356,7 @@ class QueryDataTable extends DataTableAbstract
                 break;
 
             default:
-                $sql     = ! $this->config->isCaseInsensitive()
+                $sql = ! $this->config->isCaseInsensitive()
                     ? $column . ' REGEXP ?'
                     : 'LOWER(' . $column . ') REGEXP ?';
                 $keyword = Str::lower($keyword);
@@ -582,8 +582,8 @@ class QueryDataTable extends DataTableAbstract
                     $this->applyOrderColumn($column, $orderable);
                 } else {
                     $nullsLastSql = $this->getNullsLastSql($column, $orderable['direction']);
-                    $normalSql    = $this->wrap($column) . ' ' . $orderable['direction'];
-                    $sql          = $this->nullsLast ? $nullsLastSql : $normalSql;
+                    $normalSql = $this->wrap($column) . ' ' . $orderable['direction'];
+                    $sql = $this->nullsLast ? $nullsLastSql : $normalSql;
                     $this->query->orderByRaw($sql);
                 }
             });
