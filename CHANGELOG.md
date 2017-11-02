@@ -13,6 +13,7 @@
 - Styling phpdoc for facade. [#1489], credits to [@ElfSundae](https://github.com/ElfSundae).
 - Apply StyleCI fixes. [#1485], [#1483].
 - Patch docs. [#1492]
+- Add StyleCI integration. [#1484]
 
 ### [v8.3.1] - 2017-10-27
 - Fix filtered records total when using filterColumn. [#1473], credits to [@wuwx](https://github.com/wuwx).
@@ -145,6 +146,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1489]: https://github.com/yajra/laravel-datatables/pull/1489
 [#1487]: https://github.com/yajra/laravel-datatables/pull/1487
 [#1485]: https://github.com/yajra/laravel-datatables/pull/1485
+[#1484]: https://github.com/yajra/laravel-datatables/pull/1484
 [#1483]: https://github.com/yajra/laravel-datatables/pull/1483
 [#1473]: https://github.com/yajra/laravel-datatables/pull/1473
 [#1476]: https://github.com/yajra/laravel-datatables/pull/1476
