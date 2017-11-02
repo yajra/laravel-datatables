@@ -124,7 +124,7 @@ class HelperTest extends TestCase
 
     public function test_get_mixed_value()
     {
-        $data              = [
+        $data = [
             'id'         => 1,
             'name'       => 'John',
             'created_at' => '1234',
@@ -182,9 +182,9 @@ class HelperTest extends TestCase
 
         $result   = Helper::convertToArray($row);
         $expected = [
-            'id'     => 1,
-            'name'   => 'John',
-            'posts'  => [
+            'id'    => 1,
+            'name'  => 'John',
+            'posts' => [
                 'id'    => 1,
                 'title' => 'Demo',
             ],
@@ -197,7 +197,7 @@ class HelperTest extends TestCase
 
     public function test_transform()
     {
-        $data     = [
+        $data = [
             [
                 'id'         => 1,
                 'author'     => 'John',
