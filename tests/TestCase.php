@@ -5,8 +5,9 @@ namespace Yajra\DataTables\Tests;
 use Yajra\DataTables\Tests\Models\Role;
 use Yajra\DataTables\Tests\Models\User;
 use Illuminate\Database\Schema\Blueprint;
+use Orchestra\Testbench\TestCase as BaseTestCase;
 
-abstract class TestCase extends \Orchestra\Testbench\TestCase
+abstract class TestCase extends BaseTestCase
 {
     protected function setUp()
     {
