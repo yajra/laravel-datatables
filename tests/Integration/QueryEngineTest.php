@@ -34,7 +34,7 @@ class QueryEngineTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'search'  => ['value' => 'Record-19'],
+            'search' => ['value' => 'Record-19'],
         ]);
 
         $crawler->assertJson([
@@ -52,7 +52,7 @@ class QueryEngineTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'search'  => ['value' => 'Record-19 Email-19'],
+            'search' => ['value' => 'Record-19 Email-19'],
         ]);
 
         $crawler->assertJson([
@@ -125,7 +125,7 @@ class QueryEngineTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'search'  => ['value' => 'Record-19'],
+            'search' => ['value' => 'Record-19'],
         ]);
 
         $crawler->assertJson([
@@ -144,7 +144,7 @@ class QueryEngineTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'search'  => ['value' => 'Record-19'],
+            'search' => ['value' => 'Record-19'],
         ]);
 
         $crawler->assertJson([
@@ -165,7 +165,7 @@ class QueryEngineTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'search'  => ['value' => 'Record-19'],
+            'search' => ['value' => 'Record-19'],
         ]);
 
         $crawler->assertJson([
