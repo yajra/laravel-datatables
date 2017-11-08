@@ -53,7 +53,7 @@ return [
             Illuminate\Database\Eloquent\Builder::class,
             Illuminate\Database\Eloquent\Relations\Relation::class,
         ],
-        'query'      => Illuminate\Database\Query\Builder::class,
+        'query' => Illuminate\Database\Query\Builder::class,
         'collection' => [
             'array',
             Illuminate\Support\Collection::class,
