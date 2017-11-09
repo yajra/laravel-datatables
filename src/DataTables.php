@@ -3,6 +3,7 @@
 namespace Yajra\DataTables;
 
 use Exception;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class DataTables
@@ -84,7 +85,7 @@ class DataTables
      */
     protected function createDataTable($engine, $source)
     {
-        $class = class_exists($engine) ? $engine : config("datatables.engines.$engine");
+        $class = class_exists($engine) ? $engine : Arr::get(config('datatables.engines'), $engine);
 
         if (! $class) {
             throw new Exception("Unsupported DataTable engine [$engine]");
