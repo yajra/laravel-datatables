@@ -70,7 +70,7 @@ class DataTables
             if ($source instanceof $type) {
                 if (! isset($tmpType) || is_subclass_of($type, $tmpType)) {
                     $tmpType = $type;
-                    $result = $engine;
+                    $result  = $engine;
                 }
             }
         }
