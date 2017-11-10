@@ -5,6 +5,7 @@ namespace Yajra\DataTables;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
 
 class DataTables
 {
@@ -44,35 +45,37 @@ class DataTables
      */
     public function make($source)
     {
-        foreach (config('datatables.builders') as $engine => $types) {
-            foreach ((array) $types as $type) {
-                if ($this->checkType($source, $type)) {
-                    return $this->createDataTable($engine, $source);
+        if (is_array($source)) {
+            $source = new Collection($source);
+        }
+
+        if ($engine = $this->getEngineForSource($source)) {
+            return $this->createDataTable($engine, $source);
+        }
+
+        throw new Exception('No available engine for ' . get_class($source));
+    }
+
+    /**
+     * Get the optimum engine for the given data source.
+     *
+     * @param  mixed  $source
+     * @return string|null
+     */
+    protected function getEngineForSource($source)
+    {
+        $result = null;
+
+        foreach (config('datatables.builders') as $type => $engine) {
+            if ($source instanceof $type) {
+                if (! isset($tmpType) || is_subclass_of($type, $tmpType)) {
+                    $tmpType = $type;
+                    $result = $engine;
                 }
             }
         }
 
-        throw new Exception('No available engine for ' . gettype($source));
-    }
-
-    /**
-     * Check whether a variable is the given type.
-     *
-     * @param  mixed  $var
-     * @param  string  $type
-     * @return bool
-     */
-    protected function checkType($var, $type)
-    {
-        if (is_object($var)) {
-            return $var instanceof $type;
-        }
-
-        if (function_exists($func = "is_$type")) {
-            return $func($var);
-        }
-
-        return false;
+        return $result;
     }
 
     /**
@@ -85,13 +88,11 @@ class DataTables
      */
     protected function createDataTable($engine, $source)
     {
-        $class = class_exists($engine) ? $engine : Arr::get(config('datatables.engines'), $engine);
-
-        if (! $class) {
-            throw new Exception("Unsupported DataTable engine [$engine]");
+        if ($class = class_exists($engine) ? $engine : Arr::get(config('datatables.engines'), $engine)) {
+            return new $class($source);
         }
 
-        return new $class($source);
+        throw new Exception("Unsupported DataTable engine [$engine]");
     }
 
     /**

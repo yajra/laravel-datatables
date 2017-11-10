@@ -46,18 +46,12 @@ return [
 
     /*
      * DataTables accepted builder to engine mapping.
-     * This is where you can override which engine a builder should use.
      */
     'builders' => [
-        'eloquent' => [
-            Illuminate\Database\Eloquent\Builder::class,
-            Illuminate\Database\Eloquent\Relations\Relation::class,
-        ],
-        'query'      => Illuminate\Database\Query\Builder::class,
-        'collection' => [
-            'array',
-            Illuminate\Support\Collection::class,
-        ],
+        Illuminate\Database\Eloquent\Builder::class            => 'eloquent',
+        Illuminate\Database\Eloquent\Relations\Relation::class => 'eloquent',
+        Illuminate\Database\Query\Builder::class               => 'query',
+        Illuminate\Support\Collection::class                   => 'collection',
     ],
 
     /*
