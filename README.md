@@ -90,7 +90,7 @@ To enable debugging mode, just set `APP_DEBUG=true` and the package will include
 Please avoid using `php artisan serve` when developing with the package. 
 There are known bugs when using this where Laravel randomly returns a redirect and 401 (Unauthorized) if the route requires authentication and a 404 NotFoundHttpException on valid routes.
 
-It is advise to use [Homestead](https://laravel.com/docs/5.4/homestead) or [Valet](https://laravel.com/docs/5.4/valet) when working with the package.
+It is advised to use [Homestead](https://laravel.com/docs/5.4/homestead) or [Valet](https://laravel.com/docs/5.4/valet) when working with the package.
 
 ## Contributing
 
