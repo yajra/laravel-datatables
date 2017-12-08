@@ -159,7 +159,15 @@ class CollectionEngine extends BaseEngine
                     }
 
                     if ($this->isCaseInsensitive()) {
-                        $found[] = Str::contains(Str::lower($value), Str::lower($keyword));
+
+                        if(is_array($value)){
+                            foreach ($value as $v) {
+                                $found[] = Str::contains(Str::lower($v), Str::lower($keyword));
+                            };
+                        } else{
+                            $found[] = Str::contains(Str::lower($value), Str::lower($keyword));
+                        }
+
                     } else {
                         $found[] = Str::contains($value, $keyword);
                     }
