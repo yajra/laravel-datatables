@@ -8,6 +8,9 @@
 
 ##Change Log
 
+### v6.29.2 - 2017-12-08
+- Fix issue #932. #1543, credits to @abiodunjames.
+
 ### v6.29.1 - 2017-09-26
 - Return true for true, true(string) and 1 in isColumnSearchable method #1395, credits to @joeshee.
 
@@ -73,7 +76,7 @@
 - Update license to 2017.
 
 ### v6.22.6 - 2017-01-04
-- Fix print header issue when two row are same value. 
+- Fix print header issue when two row are same value.
 - PR #913, credits to @dineshrabara.
 
 ### v6.22.5 - 2016-12-07
