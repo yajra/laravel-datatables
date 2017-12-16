@@ -3,6 +3,7 @@ preset: laravel
 enabled:
   - align_double_arrow
   - align_equals
+  - no_useless_else
 
 disabled:
   - concat_without_spaces
