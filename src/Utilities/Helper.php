@@ -19,20 +19,20 @@ class Helper
     {
         if (self::isItemOrderInvalid($item, $array)) {
             return array_merge($array, [$item['name'] => $item['content']]);
-        } else {
-            $count = 0;
-            $last  = $array;
-            $first = [];
-            foreach ($array as $key => $value) {
-                if ($count == $item['order']) {
-                    return array_merge($first, [$item['name'] => $item['content']], $last);
-                }
+        }
 
-                unset($last[$key]);
-                $first[$key] = $value;
-
-                $count++;
+        $count = 0;
+        $last  = $array;
+        $first = [];
+        foreach ($array as $key => $value) {
+            if ($count == $item['order']) {
+                return array_merge($first, [$item['name'] => $item['content']], $last);
             }
+
+            unset($last[$key]);
+            $first[$key] = $value;
+
+            $count++;
         }
     }
 
@@ -259,9 +259,9 @@ class Helper
         if (! empty($matches)) {
             if ($wantsAlias) {
                 return array_pop($matches);
-            } else {
-                return array_shift($matches);
             }
+
+            return array_shift($matches);
         } elseif (strpos($str, '.')) {
             $array = explode('.', $str);
 
