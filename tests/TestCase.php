@@ -57,7 +57,7 @@ abstract class TestCase extends BaseTestCase
         $adminRole = Role::create(['role' => 'Administrator']);
         $userRole  = Role::create(['role' => 'User']);
 
-        collect(range(1, 20))->each(function ($i) use ($adminRole, $userRole) {
+        collect(range(1, 20))->each(function ($i) use ($userRole) {
             /** @var User $user */
             $user = User::query()->create([
                 'name'  => 'Record-' . $i,

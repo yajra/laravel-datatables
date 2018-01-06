@@ -123,7 +123,7 @@ class RequestTest extends TestCase
      */
     protected function getRequest()
     {
-        $request = new Request(app('request'));
+        $request = new Request();
 
         return $request;
     }

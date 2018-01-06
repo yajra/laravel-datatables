@@ -137,6 +137,11 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     protected $config;
 
     /**
+     * @var mixed
+     */
+    protected $serializer;
+
+    /**
      * Can the DataTable engine be created with these parameters.
      *
      * @param mixed $source
