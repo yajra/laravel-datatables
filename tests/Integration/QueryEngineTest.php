@@ -2,9 +2,9 @@
 
 namespace Yajra\DataTables\Tests\Integration;
 
-use DB;
 use Yajra\DataTables\DataTables;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\QueryDataTable;
 use Yajra\DataTables\Tests\TestCase;
 use Illuminate\Database\Query\Builder;
