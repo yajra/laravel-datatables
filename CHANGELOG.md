@@ -13,7 +13,7 @@
 - Fixes from PHPStan. [#1569], credits to [@carusogabriel].
 - Enable no_useless_else. [#1554], credits to [@carusogabriel].
 - Remove useless else statements. [#1553], credits to [@carusogabriel].
-- Fix typo. [#1536]
+- Fix typo. [#1536], credits to [@Oussama-Tn].
 - Test against PHP 7.2. [#1532], credits to [@carusogabriel].
 - Update TestCase with PSR-2. [#1496], credits to [@gabriel-caruso].
 
@@ -221,3 +221,4 @@ return (new CollectionDataTable(User::all())->toJson();
 [@gabriel-caruso]: https://github.com/gabriel-caruso
 [@pimlie]: https://github.com/pimlie
 [@jiwom]: https://github.com/jiwom
+[@Oussama-Tn]: https://github.com/Oussama-Tn
