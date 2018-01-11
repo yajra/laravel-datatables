@@ -137,6 +137,11 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     protected $config;
 
     /**
+     * @var mixed
+     */
+    protected $serializer;
+
+    /**
      * Can the DataTable engine be created with these parameters.
      *
      * @param mixed $source
@@ -705,7 +710,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
 
         return new JsonResponse([
             'draw'            => (int) $this->request->input('draw'),
-            'recordsTotal'    => (int) $this->totalRecords,
+            'recordsTotal'    => $this->totalRecords,
             'recordsFiltered' => 0,
             'data'            => [],
             'error'           => $error ? __($error) : "Exception Message:\n\n" . $exception->getMessage(),

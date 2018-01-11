@@ -213,10 +213,9 @@ class CollectionDataTable extends DataTableAbstract
      */
     protected function globalSearch($keyword)
     {
-        $columns = $this->request->columns();
         $keyword = $this->config->isCaseInsensitive() ? Str::lower($keyword) : $keyword;
 
-        $this->collection = $this->collection->filter(function ($row) use ($columns, $keyword) {
+        $this->collection = $this->collection->filter(function ($row) use ($keyword) {
             $this->isFilterApplied = true;
 
             $data = $this->serialize($row);
