@@ -8,6 +8,11 @@
 
 ### [Unreleased]
 
+### [v8.4.0] - 2018-02-11
+
+- Added Laravel 5.6 Support [#1609], credits to [@marcoocram]
+- Fix [#1617]
+
 ### [v8.3.3] - 2018-01-11
 
 - Fixes from PHPStan. [#1569], credits to [@carusogabriel].
@@ -162,7 +167,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.3.3...8.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.4.0...8.0
+[v8.4.0]: https://github.com/yajra/laravel-datatables/compare/v8.3.3...v8.4.0
 [v8.3.3]: https://github.com/yajra/laravel-datatables/compare/v8.3.2...v8.3.3
 [v8.3.2]: https://github.com/yajra/laravel-datatables/compare/v8.3.1...v8.3.2
 [v8.3.1]: https://github.com/yajra/laravel-datatables/compare/v8.3.0...v8.3.1
@@ -175,6 +181,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [v8.0.1]: https://github.com/yajra/laravel-datatables/compare/v8.0.0...v8.0.1
 [v8.0.0]: https://github.com/yajra/laravel-datatables/compare/v7.10.1...v8.0.0
 
+[#1609]: https://github.com/yajra/laravel-datatables/pull/1609
 [#1492]: https://github.com/yajra/laravel-datatables/pull/1492
 [#1489]: https://github.com/yajra/laravel-datatables/pull/1489
 [#1487]: https://github.com/yajra/laravel-datatables/pull/1487
@@ -207,6 +214,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1532]: https://github.com/yajra/laravel-datatables/pull/1532
 [#1496]: https://github.com/yajra/laravel-datatables/pull/1496
 
+[#1617]: https://github.com/yajra/laravel-datatables/issues/1617
 [#1294]: https://github.com/yajra/laravel-datatables/issues/1294
 [#1068]: https://github.com/yajra/laravel-datatables/issues/1068
 [#1234]: https://github.com/yajra/laravel-datatables/issues/1234
@@ -216,6 +224,7 @@ return (new CollectionDataTable(User::all())->toJson();
 
 [laravel-datatables-fractal]: https://github.com/yajra/laravel-datatables-fractal
 
+[@marcoocram]: https://github.com/marcoocram
 [@ElfSundae]: https://github.com/ElfSundae
 [@carusogabriel]: https://github.com/carusogabriel
 [@gabriel-caruso]: https://github.com/gabriel-caruso
