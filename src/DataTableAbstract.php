@@ -3,8 +3,8 @@
 namespace Yajra\DataTables;
 
 use Illuminate\Support\Str;
-use Illuminate\Http\JsonResponse;
 use Psr\Log\LoggerInterface;
+use Illuminate\Http\JsonResponse;
 use Yajra\DataTables\Utilities\Helper;
 use Illuminate\Support\Traits\Macroable;
 use Yajra\DataTables\Contracts\DataTable;
