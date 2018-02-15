@@ -161,16 +161,16 @@ class EloquentDataTable extends QueryDataTable
                     break;
 
                 case $model instanceof HasOneOrMany:
-                    $table   = $model->getRelated()->getTable();
-                    $foreign = $model->getQualifiedForeignKeyName();
-                    $other   = $model->getQualifiedParentKeyName();
+                    $table     = $model->getRelated()->getTable();
+                    $foreign   = $model->getQualifiedForeignKeyName();
+                    $other     = $model->getQualifiedParentKeyName();
                     $deletedAt = $this->checkSoftDeletesOnModel($model->getRelated());
                     break;
 
                 case $model instanceof BelongsTo:
-                    $table   = $model->getRelated()->getTable();
-                    $foreign = $model->getQualifiedForeignKey();
-                    $other   = $model->getQualifiedOwnerKeyName();
+                    $table     = $model->getRelated()->getTable();
+                    $foreign   = $model->getQualifiedForeignKey();
+                    $other     = $model->getQualifiedOwnerKeyName();
                     $deletedAt = $this->checkSoftDeletesOnModel($model->getRelated());
                     break;
 
@@ -184,7 +184,8 @@ class EloquentDataTable extends QueryDataTable
         return $table . '.' . $relationColumn;
     }
 
-    protected function checkSoftDeletesOnModel($model){
+    protected function checkSoftDeletesOnModel($model)
+    {
         if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($model))) {
             return $model->getDeletedAtColumn();
         }
