@@ -187,7 +187,7 @@ class EloquentDataTable extends QueryDataTable
     protected function checkSoftDeletesOnModel($model)
     {
         if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($model))) {
-            return $model->getDeletedAtColumn();
+            return $model->getQualifiedDeletedAtColumn();
         }
 
         return false;
