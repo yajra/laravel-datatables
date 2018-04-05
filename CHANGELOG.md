@@ -8,6 +8,10 @@
 
 ## Change Log
 
+### v7.10.2 - 04-05-2018
+
+- Fixed a bug for "undefined index" errors. #1674
+
 ### v7.10.1 - 08-31-2017
 - Flatten array before comparing then revert to original form. #1340
 - Fix #1337, sorting on collection relation.
