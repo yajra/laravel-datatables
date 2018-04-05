@@ -8,6 +8,9 @@
 
 ##Change Log
 
+### v6.29.3 - 2018-04-05
+- Fixed a bug for "undefined index" errors. #1675, credits to @redelschaap.
+
 ### v6.29.2 - 2017-12-08
 - Fix issue #932. #1543, credits to @abiodunjames.
 
