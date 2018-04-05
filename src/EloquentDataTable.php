@@ -214,7 +214,7 @@ class EloquentDataTable extends QueryDataTable
         }
 
         if ($deletedAt !== false) {
-            $this->getBaseQueryBuilder()->whereNull($deletedAt);
+            $this->getBaseQueryBuilder()->whereNull($table . '.' . $deletedAt);
         }
     }
 }
