@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v8.4.3] - 2018-04-05
+
+- [8.0] Fix ambiguous column 'deleted_at'. [#1688], credits to [@sskl].
+
 ### [v8.4.2] - 2018-03-29
 
 - Check SoftDeletes on HasOne or BelongsTo relations [#1628], credits to [@drahosistvan].
@@ -177,7 +181,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.4.2...8.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.4.3...8.0
+[v8.4.3]: https://github.com/yajra/laravel-datatables/compare/v8.4.2...v8.4.3
 [v8.4.2]: https://github.com/yajra/laravel-datatables/compare/v8.4.1...v8.4.2
 [v8.4.1]: https://github.com/yajra/laravel-datatables/compare/v8.4.0...v8.4.1
 [v8.4.0]: https://github.com/yajra/laravel-datatables/compare/v8.3.3...v8.4.0
@@ -193,6 +198,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [v8.0.1]: https://github.com/yajra/laravel-datatables/compare/v8.0.0...v8.0.1
 [v8.0.0]: https://github.com/yajra/laravel-datatables/compare/v7.10.1...v8.0.0
 
+[#1688]: https://github.com/yajra/laravel-datatables/pull/1688
 [#1658]: https://github.com/yajra/laravel-datatables/pull/1658
 [#1628]: https://github.com/yajra/laravel-datatables/pull/1628
 [#1624]: https://github.com/yajra/laravel-datatables/pull/1624
@@ -240,6 +246,7 @@ return (new CollectionDataTable(User::all())->toJson();
 
 [laravel-datatables-fractal]: https://github.com/yajra/laravel-datatables-fractal
 
+[@sskl]: https://github.com/sskl
 [@drbyte]: https://github.com/drbyte
 [@drahosistvan]: https://github.com/drahosistvan
 [@LEI]: https://github.com/LEI
