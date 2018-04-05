@@ -222,10 +222,13 @@ class Helper
     public static function convertToArray($row)
     {
         $data = $row instanceof Arrayable ? $row->toArray() : (array) $row;
-        foreach (array_keys($data) as $key) {
-            if (is_object($data[$key]) || is_array($data[$key])) {
-                $data[$key] = self::convertToArray($data[$key]);
+
+        foreach ($data as &$value) {
+            if (is_object($value) || is_array($value)) {
+                $value = self::convertToArray($value);
             }
+
+            unset($value);
         }
 
         return $data;
