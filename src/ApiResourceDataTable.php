@@ -39,7 +39,7 @@ class ApiResourceDataTable extends DataTableAbstract
      * Factory method, create and return an instance for the DataTable engine.
      *
      * @param array|Illuminate\Http\Resources\Json\AnonymousResourceCollection $source
-     * @return CollectionDataTable|DataTableAbstract
+     * @return ApiResourceDataTable|DataTableAbstract
      */
     public static function create($source)
     {
@@ -59,9 +59,9 @@ class ApiResourceDataTable extends DataTableAbstract
     {
         $this->request    = app('datatables.request');
         $this->config     = app('datatables.config');
-        $this->collection = $collection;
-        $this->original   = $collection;
-        $this->columns    = array_keys($this->serialize($collection->first()));
+        $this->collection = collect($collection->toArray($this->request));
+        $this->original   = collect($collection->toArray($this->request));
+        $this->columns    = array_keys($this->serialize(collect($collection->toArray($this->request))->first()));
     }
 
     /**
