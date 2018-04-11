@@ -6,9 +6,10 @@ use Yajra\DataTables\DataTables;
 use Illuminate\Http\JsonResponse;
 use Yajra\DataTables\Tests\TestCase;
 use Yajra\DataTables\Tests\Models\User;
-use Yajra\DataTables\CollectionDataTable;
+use Yajra\DataTables\ApiResourceDataTable;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
+use Yajra\DataTables\Tests\Http\Resources\UserResource;
 
 class ApiResourceEngineTest extends TestCase
 {
@@ -22,6 +23,23 @@ class ApiResourceEngineTest extends TestCase
             'draw'            => 0,
             'recordsTotal'    => 20,
             'recordsFiltered' => 20,
+        ]);
+    }
+
+    /** @test */
+    public function it_only_returns_records_in_structure_defined_in_resource()
+    {
+        $crawler = $this->call('GET', '/resource/users');
+        $crawler->assertJsonStructure([
+            'draw',
+            'recordsTotal',
+            'recordsFiltered',
+            'data' => [
+                [
+                    'email',
+                    'name'
+                ],
+            ]
         ]);
     }
 
@@ -44,152 +62,20 @@ class ApiResourceEngineTest extends TestCase
     }
 
     /** @test */
-    public function it_accepts_a_model_collection_using_of_factory()
+    public function it_accepts_a_resource_using_of_factory()
     {
-        $dataTable = DataTables::of(User::all());
+        $dataTable = DataTables::of(UserResource::collection(User::all()));
         $response  = $dataTable->make(true);
-        $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
+        $this->assertInstanceOf(ApiResourceDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
     /** @test */
-    public function it_accepts_a_collection_using_of_factory()
+    public function it_accepts_a_resource_using_facade()
     {
-        $dataTable = DataTables::of(collect());
+        $dataTable = DatatablesFacade::of(UserResource::collection(User::all()));
         $response  = $dataTable->make(true);
-        $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
-        $this->assertInstanceOf(JsonResponse::class, $response);
-    }
-
-    /** @test */
-    public function it_accepts_a_model_collection_using_facade()
-    {
-        $dataTable = DatatablesFacade::of(User::all());
-        $response  = $dataTable->make(true);
-        $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
-        $this->assertInstanceOf(JsonResponse::class, $response);
-    }
-
-    /** @test */
-    public function it_accepts_a_collection_using_facade()
-    {
-        $dataTable = DatatablesFacade::of(collect());
-        $response  = $dataTable->make(true);
-        $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
-        $this->assertInstanceOf(JsonResponse::class, $response);
-    }
-
-    /** @test */
-    public function it_accepts_a_model_using_ioc_container()
-    {
-        $dataTable = app('datatables')->collection(User::all());
-        $response  = $dataTable->make(true);
-        $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
-        $this->assertInstanceOf(JsonResponse::class, $response);
-    }
-
-    /** @test */
-    public function it_can_sort_case_insensitive_strings()
-    {
-        config()->set('app.debug', false);
-        request()->merge([
-            'columns' => [
-                ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
-            ],
-            'order'  => [['column' => 0, 'dir' => 'asc']],
-            'start'  => 0,
-            'length' => 10,
-            'draw'   => 1,
-        ]);
-
-        $collection = collect([
-            ['name' => 'ABC'],
-            ['name' => 'BCD'],
-            ['name' => 'ZXY'],
-            ['name' => 'aaa'],
-            ['name' => 'bbb'],
-            ['name' => 'zzz'],
-        ]);
-
-        $dataTable = app('datatables')->collection($collection);
-        /** @var JsonResponse $response */
-        $response = $dataTable->make('true');
-
-        $this->assertEquals([
-            'draw'            => 1,
-            'recordsTotal'    => 6,
-            'recordsFiltered' => 6,
-            'data'            => [
-                ['name' => 'aaa'],
-                ['name' => 'ABC'],
-                ['name' => 'bbb'],
-                ['name' => 'BCD'],
-                ['name' => 'ZXY'],
-                ['name' => 'zzz'],
-            ],
-        ], $response->getData(true));
-    }
-
-    /** @test */
-    public function it_accepts_a_model_using_ioc_container_factory()
-    {
-        $dataTable = app('datatables')->of(User::all());
-        $response  = $dataTable->make(true);
-        $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
-        $this->assertInstanceOf(JsonResponse::class, $response);
-    }
-
-    /** @test */
-    public function it_can_search_on_added_columns()
-    {
-        config()->set('app.debug', false);
-        request()->merge([
-            'columns' => [
-                ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
-                ['data' => 'foo',  'name' => 'foo', 'searchable' => 'true', 'orderable' => 'true'],
-            ],
-            'order'  => [['column' => 0, 'dir' => 'asc']],
-            'start'  => 0,
-            'search' => [
-                'value' => 'bar aaa',
-            ],
-            'length' => 10,
-            'draw'   => 1,
-        ]);
-
-        $collection = collect([
-            ['name' => 'ABC'],
-            ['name' => 'BCD'],
-            ['name' => 'ZXY'],
-            ['name' => 'aaa'],
-            ['name' => 'bbb'],
-            ['name' => 'zzz'],
-        ]);
-
-        $dataTable = app('datatables')->collection($collection);
-        /** @var JsonResponse $response */
-        $response = $dataTable->addColumn('foo', 'bar {{$name}}')->make('true');
-
-        $this->assertEquals([
-            'draw'            => 1,
-            'recordsTotal'    => 6,
-            'recordsFiltered' => 1,
-            'data'            => [
-                ['name' => 'aaa', 'foo' => 'bar aaa'],
-            ],
-        ], $response->getData(true));
-    }
-
-    /** @test */
-    public function it_accepts_array_data_source()
-    {
-        $source = [
-            ['id' => 1, 'name' => 'foo'],
-            ['id' => 2, 'name' => 'bar'],
-        ];
-        $dataTable = app('datatables')->of($source);
-        $response  = $dataTable->make(true);
-        $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
+        $this->assertInstanceOf(ApiResourceDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
@@ -198,7 +84,7 @@ class ApiResourceEngineTest extends TestCase
         parent::setUp();
 
         $this->app['router']->get('/resource/users', function (DataTables $datatables) {
-            return $datatables->collection(User::all())->make('true');
+            return $datatables->resource(UserResource::collection(User::all()))->make('true');
         });
     }
 }
