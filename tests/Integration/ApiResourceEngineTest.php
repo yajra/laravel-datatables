@@ -8,8 +8,8 @@ use Yajra\DataTables\Tests\TestCase;
 use Yajra\DataTables\Tests\Models\User;
 use Yajra\DataTables\ApiResourceDataTable;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
 use Yajra\DataTables\Tests\Http\Resources\UserResource;
+use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
 
 class ApiResourceEngineTest extends TestCase
 {
@@ -37,9 +37,9 @@ class ApiResourceEngineTest extends TestCase
             'data' => [
                 [
                     'email',
-                    'name'
+                    'name',
                 ],
-            ]
+            ],
         ]);
     }
 

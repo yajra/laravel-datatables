@@ -22,7 +22,7 @@ abstract class TestCase extends BaseTestCase
     {
         /** @var \Illuminate\Database\Schema\Builder $schemaBuilder */
         $schemaBuilder = $this->app['db']->connection()->getSchemaBuilder();
-        if(!$schemaBuilder->hasTable('users')) {
+        if (! $schemaBuilder->hasTable('users')) {
             $schemaBuilder->create('users', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name');
@@ -30,7 +30,7 @@ abstract class TestCase extends BaseTestCase
                 $table->timestamps();
             });
         }
-        if(!$schemaBuilder->hasTable('posts')) {
+        if (! $schemaBuilder->hasTable('posts')) {
             $schemaBuilder->create('posts', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('title');
@@ -38,7 +38,7 @@ abstract class TestCase extends BaseTestCase
                 $table->timestamps();
             });
         }
-        if(!$schemaBuilder->hasTable('hearts')) {
+        if (! $schemaBuilder->hasTable('hearts')) {
             $schemaBuilder->create('hearts', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('user_id');
@@ -46,14 +46,14 @@ abstract class TestCase extends BaseTestCase
                 $table->timestamps();
             });
         }
-        if(!$schemaBuilder->hasTable('roles')) {
+        if (! $schemaBuilder->hasTable('roles')) {
             $schemaBuilder->create('roles', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('role');
                 $table->timestamps();
             });
         }
-        if(!$schemaBuilder->hasTable('role_user')) {
+        if (! $schemaBuilder->hasTable('role_user')) {
             $schemaBuilder->create('role_user', function (Blueprint $table) {
                 $table->unsignedInteger('role_id');
                 $table->unsignedInteger('user_id');

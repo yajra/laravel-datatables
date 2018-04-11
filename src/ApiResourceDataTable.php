@@ -2,11 +2,11 @@
 
 namespace Yajra\DataTables;
 
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ApiResourceDataTable extends DataTableAbstract
 {
