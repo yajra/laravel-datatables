@@ -72,6 +72,9 @@ class ApiResourceDataTable extends CollectionDataTable
      */
     public function totalCount()
     {
-        return $this->totalRecords ? $this->totalRecords : $this->original->resource->total();
+        if($this->original->resource instanceof LengthAwarePaginator)
+            return $this->totalRecords ? $this->totalRecords : $this->original->resource->total();
+        else
+            return $this->totalRecords ? $this->totalRecords : $this->collection->count();
     }
 }
