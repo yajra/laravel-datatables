@@ -11,14 +11,14 @@ class ApiResourceDataTable extends CollectionDataTable
     /**
      * Collection object.
      *
-     * @var Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @var \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public $collection;
 
     /**
      * Collection object.
      *
-     * @var Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @var \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public $original;
 
@@ -30,28 +30,24 @@ class ApiResourceDataTable extends CollectionDataTable
      */
     public static function canCreate($source)
     {
-        return is_array($source) || $source instanceof AnonymousResourceCollection;
+        return $source instanceof AnonymousResourceCollection;
     }
 
     /**
      * Factory method, create and return an instance for the DataTable engine.
      *
-     * @param array|Illuminate\Http\Resources\Json\AnonymousResourceCollection $source
+     * @param \Illuminate\Http\Resources\Json\AnonymousResourceCollection $source
      * @return ApiResourceDataTable|DataTableAbstract
      */
     public static function create($source)
     {
-        if (is_array($source)) {
-            $source = new AnonymousResourceCollection($source);
-        }
-
         return parent::create($source);
     }
 
     /**
      * CollectionEngine constructor.
      *
-     * @param Illuminate\Http\Resources\Json\AnonymousResourceCollection $collection
+     * @param \Illuminate\Http\Resources\Json\AnonymousResourceCollection $collection
      */
     public function __construct(AnonymousResourceCollection $collection)
     {
@@ -77,5 +73,15 @@ class ApiResourceDataTable extends CollectionDataTable
         } else {
             return $this->totalRecords ? $this->totalRecords : $this->collection->count();
         }
+    }
+
+    /**
+     * Count results.
+     *
+     * @return int
+     */
+    public function count()
+    {
+        return $this->collection->count() > $this->totalRecords ? $this->totalRecords : $this->collection->count();
     }
 }
