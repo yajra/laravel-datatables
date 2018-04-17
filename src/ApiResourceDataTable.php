@@ -75,13 +75,17 @@ class ApiResourceDataTable extends CollectionDataTable
         }
     }
 
-    /**
-     * Count results.
-     *
-     * @return int
-     */
-    public function count()
-    {
-        return $this->collection->count() > $this->totalRecords ? $this->totalRecords : $this->collection->count();
-    }
+    // /**
+    //  * Count results.
+    //  *
+    //  * @return int
+    //  */
+    // public function count()
+    // {
+    //     if($this->original->resource instanceof LengthAwarePaginator) {
+    //         return intval($this->request->length) == 0 ? $this->collection->count() : intval($this->request->length);
+    //     } else {
+    //         return $this->collection->count() > $this->totalRecords ? $this->totalRecords : $this->collection->count();
+    //     }
+    // }
 }
