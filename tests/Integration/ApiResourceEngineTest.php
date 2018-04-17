@@ -94,7 +94,7 @@ class ApiResourceEngineTest extends TestCase
         $crawler = $this->call('GET', '/resource/users_p');
         $crawler->assertJson([
              'draw'            => 0,
-             'recordsTotal'    => 20,
+             'recordsTotal'    => 10,
              'recordsFiltered' => 10,
          ]);
     }
