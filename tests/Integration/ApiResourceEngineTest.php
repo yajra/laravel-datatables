@@ -79,12 +79,36 @@ class ApiResourceEngineTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
+    /** @test */
+    public function it_accepts_a_pagination_resource()
+    {
+        $dataTable = DataTables::of(UserResource::collection(User::paginate(10)));
+        $response = $dataTable->make(true);
+        $this->assertInstanceOf(ApiResourceDataTable::class, $dataTable);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+     /** @test */
+     public function it_returns_only_paginated_records()
+     {
+         $crawler = $this->call('GET', '/resource/users_p');
+         $crawler->assertJson([
+             'draw'            => 0,
+             'recordsTotal'    => 20,
+             'recordsFiltered' => 10,
+         ]);
+     }
+
     protected function setUp()
     {
         parent::setUp();
 
         $this->app['router']->get('/resource/users', function (DataTables $datatables) {
             return $datatables->resource(UserResource::collection(User::all()))->make('true');
+        });
+
+        $this->app['router']->get('/resource/users_p', function (DataTables $datatables) {
+            return $datatables->resource(UserResource::collection(User::paginate(10)))->make('true');
         });
     }
 }
