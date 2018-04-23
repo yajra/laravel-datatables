@@ -123,7 +123,7 @@ class EloquentDataTable extends QueryDataTable
     protected function isNotEagerLoaded($relation)
     {
         return ! $relation
-            || ! in_array($relation, array_keys($this->query->getEagerLoads()))
+            || ! array_key_exists($relation, $this->query->getEagerLoads())
             || $relation === $this->query->getModel()->getTable();
     }
 
