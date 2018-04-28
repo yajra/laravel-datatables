@@ -30,7 +30,7 @@ return datatables(User::all())->toJson();
 
 ## Requirements
 - [PHP >= 7.0](http://php.net/)
-- [Laravel 5.4|5.5](https://github.com/laravel/framework)
+- [Laravel 5.4|5.5|5.6](https://github.com/laravel/framework)
 - [jQuery DataTables v1.10.x](http://datatables.net/)
 
 ## Documentations
@@ -50,6 +50,7 @@ return datatables(User::all())->toJson();
  5.3.x    | 6.x
  5.4.x    | 7.x, 8.x
  5.5.x    | 8.x
+ 5.6.x    | 8.x
 
 ## DataTables 8.x Upgrade Guide
 There are breaking changes since DataTables v8.x.
