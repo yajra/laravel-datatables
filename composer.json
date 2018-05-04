@@ -27,7 +27,8 @@
   "suggest": {
     "yajra/laravel-datatables-buttons": "Plugin for server-side exporting of dataTable.",
     "yajra/laravel-datatables-html": "Plugin for server-side HTML builder of dataTable.",
-    "yajra/laravel-datatables-fractal": "Plugin for server-side response using Fractal."
+    "yajra/laravel-datatables-fractal": "Plugin for server-side response using Fractal.",
+    "yajra/laravel-datatables-editor": "Plugin to use Datatables Editor (requires a license)."
   },
   "autoload": {
     "psr-4": {
