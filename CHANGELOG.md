@@ -8,6 +8,12 @@
 
 ### [Unreleased]
 
+### [v8.4.4] - 2018-05-04
+
+- Use array_key_exists instead of in_array + array_keys [#1719], credits to [@carusogabriel].
+- Adds support to Laravel 5.6 on readme, [#1724], credits to [@nunomaduro]
+- Fixed a bug for "undefined index" errors, [#1728], credits to [@redelschaap]
+
 ### [v8.4.3] - 2018-04-05
 
 - [8.0] Fix ambiguous column 'deleted_at'. [#1688], credits to [@sskl].
@@ -181,7 +187,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.4.3...8.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.4.4...8.0
+[v8.4.4]: https://github.com/yajra/laravel-datatables/compare/v8.4.3...v8.4.4
 [v8.4.3]: https://github.com/yajra/laravel-datatables/compare/v8.4.2...v8.4.3
 [v8.4.2]: https://github.com/yajra/laravel-datatables/compare/v8.4.1...v8.4.2
 [v8.4.1]: https://github.com/yajra/laravel-datatables/compare/v8.4.0...v8.4.1
@@ -198,6 +205,9 @@ return (new CollectionDataTable(User::all())->toJson();
 [v8.0.1]: https://github.com/yajra/laravel-datatables/compare/v8.0.0...v8.0.1
 [v8.0.0]: https://github.com/yajra/laravel-datatables/compare/v7.10.1...v8.0.0
 
+[#1728]: https://github.com/yajra/laravel-datatables/pull/1728
+[#1724]: https://github.com/yajra/laravel-datatables/pull/1724
+[#1719]: https://github.com/yajra/laravel-datatables/pull/1719
 [#1688]: https://github.com/yajra/laravel-datatables/pull/1688
 [#1658]: https://github.com/yajra/laravel-datatables/pull/1658
 [#1628]: https://github.com/yajra/laravel-datatables/pull/1628
@@ -257,3 +267,5 @@ return (new CollectionDataTable(User::all())->toJson();
 [@pimlie]: https://github.com/pimlie
 [@jiwom]: https://github.com/jiwom
 [@Oussama-Tn]: https://github.com/Oussama-Tn
+[@redelschaap]: https://github.com/redelschaap
+[@nunomaduro]: https://github.com/nunomaduro
