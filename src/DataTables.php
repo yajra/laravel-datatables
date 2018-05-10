@@ -127,6 +127,17 @@ class DataTables
     }
 
     /**
+     * DataTables using Collection.
+     *
+     * @param \Illuminate\Http\Resources\Json\AnonymousResourceCollection|array $collection
+     * @return DataTableAbstract|ApiResourceDataTable
+     */
+    public function resource($resource)
+    {
+        return ApiResourceDataTable::create($resource);
+    }
+
+    /**
      * Get html builder instance.
      *
      * @return \Yajra\DataTables\Html\Builder
