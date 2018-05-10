@@ -8,6 +8,11 @@
 
 ### [Unreleased]
 
+### [v8.5.0] - 2018-05-10
+
+- Support for Eloquent API Resources [#1702], credits to [@asahasrabuddhe].
+- Fixes [#1515], [#1659], [#1351].
+
 ### [v8.4.4] - 2018-05-04
 
 - Use array_key_exists instead of in_array + array_keys [#1719], credits to [@carusogabriel].
@@ -187,7 +192,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.4.4...8.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.5.0...8.0
+[v8.5.0]: https://github.com/yajra/laravel-datatables/compare/v8.4.4...v8.5.0
 [v8.4.4]: https://github.com/yajra/laravel-datatables/compare/v8.4.3...v8.4.4
 [v8.4.3]: https://github.com/yajra/laravel-datatables/compare/v8.4.2...v8.4.3
 [v8.4.2]: https://github.com/yajra/laravel-datatables/compare/v8.4.1...v8.4.2
@@ -205,6 +211,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [v8.0.1]: https://github.com/yajra/laravel-datatables/compare/v8.0.0...v8.0.1
 [v8.0.0]: https://github.com/yajra/laravel-datatables/compare/v7.10.1...v8.0.0
 
+[#1702]: https://github.com/yajra/laravel-datatables/pull/1702
 [#1728]: https://github.com/yajra/laravel-datatables/pull/1728
 [#1724]: https://github.com/yajra/laravel-datatables/pull/1724
 [#1719]: https://github.com/yajra/laravel-datatables/pull/1719
@@ -253,6 +260,9 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1353]: https://github.com/yajra/laravel-datatables/issues/1353
 [#1367]: https://github.com/yajra/laravel-datatables/issues/1367
 [#1377]: https://github.com/yajra/laravel-datatables/issues/1377
+[#1515]: https://github.com/yajra/laravel-datatables/issues/1515
+[#1659]: https://github.com/yajra/laravel-datatables/issues/1659
+[#1351]: https://github.com/yajra/laravel-datatables/issues/1351
 
 [laravel-datatables-fractal]: https://github.com/yajra/laravel-datatables-fractal
 
@@ -269,3 +279,4 @@ return (new CollectionDataTable(User::all())->toJson();
 [@Oussama-Tn]: https://github.com/Oussama-Tn
 [@redelschaap]: https://github.com/redelschaap
 [@nunomaduro]: https://github.com/nunomaduro
+[@asahasrabuddhe]: https://github.com/asahasrabuddhe
