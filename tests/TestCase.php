@@ -22,34 +22,44 @@ abstract class TestCase extends BaseTestCase
     {
         /** @var \Illuminate\Database\Schema\Builder $schemaBuilder */
         $schemaBuilder = $this->app['db']->connection()->getSchemaBuilder();
-        $schemaBuilder->create('users', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->string('email');
-            $table->timestamps();
-        });
-        $schemaBuilder->create('posts', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('title');
-            $table->unsignedInteger('user_id');
-            $table->timestamps();
-        });
-        $schemaBuilder->create('hearts', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('user_id');
-            $table->string('size');
-            $table->timestamps();
-        });
-        $schemaBuilder->create('roles', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('role');
-            $table->timestamps();
-        });
-        $schemaBuilder->create('role_user', function (Blueprint $table) {
-            $table->unsignedInteger('role_id');
-            $table->unsignedInteger('user_id');
-            $table->timestamps();
-        });
+        if (! $schemaBuilder->hasTable('users')) {
+            $schemaBuilder->create('users', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name');
+                $table->string('email');
+                $table->timestamps();
+            });
+        }
+        if (! $schemaBuilder->hasTable('posts')) {
+            $schemaBuilder->create('posts', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('title');
+                $table->unsignedInteger('user_id');
+                $table->timestamps();
+            });
+        }
+        if (! $schemaBuilder->hasTable('hearts')) {
+            $schemaBuilder->create('hearts', function (Blueprint $table) {
+                $table->increments('id');
+                $table->unsignedInteger('user_id');
+                $table->string('size');
+                $table->timestamps();
+            });
+        }
+        if (! $schemaBuilder->hasTable('roles')) {
+            $schemaBuilder->create('roles', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('role');
+                $table->timestamps();
+            });
+        }
+        if (! $schemaBuilder->hasTable('role_user')) {
+            $schemaBuilder->create('role_user', function (Blueprint $table) {
+                $table->unsignedInteger('role_id');
+                $table->unsignedInteger('user_id');
+                $table->timestamps();
+            });
+        }
     }
 
     protected function seedDatabase()
