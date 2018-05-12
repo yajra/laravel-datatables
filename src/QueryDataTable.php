@@ -148,6 +148,7 @@ class QueryDataTable extends DataTableAbstract
         if (! $this->isComplexQuery($builder)) {
             $row_count = $this->wrap('row_count');
             $builder->select($this->connection->raw("'1' as {$row_count}"));
+            $builder->setBindings([], 'select');
         }
 
         return $builder;
