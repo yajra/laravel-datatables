@@ -161,7 +161,7 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function isComplexQuery($builder)
     {
-        return Str::contains(Str::lower($builder->toSql()), ['union', 'having', 'distinct', 'order by', 'group by']);
+        return Str::contains(Str::lower($builder->toSql()), ['union', 'having', 'distinct', 'order by', 'group by', 'join']);
     }
 
     /**
