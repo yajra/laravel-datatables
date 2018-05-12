@@ -148,6 +148,7 @@ class QueryDataTable extends DataTableAbstract
         if (! $this->isComplexQuery($builder)) {
             $row_count = $this->wrap('row_count');
             $builder->select($this->connection->raw("'1' as {$row_count}"));
+            $builder->setBindings([], 'select');
         }
 
         return $builder;
@@ -161,7 +162,7 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function isComplexQuery($builder)
     {
-        return Str::contains(Str::lower($builder->toSql()), ['union', 'having', 'distinct', 'order by', 'group by']);
+        return Str::contains(Str::lower($builder->toSql()), ['union', 'having', 'distinct', 'order by', 'group by', 'join']);
     }
 
     /**
