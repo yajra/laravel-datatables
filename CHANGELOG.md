@@ -8,6 +8,11 @@
 
 ### [Unreleased]
 
+### [v8.5.2] - 2018-05-15
+
+- Revert "[8.0] Classify join statements as a complex query." [#1741]
+- Fix [#1739]
+
 ### [v8.5.1] - 2018-05-12
 
 - Reset select bindings for count query [#1730], credits to [@fschalkwijk]
@@ -198,7 +203,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.5.1...8.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.5.2...8.0
+[v8.5.2]: https://github.com/yajra/laravel-datatables/compare/v8.5.1...v8.5.2
 [v8.5.1]: https://github.com/yajra/laravel-datatables/compare/v8.5.0...v8.5.1
 [v8.5.0]: https://github.com/yajra/laravel-datatables/compare/v8.4.4...v8.5.0
 [v8.4.4]: https://github.com/yajra/laravel-datatables/compare/v8.4.3...v8.4.4
@@ -260,6 +266,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1496]: https://github.com/yajra/laravel-datatables/pull/1496
 [#1730]: https://github.com/yajra/laravel-datatables/pull/1730
 [#1737]: https://github.com/yajra/laravel-datatables/pull/1737
+[#1741]: https://github.com/yajra/laravel-datatables/pull/1741
 
 [#1626]: https://github.com/yajra/laravel-datatables/issues/1626
 [#1617]: https://github.com/yajra/laravel-datatables/issues/1617
@@ -274,6 +281,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1351]: https://github.com/yajra/laravel-datatables/issues/1351
 [#1600]: https://github.com/yajra/laravel-datatables/issues/1600
 [#1471]: https://github.com/yajra/laravel-datatables/issues/1471
+[#1739]: https://github.com/yajra/laravel-datatables/issues/1739
 
 [laravel-datatables-fractal]: https://github.com/yajra/laravel-datatables-fractal
 
