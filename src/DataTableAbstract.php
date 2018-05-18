@@ -414,6 +414,19 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     }
 
     /**
+     * Set filtered records manually.
+     *
+     * @param int $total
+     * @return $this
+     */
+    public function setFilteredRecords($total)
+    {
+        $this->filteredRecords = $total;
+
+        return $this;
+    }
+
+    /**
      * Skip pagination as needed.
      *
      * @return $this
@@ -541,6 +554,16 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     }
 
     /**
+     * Count filtered items.
+     *
+     * @return int
+     */
+    protected function filteredCount()
+    {
+        return $this->filteredRecords ? $this->filteredRecords : $this->count();
+    }
+
+    /**
      * Perform necessary filters.
      *
      * @return void
@@ -556,7 +579,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
         }
 
         $this->columnSearch();
-        $this->filteredRecords = $this->isFilterApplied ? $this->count() : $this->totalRecords;
+        $this->filteredRecords = $this->isFilterApplied ? $this->filteredCount() : $this->totalRecords;
     }
 
     /**
