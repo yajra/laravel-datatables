@@ -686,6 +686,7 @@ class QueryDataTable extends DataTableAbstract
                 $appends[$key] = $value;
             }
         }
+
         return array_merge($data, $appends);
     }
 }
