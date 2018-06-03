@@ -340,10 +340,24 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
         if (is_array($key)) {
             $this->appends = $key;
         } elseif (is_callable($value)) {
-            $this->appends[$key] = $value;
+            $this->appends[$key] = value($value);
         } else {
             $this->appends[$key] = value($value);
         }
+
+        return $this;
+    }
+
+    /**
+     * Add with query callback value on response.
+     *
+     * @param string   $key
+     * @param callable $value
+     * @return $this
+     */
+    public function withQuery($key, callable $value)
+    {
+        $this->appends[$key] = $value;
 
         return $this;
     }
