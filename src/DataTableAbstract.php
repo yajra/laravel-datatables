@@ -340,7 +340,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
         if (is_array($key)) {
             $this->appends = $key;
         } elseif (is_callable($value)) {
-            $this->appends[$key] = value($value);
+            $this->appends[$key] = $value;
         } else {
             $this->appends[$key] = value($value);
         }
@@ -683,12 +683,12 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      */
     protected function render(array $data)
     {
-        $output = array_merge([
+        $output = $this->attachAppends([
             'draw'            => (int) $this->request->input('draw'),
             'recordsTotal'    => $this->totalRecords,
             'recordsFiltered' => $this->filteredRecords,
             'data'            => $data,
-        ], $this->appends);
+        ]);
 
         if ($this->config->isDebugging()) {
             $output = $this->showDebugger($output);
@@ -700,6 +700,17 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
             $this->config->get('datatables.json.header', []),
             $this->config->get('datatables.json.options', 0)
         );
+    }
+
+    /**
+     * Attach custom with meta on response.
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function attachAppends(array $data)
+    {
+        return array_merge($data, $this->appends);
     }
 
     /**
