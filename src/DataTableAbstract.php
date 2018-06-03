@@ -355,7 +355,8 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      * @param callable $value
      * @return $this
      */
-    public function withQuery($key, callable $value) {
+    public function withQuery($key, callable $value)
+    {
         $this->appends[$key] = $value;
 
         return $this;
