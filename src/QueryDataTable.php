@@ -669,4 +669,24 @@ class QueryDataTable extends DataTableAbstract
 
         return $output;
     }
+
+    /**
+     * Attach custom with meta on response.
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function attachAppends(array $data)
+    {
+        $appends = [];
+        foreach ($this->appends as $key => $value) {
+            if (is_callable($value)) {
+                $appends[$key] = value($value($this->getFilteredQuery()));
+            } else {
+                $appends[$key] = $value;
+            }
+        }
+
+        return array_merge($data, $appends);
+    }
 }
