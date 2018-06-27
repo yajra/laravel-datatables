@@ -578,6 +578,11 @@ class QueryDataTable extends DataTableAbstract
             })
             ->each(function ($orderable) {
                 $column = $this->resolveRelationColumn($orderable['name']);
+                
+                $parts = explode('.', $column);
+                if ( count($parts) == 1 ) {
+					$column = $this->query->getModel()->getTable() . '.' . $column;
+                }
 
                 if ($this->hasOrderColumn($column)) {
                     $this->applyOrderColumn($column, $orderable);
