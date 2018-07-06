@@ -97,7 +97,7 @@ class Request
         $orderable = [];
         for ($i = 0, $c = count($this->request->input('order')); $i < $c; $i++) {
             $order_col = (int) $this->request->input("order.$i.column");
-            $order_dir = $this->request->input("order.$i.dir");
+            $order_dir = strtolower($this->request->input("order.$i.dir")) === 'asc' ? 'asc' : 'desc';
             if ($this->isColumnOrderable($order_col)) {
                 $orderable[] = ['column' => $order_col, 'direction' => $order_dir];
             }
