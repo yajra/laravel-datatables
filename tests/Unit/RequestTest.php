@@ -57,12 +57,36 @@ class RequestTest extends TestCase
         $_GET['order']   = [];
         $_GET['order'][] = [
             'column' => 0,
+            'dir'    => 'asc',
+        ];
+        request()->merge($_GET);
+        $request = $this->getRequest();
+        $this->assertEquals([
+            ['column' => 0, 'direction' => 'asc'],
+        ], $request->orderableColumns());
+
+        $this->assertTrue($request->isOrderable());
+        $this->assertTrue($request->isColumnOrderable(0));
+    }
+
+    public function test_orderable_columns_will_set_descending_on_other_values()
+    {
+        $_GET['columns']   = [];
+        $_GET['columns'][] = [
+            'orderable' => 'true',
+            'search'    => [
+                'value' => 'foo',
+            ],
+        ];
+        $_GET['order']   = [];
+        $_GET['order'][] = [
+            'column' => 0,
             'dir'    => 'bar',
         ];
         request()->merge($_GET);
         $request = $this->getRequest();
         $this->assertEquals([
-            ['column' => 0, 'direction' => 'bar'],
+            ['column' => 0, 'direction' => 'desc'],
         ], $request->orderableColumns());
 
         $this->assertTrue($request->isOrderable());
