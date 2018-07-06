@@ -8,6 +8,12 @@
 
 ### [Unreleased]
 
+### [v8.7.1] - 2018-07-06
+
+- Add validation for order direction. [#1792]
+- Prevents SQL injection on order direction.
+- Fix phpunit configuration warning.
+
 ### [v8.7.0] - 2018-06-03
 
 - Add withQuery api for query callback. [#1759]
@@ -219,7 +225,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.7.0...8.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.7.1...8.0
+[v8.7.1]: https://github.com/yajra/laravel-datatables/compare/v8.7.0...v8.7.1
 [v8.7.0]: https://github.com/yajra/laravel-datatables/compare/v8.6.1...v8.7.0
 [v8.6.1]: https://github.com/yajra/laravel-datatables/compare/v8.6.0...v8.6.1
 [v8.6.0]: https://github.com/yajra/laravel-datatables/compare/v8.5.2...v8.6.0
@@ -289,6 +296,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1743]: https://github.com/yajra/laravel-datatables/pull/1743
 [#1758]: https://github.com/yajra/laravel-datatables/pull/1758
 [#1759]: https://github.com/yajra/laravel-datatables/pull/1759
+[##1792]: https://github.com/yajra/laravel-datatables/pull/#1792
 
 [#1626]: https://github.com/yajra/laravel-datatables/issues/1626
 [#1617]: https://github.com/yajra/laravel-datatables/issues/1617
