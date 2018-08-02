@@ -750,7 +750,9 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     protected function errorResponse(\Exception $exception)
     {
         $error = $this->config->get('datatables.error');
-        if ($error === 'throw') {
+        $debug = $this->config->get('app.debug');
+
+        if ($error === 'throw' || (!$error && !$debug)) {
             throw new Exception($exception->getMessage(), $code = 0, $exception);
         }
 
