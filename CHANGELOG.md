@@ -8,6 +8,11 @@
 
 ### [Unreleased]
 
+### [v8.8.0] - 2018-09-05
+
+- Add support for Laravel 5.7
+- Fix [#1824], [#1830]
+
 ### [v8.7.1] - 2018-07-06
 
 - Add validation for order direction. [#1792]
@@ -225,7 +230,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.7.1...8.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.8.0...8.0
+[v8.8.0]: https://github.com/yajra/laravel-datatables/compare/v8.7.1...v8.8.0
 [v8.7.1]: https://github.com/yajra/laravel-datatables/compare/v8.7.0...v8.7.1
 [v8.7.0]: https://github.com/yajra/laravel-datatables/compare/v8.6.1...v8.7.0
 [v8.6.1]: https://github.com/yajra/laravel-datatables/compare/v8.6.0...v8.6.1
@@ -296,7 +302,8 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1743]: https://github.com/yajra/laravel-datatables/pull/1743
 [#1758]: https://github.com/yajra/laravel-datatables/pull/1758
 [#1759]: https://github.com/yajra/laravel-datatables/pull/1759
-[##1792]: https://github.com/yajra/laravel-datatables/pull/#1792
+[#1792]: https://github.com/yajra/laravel-datatables/pull/1792
+[#1830]: https://github.com/yajra/laravel-datatables/pull/1830
 
 [#1626]: https://github.com/yajra/laravel-datatables/issues/1626
 [#1617]: https://github.com/yajra/laravel-datatables/issues/1617
@@ -314,6 +321,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1739]: https://github.com/yajra/laravel-datatables/issues/1739
 [#1516]: https://github.com/yajra/laravel-datatables/issues/1516
 [#1752]: https://github.com/yajra/laravel-datatables/issues/1752
+[#1824]: https://github.com/yajra/laravel-datatables/issues/1824
 
 [laravel-datatables-fractal]: https://github.com/yajra/laravel-datatables-fractal
 
