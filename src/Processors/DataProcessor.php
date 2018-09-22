@@ -92,20 +92,16 @@ class DataProcessor
         $indexColumn  = config('datatables.index_column', 'DT_Row_Index');
 
         foreach ($this->results as $row) {
-            $data  = Helper::convertToArray($row);
+            $data  = $this->escapeColumns(Helper::convertToArray($row));
             $value = $this->addColumns($data, $row);
+            $value = $this->addIndexColumn($value, $row);
             $value = $this->editColumns($value, $row);
             $value = $this->setupRowVariables($value, $row);
             $value = $this->removeExcessColumns($value);
-
-            if ($this->includeIndex) {
-                $value[$indexColumn] = ++$this->start;
-            }
-
             $this->output[] = $object ? $value : $this->flatten($value);
         }
 
-        return $this->escapeColumns($this->output);
+        return $this->output;
     }
 
     /**
@@ -118,8 +114,24 @@ class DataProcessor
     protected function addColumns($data, $row)
     {
         foreach ($this->appendColumns as $key => $value) {
-            $value['content'] = Helper::compileContent($value['content'], $data, $row);
+            $value['content'] = Helper::compileContent($value['content'], $data, $row, $this->shouldEscapeColumn($key));
             $data             = Helper::includeInArray($value, $data);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Process add index column.
+     *
+     * @param mixed $data
+     * @param mixed $row
+     * @return array
+     */
+    protected function addIndexColumn($data, $row)
+    {
+        if ($this->includeIndex) {
+            $data[$indexColumn] = ++$this->start;
         }
 
         return $data;
@@ -135,7 +147,7 @@ class DataProcessor
     protected function editColumns($data, $row)
     {
         foreach ($this->editColumns as $key => $value) {
-            $value['content'] = Helper::compileContent($value['content'], $data, $row);
+            $value['content'] = Helper::compileContent($value['content'], $data, $row, $this->shouldEscapeColumn($key));
             Arr::set($data, $value['name'], $value['content']);
         }
 
@@ -229,6 +241,7 @@ class DataProcessor
     protected function escapeRow(array $row)
     {
         $arrayDot = array_filter(array_dot($row));
+
         foreach ($arrayDot as $key => $value) {
             if (! in_array($key, $this->rawColumns)) {
                 $arrayDot[$key] = e($value);
@@ -240,5 +253,15 @@ class DataProcessor
         }
 
         return $row;
+    }
+
+    /**
+     * Whether to escape column or no.
+     * @param string $key
+     * @return bool
+     */
+    protected function shouldEscapeColumn($key)
+    {
+        return ! in_array($key, $this->rawColumns);
     }
 }

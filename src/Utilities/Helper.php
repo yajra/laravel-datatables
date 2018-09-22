@@ -54,17 +54,18 @@ class Helper
      * @param mixed $content Pre-processed content
      * @param array $data    data to use with blade template
      * @param mixed $param   parameter to call with callable
+     * @param bool  $escape  whether to escape the output of the callable
      * @return mixed
      */
-    public static function compileContent($content, array $data, $param)
+    public static function compileContent($content, array $data, $param, $escape = true)
     {
         if (is_string($content)) {
             return static::compileBlade($content, static::getMixedValue($data, $param));
         } elseif (is_callable($content)) {
-            return $content($param);
+            $content = $escape ? e($content($param)) : $content($param);
+        } else {
+            return $content;
         }
-
-        return $content;
     }
 
     /**
