@@ -62,7 +62,7 @@ class Helper
         if (is_string($content)) {
             return static::compileBlade($content, static::getMixedValue($data, $param));
         } elseif (is_callable($content)) {
-            $content = $escape ? e($content($param)) : $content($param);
+            return $escape ? e($content($param)) : $content($param);
         } else {
             return $content;
         }
