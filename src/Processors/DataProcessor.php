@@ -96,8 +96,8 @@ class DataProcessor
             $value = $this->addColumns($data, $row);
             $value = $this->editColumns($value, $row);
             $value = $this->setupRowVariables($value, $row);
-            $value = $this->removeExcessColumns($value);
             $value = $this->selectOnlyRequiredColumns($value);
+            $value = $this->removeExcessColumns($value);
 
             if ($this->includeIndex) {
                 $value[$indexColumn] = ++$this->start;
