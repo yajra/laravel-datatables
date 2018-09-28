@@ -51,7 +51,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
         'edit'   => [],
         'filter' => [],
         'order'  => [],
-        'only'   => null
+        'only'   => null,
     ];
 
     /**
@@ -203,14 +203,14 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      */
     public function removeColumn()
     {
-        $names = func_get_args();
+        $names                     = func_get_args();
         $this->columnDef['excess'] = array_merge($this->getColumnsDefinition()['excess'], $names);
 
         return $this;
     }
 
     /**
-     * Get only selected columns in response
+     * Get only selected columns in response.
      *
      * @param array $columns
      *
@@ -480,7 +480,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      */
     public function pushToBlacklist($column)
     {
-        if (!$this->isBlacklisted($column)) {
+        if (! $this->isBlacklisted($column)) {
             $this->columnDef['blacklist'][] = $column;
         }
 
@@ -515,7 +515,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      */
     protected function getColumnsDefinition()
     {
-        $config = $this->config->get('datatables.columns');
+        $config  = $this->config->get('datatables.columns');
         $allowed = ['excess', 'escape', 'raw', 'blacklist', 'whitelist'];
 
         return array_replace_recursive(array_only($config, $allowed), $this->columnDef);
@@ -555,9 +555,9 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      */
     public function filter(callable $callback, $globalSearch = false)
     {
-        $this->autoFilter = $globalSearch;
+        $this->autoFilter      = $globalSearch;
         $this->isFilterApplied = true;
-        $this->filterCallback = $callback;
+        $this->filterCallback  = $callback;
 
         return $this;
     }
@@ -661,7 +661,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      */
     protected function paginate()
     {
-        if ($this->request->isPaginationable() && !$this->skipPaging) {
+        if ($this->request->isPaginationable() && ! $this->skipPaging) {
             $this->paging();
         }
     }
