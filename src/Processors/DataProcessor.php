@@ -14,14 +14,12 @@ class DataProcessor
 
     /**
      * Columns to escape value.
-     *
      * @var array
      */
     protected $escapeColumns = [];
 
     /**
      * Processed data output.
-     *
      * @var array
      */
     protected $output = [];
@@ -73,6 +71,7 @@ class DataProcessor
         $this->appendColumns = $columnDef['append'];
         $this->editColumns   = $columnDef['edit'];
         $this->excessColumns = $columnDef['excess'];
+        $this->onlyColumns   = $columnDef['only'];
         $this->escapeColumns = $columnDef['escape'];
         $this->includeIndex  = $columnDef['index'];
         $this->rawColumns    = $columnDef['raw'];
@@ -84,6 +83,7 @@ class DataProcessor
      * Process data to output on browser.
      *
      * @param bool $object
+     *
      * @return array
      */
     public function process($object = false)
@@ -97,6 +97,7 @@ class DataProcessor
             $value = $this->editColumns($value, $row);
             $value = $this->setupRowVariables($value, $row);
             $value = $this->removeExcessColumns($value);
+            $value = $this->selectOnlyRequiredColumns($value);
 
             if ($this->includeIndex) {
                 $value[$indexColumn] = ++$this->start;
@@ -113,6 +114,7 @@ class DataProcessor
      *
      * @param mixed $data
      * @param mixed $row
+     *
      * @return array
      */
     protected function addColumns($data, $row)
@@ -130,6 +132,7 @@ class DataProcessor
      *
      * @param mixed $data
      * @param mixed $row
+     *
      * @return array
      */
     protected function editColumns($data, $row)
@@ -147,6 +150,7 @@ class DataProcessor
      *
      * @param mixed $data
      * @param mixed $row
+     *
      * @return array
      */
     protected function setupRowVariables($data, $row)
@@ -165,6 +169,7 @@ class DataProcessor
      * Remove declared hidden columns.
      *
      * @param array $data
+     *
      * @return array
      */
     protected function removeExcessColumns(array $data)
@@ -177,9 +182,33 @@ class DataProcessor
     }
 
     /**
+     * Get only needed columns.
+     *
+     * @param array $data
+     *
+     * @return array
+     */
+    protected function selectOnlyRequiredColumns(array $data)
+    {
+        if (is_null($this->onlyColumns)) {
+            return $data;
+        }
+
+        $result = [];
+        foreach ($data as $key => $value) {
+            if (in_array($key, $this->onlyColumns)) {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Flatten array with exceptions.
      *
      * @param array $array
+     *
      * @return array
      */
     public function flatten(array $array)
@@ -202,6 +231,7 @@ class DataProcessor
      * Escape column values as declared.
      *
      * @param array $output
+     *
      * @return array
      */
     protected function escapeColumns(array $output)
@@ -224,6 +254,7 @@ class DataProcessor
      * Escape all values of row.
      *
      * @param array $row
+     *
      * @return array
      */
     protected function escapeRow(array $row)
