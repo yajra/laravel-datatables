@@ -96,7 +96,7 @@ class DataProcessor
             $value = $this->addColumns($data, $row);
             $value = $this->editColumns($value, $row);
             $value = $this->setupRowVariables($value, $row);
-            $value = $this->selectOnlyRequiredColumns($value);
+            $value = $this->selectOnlyNeededColumns($value);
             $value = $this->removeExcessColumns($value);
 
             if ($this->includeIndex) {
@@ -188,7 +188,7 @@ class DataProcessor
      *
      * @return array
      */
-    protected function selectOnlyRequiredColumns(array $data)
+    protected function selectOnlyNeededColumns(array $data)
     {
         if (is_null($this->onlyColumns)) {
             return $data;
