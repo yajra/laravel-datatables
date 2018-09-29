@@ -62,6 +62,11 @@ class DataProcessor
     protected $rawColumns;
 
     /**
+     * @var array
+     */
+    protected $exceptions = ['DT_RowId', 'DT_RowClass', 'DT_RowData', 'DT_RowAttr'];
+
+    /**
      * @param mixed $results
      * @param array $columnDef
      * @param array $templates
@@ -171,7 +176,11 @@ class DataProcessor
      */
     protected function selectOnlyNeededColumns(array $data)
     {
-        return is_null($this->onlyColumns) ? $data : array_intersect_key($data, array_flip($this->onlyColumns));
+        if (is_null($this->onlyColumns)) {
+            return $data;
+        } else {
+            return array_intersect_key($data, array_flip(array_merge($this->onlyColumns, $this->exceptions)));
+        }
     }
 
     /**
@@ -198,10 +207,9 @@ class DataProcessor
     public function flatten(array $array)
     {
         $return     = [];
-        $exceptions = ['DT_RowId', 'DT_RowClass', 'DT_RowData', 'DT_RowAttr'];
 
         foreach ($array as $key => $value) {
-            if (in_array($key, $exceptions)) {
+            if (in_array($key, $this->exceptions)) {
                 $return[$key] = $value;
             } else {
                 $return[] = $value;
