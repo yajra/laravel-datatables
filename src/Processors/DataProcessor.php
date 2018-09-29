@@ -171,18 +171,7 @@ class DataProcessor
      */
     protected function selectOnlyNeededColumns(array $data)
     {
-        if (is_null($this->onlyColumns)) {
-            return $data;
-        }
-
-        $result = [];
-        foreach ($data as $key => $value) {
-            if (in_array($key, $this->onlyColumns)) {
-                $result[$key] = $value;
-            }
-        }
-
-        return $result;
+        return is_null($this->onlyColumns) ? $data : array_intersect_key($data, array_flip($this->onlyColumns));
     }
 
     /**
