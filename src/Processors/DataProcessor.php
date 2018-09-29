@@ -164,21 +164,6 @@ class DataProcessor
     }
 
     /**
-     * Remove declared hidden columns.
-     *
-     * @param array $data
-     * @return array
-     */
-    protected function removeExcessColumns(array $data)
-    {
-        foreach ($this->excessColumns as $value) {
-            unset($data[$value]);
-        }
-
-        return $data;
-    }
-
-    /**
      * Get only needed columns.
      *
      * @param array $data
@@ -198,6 +183,21 @@ class DataProcessor
         }
 
         return $result;
+    }
+
+    /**
+     * Remove declared hidden columns.
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function removeExcessColumns(array $data)
+    {
+        foreach ($this->excessColumns as $value) {
+            unset($data[$value]);
+        }
+
+        return $data;
     }
 
     /**
