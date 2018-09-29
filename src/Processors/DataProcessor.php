@@ -206,8 +206,7 @@ class DataProcessor
      */
     public function flatten(array $array)
     {
-        $return     = [];
-
+        $return = [];
         foreach ($array as $key => $value) {
             if (in_array($key, $this->exceptions)) {
                 $return[$key] = $value;
