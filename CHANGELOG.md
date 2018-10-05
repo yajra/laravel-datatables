@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v8.9.0] - 2018-10-05
+
+- Added ability to pass an array of needed columns on response. [#1860], credits to [@ptuchik].
+
 ### [v8.8.0] - 2018-09-05
 
 - Add support for Laravel 5.7
@@ -230,7 +234,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.8.0...8.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.9.0...8.0
+[v8.9.0]: https://github.com/yajra/laravel-datatables/compare/v8.8.0...v8.9.0
 [v8.8.0]: https://github.com/yajra/laravel-datatables/compare/v8.7.1...v8.8.0
 [v8.7.1]: https://github.com/yajra/laravel-datatables/compare/v8.7.0...v8.7.1
 [v8.7.0]: https://github.com/yajra/laravel-datatables/compare/v8.6.1...v8.7.0
@@ -304,6 +309,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1759]: https://github.com/yajra/laravel-datatables/pull/1759
 [#1792]: https://github.com/yajra/laravel-datatables/pull/1792
 [#1830]: https://github.com/yajra/laravel-datatables/pull/1830
+[#1860]: https://github.com/yajra/laravel-datatables/pull/1860
 
 [#1626]: https://github.com/yajra/laravel-datatables/issues/1626
 [#1617]: https://github.com/yajra/laravel-datatables/issues/1617
@@ -341,3 +347,4 @@ return (new CollectionDataTable(User::all())->toJson();
 [@asahasrabuddhe]: https://github.com/asahasrabuddhe
 [@fschalkwijk]: https://github.com/fschalkwijk
 [@forgottencreature]: https://github.com/forgottencreature
+[@ptuchik]: https://github.com/ptuchik
