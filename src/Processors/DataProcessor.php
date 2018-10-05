@@ -62,6 +62,11 @@ class DataProcessor
     protected $rawColumns;
 
     /**
+     * @var array
+     */
+    protected $exceptions = ['DT_RowId', 'DT_RowClass', 'DT_RowData', 'DT_RowAttr'];
+
+    /**
      * @param mixed $results
      * @param array $columnDef
      * @param array $templates
@@ -73,6 +78,7 @@ class DataProcessor
         $this->appendColumns = $columnDef['append'];
         $this->editColumns   = $columnDef['edit'];
         $this->excessColumns = $columnDef['excess'];
+        $this->onlyColumns   = $columnDef['only'];
         $this->escapeColumns = $columnDef['escape'];
         $this->includeIndex  = $columnDef['index'];
         $this->rawColumns    = $columnDef['raw'];
@@ -96,6 +102,7 @@ class DataProcessor
             $value = $this->addColumns($data, $row);
             $value = $this->editColumns($value, $row);
             $value = $this->setupRowVariables($value, $row);
+            $value = $this->selectOnlyNeededColumns($value);
             $value = $this->removeExcessColumns($value);
 
             if ($this->includeIndex) {
@@ -162,6 +169,21 @@ class DataProcessor
     }
 
     /**
+     * Get only needed columns.
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function selectOnlyNeededColumns(array $data)
+    {
+        if (is_null($this->onlyColumns)) {
+            return $data;
+        } else {
+            return array_intersect_key($data, array_flip(array_merge($this->onlyColumns, $this->exceptions)));
+        }
+    }
+
+    /**
      * Remove declared hidden columns.
      *
      * @param array $data
@@ -184,11 +206,9 @@ class DataProcessor
      */
     public function flatten(array $array)
     {
-        $return     = [];
-        $exceptions = ['DT_RowId', 'DT_RowClass', 'DT_RowData', 'DT_RowAttr'];
-
+        $return = [];
         foreach ($array as $key => $value) {
-            if (in_array($key, $exceptions)) {
+            if (in_array($key, $this->exceptions)) {
                 $return[$key] = $value;
             } else {
                 $return[] = $value;

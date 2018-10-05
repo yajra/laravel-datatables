@@ -54,6 +54,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
         'edit'   => [],
         'filter' => [],
         'order'  => [],
+        'only'   => null,
     ];
 
     /**
@@ -215,6 +216,19 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     {
         $names                     = func_get_args();
         $this->columnDef['excess'] = array_merge($this->getColumnsDefinition()['excess'], $names);
+
+        return $this;
+    }
+
+    /**
+     * Get only selected columns in response.
+     *
+     * @param array $columns
+     * @return $this
+     */
+    public function only(array $columns = [])
+    {
+        $this->columnDef['only'] = $columns;
 
         return $this;
     }
@@ -761,7 +775,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
             'recordsTotal'    => $this->totalRecords,
             'recordsFiltered' => 0,
             'data'            => [],
-            'error'           => $error ? __($error) : "Exception Message:\n\n" . $exception->getMessage(),
+            'error'           => $error ? __($error) : "Exception Message:\n\n".$exception->getMessage(),
         ]);
     }
 
@@ -799,7 +813,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     protected function setupKeyword($value)
     {
         if ($this->config->isSmartSearch()) {
-            $keyword = '%' . $value . '%';
+            $keyword = '%'.$value.'%';
             if ($this->config->isWildcard()) {
                 $keyword = Helper::wildcardLikeString($value);
             }
@@ -815,8 +829,8 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     /**
      * Get column name to be use for filtering and sorting.
      *
-     * @param int $index
-     * @param bool    $wantsAlias
+     * @param int  $index
+     * @param bool $wantsAlias
      * @return string
      */
     protected function getColumnName($index, $wantsAlias = false)
