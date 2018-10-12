@@ -213,23 +213,23 @@ class DataProcessor
     /**
      * Escape column values as declared.
      *
-     * @param array $output
+     * @param array $row
      * @return array
      */
-    protected function escapeColumns(array $output)
+    protected function escapeColumns(array $row)
     {
-        return array_map(function ($row) {
-            if ($this->escapeColumns == '*') {
-                $row = $this->escapeRow($row);
-            } elseif (is_array($this->escapeColumns)) {
-                $columns = array_diff($this->escapeColumns, $this->rawColumns);
-                foreach ($columns as $key) {
-                    array_set($row, $key, e(array_get($row, $key)));
-                }
-            }
+        if ($this->escapeColumns == '*') {
+            return $this->escapeRow($row);
+        }
 
-            return $row;
-        }, $output);
+        if (is_array($this->escapeColumns)) {
+            $columns = array_diff($this->escapeColumns, $this->rawColumns);
+            foreach ($columns as $key) {
+                array_set($row, $key, e(array_get($row, $key)));
+            }
+        }
+
+        return $row;
     }
 
     /**
