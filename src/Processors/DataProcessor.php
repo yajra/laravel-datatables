@@ -100,11 +100,11 @@ class DataProcessor
         foreach ($this->results as $row) {
             $data           = $this->escapeRow(Helper::convertToArray($row));
             $value          = $this->addColumns($data, $row);
-            $value          = $this->addIndexColumn($value, $row);
             $value          = $this->editColumns($value, $row);
             $value          = $this->setupRowVariables($value, $row);
             $value          = $this->selectOnlyNeededColumns($value);
             $value          = $this->removeExcessColumns($value);
+            $value          = $this->addIndexColumn($value, $row);
             $this->output[] = $object ? $value : $this->flatten($value);
         }
 
