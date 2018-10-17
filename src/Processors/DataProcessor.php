@@ -57,6 +57,11 @@ class DataProcessor
     protected $includeIndex;
 
     /**
+     * @var string
+     */
+    protected $indexColumn;
+
+    /**
      * @var array
      */
     protected $rawColumns;
@@ -94,7 +99,8 @@ class DataProcessor
      */
     public function process($object = false)
     {
-        $this->output = [];
+        $this->output      = [];
+        $this->indexColumn = config('datatables.index_column', 'DT_RowIndex');
 
         foreach ($this->results as $row) {
             $data           = $this->escapeRow(Helper::convertToArray($row));
@@ -135,10 +141,8 @@ class DataProcessor
      */
     protected function addIndexColumn($data)
     {
-        $indexColumn = config('datatables.index_column', 'DT_Row_Index');
-
         if ($this->includeIndex) {
-            $data[$indexColumn] = ++$this->start;
+            $data[$this->indexColumn] = ++$this->start;
         }
 
         return $data;
@@ -219,6 +223,7 @@ class DataProcessor
     public function flatten(array $array)
     {
         $return = [];
+
         foreach ($array as $key => $value) {
             if (in_array($key, $this->exceptions)) {
                 $return[$key] = $value;
