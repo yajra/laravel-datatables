@@ -95,7 +95,6 @@ class DataProcessor
     public function process($object = false)
     {
         $this->output = [];
-        $indexColumn  = config('datatables.index_column', 'DT_Row_Index');
 
         foreach ($this->results as $row) {
             $data           = $this->escapeRow(Helper::convertToArray($row));
@@ -136,6 +135,8 @@ class DataProcessor
      */
     protected function addIndexColumn($data)
     {
+        $indexColumn = config('datatables.index_column', 'DT_Row_Index');
+
         if ($this->includeIndex) {
             $data[$indexColumn] = ++$this->start;
         }
