@@ -140,7 +140,7 @@ class QueryEngineTest extends TestCase
     {
         $crawler = $this->call('GET', '/query/indexColumn', [
             'columns' => [
-                ['data' => 'DT_Row_index', 'name' => 'index', 'searchable' => 'false', 'orderable' => 'false'],
+                ['data' => 'DT_RowIndex', 'name' => 'index', 'searchable' => 'false', 'orderable' => 'false'],
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
             ],
@@ -153,7 +153,7 @@ class QueryEngineTest extends TestCase
             'recordsFiltered' => 1,
         ]);
 
-        $this->assertArrayHasKey('DT_Row_Index', $crawler->json()['data'][0]);
+        $this->assertArrayHasKey('DT_RowIndex', $crawler->json()['data'][0]);
     }
 
     /** @test */
