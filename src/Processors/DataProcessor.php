@@ -104,7 +104,7 @@ class DataProcessor
             $value          = $this->setupRowVariables($value, $row);
             $value          = $this->selectOnlyNeededColumns($value);
             $value          = $this->removeExcessColumns($value);
-            $value          = $this->addIndexColumn($value, $row);
+            $value          = $this->addIndexColumn($value);
             $this->output[] = $object ? $value : $this->flatten($value);
         }
 
@@ -132,10 +132,9 @@ class DataProcessor
      * Process add index column.
      *
      * @param mixed $data
-     * @param mixed $row
      * @return array
      */
-    protected function addIndexColumn($data, $row)
+    protected function addIndexColumn($data)
     {
         if ($this->includeIndex) {
             $data[$indexColumn] = ++$this->start;
