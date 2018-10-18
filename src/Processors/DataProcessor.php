@@ -260,15 +260,18 @@ class DataProcessor
 
     /**
      * Whether to escape column or no.
+     *
      * @param string $key
      * @return bool
      */
     protected function shouldEscapeColumn($key)
     {
         if ($this->escapeColumns === '*') {
-            return ! in_array($key, $this->rawColumns); // escape if now a raw column
+            return ! in_array($key, $this->rawColumns); // escape if is not a raw column
         } elseif (is_array($this->escapeColumns)) {
-            return ! in_array($key, array_diff($this->escapeColumns, $this->rawColumns));
+            return in_array($key, array_diff($this->escapeColumns, $this->rawColumns));
+        } else {
+            return false;
         }
     }
 }
