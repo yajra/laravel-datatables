@@ -95,7 +95,7 @@ class DataProcessor
     public function process($object = false)
     {
         $this->output = [];
-        $indexColumn  = config('datatables.index_column', 'DT_Row_Index');
+        $indexColumn  = config('datatables.index_column', 'DT_RowIndex');
 
         foreach ($this->results as $row) {
             $data  = Helper::convertToArray($row);

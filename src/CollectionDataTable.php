@@ -189,14 +189,14 @@ class CollectionDataTable extends DataTableAbstract
     }
 
     /**
-     * Revert transformed DT_Row_Index back to it's original values.
+     * Revert transformed DT_RowIndex back to it's original values.
      *
      * @param bool $mDataSupport
      */
     private function revertIndexColumn($mDataSupport)
     {
         if ($this->columnDef['index']) {
-            $index = $mDataSupport ? config('datatables.index_column', 'DT_Row_Index') : 0;
+            $index = $mDataSupport ? config('datatables.index_column', 'DT_RowIndex') : 0;
             $start = (int) $this->request->input('start');
             $this->collection->transform(function ($data) use ($index, &$start) {
                 $data[$index] = ++$start;
