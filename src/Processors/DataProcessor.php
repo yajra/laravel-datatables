@@ -99,8 +99,8 @@ class DataProcessor
      */
     public function process($object = false)
     {
-        $this->output      = [];
-        $this->indexColumn = config('datatables.index_column', 'DT_Row_Index');
+        $this->output = [];
+        $indexColumn  = config('datatables.index_column', 'DT_RowIndex');
 
         foreach ($this->results as $row) {
             $data           = $this->escapeRow(Helper::convertToArray($row));
