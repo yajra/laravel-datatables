@@ -24,7 +24,7 @@ class EloquentJoinTest extends TestCase
         $this->assertArrayHasKey('name', $response->json()['data'][0]);
         $this->assertArrayHasKey('email', $response->json()['data'][0]);
         $this->assertArrayHasKey('title', $response->json()['data'][0]);
-        $this->assertEquals(60, count($response->json()['data']));
+        $this->assertCount(60, $response->json()['data']);
     }
 
     /** @test */
@@ -40,7 +40,7 @@ class EloquentJoinTest extends TestCase
             'recordsFiltered' => 3,
         ]);
 
-        $this->assertEquals(3, count($response->json()['data']));
+        $this->assertCount(3, $response->json()['data']);
     }
 
     protected function getJsonResponse(array $params = [])
@@ -78,7 +78,7 @@ class EloquentJoinTest extends TestCase
         ]);
 
         $this->assertEquals('Email-9@example.com', $response->json()['data'][0]['email']);
-        $this->assertEquals(10, count($response->json()['data']));
+        $this->assertCount(10, $response->json()['data']);
     }
 
     protected function setUp()

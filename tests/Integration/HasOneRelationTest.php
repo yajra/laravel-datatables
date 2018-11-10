@@ -22,7 +22,7 @@ class HasOneRelationTest extends TestCase
         ]);
 
         $this->assertArrayHasKey('heart', $response->json()['data'][0]);
-        $this->assertEquals(20, count($response->json()['data']));
+        $this->assertCount(20, $response->json()['data']);
     }
 
     /** @test */
@@ -38,7 +38,7 @@ class HasOneRelationTest extends TestCase
             'recordsFiltered' => 1,
         ]);
 
-        $this->assertEquals(1, count($response->json()['data']));
+        $this->assertCount(1, $response->json()['data']);
     }
 
     protected function getJsonResponse(array $params = [])
@@ -76,7 +76,7 @@ class HasOneRelationTest extends TestCase
         ]);
 
         $this->assertEquals('heart-9', $response->json()['data'][0]['heart']['size']);
-        $this->assertEquals(10, count($response->json()['data']));
+        $this->assertCount(10, $response->json()['data']);
     }
 
     protected function setUp()

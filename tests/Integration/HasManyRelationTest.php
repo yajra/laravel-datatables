@@ -22,7 +22,7 @@ class HasManyRelationTest extends TestCase
         ]);
 
         $this->assertArrayHasKey('posts', $response->json()['data'][0]);
-        $this->assertEquals(20, count($response->json()['data']));
+        $this->assertCount(20, $response->json()['data']);
     }
 
     /** @test */
@@ -37,7 +37,7 @@ class HasManyRelationTest extends TestCase
             'recordsTotal'    => 20,
             'recordsFiltered' => 1,
         ]);
-        $this->assertEquals(1, count($response->json()['data']));
+        $this->assertCount(1, $response->json()['data']);
     }
 
     protected function getJsonResponse(array $params = [])
