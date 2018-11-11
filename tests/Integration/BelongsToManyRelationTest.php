@@ -22,7 +22,7 @@ class BelongsToManyRelationTest extends TestCase
         ]);
 
         $this->assertArrayHasKey('roles', $response->json()['data'][0]);
-        $this->assertEquals(20, count($response->json()['data']));
+        $this->assertCount(20, $response->json()['data']);
     }
 
     /** @test */
@@ -38,7 +38,7 @@ class BelongsToManyRelationTest extends TestCase
             'recordsFiltered' => 10,
         ]);
 
-        $this->assertEquals(10, count($response->json()['data']));
+        $this->assertCount(10, $response->json()['data']);
     }
 
     protected function getJsonResponse(array $params = [])
@@ -75,9 +75,9 @@ class BelongsToManyRelationTest extends TestCase
             'recordsFiltered' => 20,
         ]);
 
-        $this->assertEquals(10, count($response->json()['data']));
+        $this->assertCount(10, $response->json()['data']);
 
-        $this->assertEquals(2, count($response->json()['data'][0]['roles']));
+        $this->assertCount(2, $response->json()['data'][0]['roles']);
         $this->assertEquals('Administrator', $response->json()['data'][0]['roles'][0]['role']);
         $this->assertEquals('User', $response->json()['data'][0]['roles'][1]['role']);
     }
