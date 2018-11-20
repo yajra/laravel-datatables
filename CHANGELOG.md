@@ -8,6 +8,12 @@
 
 ### [Unreleased]
 
+### [v8.10.0] - 2018-11-20
+
+- Add simple pagination api. [#1911]
+- Use `toJson()` on all tests api. [#1911]
+- Use dedicated assertCount assertion. [#1903], credits to [@carusogabriel]
+
 ### [v8.9.2] - 2018-10-30
 
 - Fix the default name of index column to follow DT syntax. [#1882], credits to [@sharifzadesina].
@@ -242,7 +248,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.9.2...8.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.10.0...8.0
+[v8.10.0]: https://github.com/yajra/laravel-datatables/compare/v8.9.2...v8.10.0
 [v8.9.2]: https://github.com/yajra/laravel-datatables/compare/v8.9.1...v8.9.2
 [v8.9.1]: https://github.com/yajra/laravel-datatables/compare/v8.9.0...v8.9.1
 [v8.9.0]: https://github.com/yajra/laravel-datatables/compare/v8.8.0...v8.9.0
@@ -322,6 +329,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1860]: https://github.com/yajra/laravel-datatables/pull/1860
 [#1811]: https://github.com/yajra/laravel-datatables/pull/1811
 [#1882]: https://github.com/yajra/laravel-datatables/pull/1882
+[#1911]: https://github.com/yajra/laravel-datatables/pull/1911
 
 [#1626]: https://github.com/yajra/laravel-datatables/issues/1626
 [#1617]: https://github.com/yajra/laravel-datatables/issues/1617
