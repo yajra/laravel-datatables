@@ -119,17 +119,6 @@ class QueryDataTable extends DataTableAbstract
     }
 
     /**
-     * Alias of skipTotalRecords.
-     *
-     * @return $this
-     * @deprecated v8.11.0
-     */
-    public function simplePagination()
-    {
-        return $this->skipTotalRecords();
-    }
-
-    /**
      * Skip total records and set the recordsTotal equals to recordsFiltered.
      * This will improve the performance by skipping the total count query.
      *
