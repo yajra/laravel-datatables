@@ -63,6 +63,24 @@ class QueryDataTableTest extends TestCase
     }
 
     /** @test */
+    public function it_can_skip_total_records_count_query()
+    {
+        $crawler = $this->call('GET', '/query/simple', [
+            'columns' => [
+                ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
+            ],
+            'search' => ['value' => 'Record-19'],
+        ]);
+
+        $crawler->assertJson([
+            'draw'            => 0,
+            'recordsTotal'    => 1,
+            'recordsFiltered' => 1,
+        ]);
+    }
+
+    /** @test */
     public function it_can_perform_multiple_term_global_search()
     {
         $crawler = $this->call('GET', '/query/users', [

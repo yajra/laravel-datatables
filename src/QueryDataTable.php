@@ -46,11 +46,11 @@ class QueryDataTable extends DataTableAbstract
     protected $limitCallback;
 
     /**
-     * Flag to use simple pagination.
+     * Flag to skip total records count query.
      *
      * @var bool
      */
-    protected $simplePagination = false;
+    protected $skipTotalRecords = false;
 
     /**
      * Can the DataTable engine be created with these parameters.
@@ -119,14 +119,25 @@ class QueryDataTable extends DataTableAbstract
     }
 
     /**
-     * Use simple pagination to set the recordsTotal equals to recordsFiltered.
-     * This will improve the performance by skipping the count query.
+     * Alias of skipTotalRecords.
      *
      * @return $this
+     * @deprecated v8.11.0
      */
     public function simplePagination()
     {
-        $this->simplePagination = true;
+        return $this->skipTotalRecords();
+    }
+
+    /**
+     * Skip total records and set the recordsTotal equals to recordsFiltered.
+     * This will improve the performance by skipping the total count query.
+     *
+     * @return $this
+     */
+    public function skipTotalRecords()
+    {
+        $this->skipTotalRecords = true;
 
         return $this;
     }
@@ -138,7 +149,7 @@ class QueryDataTable extends DataTableAbstract
      */
     public function totalCount()
     {
-        if ($this->simplePagination) {
+        if ($this->skipTotalRecords) {
             return true;
         }
 
@@ -153,7 +164,7 @@ class QueryDataTable extends DataTableAbstract
     protected function filteredCount()
     {
         $this->filteredRecords = $this->filteredRecords ?: $this->count();
-        if ($this->simplePagination) {
+        if ($this->skipTotalRecords) {
             $this->totalRecords = $this->filteredRecords;
         }
 
