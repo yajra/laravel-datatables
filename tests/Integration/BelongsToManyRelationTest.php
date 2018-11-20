@@ -87,7 +87,7 @@ class BelongsToManyRelationTest extends TestCase
         parent::setUp();
 
         $this->app['router']->get('/relations/belongsToMany', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with('roles')->select('users.*'))->make('true');
+            return $datatables->eloquent(User::with('roles')->select('users.*'))->toJson();
         });
     }
 }

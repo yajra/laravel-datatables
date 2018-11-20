@@ -84,7 +84,7 @@ class BelongsToRelationTest extends TestCase
         parent::setUp();
 
         $this->app['router']->get('/relations/belongsTo', function (DataTables $datatables) {
-            return $datatables->eloquent(Post::with('user')->select('posts.*'))->make('true');
+            return $datatables->eloquent(Post::with('user')->select('posts.*'))->toJson();
         });
     }
 }

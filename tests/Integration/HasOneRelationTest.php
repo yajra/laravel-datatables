@@ -84,7 +84,7 @@ class HasOneRelationTest extends TestCase
         parent::setUp();
 
         $this->app['router']->get('/relations/hasOne', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with('heart')->select('users.*'))->make('true');
+            return $datatables->eloquent(User::with('heart')->select('users.*'))->toJson();
         });
     }
 }
