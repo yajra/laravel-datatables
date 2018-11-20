@@ -11,7 +11,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
 
-class QueryEngineTest extends TestCase
+class QueryDataTableTest extends TestCase
 {
     use DatabaseTransactions;
 
@@ -40,6 +40,24 @@ class QueryEngineTest extends TestCase
         $crawler->assertJson([
             'draw'            => 0,
             'recordsTotal'    => 20,
+            'recordsFiltered' => 1,
+        ]);
+    }
+
+    /** @test */
+    public function it_can_use_simple_pagination()
+    {
+        $crawler = $this->call('GET', '/query/simple', [
+            'columns' => [
+                ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
+            ],
+            'search' => ['value' => 'Record-19'],
+        ]);
+
+        $crawler->assertJson([
+            'draw'            => 0,
+            'recordsTotal'    => 1,
             'recordsFiltered' => 1,
         ]);
     }
@@ -182,29 +200,35 @@ class QueryEngineTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['router']->get('/query/users', function (DataTables $dataTable) {
-            return $dataTable->query(DB::table('users'))->make('true');
+        $route = $this->app['router'];
+
+        $route->get('/query/users', function (DataTables $dataTable) {
+            return $dataTable->query(DB::table('users'))->toJson();
         });
 
-        $this->app['router']->get('/query/addColumn', function (DataTables $dataTable) {
+        $route->get('/query/simple', function (DataTables $dataTable) {
+            return $dataTable->query(DB::table('users'))->simplePagination()->toJson();
+        });
+
+        $route->get('/query/addColumn', function (DataTables $dataTable) {
             return $dataTable->query(DB::table('users'))
                              ->addColumn('foo', 'bar')
-                             ->make('true');
+                             ->toJson();
         });
 
-        $this->app['router']->get('/query/indexColumn', function (DataTables $dataTable) {
+        $route->get('/query/indexColumn', function (DataTables $dataTable) {
             return $dataTable->query(DB::table('users'))
                              ->addIndexColumn()
-                             ->make('true');
+                             ->toJson();
         });
 
-        $this->app['router']->get('/query/filterColumn', function (DataTables $dataTable) {
+        $route->get('/query/filterColumn', function (DataTables $dataTable) {
             return $dataTable->query(DB::table('users'))
                              ->addColumn('foo', 'bar')
                              ->filterColumn('foo', function (Builder $builder, $keyword) {
                                  $builder->where('1', $keyword);
                              })
-                             ->make('true');
+                             ->toJson();
         });
     }
 }
