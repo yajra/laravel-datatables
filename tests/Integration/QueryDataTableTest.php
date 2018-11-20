@@ -45,24 +45,6 @@ class QueryDataTableTest extends TestCase
     }
 
     /** @test */
-    public function it_can_use_simple_pagination()
-    {
-        $crawler = $this->call('GET', '/query/simple', [
-            'columns' => [
-                ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
-                ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
-            ],
-            'search' => ['value' => 'Record-19'],
-        ]);
-
-        $crawler->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 1,
-            'recordsFiltered' => 1,
-        ]);
-    }
-
-    /** @test */
     public function it_can_skip_total_records_count_query()
     {
         $crawler = $this->call('GET', '/query/simple', [
@@ -225,7 +207,7 @@ class QueryDataTableTest extends TestCase
         });
 
         $route->get('/query/simple', function (DataTables $dataTable) {
-            return $dataTable->query(DB::table('users'))->simplePagination()->toJson();
+            return $dataTable->query(DB::table('users'))->skipTotalRecords()->toJson();
         });
 
         $route->get('/query/addColumn', function (DataTables $dataTable) {
