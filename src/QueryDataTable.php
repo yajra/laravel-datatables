@@ -46,6 +46,13 @@ class QueryDataTable extends DataTableAbstract
     protected $limitCallback;
 
     /**
+     * Flag to use simple pagination.
+     *
+     * @var bool
+     */
+    protected $simplePagination = false;
+
+    /**
      * Can the DataTable engine be created with these parameters.
      *
      * @param mixed $source
@@ -112,13 +119,45 @@ class QueryDataTable extends DataTableAbstract
     }
 
     /**
+     * Use simple pagination to set the recordsTotal equals to recordsFiltered.
+     * This will improve the performance by skipping the count query.
+     *
+     * @return $this
+     */
+    public function simplePagination()
+    {
+        $this->simplePagination = true;
+
+        return $this;
+    }
+
+    /**
      * Count total items.
      *
      * @return int
      */
     public function totalCount()
     {
+        if ($this->simplePagination) {
+            return true;
+        }
+
         return $this->totalRecords ? $this->totalRecords : $this->count();
+    }
+
+    /**
+     * Count filtered items.
+     *
+     * @return int
+     */
+    protected function filteredCount()
+    {
+        $this->filteredRecords = $this->filteredRecords ?: $this->count();
+        if ($this->simplePagination) {
+            $this->totalRecords = $this->filteredRecords;
+        }
+
+        return $this->filteredRecords;
     }
 
     /**
