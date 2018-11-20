@@ -10,7 +10,7 @@ use Yajra\DataTables\CollectionDataTable;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
 
-class CollectionEngineTest extends TestCase
+class CollectionDataTableTest extends TestCase
 {
     use DatabaseTransactions;
 

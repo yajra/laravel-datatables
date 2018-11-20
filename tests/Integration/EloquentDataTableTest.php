@@ -10,7 +10,7 @@ use Yajra\DataTables\Tests\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
 
-class EloquentEngineTest extends TestCase
+class EloquentDataTableTest extends TestCase
 {
     use DatabaseTransactions;
 
