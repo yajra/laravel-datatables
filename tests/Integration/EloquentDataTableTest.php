@@ -10,7 +10,7 @@ use Yajra\DataTables\Tests\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
 
-class EloquentEngineTest extends TestCase
+class EloquentDataTableTest extends TestCase
 {
     use DatabaseTransactions;
 
@@ -47,7 +47,7 @@ class EloquentEngineTest extends TestCase
     public function it_accepts_a_model_using_of_factory()
     {
         $dataTable = DataTables::of(User::query());
-        $response  = $dataTable->make(true);
+        $response  = $dataTable->toJson();
         $this->assertInstanceOf(EloquentDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -56,7 +56,7 @@ class EloquentEngineTest extends TestCase
     public function it_accepts_a_model_using_facade()
     {
         $dataTable = DatatablesFacade::of(User::query());
-        $response  = $dataTable->make(true);
+        $response  = $dataTable->toJson();
         $this->assertInstanceOf(EloquentDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -65,7 +65,7 @@ class EloquentEngineTest extends TestCase
     public function it_accepts_a_model_using_facade_eloquent_method()
     {
         $dataTable = DatatablesFacade::eloquent(User::query());
-        $response  = $dataTable->make(true);
+        $response  = $dataTable->toJson();
         $this->assertInstanceOf(EloquentDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -74,7 +74,7 @@ class EloquentEngineTest extends TestCase
     public function it_accepts_a_model_using_ioc_container()
     {
         $dataTable = app('datatables')->eloquent(User::query());
-        $response  = $dataTable->make(true);
+        $response  = $dataTable->toJson();
         $this->assertInstanceOf(EloquentDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -83,7 +83,7 @@ class EloquentEngineTest extends TestCase
     public function it_accepts_a_model_using_ioc_container_factory()
     {
         $dataTable = app('datatables')->of(User::query());
-        $response  = $dataTable->make(true);
+        $response  = $dataTable->toJson();
         $this->assertInstanceOf(EloquentDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -93,7 +93,7 @@ class EloquentEngineTest extends TestCase
         parent::setUp();
 
         $this->app['router']->get('/eloquent/users', function (DataTables $datatables) {
-            return $datatables->eloquent(User::query())->make('true');
+            return $datatables->eloquent(User::query())->toJson();
         });
     }
 }

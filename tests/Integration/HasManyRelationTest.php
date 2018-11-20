@@ -58,7 +58,7 @@ class HasManyRelationTest extends TestCase
         parent::setUp();
 
         $this->app['router']->get('/relations/hasMany', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with('posts')->select('users.*'))->make('true');
+            return $datatables->eloquent(User::with('posts')->select('users.*'))->toJson();
         });
     }
 }
