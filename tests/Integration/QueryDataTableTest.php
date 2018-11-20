@@ -45,7 +45,7 @@ class QueryDataTableTest extends TestCase
     }
 
     /** @test */
-    public function it_can_use_simple_pagination()
+    public function it_can_skip_total_records_count_query()
     {
         $crawler = $this->call('GET', '/query/simple', [
             'columns' => [
@@ -207,7 +207,7 @@ class QueryDataTableTest extends TestCase
         });
 
         $route->get('/query/simple', function (DataTables $dataTable) {
-            return $dataTable->query(DB::table('users'))->simplePagination()->toJson();
+            return $dataTable->query(DB::table('users'))->skipTotalRecords()->toJson();
         });
 
         $route->get('/query/addColumn', function (DataTables $dataTable) {
