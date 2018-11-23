@@ -263,8 +263,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.13.0...8.0
-[v8.13.0]: https://github.com/yajra/laravel-datatables/compare/v8.12.0...v8.13.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.12.1...8.0
+[v8.12.1]: https://github.com/yajra/laravel-datatables/compare/v8.12.0...v8.12.1
 [v8.12.0]: https://github.com/yajra/laravel-datatables/compare/v8.11.0...v8.12.0
 [v8.11.0]: https://github.com/yajra/laravel-datatables/compare/v8.10.0...v8.11.0
 [v8.10.0]: https://github.com/yajra/laravel-datatables/compare/v8.9.2...v8.10.0
