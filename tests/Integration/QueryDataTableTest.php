@@ -154,6 +154,22 @@ class QueryDataTableTest extends TestCase
     }
 
     /** @test */
+    public function it_allows_raw_html_on_non_closure_added_columns()
+    {
+        $json = $this->call('GET', '/query/xss-add')->json();
+        $this->assertEquals('<a href="#">Allowed</a>', $json['data'][0]['foo']);
+        $this->assertNotEquals('<a href="#">Allowed</a>', $json['data'][0]['bar']);
+    }
+
+    /** @test */
+    public function it_allows_raw_html_on_non_closure_edited_columns()
+    {
+        $json = $this->call('GET', '/query/xss-edit')->json();
+        $this->assertEquals('<a href="#">Allowed</a>', $json['data'][0]['name']);
+        $this->assertNotEquals('<a href="#">Allowed</a>', $json['data'][0]['email']);
+    }
+
+    /** @test */
     public function it_can_return_auto_index_column()
     {
         $crawler = $this->call('GET', '/query/indexColumn', [
@@ -227,6 +243,24 @@ class QueryDataTableTest extends TestCase
                              ->addColumn('foo', 'bar')
                              ->filterColumn('foo', function (Builder $builder, $keyword) {
                                  $builder->where('1', $keyword);
+                             })
+                             ->toJson();
+        });
+
+        $route->get('/query/xss-add', function (DataTables $dataTable) {
+            return $dataTable->query(DB::table('users'))
+                             ->addColumn('foo', '<a href="#">Allowed</a>')
+                             ->addColumn('bar', function() {
+                                return '<a href="#">Allowed</a>';
+                             })
+                             ->toJson();
+        });
+
+        $route->get('/query/xss-edit', function (DataTables $dataTable) {
+            return $dataTable->query(DB::table('users'))
+                             ->editColumn('name', '<a href="#">Allowed</a>')
+                             ->editColumn('email', function() {
+                                return '<a href="#">Allowed</a>';
                              })
                              ->toJson();
         });
