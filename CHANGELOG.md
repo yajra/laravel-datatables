@@ -8,15 +8,19 @@
 
 ### [Unreleased]
 
-### [v8.12.1] - 2018-11-23
+### [v8.13.1] - 2018-11-23
 
 - Revert v8.12.0 changes.
 
-### [v8.12.0] - 2018-11-23
+### [v8.13.0] - 2018-11-23
 
 - Only escape callable output of add and edit column. [#1852], credits to [@sharifzadesina]
 - Fix adding of index column bug introduced by [#1852]. [#1915]
 - Add tests for [#1852].
+
+### [v8.12.0] - 2018-11-23
+
+- Skipped, bad tagging!
 
 ### [v8.11.0] - 2018-11-20
 
@@ -263,9 +267,9 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.12.1...8.0
-[v8.12.1]: https://github.com/yajra/laravel-datatables/compare/v8.12.0...v8.12.1
-[v8.12.0]: https://github.com/yajra/laravel-datatables/compare/v8.11.0...v8.12.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.13.1...8.0
+[v8.13.1]: https://github.com/yajra/laravel-datatables/compare/v8.13.0...v8.13.1
+[v8.13.0]: https://github.com/yajra/laravel-datatables/compare/v8.11.0...v8.13.0
 [v8.11.0]: https://github.com/yajra/laravel-datatables/compare/v8.10.0...v8.11.0
 [v8.10.0]: https://github.com/yajra/laravel-datatables/compare/v8.9.2...v8.10.0
 [v8.9.2]: https://github.com/yajra/laravel-datatables/compare/v8.9.1...v8.9.2
