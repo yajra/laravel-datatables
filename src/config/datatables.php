@@ -1,6 +1,7 @@
 <?php
 
 return [
+
     /*
      * DataTables search options.
      */
