@@ -259,8 +259,8 @@ class QueryDataTableTest extends TestCase
         $route->get('/query/xss-add', function (DataTables $dataTable) {
             return $dataTable->query(DB::table('users'))
                              ->addColumn('foo', '<a href="#">Allowed</a>')
-                             ->addColumn('bar', function() {
-                                return '<a href="#">Allowed</a>';
+                             ->addColumn('bar', function () {
+                                 return '<a href="#">Allowed</a>';
                              })
                              ->toJson();
         });
@@ -268,8 +268,8 @@ class QueryDataTableTest extends TestCase
         $route->get('/query/xss-edit', function (DataTables $dataTable) {
             return $dataTable->query(DB::table('users'))
                              ->editColumn('name', '<a href="#">Allowed</a>')
-                             ->editColumn('email', function() {
-                                return '<a href="#">Allowed</a>';
+                             ->editColumn('email', function () {
+                                 return '<a href="#">Allowed</a>';
                              })
                              ->toJson();
         });
@@ -278,8 +278,8 @@ class QueryDataTableTest extends TestCase
             return $dataTable->query(DB::table('users'))
                              ->addColumn('foo', '<a href="#">Allowed</a>')
                              ->editColumn('name', '<a href="#">Allowed</a>')
-                             ->editColumn('email', function() {
-                                return '<a href="#">Allowed</a>';
+                             ->editColumn('email', function () {
+                                 return '<a href="#">Allowed</a>';
                              })
                              ->rawColumns(['name', 'email'])
                              ->toJson();
