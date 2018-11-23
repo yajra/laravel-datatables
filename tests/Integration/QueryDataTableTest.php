@@ -170,6 +170,15 @@ class QueryDataTableTest extends TestCase
     }
 
     /** @test */
+    public function it_allows_raw_html_on_specified_columns()
+    {
+        $json = $this->call('GET', '/query/xss-raw')->json();
+        $this->assertNotEquals('<a href="#">Allowed</a>', $json['data'][0]['foo']);
+        $this->assertEquals('<a href="#">Allowed</a>', $json['data'][0]['name']);
+        $this->assertEquals('<a href="#">Allowed</a>', $json['data'][0]['email']);
+    }
+
+    /** @test */
     public function it_can_return_auto_index_column()
     {
         $crawler = $this->call('GET', '/query/indexColumn', [
@@ -262,6 +271,17 @@ class QueryDataTableTest extends TestCase
                              ->editColumn('email', function() {
                                 return '<a href="#">Allowed</a>';
                              })
+                             ->toJson();
+        });
+
+        $route->get('/query/xss-raw', function (DataTables $dataTable) {
+            return $dataTable->query(DB::table('users'))
+                             ->addColumn('foo', '<a href="#">Allowed</a>')
+                             ->editColumn('name', '<a href="#">Allowed</a>')
+                             ->editColumn('email', function() {
+                                return '<a href="#">Allowed</a>';
+                             })
+                             ->rawColumns(['name', 'email'])
                              ->toJson();
         });
     }
