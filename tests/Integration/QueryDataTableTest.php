@@ -154,7 +154,7 @@ class QueryDataTableTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_allow_raw_html_on_non_closure_added_columns()
+    public function it_does_not_allow_raw_html_on_added_columns()
     {
         $json = $this->call('GET', '/query/xss-add')->json();
         $this->assertNotEquals('<a href="#">Allowed</a>', $json['data'][0]['foo']);
@@ -162,7 +162,7 @@ class QueryDataTableTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_allow_raw_html_on_non_closure_edited_columns()
+    public function it_does_not_allow_raw_html_on_edited_columns()
     {
         $json = $this->call('GET', '/query/xss-edit')->json();
         $this->assertNotEquals('<a href="#">Allowed</a>', $json['data'][0]['name']);
