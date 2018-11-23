@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v8.12.1] - 2018-11-23
+
+- Revert v8.12.0 changes.
+
 ### [v8.12.0] - 2018-11-23
 
 - Only escape callable output of add and edit column. [#1852], credits to [@sharifzadesina]
