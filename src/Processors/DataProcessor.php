@@ -255,7 +255,7 @@ class DataProcessor
         $arrayDot = array_filter(array_dot($row));
         foreach ($arrayDot as $key => $value) {
             if (! in_array($key, $this->rawColumns)) {
-                $dataType = gettype($value);
+                $dataType       = gettype($value);
                 $arrayDot[$key] = e($value);
                 settype($arrayDot[$key], $dataType);
             }
