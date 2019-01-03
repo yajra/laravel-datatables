@@ -157,7 +157,7 @@ class Helper
     {
         $data = $row instanceof Arrayable ?
                 $row->toArray() :
-                ($row instanceof \StdClass ? (array) $row : $row );
+                ($row instanceof \StdClass ? (array) $row : $row);
 
         foreach ($data as &$value) {
             if (is_object($value) || is_array($value)) {
