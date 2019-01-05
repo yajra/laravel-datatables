@@ -232,11 +232,7 @@ class DataProcessor
             } elseif (is_array($this->escapeColumns)) {
                 $columns = array_diff($this->escapeColumns, $this->rawColumns);
                 foreach ($columns as $key) {
-                    $data = array_get($row, $key);
-                    $dataType = gettype($data);
-                    $data = e($data);
-                    settype($data, $dataType);
-                    array_set($row, $key, $data);
+                    array_set($row, $key, e(array_get($row, $key)));
                 }
             }
 
@@ -255,9 +251,7 @@ class DataProcessor
         $arrayDot = array_filter(array_dot($row));
         foreach ($arrayDot as $key => $value) {
             if (! in_array($key, $this->rawColumns)) {
-                $dataType       = gettype($value);
                 $arrayDot[$key] = e($value);
-                settype($arrayDot[$key], $dataType);
             }
         }
 
