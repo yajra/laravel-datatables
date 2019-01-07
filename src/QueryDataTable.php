@@ -82,17 +82,22 @@ class QueryDataTable extends DataTableAbstract
      * Organizes works.
      *
      * @param bool $mDataSupport
+     * @param array $visible
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function make($mDataSupport = true)
+    public function make($mDataSupport = true, $visible = [])
     {
         try {
             $this->prepareQuery();
-
-            $results   = $this->results();
+            $results = $this->results();
+            if (count($visible) > 0) {
+                $results->each(function ($e) use($visible){
+                    $e->makeVisible($visible);
+                });
+            }
             $processed = $this->processResults($results, $mDataSupport);
-            $data      = $this->transform($results, $processed);
+            $data = $this->transform($results, $processed);
 
             return $this->render($data);
         } catch (\Exception $exception) {
