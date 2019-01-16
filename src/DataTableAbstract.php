@@ -268,7 +268,6 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
         return $this;
     }
 
-
     /**
      * Sets DT_RowClass template.
      * result: <tr class="output_from_your_template">.
