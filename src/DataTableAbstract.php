@@ -248,8 +248,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
 
     /**
      * Set columns that should not be escaped.
-     *
-     * Optionally merge the defaults from config
+     * Optionally merge the defaults from config.
      *
      * @param array $columns
      * @param bool $merge
