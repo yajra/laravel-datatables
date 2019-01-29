@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v8.13.4] - 2019-01-29
+
+- Added optional merge of config raw columns to rawColumns method. [#1960], credits to [@Spodnet]
+
 ### [v8.13.3] - 2019-01-05
 
 - Revert [#1942].
@@ -277,7 +281,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.13.3...8.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.13.4...8.0
+[v8.13.4]: https://github.com/yajra/laravel-datatables/compare/v8.13.3...v8.13.4
 [v8.13.3]: https://github.com/yajra/laravel-datatables/compare/v8.13.2...v8.13.3
 [v8.13.2]: https://github.com/yajra/laravel-datatables/compare/v8.13.1...v8.13.2
 [v8.13.1]: https://github.com/yajra/laravel-datatables/compare/v8.13.0...v8.13.1
@@ -367,6 +372,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1912]: https://github.com/yajra/laravel-datatables/pull/1912
 [#1852]: https://github.com/yajra/laravel-datatables/pull/1852
 [#1942]: https://github.com/yajra/laravel-datatables/pull/1942
+[#1960]: https://github.com/yajra/laravel-datatables/pull/1960
 
 [#1626]: https://github.com/yajra/laravel-datatables/issues/1626
 [#1617]: https://github.com/yajra/laravel-datatables/issues/1617
@@ -411,3 +417,4 @@ return (new CollectionDataTable(User::all())->toJson();
 [@zeyad82]: https://github.com/zeyad82
 [@sharifzadesina]: https://github.com/sharifzadesina
 [@ridaamirini]: https://github.com/ridaamirini
+[@Spodnet]: https://github.com/Spodnet
