@@ -248,13 +248,21 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
 
     /**
      * Set columns that should not be escaped.
+     * Optionally merge the defaults from config.
      *
      * @param array $columns
+     * @param bool $merge
      * @return $this
      */
-    public function rawColumns(array $columns)
+    public function rawColumns(array $columns, $merge = false)
     {
-        $this->columnDef['raw'] = $columns;
+        if ($merge) {
+            $config = $this->config->get('datatables.columns');
+
+            $this->columnDef['raw'] = array_merge($config['raw'], $columns);
+        } else {
+            $this->columnDef['raw'] = $columns;
+        }
 
         return $this;
     }
