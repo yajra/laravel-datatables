@@ -51,7 +51,7 @@ class QueryDataTable extends DataTableAbstract
      * @var bool
      */
     protected $skipTotalRecords = false;
-    
+
     /**
      * Flag to keep the select bindings.
      *
@@ -137,7 +137,7 @@ class QueryDataTable extends DataTableAbstract
 
         return $this;
     }
-    
+
     /**
      * Keep the select bindings.
      *
