@@ -8,6 +8,11 @@
 
 ### [Unreleased]
 
+### [v8.13.5] - 2019-02-13
+
+- Keep select bindings option. [#1988], credits to [@royduin].
+- Fix [#1983].
+
 ### [v8.13.4] - 2019-01-29
 
 - Added optional merge of config raw columns to rawColumns method. [#1960], credits to [@Spodnet]
@@ -281,7 +286,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.13.4...8.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.13.5...8.0
+[v8.13.5]: https://github.com/yajra/laravel-datatables/compare/v8.13.4...v8.13.5
 [v8.13.4]: https://github.com/yajra/laravel-datatables/compare/v8.13.3...v8.13.4
 [v8.13.3]: https://github.com/yajra/laravel-datatables/compare/v8.13.2...v8.13.3
 [v8.13.2]: https://github.com/yajra/laravel-datatables/compare/v8.13.1...v8.13.2
@@ -373,6 +379,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1852]: https://github.com/yajra/laravel-datatables/pull/1852
 [#1942]: https://github.com/yajra/laravel-datatables/pull/1942
 [#1960]: https://github.com/yajra/laravel-datatables/pull/1960
+[#1988]: https://github.com/yajra/laravel-datatables/pull/1988
 
 [#1626]: https://github.com/yajra/laravel-datatables/issues/1626
 [#1617]: https://github.com/yajra/laravel-datatables/issues/1617
@@ -394,6 +401,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1805]: https://github.com/yajra/laravel-datatables/issues/1805
 [#1747]: https://github.com/yajra/laravel-datatables/issues/1747
 [#1951]: https://github.com/yajra/laravel-datatables/issues/1951
+[#1983]: https://github.com/yajra/laravel-datatables/issues/1983
 
 [laravel-datatables-fractal]: https://github.com/yajra/laravel-datatables-fractal
 
@@ -418,3 +426,4 @@ return (new CollectionDataTable(User::all())->toJson();
 [@sharifzadesina]: https://github.com/sharifzadesina
 [@ridaamirini]: https://github.com/ridaamirini
 [@Spodnet]: https://github.com/Spodnet
+[@royduin]: https://github.com/royduin
