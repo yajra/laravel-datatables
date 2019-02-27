@@ -53,7 +53,7 @@ class HasManyRelationTest extends TestCase
         return $this->call('GET', '/relations/hasMany', array_merge($data, $params));
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

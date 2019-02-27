@@ -81,7 +81,7 @@ class EloquentJoinTest extends TestCase
         $this->assertCount(10, $response->json()['data']);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
