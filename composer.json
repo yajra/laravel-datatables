@@ -22,7 +22,7 @@
     "illuminate/view": "5.8.*"
   },
   "require-dev": {
-    "orchestra/testbench": "~3.5"
+    "orchestra/testbench": "^3.8"
   },
   "suggest": {
     "yajra/laravel-datatables-buttons": "Plugin for server-side exporting of dataTables.",
