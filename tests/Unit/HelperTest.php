@@ -124,6 +124,7 @@ class HelperTest extends TestCase
 
     public function test_get_mixed_value()
     {
+        $carbon = Carbon::createFromDate(2015, 1, 1);
         $data = [
             'id'         => 1,
             'name'       => 'John',
@@ -132,13 +133,13 @@ class HelperTest extends TestCase
         $class             = new stdClass();
         $class->id         = 1;
         $class->name       = 'John';
-        $class->created_at = Carbon::createFromDate(2015, 1, 1);
+        $class->created_at = $carbon;
 
         $compiled = Helper::getMixedValue($data, $class);
         $expected = [
             'id'         => 1,
             'name'       => 'John',
-            'created_at' => Carbon::createFromDate(2015, 1, 1),
+            'created_at' => $carbon,
             'model'      => $class,
         ];
         $this->assertEquals($expected, $compiled);
