@@ -125,7 +125,7 @@ class HelperTest extends TestCase
     public function test_get_mixed_value()
     {
         $carbon = Carbon::createFromDate(2015, 1, 1);
-        $data = [
+        $data   = [
             'id'         => 1,
             'name'       => 'John',
             'created_at' => '1234',
