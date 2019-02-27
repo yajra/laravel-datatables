@@ -169,7 +169,7 @@ class EloquentDataTable extends QueryDataTable
 
                 case $model instanceof BelongsTo:
                     $table     = $model->getRelated()->getTable();
-                    $foreign   = $model->getQualifiedForeignKey();
+                    $foreign   = $model->getQualifiedForeignKeyName();
                     $other     = $model->getQualifiedOwnerKeyName();
                     $deletedAt = $this->checkSoftDeletesOnModel($model->getRelated());
                     break;
