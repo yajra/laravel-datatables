@@ -193,7 +193,7 @@ class CollectionDataTableTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -221,7 +221,7 @@ class QueryDataTableTest extends TestCase
         $this->assertContains('"1" = ?', $queries[1]['query']);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

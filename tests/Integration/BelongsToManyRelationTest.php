@@ -82,7 +82,7 @@ class BelongsToManyRelationTest extends TestCase
         $this->assertEquals('User', $response->json()['data'][0]['roles'][1]['role']);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
