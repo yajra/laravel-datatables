@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v9.0.1] - 2019-03-26
+
+- Allow boolean values for column[i].searchable [#1813], credits to [@sgotre].
+
 ### [v9.0.0] - 2019-02-27
 
 - Add support for Laravel 5.8 [#2002].
@@ -294,7 +298,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.0.0...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.0.1...9.0
+[v9.0.1]: https://github.com/yajra/laravel-datatables/compare/v9.0.0...v9.0.1
 [v9.0.0]: https://github.com/yajra/laravel-datatables/compare/v8.13.5...v9.0.0
 [v8.13.5]: https://github.com/yajra/laravel-datatables/compare/v8.13.4...v8.13.5
 [v8.13.4]: https://github.com/yajra/laravel-datatables/compare/v8.13.3...v8.13.4
@@ -391,6 +396,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1988]: https://github.com/yajra/laravel-datatables/pull/1988
 [#2001]: https://github.com/yajra/laravel-datatables/pull/2001
 [#2002]: https://github.com/yajra/laravel-datatables/pull/2002
+[#1813]: https://github.com/yajra/laravel-datatables/pull/1813
 
 [#1626]: https://github.com/yajra/laravel-datatables/issues/1626
 [#1617]: https://github.com/yajra/laravel-datatables/issues/1617
@@ -439,3 +445,4 @@ return (new CollectionDataTable(User::all())->toJson();
 [@ridaamirini]: https://github.com/ridaamirini
 [@Spodnet]: https://github.com/Spodnet
 [@royduin]: https://github.com/royduin
+[@sgotre]: https://github.com/sgotre
