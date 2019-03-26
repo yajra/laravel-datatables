@@ -154,20 +154,19 @@ class Request
     public function isColumnSearchable($i, $column_search = true)
     {
         if ($column_search) {
-            return 
+            return
                 (
-                    $this->request->input("columns.$i.searchable", 'true') === 'true' 
-                    || 
-                    $this->request->input("columns.$i.searchable", 'true') === true 
-                ) 
+                    $this->request->input("columns.$i.searchable", 'true') === 'true'
+                    ||
+                    $this->request->input("columns.$i.searchable", 'true') === true
+                )
                 && $this->columnKeyword($i) != '';
         }
 
-        return ( 
-            $this->request->input("columns.$i.searchable", 'true') === 'true' 
-            || 
-            $this->request->input("columns.$i.searchable", 'true') === true
-        );
+        return
+            $this->request->input("columns.$i.searchable", 'true') === 'true'
+            ||
+            $this->request->input("columns.$i.searchable", 'true') === true;
     }
 
     /**
