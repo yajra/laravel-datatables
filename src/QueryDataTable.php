@@ -186,6 +186,10 @@ class QueryDataTable extends DataTableAbstract
      */
     public function count()
     {
+        if ($this->skipTotalRecords) {
+            return null;
+        }
+
         $builder = $this->prepareCountQuery();
         $table   = $this->connection->raw('(' . $builder->toSql() . ') count_row_table');
 
