@@ -140,7 +140,7 @@ class EloquentDataTable extends QueryDataTable
         $table     = '';
         $deletedAt = false;
         $lastQuery = $this->query;
-        foreach (explode('.', $relation) as $eachRelation) {
+        foreach (explode('.', $relation) as $index => $eachRelation) {
             $model = $lastQuery->getRelation($eachRelation);
             switch (true) {
                 case $model instanceof BelongsToMany:
@@ -169,19 +169,23 @@ class EloquentDataTable extends QueryDataTable
 
                 case $model instanceof BelongsTo:
                     $table     = $model->getRelated()->getTable();
+                    $alias     = "alias_{$index}_{$table}";
+                    $tableAs   = "{$table} AS $alias";
                     $foreign   = $model->getQualifiedForeignKeyName();
-                    $other     = $model->getQualifiedOwnerKeyName();
+                    $owner     = "{$alias}.{$model->getOwnerKeyName()}";
                     $deletedAt = $this->checkSoftDeletesOnModel($model->getRelated());
                     break;
 
                 default:
                     throw new Exception('Relation ' . get_class($model) . ' is not yet supported.');
             }
-            $this->performJoin($table, $foreign, $other, $deletedAt);
+            $this->performJoin($tableAs ?? $table, $foreign, $owner ?? $other, $deletedAt);
             $lastQuery = $model->getQuery();
         }
 
-        return $table . '.' . $relationColumn;
+        $table = $alias ?? $table;
+
+        return "{$table}.{$relationColumn}";
     }
 
     protected function checkSoftDeletesOnModel($model)
