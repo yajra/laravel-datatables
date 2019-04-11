@@ -243,7 +243,7 @@ class EloquentDataTable extends QueryDataTable
      */
     protected function tableAlias(string $table, string $alias)
     {
-        switch($this->driver) {
+        switch ($this->driver) {
             case 'oracle':
                 return "{$table} {$alias}";
 
