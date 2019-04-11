@@ -18,7 +18,7 @@ class EloquentDataTable extends QueryDataTable
 
     /**
      * Database connection driver.
-     * 
+     *
      * @var string
      */
     protected $driver;
@@ -46,7 +46,7 @@ class EloquentDataTable extends QueryDataTable
 
         $this->query = $builder;
 
-        $connection = config('database.default');
+        $connection   = config('database.default');
         $this->driver = config("database.connections.{$connection}.driver");
     }
 
@@ -184,7 +184,7 @@ class EloquentDataTable extends QueryDataTable
                     $foreign   = $model->getQualifiedForeignKeyName();
                     $owner     = "{$alias}.{$model->getOwnerKeyName()}";
                     $deletedAt = $this->checkSoftDeletesOnModel($model->getRelated());
-                    
+
                     break;
 
                 default:
@@ -235,15 +235,15 @@ class EloquentDataTable extends QueryDataTable
 
     /**
      * Proper syntax for the table alias, according to the database driver being used.
-     * 
+     *
      * @param string $table
      * @param string $alias
-     * 
+     *
      * @return string
      */
     protected function tableAlias(string $table, string $alias)
     {
-        switch ($this->driver) {
+        switch($this->driver) {
             case 'oracle':
                 return "{$table} {$alias}";
 
