@@ -17,6 +17,13 @@ class EloquentDataTable extends QueryDataTable
     protected $query;
 
     /**
+     * Database connection driver.
+     * 
+     * @var string
+     */
+    protected $driver;
+
+    /**
      * Can the DataTable engine be created with these parameters.
      *
      * @param mixed $source
@@ -38,6 +45,9 @@ class EloquentDataTable extends QueryDataTable
         parent::__construct($builder->getQuery());
 
         $this->query = $builder;
+
+        $connection = config('database.default');
+        $this->driver = config("database.connections.{$connection}.driver");
     }
 
     /**
@@ -170,10 +180,11 @@ class EloquentDataTable extends QueryDataTable
                 case $model instanceof BelongsTo:
                     $table     = $model->getRelated()->getTable();
                     $alias     = "alias_{$index}_{$table}";
-                    $tableAs   = "{$table} AS $alias";
+                    $tableAs   = $this->tableAlias($table, $alias);
                     $foreign   = $model->getQualifiedForeignKeyName();
                     $owner     = "{$alias}.{$model->getOwnerKeyName()}";
                     $deletedAt = $this->checkSoftDeletesOnModel($model->getRelated());
+                    
                     break;
 
                 default:
@@ -219,6 +230,25 @@ class EloquentDataTable extends QueryDataTable
 
         if ($deletedAt !== false) {
             $this->getBaseQueryBuilder()->whereNull($deletedAt);
+        }
+    }
+
+    /**
+     * Proper syntax for the table alias, according to the database driver being used.
+     * 
+     * @param string $table
+     * @param string $alias
+     * 
+     * @return string
+     */
+    protected function tableAlias(string $table, string $alias)
+    {
+        switch ($this->driver) {
+            case 'oracle':
+                return "{$table} {$alias}";
+
+            default:
+                return "{$table} AS {$alias}";
         }
     }
 }
