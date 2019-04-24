@@ -78,7 +78,7 @@ class Helper
     public static function compileBlade($str, $data = [])
     {
         if (view()->exists($str)) {
-            return view($str, $data);
+            return view($str, $data)->render();
         }
 
         ob_start() && extract($data, EXTR_SKIP);
