@@ -218,7 +218,7 @@ class QueryDataTableTest extends TestCase
         ]);
 
         $queries = $crawler->json()['queries'];
-        $this->assertContains('"1" = ?', $queries[1]['query']);
+        $this->assertStringContainsString('"1" = ?', $queries[1]['query']);
     }
 
     protected function setUp(): void
