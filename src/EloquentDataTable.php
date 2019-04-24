@@ -169,10 +169,10 @@ class EloquentDataTable extends QueryDataTable
 
                 case $model instanceof BelongsTo:
                     $table     = $model->getRelated()->getTable();
-                    $alias     = "alias_{$index}_{$table}";
+                    $alias     = "{$table}_{$index}";
                     $tableAs   = "{$table} AS {$alias}";
                     $foreign   = $model->getQualifiedForeignKeyName();
-                    $owner     = "{$alias}.{$model->getOwnerKeyName()}";
+                    $other     = "{$alias}.{$model->getOwnerKeyName()}";
                     $deletedAt = $this->checkSoftDeletesOnModel($model->getRelated());
 
                     break;
@@ -180,7 +180,7 @@ class EloquentDataTable extends QueryDataTable
                 default:
                     throw new Exception('Relation ' . get_class($model) . ' is not yet supported.');
             }
-            $this->performJoin($tableAs ?? $table, $foreign, $owner ?? $other, $deletedAt);
+            $this->performJoin($tableAs ?? $table, $foreign, $other, $deletedAt);
             $lastQuery = $model->getQuery();
         }
 
