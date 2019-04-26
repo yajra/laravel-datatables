@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v9.1.1] - 2019-04-25
+
+- Revert [#2051], fix [#2058]. [#2072].
+
 ### [v9.1.0] - 2019-04-24
 
 #### FIXED
@@ -309,7 +313,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.1.0...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.1.1...9.0
+[v9.1.1]: https://github.com/yajra/laravel-datatables/compare/v9.1.0...v9.1.1
 [v9.1.0]: https://github.com/yajra/laravel-datatables/compare/v9.0.1...v9.1.0
 [v9.0.1]: https://github.com/yajra/laravel-datatables/compare/v9.0.0...v9.0.1
 [v9.0.0]: https://github.com/yajra/laravel-datatables/compare/v8.13.5...v9.0.0
@@ -411,7 +416,9 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1813]: https://github.com/yajra/laravel-datatables/pull/1813
 [#2067]: https://github.com/yajra/laravel-datatables/pull/2067
 [#2051]: https://github.com/yajra/laravel-datatables/pull/2051
+[#2072]: https://github.com/yajra/laravel-datatables/pull/2072
 
+[#2058]: https://github.com/yajra/laravel-datatables/issues/2058
 [#1626]: https://github.com/yajra/laravel-datatables/issues/1626
 [#1617]: https://github.com/yajra/laravel-datatables/issues/1617
 [#1294]: https://github.com/yajra/laravel-datatables/issues/1294
