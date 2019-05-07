@@ -278,11 +278,11 @@ class QueryDataTable extends DataTableAbstract
         $columns = $this->request->columns();
 
         foreach ($columns as $index => $column) {
-            if (! $this->request->isColumnSearchable($index)) {
+            $column = $this->getColumnName($index);
+
+            if (! $this->request->isColumnSearchable($index) || $this->isBlacklisted($column)) {
                 continue;
             }
-
-            $column = $this->getColumnName($index);
 
             if ($this->hasFilterColumn($column)) {
                 $keyword = $this->getColumnSearchKeyword($index, $raw = true);
