@@ -286,7 +286,7 @@ class QueryDataTable extends DataTableAbstract
 
             if ($this->hasFilterColumn($column)) {
                 $keyword = $this->getColumnSearchKeyword($index, $raw = true);
-                $this->applyFilterColumn($this->getBaseQueryBuilder(), $column, $keyword);
+                $this->applyFilterColumn($this->getBaseQueryBuilder(), $column, $keyword, false);
             } else {
                 $column  = $this->resolveRelationColumn($column);
                 $keyword = $this->getColumnSearchKeyword($index);
@@ -333,7 +333,7 @@ class QueryDataTable extends DataTableAbstract
      * @param string $keyword
      * @param string $boolean
      */
-    protected function applyFilterColumn($query, $columnName, $keyword, $boolean = 'and')
+    protected function applyFilterColumn($query, $columnName, $keyword, $boolean = 'and', $isGlobalSearch = false)
     {
         $query    = $this->getBaseQueryBuilder($query);
         $callback = $this->columnDef['filter'][$columnName]['method'];
@@ -344,7 +344,7 @@ class QueryDataTable extends DataTableAbstract
             $builder = $this->query->newQuery();
         }
 
-        $callback($builder, $keyword);
+        $callback($builder, $keyword, $isGlobalSearch);
 
         $query->addNestedWhereQuery($this->getBaseQueryBuilder($builder), $boolean);
     }
@@ -706,7 +706,7 @@ class QueryDataTable extends DataTableAbstract
                 })
                 ->each(function ($column) use ($keyword, $query) {
                     if ($this->hasFilterColumn($column)) {
-                        $this->applyFilterColumn($query, $column, $keyword, 'or');
+                        $this->applyFilterColumn($query, $column, $keyword, 'or', true);
                     } else {
                         $this->compileQuerySearch($query, $column, $keyword);
                     }
