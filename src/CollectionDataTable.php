@@ -318,10 +318,18 @@ class CollectionDataTable extends DataTableAbstract
         return $this;
     }
 
-    public function setOffset(int $offset)
+    /**
+     * Define the offset of the first item of the collection with respect to
+     * the FULL dataset the collection was sliced from. It effectively allows the
+     * collection to be "pre-sliced".
+     *
+     * @param int $offset
+     * @return $this
+     */
+    public function setOffset($offset)
     {
         $this->offset = $offset;
-        
+
         return $this;
     }
 }
