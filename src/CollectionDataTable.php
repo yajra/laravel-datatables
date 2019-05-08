@@ -326,7 +326,7 @@ class CollectionDataTable extends DataTableAbstract
      * @param int $offset
      * @return $this
      */
-    public function setOffset($offset)
+    public function setOffset(int $offset)
     {
         $this->offset = $offset;
 
