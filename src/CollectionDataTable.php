@@ -24,6 +24,13 @@ class CollectionDataTable extends DataTableAbstract
     public $original;
 
     /**
+     * The offset of the first record in the full dataset.
+     *
+     * @var int
+     */
+    private $offset = 0;
+
+    /**
      * Can the DataTable engine be created with these parameters.
      *
      * @param mixed $source
@@ -133,7 +140,7 @@ class CollectionDataTable extends DataTableAbstract
     public function paging()
     {
         $this->collection = $this->collection->slice(
-            $this->request->input('start'),
+            $this->request->input('start') - $this->offset,
             (int) $this->request->input('length') > 0 ? $this->request->input('length') : 10
         );
     }
@@ -308,6 +315,13 @@ class CollectionDataTable extends DataTableAbstract
      */
     protected function resolveCallbackParameter()
     {
+        return $this;
+    }
+
+    public function setOffset(int $offset)
+    {
+        $this->offset = $offset;
+        
         return $this;
     }
 }
