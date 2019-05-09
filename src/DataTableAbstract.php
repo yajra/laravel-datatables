@@ -254,7 +254,6 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      */
     public function makeHidden(array $attributes = [])
     {
-
         $this->columnDef['make_hidden'] = array_merge_recursive($this->columnDef['make_hidden'] ?: [], $attributes);
 
         return $this;

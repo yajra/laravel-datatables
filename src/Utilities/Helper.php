@@ -120,7 +120,7 @@ class Helper
     public static function castToArray($param)
     {
         if ($param instanceof \stdClass) {
-            $param = (array)$param;
+            $param = (array) $param;
 
             return $param;
         }
@@ -140,7 +140,7 @@ class Helper
      */
     public static function getOrMethod($method)
     {
-        if (!Str::contains(Str::lower($method), 'or')) {
+        if (! Str::contains(Str::lower($method), 'or')) {
             return 'or' . ucfirst($method);
         }
 
@@ -157,7 +157,7 @@ class Helper
     public static function convertToArray($row, $filters = [])
     {
         $row  = method_exists($row, 'makeHidden') ? $row->makeHidden($filters['make_hidden']) : $row;
-        $data = $row instanceof Arrayable ? $row->toArray() : (array)$row;
+        $data = $row instanceof Arrayable ? $row->toArray() : (array) $row;
 
         foreach ($data as &$value) {
             if (is_object($value) || is_array($value)) {
@@ -194,7 +194,7 @@ class Helper
                 $row[$key] = $value->format('Y-m-d H:i:s');
             } else {
                 if (is_object($value)) {
-                    $row[$key] = (string)$value;
+                    $row[$key] = (string) $value;
                 } else {
                     $row[$key] = $value;
                 }
@@ -261,7 +261,7 @@ class Helper
     {
         $matches = explode(' as ', Str::lower($str));
 
-        if (!empty($matches)) {
+        if (! empty($matches)) {
             if ($wantsAlias) {
                 return array_pop($matches);
             }
