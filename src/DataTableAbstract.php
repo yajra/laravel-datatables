@@ -247,6 +247,20 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     }
 
     /**
+     * Add a makeHidden() to the row object
+     *
+     * @param array          $attributes
+     * @return $this
+     */
+    public function makeHidden(array $attributes = [])
+    {
+
+        $this->columnDef['make_hidden'] = array_merge_recursive($this->columnDef['make_hidden'] ?: [], $attributes);
+
+        return $this;
+    }
+
+    /**
      * Set columns that should not be escaped.
      * Optionally merge the defaults from config.
      *

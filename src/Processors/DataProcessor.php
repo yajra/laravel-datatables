@@ -82,6 +82,7 @@ class DataProcessor
         $this->escapeColumns = $columnDef['escape'];
         $this->includeIndex  = $columnDef['index'];
         $this->rawColumns    = $columnDef['raw'];
+        $this->makeHidden    = $columnDef['make_hidden'];
         $this->templates     = $templates;
         $this->start         = $start;
     }
@@ -98,7 +99,7 @@ class DataProcessor
         $indexColumn  = config('datatables.index_column', 'DT_RowIndex');
 
         foreach ($this->results as $row) {
-            $data  = Helper::convertToArray($row);
+            $data  = Helper::convertToArray($row, ['make_hidden' => $this->makeHidden]);
             $value = $this->addColumns($data, $row);
             $value = $this->editColumns($value, $row);
             $value = $this->setupRowVariables($value, $row);
@@ -179,7 +180,17 @@ class DataProcessor
         if (is_null($this->onlyColumns)) {
             return $data;
         } else {
-            return array_intersect_key($data, array_flip(array_merge($this->onlyColumns, $this->exceptions)));
+            $dotted_array = array_intersect_key(
+                array_dot($data),
+                array_flip(array_merge($this->onlyColumns, $this->exceptions))
+            );
+
+            $nested_array = [];
+            foreach ($dotted_array as $key => $value) {
+                array_set($nested_array, $key, $value);
+            }
+
+            return $nested_array;
         }
     }
 
