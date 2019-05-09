@@ -247,7 +247,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     }
 
     /**
-     * Add a makeHidden() to the row object
+     * Add a makeHidden() to the row object.
      *
      * @param array          $attributes
      * @return $this
