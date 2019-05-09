@@ -49,12 +49,12 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      * @var array
      */
     protected $columnDef = [
-        'index'  => false,
-        'append' => [],
-        'edit'   => [],
-        'filter' => [],
-        'order'  => [],
-        'only'   => null,
+        'index'       => false,
+        'append'      => [],
+        'edit'        => [],
+        'filter'      => [],
+        'order'       => [],
+        'only'        => null,
         'make_hidden' => [],
     ];
 
