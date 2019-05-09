@@ -8,6 +8,12 @@
 
 ### [Unreleased]
 
+### [v9.2.0] - 2019-05-09
+
+- Enable the dotted notation in the ->removeColumn() function. [#2082], credits to [@Arkhas].
+- Consider black listed columns on column search. [#2079], credits to [@apreiml].
+- Using predefined offsets for API-driven server-side(ish) DataTables. [#2083], credits to [@Stokoe0990].
+
 ### [v9.1.1] - 2019-04-25
 
 - Revert [#2051], fix [#2058]. [#2072].
@@ -313,7 +319,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.1.1...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.2.0...9.0
+[v9.2.0]: https://github.com/yajra/laravel-datatables/compare/v9.1.1...v9.2.0
 [v9.1.1]: https://github.com/yajra/laravel-datatables/compare/v9.1.0...v9.1.1
 [v9.1.0]: https://github.com/yajra/laravel-datatables/compare/v9.0.1...v9.1.0
 [v9.0.1]: https://github.com/yajra/laravel-datatables/compare/v9.0.0...v9.0.1
@@ -417,6 +424,9 @@ return (new CollectionDataTable(User::all())->toJson();
 [#2067]: https://github.com/yajra/laravel-datatables/pull/2067
 [#2051]: https://github.com/yajra/laravel-datatables/pull/2051
 [#2072]: https://github.com/yajra/laravel-datatables/pull/2072
+[#2082]: https://github.com/yajra/laravel-datatables/pull/2082
+[#2079]: https://github.com/yajra/laravel-datatables/pull/2079
+[#2083]: https://github.com/yajra/laravel-datatables/pull/2083
 
 [#2058]: https://github.com/yajra/laravel-datatables/issues/2058
 [#1626]: https://github.com/yajra/laravel-datatables/issues/1626
@@ -477,3 +487,6 @@ return (new CollectionDataTable(User::all())->toJson();
 [@sgotre]: https://github.com/sgotre
 [@lukchojnicki]: https://github.com/lukchojnicki
 [@Morinohtar]: https://github.com/Morinohtar
+[@Arkhas]: https://github.com/Arkhas
+[@apreiml]: https://github.com/apreiml
+[@Stokoe0990]: https://github.com/Stokoe0990
