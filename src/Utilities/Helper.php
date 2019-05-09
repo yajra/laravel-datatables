@@ -156,7 +156,7 @@ class Helper
      */
     public static function convertToArray($row, $filters = [])
     {
-        $row  = method_exists($row, 'makeHidden') ? $row->makeHidden($filters['make_hidden']) : $row;
+        $row  = method_exists($row, 'makeHidden') ? $row->makeHidden(array_get($filters, 'make_hidden', [])) : $row;
         $data = $row instanceof Arrayable ? $row->toArray() : (array) $row;
 
         foreach ($data as &$value) {
