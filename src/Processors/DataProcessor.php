@@ -192,7 +192,7 @@ class DataProcessor
     protected function removeExcessColumns(array $data)
     {
         foreach ($this->excessColumns as $value) {
-            unset($data[$value]);
+            Arr::forget($data, $value);
         }
 
         return $data;
