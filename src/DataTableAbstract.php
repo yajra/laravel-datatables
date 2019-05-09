@@ -55,6 +55,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
         'filter' => [],
         'order'  => [],
         'only'   => null,
+        'make_hidden' => [],
     ];
 
     /**
