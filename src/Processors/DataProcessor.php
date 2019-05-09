@@ -179,7 +179,17 @@ class DataProcessor
         if (is_null($this->onlyColumns)) {
             return $data;
         } else {
-            return array_intersect_key($data, array_flip(array_merge($this->onlyColumns, $this->exceptions)));
+            $dotted_array = array_intersect_key(
+                array_dot($data),
+                array_flip(array_merge($this->onlyColumns, $this->exceptions))
+            );
+
+            $nested_array = [];
+            foreach ($dotted_array as $key => $value) {
+                array_set($nested_array, $key, $value);
+            }
+
+            return $nested_array;
         }
     }
 
