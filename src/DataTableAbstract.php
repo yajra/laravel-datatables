@@ -55,7 +55,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
         'filter'      => [],
         'order'       => [],
         'only'        => null,
-        'make_hidden' => [],
+        'hidden' => [],
     ];
 
     /**
@@ -255,7 +255,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      */
     public function makeHidden(array $attributes = [])
     {
-        $this->columnDef['make_hidden'] = array_merge_recursive(array_get($this->columnDef, 'make_hidden', []), $attributes);
+        $this->columnDef['hidden'] = array_merge_recursive(array_get($this->columnDef, 'hidden', []), $attributes);
 
         return $this;
     }
