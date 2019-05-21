@@ -724,11 +724,10 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function showDebugger(array $output)
     {
-	    $query_log = $this->connection->getQueryLog();
-	    array_walk_recursive($query_log, function (&$item, $key)
-	    {
-		    $item = utf8_encode($item);
-	    });
+        $query_log = $this->connection->getQueryLog();
+        array_walk_recursive($query_log, function (&$item, $key) {
+            $item = utf8_encode($item);
+        });
 
         $output['queries'] = $query_log;
         $output['input']   = $this->request->all();
