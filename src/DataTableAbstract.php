@@ -49,12 +49,13 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      * @var array
      */
     protected $columnDef = [
-        'index'  => false,
-        'append' => [],
-        'edit'   => [],
-        'filter' => [],
-        'order'  => [],
-        'only'   => null,
+        'index'       => false,
+        'append'      => [],
+        'edit'        => [],
+        'filter'      => [],
+        'order'       => [],
+        'only'        => null,
+        'hidden'      => [],
     ];
 
     /**
@@ -242,6 +243,19 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     public function escapeColumns($columns = '*')
     {
         $this->columnDef['escape'] = $columns;
+
+        return $this;
+    }
+
+    /**
+     * Add a makeHidden() to the row object.
+     *
+     * @param array          $attributes
+     * @return $this
+     */
+    public function makeHidden(array $attributes = [])
+    {
+        $this->columnDef['hidden'] = array_merge_recursive(array_get($this->columnDef, 'hidden', []), $attributes);
 
         return $this;
     }
