@@ -180,8 +180,13 @@ class DataProcessor
             return $data;
         } else {
             $results = [];
-            foreach (array_merge($this->onlyColumns, $this->exceptions) as $column) {
-                Arr::set($results, $column, Arr::get($data, $column));
+            foreach ($this->onlyColumns as $onlyColumn) {
+                Arr::set($results, $onlyColumn, Arr::get($data, $onlyColumn));
+            }
+            foreach ($this->exceptions as $exception) {
+                if ($column = Arr::get($data, $exception)) {
+                    Arr::set($results, $exception, $column);
+                }
             }
 
             return $results;
@@ -255,7 +260,7 @@ class DataProcessor
     {
         $arrayDot = array_filter(array_dot($row));
         foreach ($arrayDot as $key => $value) {
-            if (! in_array($key, $this->rawColumns)) {
+            if (!in_array($key, $this->rawColumns)) {
                 $arrayDot[$key] = e($value);
             }
         }
