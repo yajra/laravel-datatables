@@ -5,6 +5,7 @@ namespace Yajra\DataTables\Tests\Integration;
 use Yajra\DataTables\DataTables;
 use Illuminate\Http\JsonResponse;
 use Yajra\DataTables\Tests\TestCase;
+use Yajra\DataTables\Tests\Models\Post;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Tests\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -33,7 +34,7 @@ class EloquentDataTableTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'search' => ['value' => 'Record-19'],
+            'search'  => ['value' => 'Record-19'],
         ]);
 
         $crawler->assertJson([
@@ -88,12 +89,28 @@ class EloquentDataTableTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
+    /** @test */
+    public function it_returns_only_the_selected_columns_with_dotted_notation()
+    {
+        $json = $this->call('GET', '/eloquent/only')->json();
+        $this->assertArrayNotHasKey('id', $json['data'][0]);
+        $this->assertArrayHasKey('title', $json['data'][0]);
+        $this->assertArrayNotHasKey('id', $json['data'][0]['user']);
+        $this->assertArrayHasKey('name', $json['data'][0]['user']);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->app['router']->get('/eloquent/users', function (DataTables $datatables) {
             return $datatables->eloquent(User::query())->toJson();
+        });
+
+        $this->app['router']->get('/eloquent/only', function (DataTables $datatables) {
+            return $datatables->eloquent(Post::with('user'))
+                              ->only(['title', 'user.name'])
+                              ->toJson();
         });
     }
 }
