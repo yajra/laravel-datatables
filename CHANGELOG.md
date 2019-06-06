@@ -8,6 +8,12 @@
 
 ### [Unreleased]
 
+### [v9.4.0] - 2019-06-06
+
+- Allow column search on blacklisted columns with custom filter. [#2102], fix [#2091].
+- Enable the dotted notation in the ->only() function. [#2084], credits to [@Arkhas]
+- Add tests.
+
 ### [v9.3.0] - 2019-05-21
 
 - Prevent malformed UTF-8 characters in debug mode. [#2088], credits to [@drsdre].
@@ -324,7 +330,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.3.0...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.4.0...9.0
+[v9.4.0]: https://github.com/yajra/laravel-datatables/compare/v9.3.0...v9.4.0
 [v9.3.0]: https://github.com/yajra/laravel-datatables/compare/v9.2.0...v9.3.0
 [v9.2.0]: https://github.com/yajra/laravel-datatables/compare/v9.1.1...v9.2.0
 [v9.1.1]: https://github.com/yajra/laravel-datatables/compare/v9.1.0...v9.1.1
@@ -435,7 +442,10 @@ return (new CollectionDataTable(User::all())->toJson();
 [#2083]: https://github.com/yajra/laravel-datatables/pull/2083
 [#2088]: https://github.com/yajra/laravel-datatables/pull/2088
 [#2085]: https://github.com/yajra/laravel-datatables/pull/2085
+[#2102]: https://github.com/yajra/laravel-datatables/pull/2102
+[#2084]: https://github.com/yajra/laravel-datatables/pull/2084
 
+[#2091]: https://github.com/yajra/laravel-datatables/issues/2091
 [#2058]: https://github.com/yajra/laravel-datatables/issues/2058
 [#1626]: https://github.com/yajra/laravel-datatables/issues/1626
 [#1617]: https://github.com/yajra/laravel-datatables/issues/1617
