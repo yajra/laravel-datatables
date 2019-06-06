@@ -229,6 +229,25 @@ class QueryDataTableTest extends TestCase
         $this->assertStringContainsString('"1" = ?', $queries[1]['query']);
     }
 
+    /** @test */
+    public function it_allows_column_search_added_column_with_custom_filter_handler()
+    {
+        $crawler = $this->call('GET', '/query/blacklisted-filter', [
+            'columns' => [
+                ['data' => 'foo', 'name' => 'foo', 'searchable' => 'true', 'orderable' => 'true', 'search' => ['value' => 'Record-1']],
+                ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
+            ],
+            'search'  => ['value' => ''],
+        ]);
+
+        $crawler->assertJson([
+            'draw'            => 0,
+            'recordsTotal'    => 20,
+            'recordsFiltered' => 1,
+        ]);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -261,6 +280,16 @@ class QueryDataTableTest extends TestCase
                              ->filterColumn('foo', function (Builder $builder, $keyword) {
                                  $builder->where('1', $keyword);
                              })
+                             ->toJson();
+        });
+
+        $route->get('/query/blacklisted-filter', function (DataTables $dataTable) {
+            return $dataTable->query(DB::table('users'))
+                             ->addColumn('foo', 'bar')
+                             ->filterColumn('foo', function (Builder $builder, $keyword) {
+                                 $builder->where('name', $keyword);
+                             })
+                             ->blacklist(['foo'])
                              ->toJson();
         });
 
