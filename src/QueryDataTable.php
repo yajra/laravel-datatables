@@ -280,7 +280,7 @@ class QueryDataTable extends DataTableAbstract
         foreach ($columns as $index => $column) {
             $column = $this->getColumnName($index);
 
-            if (! $this->request->isColumnSearchable($index) || $this->isBlacklisted($column)) {
+            if (! $this->request->isColumnSearchable($index) || $this->isBlacklisted($column) && ! $this->hasFilterColumn($column)) {
                 continue;
             }
 
