@@ -3,6 +3,7 @@
 namespace Yajra\DataTables\Tests\Integration;
 
 use Yajra\DataTables\DataTables;
+use Yajra\DataTables\Tests\Models\Post;
 use Yajra\DataTables\Tests\TestCase;
 use Yajra\DataTables\Tests\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -23,6 +24,37 @@ class HasManyRelationTest extends TestCase
 
         $this->assertArrayHasKey('posts', $response->json()['data'][0]);
         $this->assertCount(20, $response->json()['data']);
+    }
+
+    /** @test */
+    public function it_returns_all_records_with_deleted_relations_when_called_with_withtrashed_parameter()
+    {
+        Post::find(1)->delete();
+
+        $response = $this->call('GET', '/relations/hasManyWithTrashed');
+        $response->assertJson([
+            'draw'            => 0,
+            'recordsTotal'    => 20,
+            'recordsFiltered' => 20,
+        ]);
+
+        $this->assertArrayHasKey('posts', $response->json()['data'][0]);
+        $this->assertCount(3, $response->json()['data'][0]['posts']);
+    }
+
+    /** @test */
+    public function it_returns_all_records_with_only_deleted_relations_when_called_with_onlytrashed_parameter()
+    {
+        Post::find(1)->delete();
+        $response = $this->call('GET', '/relations/hasManyOnlyTrashed');
+        $response->assertJson([
+            'draw'            => 0,
+            'recordsTotal'    => 20,
+            'recordsFiltered' => 20,
+        ]);
+
+        $this->assertArrayHasKey('posts', $response->json()['data'][0]);
+        $this->assertCount(1, $response->json()['data'][0]['posts']);
     }
 
     /** @test */
@@ -59,6 +91,18 @@ class HasManyRelationTest extends TestCase
 
         $this->app['router']->get('/relations/hasMany', function (DataTables $datatables) {
             return $datatables->eloquent(User::with('posts')->select('users.*'))->toJson();
+        });
+
+        $this->app['router']->get('/relations/hasManyWithTrashed', function (DataTables $datatables) {
+            return $datatables->eloquent(User::with(['posts' => function($query){
+                $query->withTrashed();
+            }])->select('users.*'))->toJson();
+        });
+
+        $this->app['router']->get('/relations/hasManyOnlyTrashed', function (DataTables $datatables) {
+            return $datatables->eloquent(User::with(['posts' => function($query){
+                $query->onlyTrashed();
+            }])->select('users.*'))->toJson();
         });
     }
 }
