@@ -3,8 +3,8 @@
 namespace Yajra\DataTables\Tests\Integration;
 
 use Yajra\DataTables\DataTables;
-use Yajra\DataTables\Tests\Models\Post;
 use Yajra\DataTables\Tests\TestCase;
+use Yajra\DataTables\Tests\Models\Post;
 use Yajra\DataTables\Tests\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
@@ -94,13 +94,13 @@ class HasManyRelationTest extends TestCase
         });
 
         $this->app['router']->get('/relations/hasManyWithTrashed', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with(['posts' => function($query){
+            return $datatables->eloquent(User::with(['posts' => function($query) {
                 $query->withTrashed();
             }])->select('users.*'))->toJson();
         });
 
         $this->app['router']->get('/relations/hasManyOnlyTrashed', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with(['posts' => function($query){
+            return $datatables->eloquent(User::with(['posts' => function($query) {
                 $query->onlyTrashed();
             }])->select('users.*'))->toJson();
         });

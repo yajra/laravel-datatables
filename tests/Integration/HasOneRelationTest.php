@@ -3,9 +3,9 @@
 namespace Yajra\DataTables\Tests\Integration;
 
 use Yajra\DataTables\DataTables;
-use Yajra\DataTables\Tests\Models\Heart;
 use Yajra\DataTables\Tests\TestCase;
 use Yajra\DataTables\Tests\Models\User;
+use Yajra\DataTables\Tests\Models\Heart;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class HasOneRelationTest extends TestCase
@@ -125,13 +125,13 @@ class HasOneRelationTest extends TestCase
         });
 
         $this->app['router']->get('/relations/hasOneWithTrashed', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with(['heart' => function($query){
+            return $datatables->eloquent(User::with(['heart' => function($query) {
                 $query->withTrashed();
             }])->select('users.*'))->toJson();
         });
 
         $this->app['router']->get('/relations/hasOneOnlyTrashed', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with(['heart' => function($query){
+            return $datatables->eloquent(User::with(['heart' => function($query) {
                 $query->onlyTrashed();
             }])->select('users.*'))->toJson();
         });
