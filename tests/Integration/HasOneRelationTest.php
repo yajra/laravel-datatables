@@ -125,13 +125,13 @@ class HasOneRelationTest extends TestCase
         });
 
         $this->app['router']->get('/relations/hasOneWithTrashed', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with(['heart' => function($query) {
+            return $datatables->eloquent(User::with(['heart' => function ($query) {
                 $query->withTrashed();
             }])->select('users.*'))->toJson();
         });
 
         $this->app['router']->get('/relations/hasOneOnlyTrashed', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with(['heart' => function($query) {
+            return $datatables->eloquent(User::with(['heart' => function ($query) {
                 $query->onlyTrashed();
             }])->select('users.*'))->toJson();
         });
