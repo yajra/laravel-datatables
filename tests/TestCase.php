@@ -36,6 +36,7 @@ abstract class TestCase extends BaseTestCase
                 $table->string('title');
                 $table->unsignedInteger('user_id');
                 $table->timestamps();
+                $table->softDeletes();
             });
         }
         if (! $schemaBuilder->hasTable('hearts')) {
@@ -44,6 +45,7 @@ abstract class TestCase extends BaseTestCase
                 $table->unsignedInteger('user_id');
                 $table->string('size');
                 $table->timestamps();
+                $table->softDeletes();
             });
         }
         if (! $schemaBuilder->hasTable('roles')) {
