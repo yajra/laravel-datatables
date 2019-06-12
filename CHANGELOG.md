@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v9.4.1] - 2019-06-12
+
+- Removal of redundant SoftDelete check. [#2103], credits to [@selecod]
+
 ### [v9.4.0] - 2019-06-06
 
 - Allow column search on blacklisted columns with custom filter. [#2102], fix [#2091].
@@ -444,6 +448,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#2085]: https://github.com/yajra/laravel-datatables/pull/2085
 [#2102]: https://github.com/yajra/laravel-datatables/pull/2102
 [#2084]: https://github.com/yajra/laravel-datatables/pull/2084
+[#2103]: https://github.com/yajra/laravel-datatables/pull/2103
 
 [#2091]: https://github.com/yajra/laravel-datatables/issues/2091
 [#2058]: https://github.com/yajra/laravel-datatables/issues/2058
@@ -509,3 +514,4 @@ return (new CollectionDataTable(User::all())->toJson();
 [@apreiml]: https://github.com/apreiml
 [@Stokoe0990]: https://github.com/Stokoe0990
 [@drsdre]: https://github.com/drsdre
+[@selecod]: https://github.com/selecod
