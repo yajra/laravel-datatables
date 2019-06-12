@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v8.13.7] - 2019-06-12
+
+- Removal of redundant SoftDelete check. [#2103], credits to [@selecod]
+
 ### [v8.13.6] - 2019-03-26
 
 - Allow boolean values for column[i].searchable [#1813], credits to [@sgotre].
@@ -387,6 +391,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1960]: https://github.com/yajra/laravel-datatables/pull/1960
 [#1988]: https://github.com/yajra/laravel-datatables/pull/1988
 [#1813]: https://github.com/yajra/laravel-datatables/pull/1813
+[#2103]: https://github.com/yajra/laravel-datatables/pull/2103
 
 [#1626]: https://github.com/yajra/laravel-datatables/issues/1626
 [#1617]: https://github.com/yajra/laravel-datatables/issues/1617
@@ -437,3 +442,4 @@ return (new CollectionDataTable(User::all())->toJson();
 [@Spodnet]: https://github.com/Spodnet
 [@royduin]: https://github.com/royduin
 [@sgotre]: https://github.com/sgotre
+[@selecod]: https://github.com/selecod
