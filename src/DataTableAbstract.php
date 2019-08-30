@@ -440,12 +440,25 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     /**
      * Set smart search config at runtime.
      *
-     * @param bool $bool
+     * @param bool $state
      * @return $this
      */
-    public function smart($bool = true)
+    public function smart($state = true)
     {
-        $this->config->set(['datatables.search.smart' => $bool]);
+        $this->config->set('datatables.search.smart', $state);
+
+        return $this;
+    }
+
+    /**
+     * Set starts_with search config at runtime.
+     *
+     * @param bool $state
+     * @return $this
+     */
+    public function startsWithSearch($state = true)
+    {
+        $this->config->set('datatables.search.starts_with', $state);
 
         return $this;
     }
