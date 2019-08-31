@@ -8,6 +8,11 @@
 
 ### [Unreleased]
 
+### [v9.5.0] - 2019-08-31
+
+- Add support for startsWithSearch filter. [#2163]
+- Fix [#2161].
+
 ### [v9.4.1] - 2019-06-12
 
 - Removal of redundant SoftDelete check. [#2103], credits to [@selecod]
@@ -334,7 +339,9 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.4.0...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.5.0...9.0
+[v9.5.0]: https://github.com/yajra/laravel-datatables/compare/v9.4.1...v9.5.0
+[v9.4.1]: https://github.com/yajra/laravel-datatables/compare/v9.4.0...v9.4.1
 [v9.4.0]: https://github.com/yajra/laravel-datatables/compare/v9.3.0...v9.4.0
 [v9.3.0]: https://github.com/yajra/laravel-datatables/compare/v9.2.0...v9.3.0
 [v9.2.0]: https://github.com/yajra/laravel-datatables/compare/v9.1.1...v9.2.0
@@ -449,6 +456,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#2102]: https://github.com/yajra/laravel-datatables/pull/2102
 [#2084]: https://github.com/yajra/laravel-datatables/pull/2084
 [#2103]: https://github.com/yajra/laravel-datatables/pull/2103
+[#2163]: https://github.com/yajra/laravel-datatables/pull/2163
 
 [#2091]: https://github.com/yajra/laravel-datatables/issues/2091
 [#2058]: https://github.com/yajra/laravel-datatables/issues/2058
@@ -481,6 +489,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#880]: https://github.com/yajra/laravel-datatables/issues/880
 [#577]: https://github.com/yajra/laravel-datatables/issues/577
 [#522]: https://github.com/yajra/laravel-datatables/issues/522
+[#2161]: https://github.com/yajra/laravel-datatables/issues/2161
 
 
 [laravel-datatables-fractal]: https://github.com/yajra/laravel-datatables-fractal
