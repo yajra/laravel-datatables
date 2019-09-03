@@ -243,7 +243,7 @@ class DataProcessor
             } elseif (is_array($this->escapeColumns)) {
                 $columns = array_diff($this->escapeColumns, $this->rawColumns);
                 foreach ($columns as $key) {
-                    array_set($row, $key, e(array_get($row, $key)));
+                    Arr::set($row, $key, e(Arr::get($row, $key)));
                 }
             }
 
@@ -259,7 +259,7 @@ class DataProcessor
      */
     protected function escapeRow(array $row)
     {
-        $arrayDot = array_filter(array_dot($row));
+        $arrayDot = array_filter(Arr::dot($row));
         foreach ($arrayDot as $key => $value) {
             if (! in_array($key, $this->rawColumns)) {
                 $arrayDot[$key] = e($value);
@@ -267,7 +267,7 @@ class DataProcessor
         }
 
         foreach ($arrayDot as $key => $value) {
-            array_set($row, $key, $value);
+            Arr::set($row, $key, $value);
         }
 
         return $row;

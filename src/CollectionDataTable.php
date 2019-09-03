@@ -261,13 +261,13 @@ class CollectionDataTable extends DataTableAbstract
 
             $this->collection = $this->collection
                 ->map(function ($data) {
-                    return array_dot($data);
+                    return Arr::dot($data);
                 })
                 ->sort($sorter)
                 ->map(function ($data) {
                     foreach ($data as $key => $value) {
                         unset($data[$key]);
-                        array_set($data, $key, $value);
+                        Arr::set($data, $key, $value);
                     }
 
                     return $data;

@@ -2,6 +2,7 @@
 
 namespace Yajra\DataTables;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Psr\Log\LoggerInterface;
 use Illuminate\Http\JsonResponse;
@@ -255,7 +256,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      */
     public function makeHidden(array $attributes = [])
     {
-        $this->columnDef['hidden'] = array_merge_recursive(array_get($this->columnDef, 'hidden', []), $attributes);
+        $this->columnDef['hidden'] = array_merge_recursive(Arr::get($this->columnDef, 'hidden', []), $attributes);
 
         return $this;
     }
@@ -547,7 +548,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
         $config  = $this->config->get('datatables.columns');
         $allowed = ['excess', 'escape', 'raw', 'blacklist', 'whitelist'];
 
-        return array_replace_recursive(array_only($config, $allowed), $this->columnDef);
+        return array_replace_recursive(Arr::only($config, $allowed), $this->columnDef);
     }
 
     /**
