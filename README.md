@@ -53,6 +53,7 @@ return datatables(User::all())->toJson();
  5.6.x    | 8.x
  5.7.x    | 8.x
  5.8.x    | 9.x
+ 6.x.x    | 9.x
 
 ## DataTables 8.x Upgrade Guide
 There are breaking changes since DataTables v8.x.
