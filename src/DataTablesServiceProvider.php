@@ -2,6 +2,7 @@
 
 namespace Yajra\DataTables;
 
+use Illuminate\Support\Str;
 use Yajra\DataTables\Utilities\Config;
 use Illuminate\Support\ServiceProvider;
 use Yajra\DataTables\Utilities\Request;
@@ -42,7 +43,7 @@ class DataTablesServiceProvider extends ServiceProvider
     {
         $engines = config('datatables.engines');
         foreach ($engines as $engine => $class) {
-            $engine = camel_case($engine);
+            $engine = Str::camel($engine);
 
             if (! method_exists(DataTables::class, $engine) && ! DataTables::hasMacro($engine)) {
                 DataTables::macro($engine, function () use ($class) {
@@ -77,6 +78,6 @@ class DataTablesServiceProvider extends ServiceProvider
      */
     protected function isLumen()
     {
-        return str_contains($this->app->version(), 'Lumen');
+        return Str::contains($this->app->version(), 'Lumen');
     }
 }
