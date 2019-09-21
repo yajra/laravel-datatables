@@ -8,6 +8,10 @@
 
 ## Change Log
 
+### v7.10.3 - 09-21-2019
+
+- Use an empty array as the default value when no columns are found #2183, credits to @u01jmg3.
+
 ### v7.10.2 - 04-05-2018
 
 - Fixed a bug for "undefined index" errors. #1674
@@ -51,7 +55,7 @@
 - Fix #1243, #1223.
 
 ### v7.9.2 - 07-05-2017
-- Fix multi-column sort of collection #1238. 
+- Fix multi-column sort of collection #1238.
 - Fix #1237, credits to @jond64
 
 ### v7.9.1 - 06-30-2017
@@ -123,7 +127,7 @@
 - Fix [#945](https://github.com/yajra/laravel-datatables/issues/945).
 
 ### v7.1.3 - 02-06-2017
-- Use stable packages. 
+- Use stable packages.
 - Fix [#977](https://github.com/yajra/laravel-datatables/issues/977).
 
 ### v7.1.2 - 02-06-2017
