@@ -8,6 +8,11 @@
 
 ### [Unreleased]
 
+### [v9.6.1] - 2019-09-26
+
+- Improve orderByNullsLast SQL generation. [#2191]
+- Fix [#1822], [#1738].
+
 ### [v9.6.0] - 2019-09-04
 
 - Fix deprecated helper functions, then add support for Laravel 6. [#2171], credits to [@lloricode]
@@ -344,7 +349,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.6.0...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.6.1...9.0
+[v9.6.1]: https://github.com/yajra/laravel-datatables/compare/v9.6.0...v9.6.1
 [v9.6.0]: https://github.com/yajra/laravel-datatables/compare/v9.5.0...v9.6.0
 [v9.5.0]: https://github.com/yajra/laravel-datatables/compare/v9.4.1...v9.5.0
 [v9.4.1]: https://github.com/yajra/laravel-datatables/compare/v9.4.0...v9.4.1
@@ -464,6 +470,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#2103]: https://github.com/yajra/laravel-datatables/pull/2103
 [#2163]: https://github.com/yajra/laravel-datatables/pull/2163
 [#2171]: https://github.com/yajra/laravel-datatables/pull/2171
+[#2191]: https://github.com/yajra/laravel-datatables/pull/2191
 
 [#2091]: https://github.com/yajra/laravel-datatables/issues/2091
 [#2058]: https://github.com/yajra/laravel-datatables/issues/2058
@@ -498,6 +505,8 @@ return (new CollectionDataTable(User::all())->toJson();
 [#522]: https://github.com/yajra/laravel-datatables/issues/522
 [#2161]: https://github.com/yajra/laravel-datatables/issues/2161
 [#2156]: https://github.com/yajra/laravel-datatables/issues/2156
+[#1822]: https://github.com/yajra/laravel-datatables/issues/1822
+[#1738]: https://github.com/yajra/laravel-datatables/issues/1738
 
 
 [laravel-datatables-fractal]: https://github.com/yajra/laravel-datatables-fractal
