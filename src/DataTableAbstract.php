@@ -2,17 +2,18 @@
 
 namespace Yajra\DataTables;
 
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\Support\Jsonable;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Illuminate\Support\Traits\Macroable;
 use Psr\Log\LoggerInterface;
-use Yajra\DataTables\Contracts\DataTable;
-use Yajra\DataTables\Exceptions\Exception;
-use Yajra\DataTables\Processors\DataProcessor;
+use Illuminate\Http\JsonResponse;
 use Yajra\DataTables\Utilities\Helper;
+use Illuminate\Support\Traits\Macroable;
+use Yajra\DataTables\Contracts\DataTable;
+use Yajra\DataTables\Contracts\Formatter;
+use Illuminate\Contracts\Support\Jsonable;
+use Yajra\DataTables\Exceptions\Exception;
+use Illuminate\Contracts\Support\Arrayable;
+use Yajra\DataTables\Processors\DataProcessor;
 
 /**
  * @method DataTableAbstract setTransformer($transformer)
@@ -185,6 +186,28 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
         $this->extraColumns[] = $name;
 
         $this->columnDef['append'][] = ['name' => $name, 'content' => $content, 'order' => $order];
+
+        return $this;
+    }
+
+    /**
+     * @param string|array $columns
+     * @param mixed|\Yajra\DataTables\Contracts\Formatter $formatter
+     * @return $this
+     */
+    public function formatColumn($columns, $formatter)
+    {
+        if (is_string($formatter) && class_exists($formatter)) {
+            $formatter = app($formatter);
+        }
+
+        if (! $formatter instanceof Formatter) {
+            throw new \Exception('Formatter must be an instance of '. Formatter::class);
+        }
+
+        foreach ((array) $columns as $column) {
+            $this->addColumn($column . '_formatted', $formatter);
+        }
 
         return $this;
     }
@@ -752,7 +775,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      * Get processed data.
      *
      * @param mixed $results
-     * @param bool  $object
+     * @param bool $object
      * @return array
      */
     protected function processResults($results, $object = false)
