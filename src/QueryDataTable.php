@@ -673,10 +673,14 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function applyOrderColumn($column, $orderable)
     {
-        $sql      = $this->columnDef['order'][$column]['sql'];
-        $sql      = str_replace('$1', $orderable['direction'], $sql);
-        $bindings = $this->columnDef['order'][$column]['bindings'];
-        $this->query->orderByRaw($sql, $bindings);
+        $sql = $this->columnDef['order'][$column]['sql'];
+        if (is_callable($sql)) {
+            call_user_func($sql, $this->query, $orderable['direction']);
+        } else {
+            $sql      = str_replace('$1', $orderable['direction'], $sql);
+            $bindings = $this->columnDef['order'][$column]['bindings'];
+            $this->query->orderByRaw($sql, $bindings);
+        }
     }
 
     /**
