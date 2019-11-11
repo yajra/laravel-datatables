@@ -41,7 +41,7 @@ class DataTablesServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $engines = config('datatables.engines');
+        $engines = (array) config('datatables.engines');
         foreach ($engines as $engine => $class) {
             $engine = Str::camel($engine);
 
