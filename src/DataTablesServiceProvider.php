@@ -2,9 +2,9 @@
 
 namespace Yajra\DataTables;
 
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Utilities\Config;
-use Illuminate\Support\ServiceProvider;
 use Yajra\DataTables\Utilities\Request;
 
 class DataTablesServiceProvider extends ServiceProvider
