@@ -8,6 +8,11 @@
 
 ### [Unreleased]
 
+### [v9.7.2] - 2019-11-11
+
+- Cast database engines to array. [#2240], credits to [@mtvbrianking].
+- Fix [#2202].
+
 ### [v9.7.1] - 2019-10-02
 
 - Fix skipTotalRecords api not working on initial state. [#2222]
@@ -357,7 +362,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.7.1...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.7.2...9.0
+[v9.7.2]: https://github.com/yajra/laravel-datatables/compare/v9.7.1...v9.7.2
 [v9.7.1]: https://github.com/yajra/laravel-datatables/compare/v9.7.0...v9.7.1
 [v9.7.0]: https://github.com/yajra/laravel-datatables/compare/v9.6.1...v9.7.0
 [v9.6.1]: https://github.com/yajra/laravel-datatables/compare/v9.6.0...v9.6.1
@@ -483,6 +489,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#2191]: https://github.com/yajra/laravel-datatables/pull/2191
 [#2199]: https://github.com/yajra/laravel-datatables/pull/2199
 [#2222]: https://github.com/yajra/laravel-datatables/pull/2222
+[#2240]: https://github.com/yajra/laravel-datatables/pull/2240
 
 [#2091]: https://github.com/yajra/laravel-datatables/issues/2091
 [#2058]: https://github.com/yajra/laravel-datatables/issues/2058
@@ -519,7 +526,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#2156]: https://github.com/yajra/laravel-datatables/issues/2156
 [#1822]: https://github.com/yajra/laravel-datatables/issues/1822
 [#1738]: https://github.com/yajra/laravel-datatables/issues/1738
-
+[#2202]: https://github.com/yajra/laravel-datatables/issues/2202
 
 [laravel-datatables-fractal]: https://github.com/yajra/laravel-datatables-fractal
 
@@ -554,3 +561,4 @@ return (new CollectionDataTable(User::all())->toJson();
 [@drsdre]: https://github.com/drsdre
 [@selecod]: https://github.com/selecod
 [@lloricode]: https://github.com/lloricode
+[@mtvbrianking]: https://github.com/mtvbrianking
