@@ -655,9 +655,15 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     {
         $keyword = $this->request->keyword();
 
+        if ($this->config->isMultiple()) {
+            $this->smartMultiSearch($keyword);
+
+            return;
+        }
+
         if ($this->config->isMultiTerm()) {
             $this->smartGlobalSearch($keyword);
-
+            
             return;
         }
 
@@ -679,6 +685,17 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
             ->each(function ($keyword) {
                 $this->globalSearch($keyword);
             });
+    }
+
+    /**
+     * Perform multiple search by splitting keyword into
+     * individual words and searches for each of them.
+     *
+     * @param string $keyword
+     */
+    protected function smartMultiSearch($keyword)
+    {
+        $this->multiSearch(explode(' ', $keyword));
     }
 
     /**

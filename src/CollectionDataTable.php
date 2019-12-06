@@ -21,6 +21,13 @@ class CollectionDataTable extends DataTableAbstract
      *
      * @var \Illuminate\Support\Collection
      */
+    public $merged;
+
+    /**
+     * Collection object.
+     *
+     * @var \Illuminate\Support\Collection
+     */
     public $original;
 
     /**
@@ -66,6 +73,7 @@ class CollectionDataTable extends DataTableAbstract
         $this->request    = app('datatables.request');
         $this->config     = app('datatables.config');
         $this->collection = $collection;
+        $this->merged     = collect();
         $this->original   = $collection;
         $this->columns    = array_keys($this->serialize($collection->first()));
     }
@@ -248,6 +256,49 @@ class CollectionDataTable extends DataTableAbstract
 
             return false;
         });
+    }
+
+    /**
+     * Perform multiple search for the given keyword.
+     *
+     * @param string $keyword
+     */
+    protected function multiSearch($keywords)
+    {
+        if (is_array($keywords)) {
+            foreach ($keywords as $keyword) {
+                $keyword = $this->config->isCaseInsensitive() ? Str::lower($keyword) : $keyword;
+                
+                $mergedCollection = $this->collection->filter(function ($row) use ($keyword) {
+                    $this->isFilterApplied = true;
+
+                    $data = $this->serialize($row);
+                    foreach ($this->request->searchableColumnIndex() as $index) {
+                        $column = $this->getColumnName($index);
+                        $value = Arr::get($data, $column);
+                        if (! $value || is_array($value)) {
+                            if (! is_numeric($value)) {
+                                continue;
+                            }
+
+                            $value = (string) $value;
+                        }
+
+                        $value = $this->config->isCaseInsensitive() ? Str::lower($value) : $value;
+
+                        if (Str::contains($value, $keyword)) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                });
+
+                $this->merged = $this->merged->merge($mergedCollection);
+            }
+
+            $this->collection = $this->merged->unique();
+        }
     }
 
     /**

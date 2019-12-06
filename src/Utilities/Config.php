@@ -96,6 +96,16 @@ class Config
     }
 
     /**
+     * Check if dataTable config uses multiple searching.
+     *
+     * @return bool
+     */
+    public function isMultiple()
+    {
+        return $this->repository->get('datatables.search.multiple', false);
+    }
+
+    /**
      * Check if dataTable config uses starts_with searching.
      *
      * @return bool

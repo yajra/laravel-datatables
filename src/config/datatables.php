@@ -17,6 +17,11 @@ return [
         'multi_term'       => true,
 
         /*
+         * Multiple search will explode search keyword using spaces resulting into multiple search.
+         */
+        'multiple'       => false,
+
+        /*
          * Case insensitive will search the keyword in lower case format.
          * SQL: LOWER(column) LIKE LOWER(keyword)
          */
