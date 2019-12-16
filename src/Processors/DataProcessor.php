@@ -83,6 +83,7 @@ class DataProcessor
         $this->includeIndex  = $columnDef['index'];
         $this->rawColumns    = $columnDef['raw'];
         $this->makeHidden    = $columnDef['hidden'];
+        $this->makeVisible   = $columnDef['visible'];
         $this->templates     = $templates;
         $this->start         = $start;
     }
@@ -99,7 +100,7 @@ class DataProcessor
         $indexColumn  = config('datatables.index_column', 'DT_RowIndex');
 
         foreach ($this->results as $row) {
-            $data  = Helper::convertToArray($row, ['hidden' => $this->makeHidden]);
+            $data  = Helper::convertToArray($row, ['hidden' => $this->makeHidden, 'visible' => $this->makeVisible]);
             $value = $this->addColumns($data, $row);
             $value = $this->editColumns($value, $row);
             $value = $this->setupRowVariables($value, $row);
