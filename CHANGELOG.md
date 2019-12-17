@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v9.8.0] - 2019-12-17
+
+- Add the possibility to makeVisible() some attribute of a model. [#2263], credits to [@imTigger].
+
 ### [v9.7.2] - 2019-11-11
 
 - Cast database engines to array. [#2240], credits to [@mtvbrianking].
@@ -362,7 +366,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.7.2...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.8.0...9.0
+[v9.8.0]: https://github.com/yajra/laravel-datatables/compare/v9.7.2...v9.8.0
 [v9.7.2]: https://github.com/yajra/laravel-datatables/compare/v9.7.1...v9.7.2
 [v9.7.1]: https://github.com/yajra/laravel-datatables/compare/v9.7.0...v9.7.1
 [v9.7.0]: https://github.com/yajra/laravel-datatables/compare/v9.6.1...v9.7.0
@@ -490,6 +495,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#2199]: https://github.com/yajra/laravel-datatables/pull/2199
 [#2222]: https://github.com/yajra/laravel-datatables/pull/2222
 [#2240]: https://github.com/yajra/laravel-datatables/pull/2240
+[#2263]: https://github.com/yajra/laravel-datatables/pull/2263
 
 [#2091]: https://github.com/yajra/laravel-datatables/issues/2091
 [#2058]: https://github.com/yajra/laravel-datatables/issues/2058
@@ -562,3 +568,4 @@ return (new CollectionDataTable(User::all())->toJson();
 [@selecod]: https://github.com/selecod
 [@lloricode]: https://github.com/lloricode
 [@mtvbrianking]: https://github.com/mtvbrianking
+[@imTigger]: https://github.com/imTigger
