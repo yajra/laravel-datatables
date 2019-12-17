@@ -57,6 +57,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
         'order'       => [],
         'only'        => null,
         'hidden'      => [],
+        'visible'     => [],
     ];
 
     /**
@@ -257,6 +258,19 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     public function makeHidden(array $attributes = [])
     {
         $this->columnDef['hidden'] = array_merge_recursive(Arr::get($this->columnDef, 'hidden', []), $attributes);
+
+        return $this;
+    }
+
+    /**
+     * Add a makeVisible() to the row object.
+     *
+     * @param array          $attributes
+     * @return $this
+     */
+    public function makeVisible(array $attributes = [])
+    {
+        $this->columnDef['visible'] = array_merge_recursive(Arr::get($this->columnDef, 'visible', []), $attributes);
 
         return $this;
     }
