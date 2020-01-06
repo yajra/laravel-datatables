@@ -67,6 +67,8 @@ interface DataTable
      * Organizes works.
      *
      * @param bool $mDataSupport
+     * @param bool $useFiltering Choose whether to use built in filter functions
+     * @param bool $useOrdering Choose whether to use built in order functions
      * @return \Illuminate\Http\JsonResponse
      */
     public function make($mDataSupport = true, $useFiltering = true, $useOrdering = true);

@@ -39,6 +39,8 @@ class DataTables
      * Make a DataTable instance from source.
      *
      * @param mixed $source
+     * @param bool $useFiltering Choose whether to use built in filter functions
+     * @param bool $useOrdering Choose whether to use built in order functions
      * @return mixed
      * @throws \Exception
      */
