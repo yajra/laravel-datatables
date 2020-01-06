@@ -1,5 +1,5 @@
 {
-  "name": "dylancoots-mwi/laravel-datatables",
+  "name": "yajra/laravel-datatables-oracle",
   "description": "jQuery DataTables API for Laravel 4|5",
   "keywords": [
     "laravel",
