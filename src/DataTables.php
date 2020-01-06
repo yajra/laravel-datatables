@@ -42,7 +42,7 @@ class DataTables
      * @return mixed
      * @throws \Exception
      */
-    public static function make($source)
+    public static function make($source, $useFiltering = true, $useOrdering = true)
     {
         $engines  = config('datatables.engines');
         $builders = config('datatables.builders');

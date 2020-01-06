@@ -154,7 +154,7 @@ class CollectionDataTable extends DataTableAbstract
      * @param bool $mDataSupport
      * @return \Illuminate\Http\JsonResponse
      */
-    public function make($mDataSupport = true)
+    public function make($mDataSupport = true, $useFiltering = true, $useOrdering = true)
     {
         try {
             $this->totalRecords = $this->totalCount();
@@ -165,8 +165,12 @@ class CollectionDataTable extends DataTableAbstract
                 $output    = $this->transform($results, $processed);
 
                 $this->collection = collect($output);
-                $this->ordering();
-                $this->filterRecords();
+                if ($useOrdering) {
+                    $this->ordering();
+                }
+                if ($useFiltering) {
+                    $this->filterRecords();
+                }
                 $this->paginate();
 
                 $this->revertIndexColumn($mDataSupport);

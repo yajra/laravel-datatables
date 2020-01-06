@@ -92,7 +92,7 @@ class QueryDataTable extends DataTableAbstract
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function make($mDataSupport = true)
+    public function make($mDataSupport = true, $useFiltering = true, $useOrdering = true)
     {
         try {
             $this->prepareQuery();
@@ -110,14 +110,18 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Prepare query by executing count, filter, order and paginate.
      */
-    protected function prepareQuery()
+    protected function prepareQuery($useFiltering = true, $useOrdering = true)
     {
         if (! $this->prepared) {
             $this->totalRecords = $this->totalCount();
 
             if ($this->totalRecords) {
-                $this->filterRecords();
-                $this->ordering();
+                if ($useOrdering) {
+                    $this->ordering();
+                }
+                if ($useFiltering) {
+                    $this->filterRecords();
+                }
                 $this->paginate();
             }
         }
