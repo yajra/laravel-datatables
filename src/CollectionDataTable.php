@@ -224,16 +224,9 @@ class CollectionDataTable extends DataTableAbstract
         }
     }
 
-    /**
-     * Perform global search for the given keyword.
-     *
-     * @param string $keyword
-     */
-    protected function globalSearch($keyword)
+    protected function search($keyword)
     {
-        $keyword = $this->config->isCaseInsensitive() ? Str::lower($keyword) : $keyword;
-
-        $this->collection = $this->collection->filter(function ($row) use ($keyword) {
+        return $this->collection->filter(function ($row) use ($keyword) {
             $this->isFilterApplied = true;
 
             $data = $this->serialize($row);
@@ -249,6 +242,7 @@ class CollectionDataTable extends DataTableAbstract
                 }
 
                 $value = $this->config->isCaseInsensitive() ? Str::lower($value) : $value;
+
                 if (Str::contains($value, $keyword)) {
                     return true;
                 }
@@ -259,46 +253,34 @@ class CollectionDataTable extends DataTableAbstract
     }
 
     /**
+     * Perform global search for the given keyword.
+     *
+     * @param string $keyword
+     */
+    protected function globalSearch($keyword)
+    {
+
+        $keyword = $this->config->isCaseInsensitive() ? Str::lower($keyword) : $keyword;
+
+        $this->collection = $this->search($keyword);
+    }
+
+    /**
      * Perform multiple search for the given keyword.
      *
      * @param string $keyword
      */
     protected function multiSearch($keywords)
     {
-        if (is_array($keywords)) {
-            foreach ($keywords as $keyword) {
-                $keyword = $this->config->isCaseInsensitive() ? Str::lower($keyword) : $keyword;
-                
-                $mergedCollection = $this->collection->filter(function ($row) use ($keyword) {
-                    $this->isFilterApplied = true;
+        $keywords->each(function($keyword) {
+            $keyword = $this->config->isCaseInsensitive() ? Str::lower($keyword) : $keyword;
+            
+            $mergedCollection = $this->search($keyword);
 
-                    $data = $this->serialize($row);
-                    foreach ($this->request->searchableColumnIndex() as $index) {
-                        $column = $this->getColumnName($index);
-                        $value = Arr::get($data, $column);
-                        if (! $value || is_array($value)) {
-                            if (! is_numeric($value)) {
-                                continue;
-                            }
+            $this->merged = $this->merged->merge($mergedCollection);
+        });
 
-                            $value = (string) $value;
-                        }
-
-                        $value = $this->config->isCaseInsensitive() ? Str::lower($value) : $value;
-
-                        if (Str::contains($value, $keyword)) {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                });
-
-                $this->merged = $this->merged->merge($mergedCollection);
-            }
-
-            $this->collection = $this->merged->unique();
-        }
+        $this->collection = $this->merged->unique();
     }
 
     /**

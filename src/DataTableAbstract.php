@@ -657,13 +657,11 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
 
         if ($this->config->isMultiple()) {
             $this->smartMultiSearch($keyword);
-
             return;
         }
 
         if ($this->config->isMultiTerm()) {
             $this->smartGlobalSearch($keyword);
-            
             return;
         }
 
@@ -695,7 +693,12 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      */
     protected function smartMultiSearch($keyword)
     {
-        $this->multiSearch(explode(' ', $keyword));
+        $this->multiSearch(
+                collect(explode(' ', $keyword))
+                    ->reject(function ($keyword) {
+                        return trim($keyword) === '';
+                    })
+        );
     }
 
     /**
