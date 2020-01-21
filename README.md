@@ -36,13 +36,11 @@ return datatables(User::all())->toJson();
 ## Documentations
 
 - [Github Docs](https://github.com/yajra/laravel-datatables-docs)
-- [Docs](https://laravel-datatables-docs.netlify.com/) provided by [@bm2ilabs](https://github.com/bm2ilabs)
-- [Laravel DataTables API](https://datatables.net/reference/api/)
+- [Laravel DataTables Quick Starter](https://yajrabox.com/docs/laravel-datatables/master/quick-starter)
+- [Laravel DataTables Documentation](https://yajrabox.com/docs/laravel-datatables)
 
 **NOTE: Documentation links below are currently offline.**
 
-- [Laravel DataTables Quick Starter](https://yajrabox.com/docs/laravel-datatables/master/quick-starter)
-- [Laravel DataTables Documentation](http://yajrabox.com/docs/laravel-datatables)
 - [Laravel 5.0 - 5.3 Demo Application](http://datatables.yajrabox.com)
 - [Laravel 5.4 Demo Application](http://dt54.yajrabox.com)
 
