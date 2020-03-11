@@ -71,6 +71,7 @@ return [
     /*
      * Nulls last sql pattern for PostgreSQL & Oracle.
      * For MySQL, use 'CASE WHEN :column IS NULL THEN 1 ELSE 0 END, :column :direction'
+     * For PostgreSQL & Oracle use ':column :direction NULLS LAST'
      */
     'nulls_last_sql' => ':column :direction NULLS LAST',
 

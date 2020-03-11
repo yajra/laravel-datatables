@@ -703,14 +703,9 @@ class QueryDataTable extends DataTableAbstract
         );
     }
 
-    /**
-     * Perform global search for the given keyword.
-     *
-     * @param string $keyword
-     */
-    protected function globalSearch($keyword)
+    protected function search($keyword, $multiple = false)
     {
-        $this->query->where(function ($query) use ($keyword) {
+        $this->query->where(function ($query) use ($keyword, $multiple) {
             collect($this->request->searchableColumnIndex())
                 ->map(function ($index) {
                     return $this->getColumnName($index);
@@ -718,16 +713,48 @@ class QueryDataTable extends DataTableAbstract
                 ->reject(function ($column) {
                     return $this->isBlacklisted($column) && ! $this->hasFilterColumn($column);
                 })
-                ->each(function ($column) use ($keyword, $query) {
-                    if ($this->hasFilterColumn($column)) {
-                        $this->applyFilterColumn($query, $column, $keyword, 'or');
+                ->each(function ($column) use ($keyword, $query, $multiple) {
+                    if ($multiple) {
+                        $keyword->each(function($keyword) use ($query, $column) {
+                            if ($this->hasFilterColumn($column)) {
+                                $this->applyFilterColumn($query, $column, $keyword, 'or');
+                            } else {
+                                $this->compileQuerySearch($query, $column, $keyword);
+                            }
+    
+                            $this->isFilterApplied = true;
+                        });
                     } else {
-                        $this->compileQuerySearch($query, $column, $keyword);
-                    }
+                        if ($this->hasFilterColumn($column)) {
+                            $this->applyFilterColumn($query, $column, $keyword, 'or');
+                        } else {
+                            $this->compileQuerySearch($query, $column, $keyword);
+                        }
 
-                    $this->isFilterApplied = true;
+                        $this->isFilterApplied = true;
+                    }
                 });
         });
+    }
+
+    /**
+     * Perform global search for the given keyword.
+     *
+     * @param string $keyword
+     */
+    protected function globalSearch($keyword)
+    {
+        $this->search($keyword);
+    }
+
+    /**
+     * Perform multiple search for the given keyword.
+     *
+     * @param string $keyword
+     */
+    protected function multiSearch($keywords)
+    {
+        $this->search($keywords, true);
     }
 
     /**
