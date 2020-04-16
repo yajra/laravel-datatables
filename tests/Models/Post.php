@@ -17,4 +17,9 @@ class Post extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function heart()
+    {
+        return $this->hasOneThrough(Heart::class, User::class, 'id', 'user_id', 'user_id', 'id');
+    }
 }
