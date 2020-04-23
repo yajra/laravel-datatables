@@ -100,7 +100,7 @@ class CollectionDataTable extends DataTableAbstract
     {
         $columns = $this->request->get('columns', []);
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
-            $column  = $this->getColumnName($i);
+            $column  = $this->getColumnName($i, 'filter');
 
             if (! $this->request->isColumnSearchable($i) || $this->isBlacklisted($column)) {
                 continue;
@@ -230,7 +230,7 @@ class CollectionDataTable extends DataTableAbstract
 
             $data = $this->serialize($row);
             foreach ($this->request->searchableColumnIndex() as $index) {
-                $column = $this->getColumnName($index);
+                $column = $this->getColumnName($index, 'sort');
                 $value = Arr::get($data, $column);
                 if (! $value || is_array($value)) {
                     if (! is_numeric($value)) {
@@ -285,7 +285,7 @@ class CollectionDataTable extends DataTableAbstract
     {
         $sorter = function ($a, $b) use ($criteria) {
             foreach ($criteria as $orderable) {
-                $column    = $this->getColumnName($orderable['column']);
+                $column    = $this->getColumnName($orderable['column'], 'sort');
                 $direction = $orderable['direction'];
                 if ($direction === 'desc') {
                     $first  = $b;

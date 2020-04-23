@@ -280,7 +280,7 @@ class QueryDataTable extends DataTableAbstract
         $columns = $this->request->columns();
 
         foreach ($columns as $index => $column) {
-            $column = $this->getColumnName($index);
+            $column = $this->getColumnName($index, 'filter');
 
             if (! $this->request->isColumnSearchable($index) || $this->isBlacklisted($column) && ! $this->hasFilterColumn($column)) {
                 continue;
@@ -635,7 +635,7 @@ class QueryDataTable extends DataTableAbstract
     {
         collect($this->request->orderableColumns())
             ->map(function ($orderable) {
-                $orderable['name'] = $this->getColumnName($orderable['column'], true);
+                $orderable['name'] = $this->getColumnName($orderable['column'], 'sort', true);
 
                 return $orderable;
             })
@@ -713,7 +713,7 @@ class QueryDataTable extends DataTableAbstract
         $this->query->where(function ($query) use ($keyword) {
             collect($this->request->searchableColumnIndex())
                 ->map(function ($index) {
-                    return $this->getColumnName($index);
+                    return $this->getColumnName($index, 'filter');
                 })
                 ->reject(function ($column) {
                     return $this->isBlacklisted($column) && ! $this->hasFilterColumn($column);

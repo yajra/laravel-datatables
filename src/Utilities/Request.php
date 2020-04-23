@@ -213,11 +213,28 @@ class Request
      * Get column identity from input or database.
      *
      * @param int $i
+     * @param string $type
      * @return string
      */
-    public function columnName($i)
+    public function columnName($i, $type)
     {
         $column = $this->request->input("columns.$i");
+
+        if (isset($column['data']) && is_array($column['data'])) {
+            if (isset($column['data'][$type]) && $column['data'][$type] != '') {
+                return $column['data'][$type];
+            }
+
+            if (isset($column['data']['display']) && $column['data']['display'] != '') {
+                return $column['data']['display'];
+            }
+            
+            if (isset($column['data']['_']) && $column['data']['_'] != '') {
+                return $column['data']['_'];
+            }
+
+            return $column['name'];
+        }
 
         return isset($column['name']) && $column['name'] != '' ? $column['name'] : $column['data'];
     }
