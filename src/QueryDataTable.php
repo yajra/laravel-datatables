@@ -715,13 +715,13 @@ class QueryDataTable extends DataTableAbstract
                 })
                 ->each(function ($column) use ($keyword, $query, $multiple) {
                     if ($multiple) {
-                        $keyword->each(function($keyword) use ($query, $column) {
+                        $keyword->each(function ($keyword) use ($query, $column) {
                             if ($this->hasFilterColumn($column)) {
                                 $this->applyFilterColumn($query, $column, $keyword, 'or');
                             } else {
                                 $this->compileQuerySearch($query, $column, $keyword);
                             }
-    
+
                             $this->isFilterApplied = true;
                         });
                     } else {

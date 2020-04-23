@@ -683,11 +683,13 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
 
         if ($this->config->isMultiple()) {
             $this->smartMultiSearch($keyword);
+
             return;
         }
 
         if ($this->config->isMultiTerm()) {
             $this->smartGlobalSearch($keyword);
+
             return;
         }
 

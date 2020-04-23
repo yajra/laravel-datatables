@@ -272,7 +272,7 @@ class CollectionDataTable extends DataTableAbstract
      */
     protected function multiSearch($keywords)
     {
-        $keywords->each(function($keyword) {
+        $keywords->each(function ($keyword) {
             $keyword = $this->config->isCaseInsensitive() ? Str::lower($keyword) : $keyword;
             
             $mergedCollection = $this->search($keyword);
