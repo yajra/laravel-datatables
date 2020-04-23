@@ -274,7 +274,7 @@ class CollectionDataTable extends DataTableAbstract
     {
         $keywords->each(function ($keyword) {
             $keyword = $this->config->isCaseInsensitive() ? Str::lower($keyword) : $keyword;
-            
+
             $mergedCollection = $this->search($keyword);
 
             $this->merged = $this->merged->merge($mergedCollection);
