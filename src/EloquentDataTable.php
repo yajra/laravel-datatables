@@ -3,11 +3,12 @@
 namespace Yajra\DataTables;
 
 use Illuminate\Database\Eloquent\Builder;
-use Yajra\DataTables\Exceptions\Exception;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Yajra\DataTables\Exceptions\Exception;
 
 class EloquentDataTable extends QueryDataTable
 {
@@ -156,6 +157,20 @@ class EloquentDataTable extends QueryDataTable
 
                     $lastQuery->addSelect($table . '.' . $relationColumn);
                     $this->performJoin($table, $foreign, $other);
+
+                    break;
+
+                case $model instanceof HasOneThrough:
+                    $pivot    = explode('.', $model->getQualifiedParentKeyName())[0]; // extract pivot table from key
+                    $pivotPK  = $pivot . '.' . $model->getLocalKeyName();
+                    $pivotFK  = $model->getQualifiedLocalKeyName();
+                    $this->performJoin($pivot, $pivotPK, $pivotFK);
+
+                    $related = $model->getRelated();
+                    $table   = $related->getTable();
+                    $tablePK = $related->getForeignKey();
+                    $foreign = $pivot . '.' . $tablePK;
+                    $other   = $related->getQualifiedKeyName();
 
                     break;
 
