@@ -228,7 +228,7 @@ class Request
             if (isset($column['data']['display']) && $column['data']['display'] != '') {
                 return $column['data']['display'];
             }
-            
+
             if (isset($column['data']['_']) && $column['data']['_'] != '') {
                 return $column['data']['_'];
             }
