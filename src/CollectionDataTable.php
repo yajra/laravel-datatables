@@ -259,7 +259,6 @@ class CollectionDataTable extends DataTableAbstract
      */
     protected function globalSearch($keyword)
     {
-
         $keyword = $this->config->isCaseInsensitive() ? Str::lower($keyword) : $keyword;
 
         $this->collection = $this->search($keyword);
