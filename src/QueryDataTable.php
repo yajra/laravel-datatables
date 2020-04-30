@@ -2,11 +2,11 @@
 
 namespace Yajra\DataTables;
 
-use Illuminate\Support\Str;
-use Illuminate\Database\Query\Builder;
-use Yajra\DataTables\Utilities\Helper;
-use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Query\Expression;
+use Illuminate\Support\Str;
+use Yajra\DataTables\Utilities\Helper;
 
 class QueryDataTable extends DataTableAbstract
 {

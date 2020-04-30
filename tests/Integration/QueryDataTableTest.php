@@ -2,14 +2,14 @@
 
 namespace Yajra\DataTables\Tests\Integration;
 
-use Yajra\DataTables\DataTables;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
-use Yajra\DataTables\QueryDataTable;
-use Yajra\DataTables\Tests\TestCase;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
+use Yajra\DataTables\QueryDataTable;
+use Yajra\DataTables\Tests\TestCase;
 
 class QueryDataTableTest extends TestCase
 {

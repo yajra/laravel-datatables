@@ -2,8 +2,8 @@
 
 namespace Yajra\DataTables\Tests\Unit;
 
-use stdClass;
 use Carbon\Carbon;
+use stdClass;
 use Yajra\DataTables\Tests\TestCase;
 use Yajra\DataTables\Utilities\Helper;
 
