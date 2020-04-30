@@ -3,9 +3,9 @@
 namespace Yajra\DataTables\Utilities;
 
 use DateTime;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Illuminate\Contracts\Support\Arrayable;
 
 class Helper
 {

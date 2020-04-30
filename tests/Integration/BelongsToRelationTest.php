@@ -2,10 +2,10 @@
 
 namespace Yajra\DataTables\Tests\Integration;
 
-use Yajra\DataTables\DataTables;
-use Yajra\DataTables\Tests\TestCase;
-use Yajra\DataTables\Tests\Models\Post;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Yajra\DataTables\DataTables;
+use Yajra\DataTables\Tests\Models\Post;
+use Yajra\DataTables\Tests\TestCase;
 
 class BelongsToRelationTest extends TestCase
 {

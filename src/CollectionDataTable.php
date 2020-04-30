@@ -2,10 +2,10 @@
 
 namespace Yajra\DataTables;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class CollectionDataTable extends DataTableAbstract
 {
