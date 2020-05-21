@@ -253,7 +253,7 @@ class DataProcessor
     }
 
     /**
-     * Escape all values of row.
+     * Escape all string values of row.
      *
      * @param array $row
      * @return array
@@ -263,7 +263,7 @@ class DataProcessor
         $arrayDot = array_filter(Arr::dot($row));
         foreach ($arrayDot as $key => $value) {
             if (! in_array($key, $this->rawColumns)) {
-                $arrayDot[$key] = e($value);
+                $arrayDot[$key] = is_string($value) ? e($value) : $value;
             }
         }
 
