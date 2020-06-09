@@ -2,6 +2,7 @@
 
 namespace Yajra\DataTables\Processors;
 
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Arr;
 use Yajra\DataTables\Utilities\Helper;
 
@@ -253,7 +254,7 @@ class DataProcessor
     }
 
     /**
-     * Escape all string values of row.
+     * Escape all string or Htmlable values of row.
      *
      * @param array $row
      * @return array
@@ -263,7 +264,7 @@ class DataProcessor
         $arrayDot = array_filter(Arr::dot($row));
         foreach ($arrayDot as $key => $value) {
             if (! in_array($key, $this->rawColumns)) {
-                $arrayDot[$key] = is_string($value) ? e($value) : $value;
+                $arrayDot[$key] = (is_string($value) || $value instanceof Htmlable) ? e($value) : $value;
             }
         }
 
