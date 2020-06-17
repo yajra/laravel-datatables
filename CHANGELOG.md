@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v9.10.2] - 2020-06-17
+
+- Escape row in data processor also accepts Htmlable [#2414], credits to [@edwwaarrdd].
+
 ### [v9.10.1] - 2020-05-30
 
 - Fix type casting issue [#2399], credits to [@ehsanrasta].
@@ -381,7 +385,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.10.1...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.10.2...9.0
+[v9.10.2]: https://github.com/yajra/laravel-datatables/compare/v9.10.1...v9.10.2
 [v9.10.1]: https://github.com/yajra/laravel-datatables/compare/v9.10.0...v9.10.1
 [v9.10.0]: https://github.com/yajra/laravel-datatables/compare/v9.9.0...v9.10.0
 [v9.9.0]: https://github.com/yajra/laravel-datatables/compare/v9.8.0...v9.9.0
@@ -519,6 +524,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#2399]: https://github.com/yajra/laravel-datatables/pull/2399
 [#2391]: https://github.com/yajra/laravel-datatables/pull/2391
 [#2382]: https://github.com/yajra/laravel-datatables/pull/2382
+[#2414]: https://github.com/yajra/laravel-datatables/pull/2414
 
 [#2091]: https://github.com/yajra/laravel-datatables/issues/2091
 [#2058]: https://github.com/yajra/laravel-datatables/issues/2058
@@ -598,3 +604,4 @@ return (new CollectionDataTable(User::all())->toJson();
 [@warlof]: https://github.com/warlof
 [@ehsanrasta]: https://github.com/ehsanrasta
 [@mgralikowski]: https://github.com/mgralikowski
+[@edwwaarrdd]: https://github.com/edwwaarrdd
