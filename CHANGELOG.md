@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v9.11.0] - 2020-09-09
+
+- Add support for Laravel 8. [#2457] by [@lloricode]
+
 ### [v9.10.2] - 2020-06-17
 
 - Escape row in data processor also accepts Htmlable [#2414], credits to [@edwwaarrdd].
@@ -385,7 +389,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.10.2...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.11.0...9.0
+[v9.11.0]: https://github.com/yajra/laravel-datatables/compare/v9.10.2...v9.11.0
 [v9.10.2]: https://github.com/yajra/laravel-datatables/compare/v9.10.1...v9.10.2
 [v9.10.1]: https://github.com/yajra/laravel-datatables/compare/v9.10.0...v9.10.1
 [v9.10.0]: https://github.com/yajra/laravel-datatables/compare/v9.9.0...v9.10.0
