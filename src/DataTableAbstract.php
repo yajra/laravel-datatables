@@ -11,6 +11,7 @@ use Illuminate\Support\Traits\Macroable;
 use Psr\Log\LoggerInterface;
 use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\Exceptions\Exception;
+use Yajra\DataTables\Extensions\SearchPanes;
 use Yajra\DataTables\Processors\DataProcessor;
 use Yajra\DataTables\Utilities\Helper;
 
@@ -144,6 +145,11 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      * @var mixed
      */
     protected $serializer;
+
+    /**
+     * @var array
+     */
+    protected $searchPanes = [];
 
     /**
      * Can the DataTable engine be created with these parameters.
@@ -772,6 +778,10 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
             $output = $this->showDebugger($output);
         }
 
+        foreach ($this->searchPanes as $column => $options) {
+            $output['searchPanes']['options'][$column] = $options;
+        }
+
         return new JsonResponse(
             $output,
             200,
@@ -923,5 +933,23 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     protected function getPrimaryKeyName()
     {
         return 'id';
+    }
+
+    /**
+     * @param string $column
+     * @param mixed $options
+     * @return $this
+     */
+    public function searchPanes($column, $options)
+    {
+        if ($options instanceof Arrayable) {
+            $options = $options->toArray();
+        } else {
+            $options = value($options);
+        }
+
+        $this->searchPanes[$column] = $options;
+
+        return $this;
     }
 }
