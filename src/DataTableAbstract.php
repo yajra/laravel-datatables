@@ -672,7 +672,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      */
     protected function searchPanesSearch()
     {
-        $columns = $this->request->get('searchPanes');
+        $columns = $this->request->get('searchPanes', []);
 
         foreach ($columns as $column => $values) {
             if ($this->isBlacklisted($column) && ! $this->hasFilterColumn($column)) {
