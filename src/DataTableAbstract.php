@@ -663,7 +663,26 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
         }
 
         $this->columnSearch();
+        $this->searchPanesSearch();
         $this->filteredRecords = $this->isFilterApplied ? $this->filteredCount() : $this->totalRecords;
+    }
+
+    /**
+     * Perform search on submitted search panes.
+     */
+    protected function searchPanesSearch()
+    {
+        $columns = $this->request->get('searchPanes');
+
+        foreach ($columns as $column => $values) {
+            if ($this->isBlacklisted($column) && ! $this->hasFilterColumn($column)) {
+                continue;
+            }
+
+            $this->getBaseQueryBuilder()->whereIn($column, $values);
+
+            $this->isFilterApplied = true;
+        }
     }
 
     /**
