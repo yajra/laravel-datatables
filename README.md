@@ -40,7 +40,11 @@ return Datatables::of(User::all())->make(true);
 - [Demo Application](http://datatables.yajrabox.com) is available for artisan's reference.
 
 ## Quick Installation
-`composer require yajra/laravel-datatables-oracle:~6.0`
+`composer require yajra/laravel-datatables-oracle:"~9.0"`
+
+If you are using most of the DataTables plugins like Buttons & Html, you can alternatively use the all-in-one installer package.
+
+`composer require yajra/laravel-datatables:^1.5`
 
 #### Service Provider
 `Yajra\Datatables\DatatablesServiceProvider::class`
