@@ -294,7 +294,15 @@ class CollectionDataTable extends DataTableAbstract
                     $first  = $a;
                     $second = $b;
                 }
-                if ($this->config->isCaseInsensitive()) {
+                if (is_numeric($first[$column] ?? null) && is_numeric($second[$column] ?? null)) {
+                    if ($first[$column] < $second[$column]) {
+                        $cmp = -1;
+                    } elseif ($first[$column] > $second[$column]) {
+                        $cmp = 1;
+                    } else {
+                        $cmp = 0;
+                    }
+                } elseif ($this->config->isCaseInsensitive()) {
                     $cmp = strnatcasecmp($first[$column] ?? null, $second[$column] ?? null);
                 } else {
                     $cmp = strnatcmp($first[$column] ?? null, $second[$column] ?? null);
