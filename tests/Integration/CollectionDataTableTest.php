@@ -131,6 +131,48 @@ class CollectionDataTableTest extends TestCase
     }
 
     /** @test */
+    public function it_can_sort_numeric_strings()
+     {
+         config()->set('app.debug', false);
+         request()->merge([
+             'columns' => [
+                 ['data' => 'amount', 'name' => 'amount', 'searchable' => 'true', 'orderable' => 'true'],
+             ],
+             'order'  => [['column' => 0, 'dir' => 'asc']],
+             'start'  => 0,
+             'length' => 10,
+             'draw'   => 1,
+         ]);
+
+         $collection = collect([
+             ['amount' => '12'],
+             ['amount' => '7'],
+             ['amount' => '-8'],
+             ['amount' => '0'],
+             ['amount' => '-3'],
+             ['amount' => '8'],
+         ]);
+
+         $dataTable = app('datatables')->collection($collection);
+         /** @var JsonResponse $response */
+         $response = $dataTable->toJson();
+
+         $this->assertEquals([
+             'draw'            => 1,
+             'recordsTotal'    => 6,
+             'recordsFiltered' => 6,
+             'data'            => [
+                 ['amount' => '-8'],
+                 ['amount' => '-3'],
+                 ['amount' => '0'],
+                 ['amount' => '7'],
+                 ['amount' => '8'],
+                 ['amount' => '12'],
+             ],
+         ], $response->getData(true));
+     }
+
+    /** @test */
     public function it_accepts_a_model_using_ioc_container_factory()
     {
         $dataTable = app('datatables')->of(User::all());
