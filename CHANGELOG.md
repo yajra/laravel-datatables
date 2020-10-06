@@ -8,6 +8,11 @@
 
 ### [Unreleased]
 
+### [v9.11.1] - 2020-10-06
+
+- Use simple numeric sorting when dealing with numeric values [#2478], credits to [@miken32]
+- Fix [#1934].
+
 ### [v9.11.0] - 2020-09-09
 
 - Add support for Laravel 8. [#2457] by [@lloricode]
@@ -389,7 +394,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.11.0...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.11.1...9.0
+[v9.11.1]: https://github.com/yajra/laravel-datatables/compare/v9.11.0...v9.11.1
 [v9.11.0]: https://github.com/yajra/laravel-datatables/compare/v9.10.2...v9.11.0
 [v9.10.2]: https://github.com/yajra/laravel-datatables/compare/v9.10.1...v9.10.2
 [v9.10.1]: https://github.com/yajra/laravel-datatables/compare/v9.10.0...v9.10.1
@@ -530,7 +536,9 @@ return (new CollectionDataTable(User::all())->toJson();
 [#2391]: https://github.com/yajra/laravel-datatables/pull/2391
 [#2382]: https://github.com/yajra/laravel-datatables/pull/2382
 [#2414]: https://github.com/yajra/laravel-datatables/pull/2414
+[#2478]: https://github.com/yajra/laravel-datatables/pull/2478
 
+[#1934]: https://github.com/yajra/laravel-datatables/issues/1934
 [#2091]: https://github.com/yajra/laravel-datatables/issues/2091
 [#2058]: https://github.com/yajra/laravel-datatables/issues/2058
 [#1626]: https://github.com/yajra/laravel-datatables/issues/1626
@@ -610,3 +618,4 @@ return (new CollectionDataTable(User::all())->toJson();
 [@ehsanrasta]: https://github.com/ehsanrasta
 [@mgralikowski]: https://github.com/mgralikowski
 [@edwwaarrdd]: https://github.com/edwwaarrdd
+[@miken32]: https://github.com/miken32
