@@ -71,7 +71,7 @@ If you are upgrading from v7.x to v8.x, please see [upgrade guide](https://yajra
 $ composer require yajra/laravel-datatables-oracle:"~9.0"
 ```
 
-#### Service Provider & Facade (Optional on Laravel 5.5)
+#### Service Provider & Facade (Optional on Laravel 5.5+)
 Register provider and facade on your `config/app.php` file.
 ```php
 'providers' => [
