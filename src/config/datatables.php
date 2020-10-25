@@ -121,7 +121,7 @@ return [
 
     /**
      * Maximum record per page
-     * Set 0 for unlimited record
+     * Set 0 for unlimited record.
      */
     'max_record_per_page' => 100,
 
