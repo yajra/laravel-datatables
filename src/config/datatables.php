@@ -2,6 +2,11 @@
 
 return [
     /*
+     * DataTables JavaScript global variable name.
+     */
+    'variable_name' => 'LaravelDataTables',
+
+    /*
      * DataTables search options.
      */
     'search'         => [
