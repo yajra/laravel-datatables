@@ -252,6 +252,22 @@ class QueryDataTableTest extends TestCase
     }
 
     /** @test */
+    public function it_performs_search_using_search_panes()
+    {
+        $crawler = $this->call('GET', '/query/search-panes', [
+            'searchPanes' => [
+                'id' => [1, 2],
+            ],
+        ]);
+
+        $crawler->assertJson([
+            'draw'            => 0,
+            'recordsTotal'    => 20,
+            'recordsFiltered' => 2,
+        ]);
+    }
+
+    /** @test */
     public function it_allows_column_search_added_column_with_custom_filter_handler()
     {
         $crawler = $this->call('GET', '/query/blacklisted-filter', [
