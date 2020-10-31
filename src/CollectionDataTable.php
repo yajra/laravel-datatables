@@ -255,7 +255,7 @@ class CollectionDataTable extends DataTableAbstract
      */
     protected function searchPanesSearch()
     {
-        throw new \Exception('Search panes is not yet supported on collection');
+        // TODO: Add support for search pane.
     }
 
     /**
