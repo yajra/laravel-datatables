@@ -942,17 +942,19 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     }
 
     /**
+     * Add a search pane options on response.
+     *
      * @param string $column
      * @param mixed $options
-     * @param \Closure|null $builder
+     * @param callable|null $builder
      * @return $this
      */
-    public function searchPanes($column, $options, callable $builder = null)
+    public function searchPane($column, $options, callable $builder = null)
     {
+        $options = value($options);
+
         if ($options instanceof Arrayable) {
             $options = $options->toArray();
-        } else {
-            $options = value($options);
         }
 
         $this->searchPanes[$column]['options'] = $options;

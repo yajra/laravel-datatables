@@ -371,7 +371,7 @@ class QueryDataTableTest extends TestCase
             $options = User::select('id as value', 'name as label')->get();
 
             return $dataTable->query(DB::table('users'))
-                        ->searchPanes('name', $options)
+                        ->searchPane('name', $options)
                         ->toJson();
         });
     }
