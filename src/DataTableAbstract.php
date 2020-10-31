@@ -11,7 +11,6 @@ use Illuminate\Support\Traits\Macroable;
 use Psr\Log\LoggerInterface;
 use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\Exceptions\Exception;
-use Yajra\DataTables\Extensions\SearchPanes;
 use Yajra\DataTables\Processors\DataProcessor;
 use Yajra\DataTables\Utilities\Helper;
 
