@@ -8,6 +8,11 @@
 
 ### [Unreleased]
 
+### [v9.13.0] - 2020-10-31
+
+- Add support for search panes. [#2475]
+- Fix [#2463], [#2471]
+
 ### [v9.12.0] - 2020-10-31
 
 - Add disable ordering via orderColumn. [#2481], credits to [@gredimano]
@@ -399,7 +404,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.12.0...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.13.0...9.0
+[v9.13.0]: https://github.com/yajra/laravel-datatables/compare/v9.12.0...v9.13.0
 [v9.12.0]: https://github.com/yajra/laravel-datatables/compare/v9.11.1...v9.12.0
 [v9.11.1]: https://github.com/yajra/laravel-datatables/compare/v9.11.0...v9.11.1
 [v9.11.0]: https://github.com/yajra/laravel-datatables/compare/v9.10.2...v9.11.0
@@ -544,6 +550,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#2414]: https://github.com/yajra/laravel-datatables/pull/2414
 [#2478]: https://github.com/yajra/laravel-datatables/pull/2478
 [#2481]: https://github.com/yajra/laravel-datatables/pull/2481
+[#2475]: https://github.com/yajra/laravel-datatables/pull/2475
 
 [#1934]: https://github.com/yajra/laravel-datatables/issues/1934
 [#2091]: https://github.com/yajra/laravel-datatables/issues/2091
@@ -585,6 +592,8 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1975]: https://github.com/yajra/laravel-datatables/issues/1975
 [#1747]: https://github.com/yajra/laravel-datatables/issues/1747
 [#1953]: https://github.com/yajra/laravel-datatables/issues/1953
+[#2463]: https://github.com/yajra/laravel-datatables/issues/2463
+[#2471]: https://github.com/yajra/laravel-datatables/issues/2471
 
 [laravel-datatables-fractal]: https://github.com/yajra/laravel-datatables-fractal
 
