@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
 use Yajra\DataTables\QueryDataTable;
+use Yajra\DataTables\Tests\Models\User;
 use Yajra\DataTables\Tests\TestCase;
 
 class QueryDataTableTest extends TestCase
@@ -230,6 +231,43 @@ class QueryDataTableTest extends TestCase
     }
 
     /** @test */
+    public function it_returns_search_panes_options()
+    {
+        $crawler = $this->call('GET', '/query/search-panes');
+
+        $crawler->assertJson([
+            'draw'            => 0,
+            'recordsTotal'    => 20,
+            'recordsFiltered' => 20,
+            'searchPanes'     => [
+                'options' => [
+                    'name' => [],
+                ],
+            ],
+        ]);
+
+        $options = $crawler->json()['searchPanes']['options'];
+
+        $this->assertEquals(count($options['name']), 20);
+    }
+
+    /** @test */
+    public function it_performs_search_using_search_panes()
+    {
+        $crawler = $this->call('GET', '/query/search-panes', [
+            'searchPanes' => [
+                'id' => [1, 2],
+            ],
+        ]);
+
+        $crawler->assertJson([
+            'draw'            => 0,
+            'recordsTotal'    => 20,
+            'recordsFiltered' => 2,
+        ]);
+    }
+
+    /** @test */
     public function it_allows_column_search_added_column_with_custom_filter_handler()
     {
         $crawler = $this->call('GET', '/query/blacklisted-filter', [
@@ -327,6 +365,14 @@ class QueryDataTableTest extends TestCase
                              })
                              ->rawColumns(['name', 'email'])
                              ->toJson();
+        });
+
+        $route->get('/query/search-panes', function (DataTables $dataTable) {
+            $options = User::select('id as value', 'name as label')->get();
+
+            return $dataTable->query(DB::table('users'))
+                        ->searchPane('name', $options)
+                        ->toJson();
         });
     }
 }
