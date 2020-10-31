@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
 use Yajra\DataTables\QueryDataTable;
-use Yajra\DataTables\Tests\TestCase;
 use Yajra\DataTables\Tests\Models\User;
+use Yajra\DataTables\Tests\TestCase;
 
 class QueryDataTableTest extends TestCase
 {
@@ -239,11 +239,11 @@ class QueryDataTableTest extends TestCase
             'draw'            => 0,
             'recordsTotal'    => 20,
             'recordsFiltered' => 20,
-            'searchPanes' => [
+            'searchPanes'     => [
                 'options' => [
-                    'name' => []
+                    'name' => [],
                 ],
-            ]
+            ],
         ]);
 
         $options = $crawler->json()['searchPanes']['options'];
