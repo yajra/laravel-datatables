@@ -8,6 +8,11 @@
 
 ### [Unreleased]
 
+### [v9.12.0] - 2020-10-31
+
+- Add disable ordering via orderColumn. [#2481], credits to [@gredimano]
+- Fix [#1953]
+
 ### [v9.11.1] - 2020-10-06
 
 - Use simple numeric sorting when dealing with numeric values [#2478], credits to [@miken32]
@@ -394,7 +399,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.11.1...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.12.0...9.0
+[v9.12.0]: https://github.com/yajra/laravel-datatables/compare/v9.11.1...v9.12.0
 [v9.11.1]: https://github.com/yajra/laravel-datatables/compare/v9.11.0...v9.11.1
 [v9.11.0]: https://github.com/yajra/laravel-datatables/compare/v9.10.2...v9.11.0
 [v9.10.2]: https://github.com/yajra/laravel-datatables/compare/v9.10.1...v9.10.2
@@ -537,6 +543,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#2382]: https://github.com/yajra/laravel-datatables/pull/2382
 [#2414]: https://github.com/yajra/laravel-datatables/pull/2414
 [#2478]: https://github.com/yajra/laravel-datatables/pull/2478
+[#2481]: https://github.com/yajra/laravel-datatables/pull/2481
 
 [#1934]: https://github.com/yajra/laravel-datatables/issues/1934
 [#2091]: https://github.com/yajra/laravel-datatables/issues/2091
@@ -577,6 +584,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#2202]: https://github.com/yajra/laravel-datatables/issues/2202
 [#1975]: https://github.com/yajra/laravel-datatables/issues/1975
 [#1747]: https://github.com/yajra/laravel-datatables/issues/1747
+[#1953]: https://github.com/yajra/laravel-datatables/issues/1953
 
 [laravel-datatables-fractal]: https://github.com/yajra/laravel-datatables-fractal
 
@@ -619,3 +627,4 @@ return (new CollectionDataTable(User::all())->toJson();
 [@mgralikowski]: https://github.com/mgralikowski
 [@edwwaarrdd]: https://github.com/edwwaarrdd
 [@miken32]: https://github.com/miken32
+[@gredimano]: https://github.com/gredimano
