@@ -251,14 +251,6 @@ class CollectionDataTable extends DataTableAbstract
     }
 
     /**
-     * Perform search using search pane values.
-     */
-    protected function searchPanesSearch()
-    {
-        // TODO: Add support for search pane.
-    }
-
-    /**
      * Perform default query orderBy clause.
      */
     protected function defaultOrdering()

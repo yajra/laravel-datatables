@@ -669,7 +669,10 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     /**
      * Perform search using search pane values.
      */
-    abstract protected function searchPanesSearch();
+    protected function searchPanesSearch()
+    {
+        // Add support for search pane.
+    }
 
     /**
      * Perform global search.
