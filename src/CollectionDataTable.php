@@ -251,6 +251,14 @@ class CollectionDataTable extends DataTableAbstract
     }
 
     /**
+     * Perform search using search pane values.
+     */
+    protected function searchPanesSearch()
+    {
+        throw new \Exception('Search panes is not yet supported on collection');
+    }
+
+    /**
      * Perform default query orderBy clause.
      */
     protected function defaultOrdering()

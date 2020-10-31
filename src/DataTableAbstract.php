@@ -668,22 +668,9 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     }
 
     /**
-     * Perform search on submitted search panes.
+     * Perform search using search pane values.
      */
-    protected function searchPanesSearch()
-    {
-        $columns = $this->request->get('searchPanes', []);
-
-        foreach ($columns as $column => $values) {
-            if ($this->isBlacklisted($column) && ! $this->hasFilterColumn($column)) {
-                continue;
-            }
-
-            $this->getBaseQueryBuilder()->whereIn($column, $values);
-
-            $this->isFilterApplied = true;
-        }
-    }
+    abstract protected function searchPanesSearch();
 
     /**
      * Perform global search.
@@ -797,8 +784,8 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
             $output = $this->showDebugger($output);
         }
 
-        foreach ($this->searchPanes as $column => $options) {
-            $output['searchPanes']['options'][$column] = $options;
+        foreach ($this->searchPanes as $column => $searchPane) {
+            $output['searchPanes']['options'][$column] = $searchPane['options'];
         }
 
         return new JsonResponse(
@@ -957,9 +944,10 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     /**
      * @param string $column
      * @param mixed $options
+     * @param \Closure|null $builder
      * @return $this
      */
-    public function searchPanes($column, $options)
+    public function searchPanes($column, $options, callable $builder = null)
     {
         if ($options instanceof Arrayable) {
             $options = $options->toArray();
@@ -967,7 +955,8 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
             $options = value($options);
         }
 
-        $this->searchPanes[$column] = $options;
+        $this->searchPanes[$column]['options'] = $options;
+        $this->searchPanes[$column]['builder'] = $builder;
 
         return $this;
     }
