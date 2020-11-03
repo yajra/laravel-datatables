@@ -194,6 +194,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      * @param string|array $columns
      * @param mixed|\Yajra\DataTables\Contracts\Formatter $formatter
      * @return $this
+     * @throws \Exception
      */
     public function formatColumn($columns, $formatter)
     {
@@ -202,7 +203,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
         }
 
         if (! $formatter instanceof Formatter) {
-            throw new \Exception('Formatter must be an instance of '. Formatter::class);
+            throw new \Exception('$formatter must be an instance of '. Formatter::class);
         }
 
         foreach ((array) $columns as $column) {
