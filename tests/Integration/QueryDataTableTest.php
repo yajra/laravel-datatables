@@ -2,17 +2,17 @@
 
 namespace Yajra\DataTables\Tests\Integration;
 
+use Carbon\Carbon;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Contracts\Formatter;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
 use Yajra\DataTables\QueryDataTable;
 use Yajra\DataTables\Tests\Models\User;
 use Yajra\DataTables\Tests\TestCase;
-use Carbon\Carbon;
-use Yajra\DataTables\Contracts\Formatter;
 
 class QueryDataTableTest extends TestCase
 {
@@ -424,4 +424,3 @@ class DateFormatter implements Formatter
         return Carbon::parse($value)->diffForHumans();
     }
 }
-
