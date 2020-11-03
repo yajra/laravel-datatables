@@ -775,7 +775,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      * Get processed data.
      *
      * @param mixed $results
-     * @param bool $object
+     * @param bool  $object
      * @return array
      */
     protected function processResults($results, $object = false)
