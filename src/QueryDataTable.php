@@ -108,6 +108,28 @@ class QueryDataTable extends DataTableAbstract
     }
 
     /**
+     * Perform search using search pane values.
+     */
+    protected function searchPanesSearch()
+    {
+        $columns = $this->request->get('searchPanes', []);
+
+        foreach ($columns as $column => $values) {
+            if ($this->isBlacklisted($column)) {
+                continue;
+            }
+
+            if ($callback = data_get($this->searchPanes, $column . '.builder')) {
+                $callback($this->getBaseQueryBuilder(), $values);
+            } else {
+                $this->getBaseQueryBuilder()->whereIn($column, $values);
+            }
+
+            $this->isFilterApplied = true;
+        }
+    }
+
+    /**
      * Prepare query by executing count, filter, order and paginate.
      */
     protected function prepareQuery()
