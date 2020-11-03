@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
 use Psr\Log\LoggerInterface;
 use Yajra\DataTables\Contracts\DataTable;
+use Yajra\DataTables\Contracts\Formatter;
 use Yajra\DataTables\Exceptions\Exception;
 use Yajra\DataTables\Processors\DataProcessor;
 use Yajra\DataTables\Utilities\Helper;
@@ -185,6 +186,29 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
         $this->extraColumns[] = $name;
 
         $this->columnDef['append'][] = ['name' => $name, 'content' => $content, 'order' => $order];
+
+        return $this;
+    }
+
+    /**
+     * @param string|array $columns
+     * @param mixed|\Yajra\DataTables\Contracts\Formatter $formatter
+     * @return $this
+     * @throws \Exception
+     */
+    public function formatColumn($columns, $formatter)
+    {
+        if (is_string($formatter) && class_exists($formatter)) {
+            $formatter = app($formatter);
+        }
+
+        if (! $formatter instanceof Formatter) {
+            throw new \Exception('$formatter must be an instance of '. Formatter::class);
+        }
+
+        foreach ((array) $columns as $column) {
+            $this->addColumn($column . '_formatted', $formatter);
+        }
 
         return $this;
     }

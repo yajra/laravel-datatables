@@ -2,10 +2,12 @@
 
 namespace Yajra\DataTables\Tests\Integration;
 
+use Carbon\Carbon;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Contracts\Formatter;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
 use Yajra\DataTables\QueryDataTable;
@@ -286,6 +288,27 @@ class QueryDataTableTest extends TestCase
         ]);
     }
 
+    /** @test */
+    public function it_can_return_formatted_columns()
+    {
+        $crawler = $this->call('GET', '/query/formatColumn');
+
+        $crawler->assertJson([
+            'draw'            => 0,
+            'recordsTotal'    => 20,
+            'recordsFiltered' => 20,
+        ]);
+
+        $user = DB::table('users')->find(1);
+        $data = $crawler->json('data')[0];
+
+        $this->assertTrue(isset($data['created_at']));
+        $this->assertTrue(isset($data['created_at_formatted']));
+
+        $this->assertEquals($user->created_at, $data['created_at']);
+        $this->assertEquals(Carbon::parse($user->created_at)->format('Y-m-d'), $data['created_at_formatted']);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -294,6 +317,12 @@ class QueryDataTableTest extends TestCase
 
         $route->get('/query/users', function (DataTables $dataTable) {
             return $dataTable->query(DB::table('users'))->toJson();
+        });
+
+        $route->get('/query/formatColumn', function (DataTables $dataTable) {
+            return $dataTable->query(DB::table('users'))
+                        ->formatColumn('created_at', new DateFormatter('Y-m-d'))
+                        ->toJson();
         });
 
         $route->get('/query/simple', function (DataTables $dataTable) {
@@ -374,5 +403,24 @@ class QueryDataTableTest extends TestCase
                         ->searchPane('name', $options)
                         ->toJson();
         });
+    }
+}
+
+class DateFormatter implements Formatter
+{
+    protected $format;
+
+    public function __construct($format = null)
+    {
+        $this->format = $format;
+    }
+
+    public function format($value, $row)
+    {
+        if ($this->format) {
+            return Carbon::parse($value)->format($this->format);
+        }
+
+        return Carbon::parse($value)->diffForHumans();
     }
 }
