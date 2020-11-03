@@ -4,8 +4,8 @@ namespace Yajra\DataTables\Processors;
 
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Arr;
-use Yajra\DataTables\Utilities\Helper;
 use Yajra\DataTables\Contracts\Formatter;
+use Yajra\DataTables\Utilities\Helper;
 
 class DataProcessor
 {
