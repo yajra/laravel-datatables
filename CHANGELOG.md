@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v9.14.1] - 2020-11-11
+
+- Fix resolution of custom search pane query builder. [#2513]
+
 ### [v9.14.0] - 2020-11-03
 
 - Add column formatter. [#2193]
@@ -409,7 +413,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.14.0...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.14.1...9.0
+[v9.14.1]: https://github.com/yajra/laravel-datatables/compare/v9.14.0...v9.14.1
 [v9.14.0]: https://github.com/yajra/laravel-datatables/compare/v9.13.0...v9.14.0
 [v9.13.0]: https://github.com/yajra/laravel-datatables/compare/v9.12.0...v9.13.0
 [v9.12.0]: https://github.com/yajra/laravel-datatables/compare/v9.11.1...v9.12.0
@@ -558,6 +563,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#2481]: https://github.com/yajra/laravel-datatables/pull/2481
 [#2475]: https://github.com/yajra/laravel-datatables/pull/2475
 [#2193]: https://github.com/yajra/laravel-datatables/pull/2193
+[#2513]: https://github.com/yajra/laravel-datatables/pull/2513
 
 [#1934]: https://github.com/yajra/laravel-datatables/issues/1934
 [#2091]: https://github.com/yajra/laravel-datatables/issues/2091
