@@ -67,9 +67,9 @@ class Helper
 
             if (count($arguments) > 0) {
                 return app()->call($content, [$arguments[0]->name => $param]);
-            } else {
-                return $content($param);
             }
+
+            return $content($param);
         }
 
         return $content;
