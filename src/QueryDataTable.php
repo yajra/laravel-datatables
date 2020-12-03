@@ -120,9 +120,9 @@ class QueryDataTable extends DataTableAbstract
             }
 
             if ($this->searchPanes[$column] && $callback = $this->searchPanes[$column]['builder']) {
-                $callback($this->getBaseQueryBuilder(), $values);
+                $callback($this->query, $values);
             } else {
-                $this->getBaseQueryBuilder()->whereIn($column, $values);
+                $this->query->whereIn($column, $values);
             }
 
             $this->isFilterApplied = true;
