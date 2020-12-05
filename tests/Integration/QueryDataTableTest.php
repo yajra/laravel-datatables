@@ -237,16 +237,16 @@ class QueryDataTableTest extends TestCase
     {
         $crawler = $this->call('GET', '/query/search-panes');
 
-         $crawler->assertJson([
-             'draw'            => 0,
-             'recordsTotal'    => 20,
-             'recordsFiltered' => 20,
-             'searchPanes'     => [
-                 'options' => [
-                     'id' => [],
-                 ],
-             ],
-         ]);
+        $crawler->assertJson([
+            'draw'            => 0,
+            'recordsTotal'    => 20,
+            'recordsFiltered' => 20,
+            'searchPanes'     => [
+                'options' => [
+                    'id' => [],
+                ],
+            ],
+        ]);
 
         $options = $crawler->json()['searchPanes']['options'];
 
