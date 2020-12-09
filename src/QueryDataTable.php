@@ -413,7 +413,6 @@ class QueryDataTable extends DataTableAbstract
     protected function compileColumnSearch($i, $column, $keyword)
     {
         if ($this->request->isRegex($i)) {
-            $column = strstr($column, '(') ? $this->connection->raw($column) : $column;
             $this->regexColumnSearch($column, $keyword);
         } else {
             $this->compileQuerySearch($this->query, $column, $keyword, '');
@@ -428,6 +427,8 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function regexColumnSearch($column, $keyword)
     {
+        $column = $this->wrap($column);
+
         switch ($this->connection->getDriverName()) {
             case 'oracle':
                 $sql = ! $this->config->isCaseInsensitive()
