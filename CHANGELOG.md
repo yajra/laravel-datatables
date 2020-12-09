@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v9.15.2] - 2020-12-04
+
+- Remove raw sql when using regex and wrap the column name.
+
 ### [v9.15.1] - 2020-12-03
 
 - Fix search pane builder instance when using eloquent. [#2540]
@@ -426,7 +430,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.15.1...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.15.2...9.0
+[v9.15.2]: https://github.com/yajra/laravel-datatables/compare/v9.15.1...v9.15.2
 [v9.15.1]: https://github.com/yajra/laravel-datatables/compare/v9.15.0...v9.15.1
 [v9.15.0]: https://github.com/yajra/laravel-datatables/compare/v9.14.2...v9.15.0
 [v9.14.2]: https://github.com/yajra/laravel-datatables/compare/v9.14.1...v9.14.2
