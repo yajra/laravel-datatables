@@ -508,6 +508,32 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     }
 
     /**
+     * Set multi_term search config at runtime.
+     *
+     * @param bool $state
+     * @return $this
+     */
+    public function multiTermSearch($state = true)
+    {
+        $this->config->set('datatables.search.multi_term', $state);
+
+        return $this;
+    }
+
+    /**
+     * Set multiple search config at runtime.
+     *
+     * @param bool $state
+     * @return $this
+     */
+    public function multipleSearch($state = true)
+    {
+        $this->config->set('datatables.search.multiple', $state);
+
+        return $this;
+    }
+
+    /**
      * Set total records manually.
      *
      * @param int $total
@@ -707,6 +733,12 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     {
         $keyword = $this->request->keyword();
 
+        if ($this->config->isMultiple()) {
+            $this->smartMultiSearch($keyword);
+
+            return;
+        }
+
         if ($this->config->isMultiTerm()) {
             $this->smartGlobalSearch($keyword);
 
@@ -731,6 +763,22 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
             ->each(function ($keyword) {
                 $this->globalSearch($keyword);
             });
+    }
+
+    /**
+     * Perform multiple search by splitting keyword into
+     * individual words and searches for each of them.
+     *
+     * @param string $keyword
+     */
+    protected function smartMultiSearch($keyword)
+    {
+        $this->multiSearch(
+                collect(explode(' ', $keyword))
+                    ->reject(function ($keyword) {
+                        return trim($keyword) === '';
+                    })
+        );
     }
 
     /**

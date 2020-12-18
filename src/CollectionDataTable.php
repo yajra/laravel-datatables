@@ -21,6 +21,13 @@ class CollectionDataTable extends DataTableAbstract
      *
      * @var \Illuminate\Support\Collection
      */
+    public $merged;
+
+    /**
+     * Collection object.
+     *
+     * @var \Illuminate\Support\Collection
+     */
     public $original;
 
     /**
@@ -66,6 +73,7 @@ class CollectionDataTable extends DataTableAbstract
         $this->request    = app('datatables.request');
         $this->config     = app('datatables.config');
         $this->collection = $collection;
+        $this->merged     = collect();
         $this->original   = $collection;
         $this->columns    = array_keys($this->serialize($collection->first()));
     }
@@ -216,16 +224,9 @@ class CollectionDataTable extends DataTableAbstract
         }
     }
 
-    /**
-     * Perform global search for the given keyword.
-     *
-     * @param string $keyword
-     */
-    protected function globalSearch($keyword)
+    protected function search($keyword)
     {
-        $keyword = $this->config->isCaseInsensitive() ? Str::lower($keyword) : $keyword;
-
-        $this->collection = $this->collection->filter(function ($row) use ($keyword) {
+        return $this->collection->filter(function ($row) use ($keyword) {
             $this->isFilterApplied = true;
 
             $data = $this->serialize($row);
@@ -241,6 +242,7 @@ class CollectionDataTable extends DataTableAbstract
                 }
 
                 $value = $this->config->isCaseInsensitive() ? Str::lower($value) : $value;
+
                 if (Str::contains($value, $keyword)) {
                     return true;
                 }
@@ -248,6 +250,36 @@ class CollectionDataTable extends DataTableAbstract
 
             return false;
         });
+    }
+
+    /**
+     * Perform global search for the given keyword.
+     *
+     * @param string $keyword
+     */
+    protected function globalSearch($keyword)
+    {
+        $keyword = $this->config->isCaseInsensitive() ? Str::lower($keyword) : $keyword;
+
+        $this->collection = $this->search($keyword);
+    }
+
+    /**
+     * Perform multiple search for the given keyword.
+     *
+     * @param string $keyword
+     */
+    protected function multiSearch($keywords)
+    {
+        $keywords->each(function ($keyword) {
+            $keyword = $this->config->isCaseInsensitive() ? Str::lower($keyword) : $keyword;
+
+            $mergedCollection = $this->search($keyword);
+
+            $this->merged = $this->merged->merge($mergedCollection);
+        });
+
+        $this->collection = $this->merged->unique();
     }
 
     /**

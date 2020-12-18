@@ -17,6 +17,11 @@ return [
         'multi_term'       => true,
 
         /*
+         * Multiple search will explode search keyword using spaces resulting into multiple search.
+         */
+        'multiple'       => false,
+
+        /*
          * Case insensitive will search the keyword in lower case format.
          * SQL: LOWER(column) LIKE LOWER(keyword)
          */
@@ -66,6 +71,7 @@ return [
     /*
      * Nulls last sql pattern for PostgreSQL & Oracle.
      * For MySQL, use 'CASE WHEN :column IS NULL THEN 1 ELSE 0 END, :column :direction'
+     * For PostgreSQL & Oracle use ':column :direction NULLS LAST'
      */
     'nulls_last_sql' => ':column :direction NULLS LAST',
 
