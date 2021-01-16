@@ -618,6 +618,7 @@ class QueryDataTable extends DataTableAbstract
     public function paging()
     {
         $max_records_per_page = $this->config->get('datatables.max_records_per_page', 0);
+        $limit = (int) $this->request->input('length') > 0 ? $this->request->input('length') : 10;
         $limit = ($max_records_per_page > 0 && $limit > $max_records_per_page) ? $max_records_per_page : $limit;
         if (is_callable($this->limitCallback)) {
             $this->query->limit($limit);
