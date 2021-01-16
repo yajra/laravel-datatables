@@ -124,6 +124,6 @@ return [
      * Set 0 for unlimited record
      * Do not use value under 10 if you are not using laravel-datatables-html
      */
-    'max_records_per_page' => 100,
+    'max_records_per_page' => 0,
 
 ];
