@@ -508,6 +508,19 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     }
 
     /**
+     * Set multi_term search config at runtime.
+     *
+     * @param bool $multiTerm
+     * @return $this
+     */
+    public function setMultiTerm($multiTerm = true)
+    {
+        $this->config->set('datatables.search.multi_term', $multiTerm);
+
+        return $this;
+    }
+
+    /**
      * Set total records manually.
      *
      * @param int $total
