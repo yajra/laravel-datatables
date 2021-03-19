@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v9.16.0] - 2021-03-19
+
+- Add set multi term on runtime [#2585]
+
 ### [v9.15.2] - 2020-12-04
 
 - Remove raw sql when using regex and wrap the column name.
@@ -430,7 +434,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.15.2...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.16.0...9.0
+[v9.16.0]: https://github.com/yajra/laravel-datatables/compare/v9.15.2...v9.16.0
 [v9.15.2]: https://github.com/yajra/laravel-datatables/compare/v9.15.1...v9.15.2
 [v9.15.1]: https://github.com/yajra/laravel-datatables/compare/v9.15.0...v9.15.1
 [v9.15.0]: https://github.com/yajra/laravel-datatables/compare/v9.14.2...v9.15.0
@@ -588,6 +593,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#2535]: https://github.com/yajra/laravel-datatables/pull/2535
 [#2536]: https://github.com/yajra/laravel-datatables/pull/2536
 [#2540]: https://github.com/yajra/laravel-datatables/pull/2540
+[#2585]: https://github.com/yajra/laravel-datatables/pull/2585
 
 [#1934]: https://github.com/yajra/laravel-datatables/issues/1934
 [#2091]: https://github.com/yajra/laravel-datatables/issues/2091
