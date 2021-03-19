@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v9.17.0] - 2021-03-19
+
+- feat(relations): add partial polymorphic support [#2580]
+
 ### [v9.16.0] - 2021-03-19
 
 - Add set multi term on runtime [#2585]
@@ -434,7 +438,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.16.0...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.17.0...9.0
+[v9.17.0]: https://github.com/yajra/laravel-datatables/compare/v9.16.0...v9.17.0
 [v9.16.0]: https://github.com/yajra/laravel-datatables/compare/v9.15.2...v9.16.0
 [v9.15.2]: https://github.com/yajra/laravel-datatables/compare/v9.15.1...v9.15.2
 [v9.15.1]: https://github.com/yajra/laravel-datatables/compare/v9.15.0...v9.15.1
@@ -594,6 +599,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#2536]: https://github.com/yajra/laravel-datatables/pull/2536
 [#2540]: https://github.com/yajra/laravel-datatables/pull/2540
 [#2585]: https://github.com/yajra/laravel-datatables/pull/2585
+[#2580]: https://github.com/yajra/laravel-datatables/pull/2580
 
 [#1934]: https://github.com/yajra/laravel-datatables/issues/1934
 [#2091]: https://github.com/yajra/laravel-datatables/issues/2091
