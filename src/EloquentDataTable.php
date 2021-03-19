@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Yajra\DataTables\Exceptions\Exception;
 
@@ -91,9 +92,15 @@ class EloquentDataTable extends QueryDataTable
             return parent::compileQuerySearch($query, $columnName, $keyword, $boolean);
         }
 
-        $query->{$boolean . 'WhereHas'}($relation, function (Builder $query) use ($column, $keyword) {
-            parent::compileQuerySearch($query, $column, $keyword, '');
-        });
+        if ($this->query->getModel()->$relation() instanceof MorphTo) {
+            $query->{$boolean . 'WhereHasMorph'}($relation, '*', function (Builder $query) use ($column, $keyword) {
+                parent::compileQuerySearch($query, $column, $keyword, '');
+            });
+        } else {
+            $query->{$boolean . 'WhereHas'}($relation, function (Builder $query) use ($column, $keyword) {
+                parent::compileQuerySearch($query, $column, $keyword, '');
+            });
+        }
     }
 
     /**
