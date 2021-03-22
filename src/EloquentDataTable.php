@@ -92,7 +92,7 @@ class EloquentDataTable extends QueryDataTable
             return parent::compileQuerySearch($query, $columnName, $keyword, $boolean);
         }
 
-        if ($this->query->getModel()->$relation() instanceof MorphTo) {
+        if ($this->isMorphRelation($relation)) {
             $query->{$boolean . 'WhereHasMorph'}($relation, '*', function (Builder $query) use ($column, $keyword) {
                 parent::compileQuerySearch($query, $column, $keyword, '');
             });
@@ -120,6 +120,25 @@ class EloquentDataTable extends QueryDataTable
         }
 
         return $this->joinEagerLoadedColumn($relation, $columnName);
+    }
+
+    /**
+     * Check if a relation is a morphed one or not.
+     *
+     * @param  string $relation
+     * @return bool
+     */
+    protected function isMorphRelation($relation)
+    {
+        $isMorph = false;
+        if ($relation !== null && $relation !== '')
+        {
+            $relationParts = explode('.', $relation);
+            $firstRelation = array_shift($relationParts);
+            $isMorph       = $this->query->getModel()->$firstRelation() instanceof MorphTo;
+        }
+
+        return $isMorph;
     }
 
     /**
