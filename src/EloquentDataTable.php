@@ -92,7 +92,7 @@ class EloquentDataTable extends QueryDataTable
             return parent::compileQuerySearch($query, $columnName, $keyword, $boolean);
         }
 
-        if ($this->query->getModel()->$relation() instanceof MorphTo) {
+        if ($this->isMorphedRelation($this->query->getModel(), $relation)) {
             $query->{$boolean . 'WhereHasMorph'}($relation, '*', function (Builder $query) use ($column, $keyword) {
                 parent::compileQuerySearch($query, $column, $keyword, '');
             });
@@ -101,6 +101,23 @@ class EloquentDataTable extends QueryDataTable
                 parent::compileQuerySearch($query, $column, $keyword, '');
             });
         }
+    }
+
+    /**
+     * @param $model
+     * @param string $relations
+     * @return bool
+     */
+    protected function isMorphedRelation($model, string $relations)
+    {
+        $relations     = explode('.', $relations);
+        $relation_name = array_shift($relations);
+
+        if (count($relations) > 0) {
+            return $this->isMorphedRelation($model->$relation_name()->getRelated(), implode('.', $relations));
+        }
+
+        return $model->$relation_name() instanceof MorphTo;
     }
 
     /**
