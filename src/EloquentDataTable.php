@@ -131,8 +131,7 @@ class EloquentDataTable extends QueryDataTable
     protected function isMorphRelation($relation)
     {
         $isMorph = false;
-        if ($relation !== null && $relation !== '')
-        {
+        if ($relation !== null && $relation !== '') {
             $relationParts = explode('.', $relation);
             $firstRelation = array_shift($relationParts);
             $isMorph       = $this->query->getModel()->$firstRelation() instanceof MorphTo;
