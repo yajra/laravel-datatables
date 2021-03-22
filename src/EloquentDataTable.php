@@ -92,7 +92,9 @@ class EloquentDataTable extends QueryDataTable
             return parent::compileQuerySearch($query, $columnName, $keyword, $boolean);
         }
 
-        if ($this->query->getModel()->$relation() instanceof MorphTo) {
+        $model = $this->query->getModel();
+
+        if (method_exists($model, $relation) && $model->$relation() instanceof MorphTo) {
             $query->{$boolean . 'WhereHasMorph'}($relation, '*', function (Builder $query) use ($column, $keyword) {
                 parent::compileQuerySearch($query, $column, $keyword, '');
             });
