@@ -165,6 +165,11 @@ class EloquentDataTable extends QueryDataTable
     protected function joinEagerLoadedColumn($relation, $relationColumn)
     {
         $table     = '';
+        $eagerClosure = null;
+        if (!$this->isNotEagerLoaded($relation)) {
+            $eagerClosure = $this->query->getEagerLoads()[$relation];
+        }
+
         $lastQuery = $this->query;
         foreach (explode('.', $relation) as $eachRelation) {
             $model = $lastQuery->getRelation($eachRelation);
@@ -215,7 +220,7 @@ class EloquentDataTable extends QueryDataTable
                 default:
                     throw new Exception('Relation ' . get_class($model) . ' is not yet supported.');
             }
-            $this->performJoin($table, $foreign, $other);
+            $this->performJoin($table, $foreign, $other, 'left', $eagerClosure);
             $lastQuery = $model->getQuery();
         }
 
@@ -229,8 +234,9 @@ class EloquentDataTable extends QueryDataTable
      * @param string $foreign
      * @param string $other
      * @param string $type
+     * @param \Closure $eagerClosure
      */
-    protected function performJoin($table, $foreign, $other, $type = 'left')
+    protected function performJoin($table, $foreign, $other, $type = 'left', $eagerClosure = null)
     {
         $joins = [];
         foreach ((array) $this->getBaseQueryBuilder()->joins as $key => $join) {
@@ -239,6 +245,9 @@ class EloquentDataTable extends QueryDataTable
 
         if (! in_array($table, $joins)) {
             $this->getBaseQueryBuilder()->join($table, $foreign, '=', $other, $type);
+            if (!is_null($eagerClosure)) {
+                $eagerClosure($this->getBaseQueryBuilder());
+            }
         }
     }
 }
