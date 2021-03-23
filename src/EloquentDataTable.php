@@ -164,9 +164,9 @@ class EloquentDataTable extends QueryDataTable
      */
     protected function joinEagerLoadedColumn($relation, $relationColumn)
     {
-        $table     = '';
+        $table        = '';
         $eagerClosure = null;
-        if (!$this->isNotEagerLoaded($relation)) {
+        if (! $this->isNotEagerLoaded($relation)) {
             $eagerClosure = $this->query->getEagerLoads()[$relation];
         }
 
@@ -245,7 +245,7 @@ class EloquentDataTable extends QueryDataTable
 
         if (! in_array($table, $joins)) {
             $this->getBaseQueryBuilder()->join($table, $foreign, '=', $other, $type);
-            if (!is_null($eagerClosure)) {
+            if (! is_null($eagerClosure)) {
                 $eagerClosure($this->getBaseQueryBuilder());
             }
         }
