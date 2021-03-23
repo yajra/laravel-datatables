@@ -134,7 +134,8 @@ class EloquentDataTable extends QueryDataTable
         if ($relation !== null && $relation !== '') {
             $relationParts = explode('.', $relation);
             $firstRelation = array_shift($relationParts);
-            $isMorph       = $this->query->getModel()->$firstRelation() instanceof MorphTo;
+            $model         = $this->query->getModel();
+            $isMorph       = method_exists($model, $firstRelation) && $model->$firstRelation() instanceof MorphTo;
         }
 
         return $isMorph;
