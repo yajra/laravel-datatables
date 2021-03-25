@@ -244,10 +244,12 @@ class EloquentDataTable extends QueryDataTable
         }
 
         if (! in_array($table, $joins)) {
-            $this->getBaseQueryBuilder()->join($table, $foreign, '=', $other, $type);
-            if (! is_null($eagerClosure)) {
-                $eagerClosure($this->getBaseQueryBuilder());
-            }
+            $this->getBaseQueryBuilder()->join($table, function($join) use ($eagerClosure, $foreign, $other) {
+                $join->on($foreign, '=', $other);
+                if (!is_null($eagerClosure)) {
+                    $eagerClosure($join);
+                }
+            }, null, null, $type);
         }
     }
 }
