@@ -572,7 +572,7 @@ class QueryDataTable extends DataTableAbstract
      * Override default column ordering.
      *
      * @param string $column
-     * @param string $sql
+     * @param string|\Closure $sql
      * @param array  $bindings
      * @return $this
      * @internal string $1 Special variable that returns the requested order direction of the column.
