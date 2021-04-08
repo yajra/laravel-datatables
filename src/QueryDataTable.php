@@ -309,7 +309,7 @@ class QueryDataTable extends DataTableAbstract
             }
 
             if ($this->hasFilterColumn($column)) {
-                $keyword = $this->getColumnSearchKeyword($index, $raw = true);
+                $keyword = $this->getColumnSearchKeyword($index, true);
                 $this->applyFilterColumn($this->getBaseQueryBuilder(), $column, $keyword);
             } else {
                 $column  = $this->resolveRelationColumn($column);
