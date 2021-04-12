@@ -8,6 +8,11 @@
 
 ### [Unreleased]
 
+### [v9.17.2] - 2021-04-12
+
+- Remove unnecessary wrap to avoid performance issues #2608.
+- Fixes #1928.
+
 ### [v9.17.1] - 2021-03-23
 
 - Fix morph relation support with multi level relations. #2588 #2590
@@ -444,7 +449,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.17.1...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.17.2...9.0
+[v9.17.2]: https://github.com/yajra/laravel-datatables/compare/v9.17.1...v9.17.2
 [v9.17.1]: https://github.com/yajra/laravel-datatables/compare/v9.17.0...v9.17.1
 [v9.17.0]: https://github.com/yajra/laravel-datatables/compare/v9.16.0...v9.17.0
 [v9.16.0]: https://github.com/yajra/laravel-datatables/compare/v9.15.2...v9.16.0
