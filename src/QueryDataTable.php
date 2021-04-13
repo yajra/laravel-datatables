@@ -210,7 +210,16 @@ class QueryDataTable extends DataTableAbstract
      */
     public function count()
     {
-        return $this->prepareCountQuery()->count();
+        $builder = $this->prepareCountQuery();
+
+        if (empty($builder->havings)) {
+            return $builder->count();
+        }
+
+        $table = $this->connection->raw('('.$builder->toSql().') count_row_table');
+        return $this->connection->table($table)
+            ->setBindings($builder->getBindings())
+            ->count();
     }
 
     /**
