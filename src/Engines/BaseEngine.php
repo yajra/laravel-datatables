@@ -502,7 +502,7 @@ abstract class BaseEngine implements DataTableEngineContract
             $this->totalRecords = $this->totalCount();
 
             if ($this->totalRecords) {
-                $this->filterRecords();
+                // $this->filterRecords();
                 $this->ordering();
                 $this->paginate();
             }
@@ -878,6 +878,19 @@ abstract class BaseEngine implements DataTableEngineContract
     public function setTotalRecords($total)
     {
         $this->totalRecords = $total;
+
+        return $this;
+    }
+    
+    /**
+     * Set records filtered manually.
+     *
+     * @param int $record
+     * @return $this
+     */
+    public function setFilteredRecords($record)
+    {
+        $this->filteredRecords = $record;
 
         return $this;
     }
