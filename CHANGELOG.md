@@ -8,6 +8,12 @@
 
 ### [Unreleased]
 
+### [v9.17.3] - 2021-04-14
+
+- Fix the regression when using a having condition in a query. #2612
+- Fix #1928
+- Code cleanup in QueryDataTable class #2606
+
 ### [v9.17.2] - 2021-04-12
 
 - Remove unnecessary wrap to avoid performance issues #2608.
@@ -449,7 +455,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.17.2...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.17.3...9.0
+[v9.17.3]: https://github.com/yajra/laravel-datatables/compare/v9.17.2...v9.17.3
 [v9.17.2]: https://github.com/yajra/laravel-datatables/compare/v9.17.1...v9.17.2
 [v9.17.1]: https://github.com/yajra/laravel-datatables/compare/v9.17.0...v9.17.1
 [v9.17.0]: https://github.com/yajra/laravel-datatables/compare/v9.16.0...v9.17.0
