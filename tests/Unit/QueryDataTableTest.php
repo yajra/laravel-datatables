@@ -15,8 +15,8 @@ class QueryDataTableTest extends TestCase
         $dataTable = app('datatables')->of(
             DB::table('module_telers')
                 ->selectRaw('module_telers.id, module_telers.publiceren, module_telers.archief, module_telers.uitgelicht, module_telers.image_header, module_telers.bedrijfsnaam, module_telers.titel, module_telers.plaats, group_concat(DISTINCT productenAlias.titel SEPARATOR \', \') as producten')
-                ->leftJoin('relation_producten_telers','module_telers.id', '=', 'relation_producten_telers.telers_id')
-                ->leftJoin('module_producten as productenAlias','productenAlias.id', '=', 'relation_producten_telers.producten_id')
+                ->leftJoin('relation_producten_telers', 'module_telers.id', '=', 'relation_producten_telers.telers_id')
+                ->leftJoin('module_producten as productenAlias', 'productenAlias.id', '=', 'relation_producten_telers.producten_id')
                 ->groupBy('module_telers.id')
         );
 
