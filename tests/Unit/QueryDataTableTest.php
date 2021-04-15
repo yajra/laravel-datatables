@@ -22,7 +22,6 @@ class QueryDataTableTest extends TestCase
 
         $this->assertQueryWrapped(true, $dataTable->prepareCountQuery());
 
-
         /** @var \Yajra\DataTables\QueryDataTable $dataTable */
         $dataTable = app('datatables')->of(
             DB::table('posts')->selectRaw('title AS state')->groupBy('state')->having('state', '!=', 'deleted')
