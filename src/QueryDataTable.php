@@ -224,7 +224,7 @@ class QueryDataTable extends DataTableAbstract
      *
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    protected function prepareCountQuery()
+    public function prepareCountQuery()
     {
         $builder = clone $this->query;
 
