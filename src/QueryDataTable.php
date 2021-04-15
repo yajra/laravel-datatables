@@ -212,10 +212,6 @@ class QueryDataTable extends DataTableAbstract
     {
         $builder = $this->prepareCountQuery();
 
-        if (empty($builder->havings)) {
-            return $builder->count();
-        }
-
         $table = $this->connection->raw('('.$builder->toSql().') count_row_table');
 
         return $this->connection->table($table)
