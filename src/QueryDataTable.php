@@ -767,7 +767,9 @@ class QueryDataTable extends DataTableAbstract
     {
         $query_log = $this->connection->getQueryLog();
         array_walk_recursive($query_log, function (&$item) {
-            $item = utf8_encode($item);
+            if (is_string($item)) {
+                $item = utf8_encode($item);
+            }
         });
 
         $output['queries'] = $query_log;
