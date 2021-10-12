@@ -170,7 +170,7 @@ class Request
      */
     public function columnKeyword($index)
     {
-        $keyword = $this->request->input("columns.$index.search.value");
+        $keyword = $this->request->input("columns.$index.search.value") ?? '';
 
         return $this->prepareKeyword($keyword);
     }
@@ -197,7 +197,7 @@ class Request
      */
     public function keyword()
     {
-        $keyword = $this->request->input('search.value');
+        $keyword = $this->request->input('search.value') ?? '';
 
         return $this->prepareKeyword($keyword);
     }
