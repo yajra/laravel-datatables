@@ -243,14 +243,14 @@ class QueryDataTableTest extends TestCase
             'recordsFiltered' => 20,
             'searchPanes'     => [
                 'options' => [
-                    'name' => [],
+                    'id' => [],
                 ],
             ],
         ]);
 
         $options = $crawler->json()['searchPanes']['options'];
 
-        $this->assertEquals(count($options['name']), 20);
+        $this->assertEquals(count($options['id']), 20);
     }
 
     /** @test */
@@ -400,7 +400,7 @@ class QueryDataTableTest extends TestCase
             $options = User::select('id as value', 'name as label')->get();
 
             return $dataTable->query(DB::table('users'))
-                        ->searchPane('name', $options)
+                        ->searchPane('id', $options)
                         ->toJson();
         });
     }

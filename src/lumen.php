@@ -4,7 +4,7 @@ if (! function_exists('config_path')) {
     /**
      * Get the configuration path.
      *
-     * @param  string $path
+     * @param  string  $path
      * @return string
      */
     function config_path($path = '')
@@ -17,7 +17,7 @@ if (! function_exists('public_path')) {
     /**
      * Return the path to public dir.
      *
-     * @param null $path
+     * @param  null  $path
      * @return string
      */
     function public_path($path = null)

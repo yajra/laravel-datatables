@@ -33,7 +33,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Can the DataTable engine be created with these parameters.
      *
-     * @param mixed $source
+     * @param  mixed  $source
      * @return bool
      */
     public static function canCreate($source)
@@ -44,7 +44,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Factory method, create and return an instance for the DataTable engine.
      *
-     * @param array|\Illuminate\Support\Collection $source
+     * @param  array|\Illuminate\Support\Collection  $source
      * @return CollectionDataTable|DataTableAbstract
      */
     public static function create($source)
@@ -59,7 +59,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * CollectionEngine constructor.
      *
-     * @param \Illuminate\Support\Collection $collection
+     * @param  \Illuminate\Support\Collection  $collection
      */
     public function __construct(Collection $collection)
     {
@@ -73,7 +73,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Serialize collection.
      *
-     * @param  mixed $collection
+     * @param  mixed  $collection
      * @return mixed|null
      */
     protected function serialize($collection)
@@ -151,7 +151,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Organizes works.
      *
-     * @param bool $mDataSupport
+     * @param  bool  $mDataSupport
      * @return \Illuminate\Http\JsonResponse
      */
     public function make($mDataSupport = true)
@@ -201,7 +201,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Revert transformed DT_RowIndex back to it's original values.
      *
-     * @param bool $mDataSupport
+     * @param  bool  $mDataSupport
      */
     private function revertIndexColumn($mDataSupport)
     {
@@ -219,7 +219,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Perform global search for the given keyword.
      *
-     * @param string $keyword
+     * @param  string  $keyword
      */
     protected function globalSearch($keyword)
     {
@@ -278,7 +278,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Get array sorter closure.
      *
-     * @param array $criteria
+     * @param  array  $criteria
      * @return \Closure
      */
     protected function getSorter(array $criteria)
@@ -334,7 +334,7 @@ class CollectionDataTable extends DataTableAbstract
      * the FULL dataset the collection was sliced from. It effectively allows the
      * collection to be "pre-sliced".
      *
-     * @param int $offset
+     * @param  int  $offset
      * @return $this
      */
     public function setOffset(int $offset)

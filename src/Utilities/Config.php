@@ -14,7 +14,7 @@ class Config
     /**
      * Config constructor.
      *
-     * @param \Illuminate\Contracts\Config\Repository $repository
+     * @param  \Illuminate\Contracts\Config\Repository  $repository
      */
     public function __construct(Repository $repository)
     {
@@ -64,8 +64,8 @@ class Config
     /**
      * Get the specified configuration value.
      *
-     * @param string $key
-     * @param mixed  $default
+     * @param  string  $key
+     * @param  mixed  $default
      * @return mixed
      */
     public function get($key, $default = null)
@@ -76,8 +76,8 @@ class Config
     /**
      * Set a given configuration value.
      *
-     * @param  array|string $key
-     * @param  mixed        $value
+     * @param  array|string  $key
+     * @param  mixed  $value
      * @return void
      */
     public function set($key, $value = null)

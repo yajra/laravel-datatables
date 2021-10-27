@@ -8,6 +8,72 @@
 
 ### [Unreleased]
 
+### [v9.18.2] - 2021-06-28
+
+- Return empty string for null request keyword #2700
+
+### [v9.18.1] - 2021-06-28
+
+- Query with subqueries exception fix. #2642
+
+### [v9.18.0] - 2021-04-16
+
+- Improve count performance for simple queries. #2616
+- Fixes #1928
+- Make prepareCountQuery() public so its easy to test.
+
+### [v9.17.4] - 2021-04-15
+
+- Revert changes on count. #2614
+- Fix #2613
+- Reverts: #2611 and #2612
+
+### [v9.17.3] - 2021-04-14
+
+- Fix the regression when using a having condition in a query. #2612
+- Fix #1928
+- Code cleanup in QueryDataTable class #2606
+
+### [v9.17.2] - 2021-04-12
+
+- Remove unnecessary wrap to avoid performance issues #2608.
+- Fixes #1928.
+
+### [v9.17.1] - 2021-03-23
+
+- Fix morph relation support with multi level relations. #2588 #2590
+- Fix tests and doc blocks. #2586
+- Fixes #2587, #2589, #2580
+
+### [v9.17.0] - 2021-03-19
+
+- feat(relations): add partial polymorphic support [#2580]
+
+### [v9.16.0] - 2021-03-19
+
+- Add set multi term on runtime [#2585]
+
+### [v9.15.2] - 2020-12-04
+
+- Remove raw sql when using regex and wrap the column name.
+
+### [v9.15.1] - 2020-12-03
+
+- Fix search pane builder instance when using eloquent. [#2540]
+
+### [v9.15.0] - 2020-11-28
+
+- PHP8 support [#2536]
+
+### [v9.14.2] - 2020-11-27
+
+- Fix PHP8 error, method exists now throws an exception if the first argument is not string|object [#2535]
+- Fixes [#2534]
+
+### [v9.14.1] - 2020-11-11
+
+- Fix resolution of custom search pane query builder. [#2513]
+
 ### [v9.14.0] - 2020-11-03
 
 - Add column formatter. [#2193]
@@ -409,7 +475,21 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.14.0...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.18.2...9.0
+[v9.18.2]: https://github.com/yajra/laravel-datatables/compare/v9.18.1...v9.18.2
+[v9.18.1]: https://github.com/yajra/laravel-datatables/compare/v9.18.0...v9.18.1
+[v9.18.0]: https://github.com/yajra/laravel-datatables/compare/v9.17.4...v9.18.0
+[v9.17.4]: https://github.com/yajra/laravel-datatables/compare/v9.17.3...v9.17.4
+[v9.17.3]: https://github.com/yajra/laravel-datatables/compare/v9.17.2...v9.17.3
+[v9.17.2]: https://github.com/yajra/laravel-datatables/compare/v9.17.1...v9.17.2
+[v9.17.1]: https://github.com/yajra/laravel-datatables/compare/v9.17.0...v9.17.1
+[v9.17.0]: https://github.com/yajra/laravel-datatables/compare/v9.16.0...v9.17.0
+[v9.16.0]: https://github.com/yajra/laravel-datatables/compare/v9.15.2...v9.16.0
+[v9.15.2]: https://github.com/yajra/laravel-datatables/compare/v9.15.1...v9.15.2
+[v9.15.1]: https://github.com/yajra/laravel-datatables/compare/v9.15.0...v9.15.1
+[v9.15.0]: https://github.com/yajra/laravel-datatables/compare/v9.14.2...v9.15.0
+[v9.14.2]: https://github.com/yajra/laravel-datatables/compare/v9.14.1...v9.14.2
+[v9.14.1]: https://github.com/yajra/laravel-datatables/compare/v9.14.0...v9.14.1
 [v9.14.0]: https://github.com/yajra/laravel-datatables/compare/v9.13.0...v9.14.0
 [v9.13.0]: https://github.com/yajra/laravel-datatables/compare/v9.12.0...v9.13.0
 [v9.12.0]: https://github.com/yajra/laravel-datatables/compare/v9.11.1...v9.12.0
@@ -558,6 +638,12 @@ return (new CollectionDataTable(User::all())->toJson();
 [#2481]: https://github.com/yajra/laravel-datatables/pull/2481
 [#2475]: https://github.com/yajra/laravel-datatables/pull/2475
 [#2193]: https://github.com/yajra/laravel-datatables/pull/2193
+[#2513]: https://github.com/yajra/laravel-datatables/pull/2513
+[#2535]: https://github.com/yajra/laravel-datatables/pull/2535
+[#2536]: https://github.com/yajra/laravel-datatables/pull/2536
+[#2540]: https://github.com/yajra/laravel-datatables/pull/2540
+[#2585]: https://github.com/yajra/laravel-datatables/pull/2585
+[#2580]: https://github.com/yajra/laravel-datatables/pull/2580
 
 [#1934]: https://github.com/yajra/laravel-datatables/issues/1934
 [#2091]: https://github.com/yajra/laravel-datatables/issues/2091
@@ -601,6 +687,7 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1953]: https://github.com/yajra/laravel-datatables/issues/1953
 [#2463]: https://github.com/yajra/laravel-datatables/issues/2463
 [#2471]: https://github.com/yajra/laravel-datatables/issues/2471
+[#2534]: https://github.com/yajra/laravel-datatables/issues/2534
 
 [laravel-datatables-fractal]: https://github.com/yajra/laravel-datatables-fractal
 

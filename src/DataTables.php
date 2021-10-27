@@ -26,8 +26,9 @@ class DataTables
      * Make a DataTable instance from source.
      * Alias of make for backward compatibility.
      *
-     * @param  mixed $source
+     * @param  mixed  $source
      * @return mixed
+     *
      * @throws \Exception
      */
     public static function of($source)
@@ -38,8 +39,9 @@ class DataTables
     /**
      * Make a DataTable instance from source.
      *
-     * @param mixed $source
+     * @param  mixed  $source
      * @return mixed
+     *
      * @throws \Exception
      */
     public static function make($source)
@@ -85,6 +87,7 @@ class DataTables
 
     /**
      * @deprecated Please use query() instead, this method will be removed in a next version.
+     *
      * @param $builder
      * @return QueryDataTable
      */
@@ -96,7 +99,7 @@ class DataTables
     /**
      * DataTables using Query.
      *
-     * @param \Illuminate\Database\Query\Builder|mixed $builder
+     * @param  \Illuminate\Database\Query\Builder|mixed  $builder
      * @return DataTableAbstract|QueryDataTable
      */
     public function query($builder)
@@ -107,7 +110,7 @@ class DataTables
     /**
      * DataTables using Eloquent Builder.
      *
-     * @param \Illuminate\Database\Eloquent\Builder|mixed $builder
+     * @param  \Illuminate\Database\Eloquent\Builder|mixed  $builder
      * @return DataTableAbstract|EloquentDataTable
      */
     public function eloquent($builder)
@@ -118,7 +121,7 @@ class DataTables
     /**
      * DataTables using Collection.
      *
-     * @param \Illuminate\Support\Collection|array $collection
+     * @param  \Illuminate\Support\Collection|array  $collection
      * @return DataTableAbstract|CollectionDataTable
      */
     public function collection($collection)
@@ -129,7 +132,7 @@ class DataTables
     /**
      * DataTables using Collection.
      *
-     * @param \Illuminate\Http\Resources\Json\AnonymousResourceCollection|array $collection
+     * @param  \Illuminate\Http\Resources\Json\AnonymousResourceCollection|array  $collection
      * @return DataTableAbstract|ApiResourceDataTable
      */
     public function resource($resource)
@@ -141,6 +144,7 @@ class DataTables
      * Get html builder instance.
      *
      * @return \Yajra\DataTables\Html\Builder
+     *
      * @throws \Exception
      */
     public function getHtmlBuilder()

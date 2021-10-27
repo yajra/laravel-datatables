@@ -25,7 +25,7 @@ class ApiResourceDataTable extends CollectionDataTable
     /**
      * Can the DataTable engine be created with these parameters.
      *
-     * @param mixed $source
+     * @param  mixed  $source
      * @return bool
      */
     public static function canCreate($source)
@@ -36,7 +36,7 @@ class ApiResourceDataTable extends CollectionDataTable
     /**
      * Factory method, create and return an instance for the DataTable engine.
      *
-     * @param \Illuminate\Http\Resources\Json\AnonymousResourceCollection $source
+     * @param  \Illuminate\Http\Resources\Json\AnonymousResourceCollection  $source
      * @return ApiResourceDataTable|DataTableAbstract
      */
     public static function create($source)
@@ -47,7 +47,7 @@ class ApiResourceDataTable extends CollectionDataTable
     /**
      * CollectionEngine constructor.
      *
-     * @param \Illuminate\Http\Resources\Json\AnonymousResourceCollection $collection
+     * @param  \Illuminate\Http\Resources\Json\AnonymousResourceCollection  $collection
      */
     public function __construct(AnonymousResourceCollection $collection)
     {
