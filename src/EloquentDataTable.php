@@ -182,9 +182,6 @@ class EloquentDataTable extends QueryDataTable
                     $foreign = $pivot . '.' . $tablePK;
                     $other   = $related->getQualifiedKeyName();
 
-                    $lastQuery->addSelect($table . '.' . $relationColumn);
-                    $this->performJoin($table, $foreign, $other);
-
                     break;
 
                 case $model instanceof HasOneThrough:
