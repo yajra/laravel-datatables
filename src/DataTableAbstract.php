@@ -876,7 +876,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
         $debug = $this->config->get('app.debug');
 
         if ($error === 'throw' || (! $error && ! $debug)) {
-            throw new Exception($exception->getMessage(), $code = 0, $exception);
+            throw $exception;
         }
 
         $this->getLogger()->error($exception);
