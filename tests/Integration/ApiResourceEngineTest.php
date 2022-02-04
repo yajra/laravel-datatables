@@ -2,14 +2,14 @@
 
 namespace Yajra\DataTables\Tests\Integration;
 
-use Yajra\DataTables\DataTables;
-use Illuminate\Http\JsonResponse;
-use Yajra\DataTables\Tests\TestCase;
-use Yajra\DataTables\Tests\Models\User;
-use Yajra\DataTables\ApiResourceDataTable;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Yajra\DataTables\Tests\Http\Resources\UserResource;
+use Illuminate\Http\JsonResponse;
+use Yajra\DataTables\ApiResourceDataTable;
+use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
+use Yajra\DataTables\Tests\Http\Resources\UserResource;
+use Yajra\DataTables\Tests\Models\User;
+use Yajra\DataTables\Tests\TestCase;
 
 class ApiResourceEngineTest extends TestCase
 {
@@ -93,10 +93,10 @@ class ApiResourceEngineTest extends TestCase
     {
         $crawler = $this->call('GET', '/resource/users_p');
         $crawler->assertJson([
-             'draw'            => 0,
-             'recordsTotal'    => 10,
-             'recordsFiltered' => 10,
-         ]);
+            'draw'            => 0,
+            'recordsTotal'    => 10,
+            'recordsFiltered' => 10,
+        ]);
     }
 
     protected function setUp(): void

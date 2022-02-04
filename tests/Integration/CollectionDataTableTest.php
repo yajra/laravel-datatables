@@ -2,13 +2,13 @@
 
 namespace Yajra\DataTables\Tests\Integration;
 
-use Yajra\DataTables\DataTables;
-use Illuminate\Http\JsonResponse;
-use Yajra\DataTables\Tests\TestCase;
-use Yajra\DataTables\Tests\Models\User;
-use Yajra\DataTables\CollectionDataTable;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Http\JsonResponse;
+use Yajra\DataTables\CollectionDataTable;
+use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
+use Yajra\DataTables\Tests\Models\User;
+use Yajra\DataTables\Tests\TestCase;
 
 class CollectionDataTableTest extends TestCase
 {
@@ -126,6 +126,48 @@ class CollectionDataTableTest extends TestCase
                 ['name' => 'BCD'],
                 ['name' => 'ZXY'],
                 ['name' => 'zzz'],
+            ],
+        ], $response->getData(true));
+    }
+
+    /** @test */
+    public function it_can_sort_numeric_strings()
+    {
+        config()->set('app.debug', false);
+        request()->merge([
+            'columns' => [
+                ['data' => 'amount', 'name' => 'amount', 'searchable' => 'true', 'orderable' => 'true'],
+            ],
+            'order'  => [['column' => 0, 'dir' => 'asc']],
+            'start'  => 0,
+            'length' => 10,
+            'draw'   => 1,
+        ]);
+
+        $collection = collect([
+            ['amount' => '12'],
+            ['amount' => '7'],
+            ['amount' => '-8'],
+            ['amount' => '0'],
+            ['amount' => '-3'],
+            ['amount' => '8'],
+        ]);
+
+        $dataTable = app('datatables')->collection($collection);
+        /** @var JsonResponse $response */
+        $response = $dataTable->toJson();
+
+        $this->assertEquals([
+            'draw'            => 1,
+            'recordsTotal'    => 6,
+            'recordsFiltered' => 6,
+            'data'            => [
+                ['amount' => '-8'],
+                ['amount' => '-3'],
+                ['amount' => '0'],
+                ['amount' => '7'],
+                ['amount' => '8'],
+                ['amount' => '12'],
             ],
         ], $response->getData(true));
     }

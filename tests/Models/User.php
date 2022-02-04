@@ -22,4 +22,9 @@ class User extends Model
     {
         return $this->belongsToMany(Role::class);
     }
+
+    public function user()
+    {
+        return $this->morphTo();
+    }
 }

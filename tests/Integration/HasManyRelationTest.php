@@ -2,11 +2,11 @@
 
 namespace Yajra\DataTables\Tests\Integration;
 
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Yajra\DataTables\DataTables;
-use Yajra\DataTables\Tests\TestCase;
 use Yajra\DataTables\Tests\Models\Post;
 use Yajra\DataTables\Tests\Models\User;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Yajra\DataTables\Tests\TestCase;
 
 class HasManyRelationTest extends TestCase
 {

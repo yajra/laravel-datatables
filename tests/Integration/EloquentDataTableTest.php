@@ -2,14 +2,14 @@
 
 namespace Yajra\DataTables\Tests\Integration;
 
-use Yajra\DataTables\DataTables;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
-use Yajra\DataTables\Tests\TestCase;
+use Yajra\DataTables\DataTables;
 use Yajra\DataTables\EloquentDataTable;
+use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
 use Yajra\DataTables\Tests\Models\Post;
 use Yajra\DataTables\Tests\Models\User;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
+use Yajra\DataTables\Tests\TestCase;
 
 class EloquentDataTableTest extends TestCase
 {
