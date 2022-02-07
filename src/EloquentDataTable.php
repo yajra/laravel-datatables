@@ -200,7 +200,7 @@ class EloquentDataTable extends QueryDataTable
                     $other   = $related->getQualifiedKeyName();
 
                     $lastQuery->addSelect($lastQuery->getModel()->getTable().'.*');
-                    
+
                     break;
 
                 case $model instanceof HasOneOrMany:
