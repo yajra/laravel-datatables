@@ -195,7 +195,7 @@ class EloquentDataTable extends QueryDataTable
 
                     $related = $model->getRelated();
                     $table   = $related->getTable();
-                    $tablePK = $related->getForeignKey();
+                    $tablePK = $model->getSecondLocalKeyName();
                     $foreign = $pivot . '.' . $tablePK;
                     $other   = $related->getQualifiedKeyName();
 
