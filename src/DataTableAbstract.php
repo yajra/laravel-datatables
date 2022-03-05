@@ -11,7 +11,6 @@ use Illuminate\Support\Traits\Macroable;
 use Psr\Log\LoggerInterface;
 use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\Contracts\Formatter;
-use Yajra\DataTables\Exceptions\Exception;
 use Yajra\DataTables\Processors\DataProcessor;
 use Yajra\DataTables\Utilities\Helper;
 
@@ -876,7 +875,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
         $debug = $this->config->get('app.debug');
 
         if ($error === 'throw' || (! $error && ! $debug)) {
-            throw new Exception($exception->getMessage(), $code = 0, $exception);
+            throw $exception;
         }
 
         $this->getLogger()->error($exception);
