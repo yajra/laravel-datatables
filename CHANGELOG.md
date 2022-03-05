@@ -8,6 +8,12 @@
 
 ### [Unreleased]
 
+### [v9.19.1] - 2022-03-05
+
+- Fix Formatter::format() doc block.
+- Fix `are` Word in Description #2743
+- Update README #2735
+
 ### [v9.19.0] - 2022-01-18
 
 - Support for Laravel 9 #2727
@@ -480,7 +486,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.19.0...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.19.1...9.0
+[v9.19.1]: https://github.com/yajra/laravel-datatables/compare/v9.19.0...v9.19.1
 [v9.19.0]: https://github.com/yajra/laravel-datatables/compare/v9.18.2...v9.19.0
 [v9.18.2]: https://github.com/yajra/laravel-datatables/compare/v9.18.1...v9.18.2
 [v9.18.1]: https://github.com/yajra/laravel-datatables/compare/v9.18.0...v9.18.1
