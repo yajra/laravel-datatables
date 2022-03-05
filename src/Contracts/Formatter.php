@@ -5,7 +5,7 @@ namespace Yajra\DataTables\Contracts;
 interface Formatter
 {
     /**
-     * @param  string  $value
+     * @param  mixed  $value
      * @param  mixed  $row
      * @return string
      */
