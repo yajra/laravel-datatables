@@ -96,15 +96,10 @@ class CollectionDataTable extends DataTableAbstract
      * Perform column search.
      *
      * @return void
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function columnSearch()
     {
-        /** @var array $columns */
-        $columns = $this->request->get('columns', []);
-        for ($i = 0, $c = count($columns); $i < $c; $i++) {
+        for ($i = 0, $c = count($this->request->columns()); $i < $c; $i++) {
             $column = $this->getColumnName($i);
 
             if (! $this->request->isColumnSearchable($i) || $this->isBlacklisted($column)) {
