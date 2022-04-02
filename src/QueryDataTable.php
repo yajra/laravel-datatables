@@ -572,7 +572,7 @@ class QueryDataTable extends DataTableAbstract
      */
     public function paging()
     {
-        $start = $this->request->start();;
+        $start = $this->request->start();
         $length = $this->request->length();
 
         $limit = $length > 0 ? $length : 10;

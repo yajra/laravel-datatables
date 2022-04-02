@@ -3,7 +3,6 @@
 namespace Yajra\DataTables;
 
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -160,6 +159,7 @@ class CollectionDataTable extends DataTableAbstract
      *
      * @param  bool  $mDataSupport
      * @return \Illuminate\Http\JsonResponse
+     *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public function make($mDataSupport = true)
