@@ -3,7 +3,6 @@
 namespace Yajra\DataTables;
 
 use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
@@ -136,6 +135,7 @@ class EloquentDataTable extends QueryDataTable
      *
      * @param  string  $column
      * @return string
+     *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
     protected function resolveRelationColumn($column)

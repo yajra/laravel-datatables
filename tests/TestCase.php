@@ -87,15 +87,15 @@ abstract class TestCase extends BaseTestCase
     protected function seedDatabase()
     {
         $adminRole = Role::create(['role' => 'Administrator']);
-        $userRole  = Role::create(['role' => 'User']);
-        $animal    = AnimalUser::create(['name' => 'Animal']);
-        $human     = HumanUser::create(['name' => 'Human']);
+        $userRole = Role::create(['role' => 'User']);
+        $animal = AnimalUser::create(['name' => 'Animal']);
+        $human = HumanUser::create(['name' => 'Human']);
 
         collect(range(1, 20))->each(function ($i) use ($userRole, $animal, $human) {
             /** @var User $user */
             $user = User::query()->create([
-                'name'  => 'Record-' . $i,
-                'email' => 'Email-' . $i . '@example.com',
+                'name'  => 'Record-'.$i,
+                'email' => 'Email-'.$i.'@example.com',
             ]);
 
             collect(range(1, 3))->each(function ($i) use ($user) {
@@ -105,7 +105,7 @@ abstract class TestCase extends BaseTestCase
             });
 
             $user->heart()->create([
-                'size' => 'heart-' . $user->id,
+                'size' => 'heart-'.$user->id,
             ]);
 
             if ($i % 2) {

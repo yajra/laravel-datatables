@@ -64,11 +64,11 @@ class CollectionDataTable extends DataTableAbstract
      */
     public function __construct(Collection $collection)
     {
-        $this->request    = app('datatables.request');
-        $this->config     = app('datatables.config');
+        $this->request = app('datatables.request');
+        $this->config = app('datatables.config');
         $this->collection = $collection;
-        $this->original   = $collection;
-        $this->columns    = array_keys($this->serialize($collection->first()));
+        $this->original = $collection;
+        $this->columns = array_keys($this->serialize($collection->first()));
     }
 
     /**
@@ -96,6 +96,7 @@ class CollectionDataTable extends DataTableAbstract
      * Perform column search.
      *
      * @return void
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -103,7 +104,7 @@ class CollectionDataTable extends DataTableAbstract
     {
         $columns = $this->request->get('columns', []);
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
-            $column  = $this->getColumnName($i);
+            $column = $this->getColumnName($i);
 
             if (! $this->request->isColumnSearchable($i) || $this->isBlacklisted($column)) {
                 continue;
@@ -111,7 +112,7 @@ class CollectionDataTable extends DataTableAbstract
 
             $this->isFilterApplied = true;
 
-            $regex   = $this->request->isRegex($i);
+            $regex = $this->request->isRegex($i);
             $keyword = $this->request->columnKeyword($i);
 
             $this->collection = $this->collection->filter(
@@ -122,14 +123,14 @@ class CollectionDataTable extends DataTableAbstract
 
                     if ($this->config->isCaseInsensitive()) {
                         if ($regex) {
-                            return preg_match('/' . $keyword . '/i', $value) == 1;
+                            return preg_match('/'.$keyword.'/i', $value) == 1;
                         }
 
                         return str_contains(Str::lower($value), Str::lower($keyword));
                     }
 
                     if ($regex) {
-                        return preg_match('/' . $keyword . '/', $value) == 1;
+                        return preg_match('/'.$keyword.'/', $value) == 1;
                     }
 
                     return str_contains($value, $keyword);
@@ -163,9 +164,9 @@ class CollectionDataTable extends DataTableAbstract
             $this->totalRecords = $this->totalCount();
 
             if ($this->totalRecords) {
-                $results   = $this->results();
+                $results = $this->results();
                 $processed = $this->processResults($results, $mDataSupport);
-                $output    = $this->transform($results, $processed);
+                $output = $this->transform($results, $processed);
 
                 $this->collection = collect($output);
                 $this->ordering();
@@ -290,13 +291,13 @@ class CollectionDataTable extends DataTableAbstract
     {
         $sorter = function ($a, $b) use ($criteria) {
             foreach ($criteria as $orderable) {
-                $column    = $this->getColumnName($orderable['column']);
+                $column = $this->getColumnName($orderable['column']);
                 $direction = $orderable['direction'];
                 if ($direction === 'desc') {
-                    $first  = $b;
+                    $first = $b;
                     $second = $a;
                 } else {
-                    $first  = $a;
+                    $first = $a;
                     $second = $b;
                 }
                 if (is_numeric($first[$column] ?? null) && is_numeric($second[$column] ?? null)) {

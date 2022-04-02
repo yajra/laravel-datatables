@@ -87,7 +87,7 @@ class QueryDataTableTest extends TestCase
     public function it_accepts_a_query_using_of_factory()
     {
         $dataTable = DataTables::of(DB::table('users'));
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -96,7 +96,7 @@ class QueryDataTableTest extends TestCase
     public function it_accepts_a_query_using_facade()
     {
         $dataTable = DatatablesFacade::of(DB::table('users'));
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -105,7 +105,7 @@ class QueryDataTableTest extends TestCase
     public function it_accepts_a_query_using_facade_query_method()
     {
         $dataTable = DatatablesFacade::query(DB::table('users'));
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -114,7 +114,7 @@ class QueryDataTableTest extends TestCase
     public function it_accepts_a_query_using_deprecated_facade_query_builder_method()
     {
         $dataTable = DatatablesFacade::queryBuilder(DB::table('users'));
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -123,7 +123,7 @@ class QueryDataTableTest extends TestCase
     public function it_accepts_a_query_using_ioc_container()
     {
         $dataTable = app('datatables')->query(DB::table('users'));
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -132,7 +132,7 @@ class QueryDataTableTest extends TestCase
     public function it_accepts_a_query_using_ioc_container_factory()
     {
         $dataTable = app('datatables')->of(DB::table('users'));
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }

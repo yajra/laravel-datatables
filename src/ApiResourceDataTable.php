@@ -4,7 +4,6 @@ namespace Yajra\DataTables;
 
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 
 class ApiResourceDataTable extends CollectionDataTable
 {
@@ -26,11 +25,11 @@ class ApiResourceDataTable extends CollectionDataTable
      */
     public function __construct(AnonymousResourceCollection $collection)
     {
-        $this->request    = app('datatables.request');
-        $this->config     = app('datatables.config');
+        $this->request = app('datatables.request');
+        $this->config = app('datatables.config');
         $this->collection = collect($collection->toArray($this->request->getBaseRequest()));
-        $this->original   = $collection;
-        $this->columns    = array_keys($this->serialize(collect($collection->toArray($this->request->getBaseRequest()))->first()));
+        $this->original = $collection;
+        $this->columns = array_keys($this->serialize(collect($collection->toArray($this->request->getBaseRequest()))->first()));
         if ($collection->resource instanceof LengthAwarePaginator) {
             $this->isFilterApplied = true;
         }

@@ -48,7 +48,7 @@ class EloquentDataTableTest extends TestCase
     public function it_accepts_a_model_using_of_factory()
     {
         $dataTable = DataTables::of(User::query());
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(EloquentDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -57,7 +57,7 @@ class EloquentDataTableTest extends TestCase
     public function it_accepts_a_model_using_facade()
     {
         $dataTable = DatatablesFacade::of(User::query());
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(EloquentDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -66,7 +66,7 @@ class EloquentDataTableTest extends TestCase
     public function it_accepts_a_model_using_facade_eloquent_method()
     {
         $dataTable = DatatablesFacade::eloquent(User::query());
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(EloquentDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -75,7 +75,7 @@ class EloquentDataTableTest extends TestCase
     public function it_accepts_a_model_using_ioc_container()
     {
         $dataTable = app('datatables')->eloquent(User::query());
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(EloquentDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -84,7 +84,7 @@ class EloquentDataTableTest extends TestCase
     public function it_accepts_a_model_using_ioc_container_factory()
     {
         $dataTable = app('datatables')->of(User::query());
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(EloquentDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
