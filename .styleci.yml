@@ -4,9 +4,7 @@ php:
 
 enabled:
   - no_useless_else
+  - unalign_equals
 
 disabled:
   - align_double_arrow
-  - align_equals
-  - concat_without_spaces
-  - unalign_equals
