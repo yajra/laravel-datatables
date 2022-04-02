@@ -100,18 +100,6 @@ class DataTables
     }
 
     /**
-     * @param  QueryBuilder  $builder
-     * @return QueryDataTable
-     * @TODO Remove before 10.x release. Add in docs upgrade guide.
-     *
-     * @deprecated Please use query() instead, this method will be removed in a next version.
-     */
-    public function queryBuilder(QueryBuilder $builder): QueryDataTable
-    {
-        return $this->query($builder);
-    }
-
-    /**
      * DataTables using Query.
      *
      * @param  QueryBuilder  $builder
