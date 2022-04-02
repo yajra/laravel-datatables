@@ -16,7 +16,7 @@ interface DataTable
      *
      * @return int
      */
-    public function count();
+    public function count(): int;
 
     /**
      * Count total items.

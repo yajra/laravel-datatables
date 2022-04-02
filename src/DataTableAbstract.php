@@ -11,6 +11,7 @@ use Illuminate\Support\Traits\Macroable;
 use Psr\Log\LoggerInterface;
 use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\Contracts\Formatter;
+use Yajra\DataTables\Exceptions\Exception;
 use Yajra\DataTables\Processors\DataProcessor;
 use Yajra\DataTables\Utilities\Helper;
 
@@ -18,12 +19,12 @@ use Yajra\DataTables\Utilities\Helper;
  * @method DataTableAbstract setTransformer($transformer)
  * @method DataTableAbstract setSerializer($transformer)
  *
- * @property mixed transformer
- * @property mixed serializer
+ * @property-read mixed $transformer
+ * @property-read mixed $serializer
  *
- * @see     https://github.com/yajra/laravel-datatables-fractal for transformer related methods.
+ * @see https://github.com/yajra/laravel-datatables-fractal for transformer related methods.
  */
-abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
+abstract class DataTableAbstract implements DataTable, Arrayable
 {
     use Macroable;
 
@@ -32,34 +33,34 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      *
      * @var \Yajra\DataTables\Utilities\Request
      */
-    public $request;
+    public Utilities\Request $request;
 
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var \Psr\Log\LoggerInterface|null
      */
-    protected $logger;
+    protected ?LoggerInterface $logger = null;
 
     /**
      * Array of result columns/fields.
      *
-     * @var array
+     * @var array|null
      */
-    protected $columns = [];
+    protected ?array $columns = [];
 
     /**
      * DT columns definitions container (add/edit/remove/filter/order/escape).
      *
      * @var array
      */
-    protected $columnDef = [
-        'index'       => false,
-        'append'      => [],
-        'edit'        => [],
-        'filter'      => [],
-        'order'       => [],
-        'only'        => null,
-        'hidden'      => [],
-        'visible'     => [],
+    protected array $columnDef = [
+        'index' => false,
+        'append' => [],
+        'edit' => [],
+        'filter' => [],
+        'order' => [],
+        'only' => null,
+        'hidden' => [],
+        'visible' => [],
     ];
 
     /**
@@ -67,46 +68,46 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      *
      * @var array
      */
-    protected $extraColumns = [];
+    protected array $extraColumns = [];
 
     /**
      * Total records.
      *
      * @var int
      */
-    protected $totalRecords = 0;
+    protected int $totalRecords = 0;
 
     /**
      * Total filtered records.
      *
      * @var int
      */
-    protected $filteredRecords = 0;
+    protected int $filteredRecords = 0;
 
     /**
      * Auto-filter flag.
      *
      * @var bool
      */
-    protected $autoFilter = true;
+    protected bool $autoFilter = true;
 
     /**
      * Callback to override global search.
      *
      * @var callable
      */
-    protected $filterCallback;
+    protected $filterCallback = null;
 
     /**
      * DT row templates container.
      *
      * @var array
      */
-    protected $templates = [
-        'DT_RowId'    => '',
+    protected array $templates = [
+        'DT_RowId' => '',
         'DT_RowClass' => '',
-        'DT_RowData'  => [],
-        'DT_RowAttr'  => [],
+        'DT_RowData' => [],
+        'DT_RowAttr' => [],
     ];
 
     /**
@@ -114,43 +115,43 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      *
      * @var bool
      */
-    protected $isFilterApplied = false;
+    protected bool $isFilterApplied = false;
 
     /**
      * Custom ordering callback.
      *
-     * @var callable
+     * @var ?callable
      */
-    protected $orderCallback;
+    protected $orderCallback = null;
 
     /**
      * Skip paginate as needed.
      *
      * @var bool
      */
-    protected $skipPaging = false;
+    protected bool $skipPaging = false;
 
     /**
      * Array of data to append on json response.
      *
      * @var array
      */
-    protected $appends = [];
+    protected array $appends = [];
 
     /**
      * @var \Yajra\DataTables\Utilities\Config
      */
-    protected $config;
+    protected Utilities\Config $config;
 
     /**
      * @var mixed
      */
-    protected $serializer;
+    protected mixed $serializer;
 
     /**
      * @var array
      */
-    protected $searchPanes = [];
+    protected array $searchPanes = [];
 
     /**
      * Can the DataTable engine be created with these parameters.
@@ -167,11 +168,35 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      * Factory method, create and return an instance for the DataTable engine.
      *
      * @param  mixed  $source
-     * @return DataTableAbstract
+     * @return static
      */
     public static function create($source)
     {
+        /** @phpstan-ignore-next-line */
         return new static($source);
+    }
+
+    /**
+     * @param  string|array  $columns
+     * @param  mixed|\Yajra\DataTables\Contracts\Formatter  $formatter
+     * @return $this
+     * @throws \Yajra\DataTables\Exceptions\Exception
+     */
+    public function formatColumn($columns, $formatter)
+    {
+        if (is_string($formatter) && class_exists($formatter)) {
+            $formatter = app($formatter);
+        }
+
+        if (! $formatter instanceof Formatter) {
+            throw new Exception('$formatter must be an instance of '.Formatter::class);
+        }
+
+        foreach ((array) $columns as $column) {
+            $this->addColumn($column.'_formatted', $formatter);
+        }
+
+        return $this;
     }
 
     /**
@@ -187,30 +212,6 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
         $this->extraColumns[] = $name;
 
         $this->columnDef['append'][] = ['name' => $name, 'content' => $content, 'order' => $order];
-
-        return $this;
-    }
-
-    /**
-     * @param  string|array  $columns
-     * @param  mixed|\Yajra\DataTables\Contracts\Formatter  $formatter
-     * @return $this
-     *
-     * @throws \Exception
-     */
-    public function formatColumn($columns, $formatter)
-    {
-        if (is_string($formatter) && class_exists($formatter)) {
-            $formatter = app($formatter);
-        }
-
-        if (! $formatter instanceof Formatter) {
-            throw new \Exception('$formatter must be an instance of '. Formatter::class);
-        }
-
-        foreach ((array) $columns as $column) {
-            $this->addColumn($column . '_formatted', $formatter);
-        }
 
         return $this;
     }
@@ -248,10 +249,23 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      */
     public function removeColumn()
     {
-        $names                     = func_get_args();
+        $names = func_get_args();
         $this->columnDef['excess'] = array_merge($this->getColumnsDefinition()['excess'], $names);
 
         return $this;
+    }
+
+    /**
+     * Get columns definition.
+     *
+     * @return array
+     */
+    protected function getColumnsDefinition()
+    {
+        $config = $this->config->get('datatables.columns');
+        $allowed = ['excess', 'escape', 'raw', 'blacklist', 'whitelist'];
+
+        return array_replace_recursive(Arr::only($config, $allowed), $this->columnDef);
     }
 
     /**
@@ -597,28 +611,15 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     }
 
     /**
-     * Get columns definition.
-     *
-     * @return array
-     */
-    protected function getColumnsDefinition()
-    {
-        $config  = $this->config->get('datatables.columns');
-        $allowed = ['excess', 'escape', 'raw', 'blacklist', 'whitelist'];
-
-        return array_replace_recursive(Arr::only($config, $allowed), $this->columnDef);
-    }
-
-    /**
      * Perform sorting of columns.
      */
     public function ordering()
     {
         if ($this->orderCallback) {
-            return call_user_func($this->orderCallback, $this->resolveCallbackParameter());
+            call_user_func($this->orderCallback, $this->resolveCallbackParameter());
+        } else {
+            $this->defaultOrdering();
         }
-
-        return $this->defaultOrdering();
     }
 
     /**
@@ -643,21 +644,11 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      */
     public function filter(callable $callback, $globalSearch = false)
     {
-        $this->autoFilter      = $globalSearch;
+        $this->autoFilter = $globalSearch;
         $this->isFilterApplied = true;
-        $this->filterCallback  = $callback;
+        $this->filterCallback = $callback;
 
         return $this;
-    }
-
-    /**
-     * Convert instance to array.
-     *
-     * @return array
-     */
-    public function toArray()
-    {
-        return $this->make()->getData(true);
     }
 
     /**
@@ -676,13 +667,35 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     }
 
     /**
-     * Count filtered items.
+     * Add a search pane options on response.
      *
-     * @return int
+     * @param  string  $column
+     * @param  mixed  $options
+     * @param  callable|null  $builder
+     * @return $this
      */
-    protected function filteredCount()
+    public function searchPane($column, $options, callable $builder = null)
     {
-        return $this->filteredRecords ? $this->filteredRecords : $this->count();
+        $options = value($options);
+
+        if ($options instanceof Arrayable) {
+            $options = $options->toArray();
+        }
+
+        $this->searchPanes[$column]['options'] = $options;
+        $this->searchPanes[$column]['builder'] = $builder;
+
+        return $this;
+    }
+
+    /**
+     * Convert instance to array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->make()->getData(true);
     }
 
     /**
@@ -703,14 +716,6 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
         $this->columnSearch();
         $this->searchPanesSearch();
         $this->filteredRecords = $this->isFilterApplied ? $this->filteredCount() : $this->totalRecords;
-    }
-
-    /**
-     * Perform search using search pane values.
-     */
-    protected function searchPanesSearch()
-    {
-        // Add support for search pane.
     }
 
     /**
@@ -754,6 +759,24 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      * @param  string  $keyword
      */
     abstract protected function globalSearch($keyword);
+
+    /**
+     * Perform search using search pane values.
+     */
+    protected function searchPanesSearch()
+    {
+        // Add support for search pane.
+    }
+
+    /**
+     * Count filtered items.
+     *
+     * @return int
+     */
+    protected function filteredCount()
+    {
+        return $this->filteredRecords ? $this->filteredRecords : $this->count();
+    }
 
     /**
      * Apply pagination.
@@ -800,7 +823,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
             $results,
             $this->getColumnsDefinition(),
             $this->templates,
-            $this->request->input('start')
+            $this->request->input('start') ?? 0
         );
 
         return $processor->process($object);
@@ -815,10 +838,10 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     protected function render(array $data)
     {
         $output = $this->attachAppends([
-            'draw'            => (int) $this->request->input('draw'),
-            'recordsTotal'    => $this->totalRecords,
+            'draw' => (int) $this->request->input('draw'),
+            'recordsTotal' => $this->totalRecords,
             'recordsFiltered' => $this->filteredRecords,
-            'data'            => $data,
+            'data' => $data,
         ]);
 
         if ($this->config->isDebugging()) {
@@ -881,11 +904,11 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
         $this->getLogger()->error($exception);
 
         return new JsonResponse([
-            'draw'            => (int) $this->request->input('draw'),
-            'recordsTotal'    => $this->totalRecords,
+            'draw' => (int) $this->request->input('draw'),
+            'recordsTotal' => $this->totalRecords,
             'recordsFiltered' => 0,
-            'data'            => [],
-            'error'           => $error ? __($error) : "Exception Message:\n\n".$exception->getMessage(),
+            'data' => [],
+            'error' => $error ? __($error) : "Exception Message:\n\n".$exception->getMessage(),
         ]);
     }
 
@@ -968,7 +991,8 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     protected function getColumnNameByIndex($index)
     {
         $name = (isset($this->columns[$index]) && $this->columns[$index] != '*')
-            ? $this->columns[$index] : $this->getPrimaryKeyName();
+            ? $this->columns[$index]
+            : $this->getPrimaryKeyName();
 
         return in_array($name, $this->extraColumns, true) ? $this->getPrimaryKeyName() : $name;
     }
@@ -981,27 +1005,5 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     protected function getPrimaryKeyName()
     {
         return 'id';
-    }
-
-    /**
-     * Add a search pane options on response.
-     *
-     * @param  string  $column
-     * @param  mixed  $options
-     * @param  callable|null  $builder
-     * @return $this
-     */
-    public function searchPane($column, $options, callable $builder = null)
-    {
-        $options = value($options);
-
-        if ($options instanceof Arrayable) {
-            $options = $options->toArray();
-        }
-
-        $this->searchPanes[$column]['options'] = $options;
-        $this->searchPanes[$column]['builder'] = $builder;
-
-        return $this;
     }
 }

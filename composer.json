@@ -22,6 +22,7 @@
     "illuminate/view": "^9"
   },
   "require-dev": {
+    "nunomaduro/larastan": "^2.0",
     "orchestra/testbench": "^7.0"
   },
   "suggest": {

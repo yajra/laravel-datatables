@@ -2,15 +2,17 @@
 
 namespace Yajra\DataTables\Utilities;
 
+use Illuminate\Http\Request as BaseRequest;
+
 /**
  * @mixin \Illuminate\Http\Request
  */
 class Request
 {
     /**
-     * @var \Illuminate\Http\Request
+     * @var BaseRequest
      */
-    protected $request;
+    protected BaseRequest $request;
 
     /**
      * Request constructor.
@@ -225,5 +227,13 @@ class Request
         return ! is_null($this->request->input('start')) &&
             ! is_null($this->request->input('length')) &&
             $this->request->input('length') != -1;
+    }
+
+    /**
+     * @return BaseRequest
+     */
+    public function getBaseRequest(): BaseRequest
+    {
+        return $this->request;
     }
 }

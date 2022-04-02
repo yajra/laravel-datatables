@@ -27,7 +27,7 @@ class Helper
         $first = [];
         foreach ($array as $key => $value) {
             if ($count == $item['order']) {
-                return array_merge($first, [$item['name'] => $item['content']], $last);
+                continue;
             }
 
             unset($last[$key]);
@@ -35,6 +35,8 @@ class Helper
 
             $count++;
         }
+
+        return array_merge($first, [$item['name'] => $item['content']], $last);
     }
 
     /**
@@ -264,7 +266,7 @@ class Helper
     {
         $matches = explode(' as ', Str::lower($str));
 
-        if (! empty($matches)) {
+        if (count($matches) > 1) {
             if ($wantsAlias) {
                 return array_pop($matches);
             }

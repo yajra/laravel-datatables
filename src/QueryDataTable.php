@@ -2,8 +2,9 @@
 
 namespace Yajra\DataTables;
 
+use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Utilities\Helper;
@@ -13,51 +14,70 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Builder object.
      *
-     * @var \Illuminate\Database\Query\Builder
+     * @var \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
      */
-    protected $query;
+    protected QueryBuilder|EloquentBuilder $query;
 
     /**
      * Database connection used.
      *
      * @var \Illuminate\Database\Connection
      */
-    protected $connection;
+    protected Connection $connection;
 
     /**
      * Flag for ordering NULLS LAST option.
      *
      * @var bool
      */
-    protected $nullsLast = false;
+    protected bool $nullsLast = false;
 
     /**
      * Flag to check if query preparation was already done.
      *
      * @var bool
      */
-    protected $prepared = false;
+    protected bool $prepared = false;
 
     /**
      * Query callback for custom pagination using limit without offset.
      *
-     * @var callable
+     * @var callable|null
      */
-    protected $limitCallback;
+    protected $limitCallback = null;
 
     /**
      * Flag to skip total records count query.
      *
      * @var bool
      */
-    protected $skipTotalRecords = false;
+    protected bool $skipTotalRecords = false;
 
     /**
      * Flag to keep the select bindings.
      *
      * @var bool
      */
-    protected $keepSelectBindings = false;
+    protected bool $keepSelectBindings = false;
+
+    /**
+     * @param  \Illuminate\Database\Query\Builder  $builder
+     */
+    public function __construct(QueryBuilder $builder)
+    {
+        $this->query = $builder;
+        $this->request = app('datatables.request');
+        $this->config = app('datatables.config');
+        $this->columns = $builder->columns;
+
+        /** @var \Illuminate\Database\Connection connection */
+        $connection = $builder->getConnection();
+
+        $this->connection = $connection;
+        if ($this->config->isDebugging()) {
+            $this->connection->enableQueryLog();
+        }
+    }
 
     /**
      * Can the DataTable engine be created with these parameters.
@@ -65,24 +85,9 @@ class QueryDataTable extends DataTableAbstract
      * @param  mixed  $source
      * @return bool
      */
-    public static function canCreate($source)
+    public static function canCreate($source): bool
     {
-        return $source instanceof Builder;
-    }
-
-    /**
-     * @param  \Illuminate\Database\Query\Builder  $builder
-     */
-    public function __construct(Builder $builder)
-    {
-        $this->query      = $builder;
-        $this->request    = app('datatables.request');
-        $this->config     = app('datatables.config');
-        $this->columns    = $builder->columns;
-        $this->connection = $builder->getConnection();
-        if ($this->config->isDebugging()) {
-            $this->connection->enableQueryLog();
-        }
+        return $source instanceof QueryBuilder;
     }
 
     /**
@@ -98,35 +103,13 @@ class QueryDataTable extends DataTableAbstract
         try {
             $this->prepareQuery();
 
-            $results   = $this->results();
+            $results = $this->results();
             $processed = $this->processResults($results, $mDataSupport);
-            $data      = $this->transform($results, $processed);
+            $data = $this->transform($results, $processed);
 
             return $this->render($data);
         } catch (\Exception $exception) {
             return $this->errorResponse($exception);
-        }
-    }
-
-    /**
-     * Perform search using search pane values.
-     */
-    protected function searchPanesSearch()
-    {
-        $columns = $this->request->get('searchPanes', []);
-
-        foreach ($columns as $column => $values) {
-            if ($this->isBlacklisted($column)) {
-                continue;
-            }
-
-            if ($this->searchPanes[$column] && $callback = $this->searchPanes[$column]['builder']) {
-                $callback($this->query, $values);
-            } else {
-                $this->query->whereIn($column, $values);
-            }
-
-            $this->isFilterApplied = true;
         }
     }
 
@@ -149,31 +132,6 @@ class QueryDataTable extends DataTableAbstract
     }
 
     /**
-     * Skip total records and set the recordsTotal equals to recordsFiltered.
-     * This will improve the performance by skipping the total count query.
-     *
-     * @return $this
-     */
-    public function skipTotalRecords()
-    {
-        $this->skipTotalRecords = true;
-
-        return $this;
-    }
-
-    /**
-     * Keep the select bindings.
-     *
-     * @return $this
-     */
-    public function keepSelectBindings()
-    {
-        $this->keepSelectBindings = true;
-
-        return $this;
-    }
-
-    /**
      * Count total items.
      *
      * @return int
@@ -190,26 +148,11 @@ class QueryDataTable extends DataTableAbstract
     }
 
     /**
-     * Count filtered items.
-     *
-     * @return int
-     */
-    protected function filteredCount()
-    {
-        $this->filteredRecords = $this->filteredRecords ?: $this->count();
-        if ($this->skipTotalRecords) {
-            $this->totalRecords = $this->filteredRecords;
-        }
-
-        return $this->filteredRecords;
-    }
-
-    /**
      * Counts current query.
      *
      * @return int
      */
-    public function count()
+    public function count(): int
     {
         return $this->prepareCountQuery()->count();
     }
@@ -217,7 +160,7 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Prepare count query builder.
      *
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
+     * @return \Illuminate\Database\Query\Builder
      */
     public function prepareCountQuery()
     {
@@ -226,8 +169,7 @@ class QueryDataTable extends DataTableAbstract
         if ($this->isComplexQuery($builder)) {
             $table = $this->connection->raw('('.$builder->toSql().') count_row_table');
 
-            return $this->connection->table($table)
-                ->setBindings($builder->getBindings());
+            return $this->connection->table($table)->setBindings($builder->getBindings());
         }
 
         $row_count = $this->wrap('row_count');
@@ -272,25 +214,28 @@ class QueryDataTable extends DataTableAbstract
     }
 
     /**
-     * Get filtered, ordered and paginated query.
+     * Skip total records and set the recordsTotal equals to recordsFiltered.
+     * This will improve the performance by skipping the total count query.
      *
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
+     * @return $this
      */
-    public function getFilteredQuery()
+    public function skipTotalRecords()
     {
-        $this->prepareQuery();
+        $this->skipTotalRecords = true;
 
-        return $this->getQuery();
+        return $this;
     }
 
     /**
-     * Get query builder instance.
+     * Keep the select bindings.
      *
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
+     * @return $this
      */
-    public function getQuery()
+    public function keepSelectBindings()
     {
-        return $this->query;
+        $this->keepSelectBindings = true;
+
+        return $this;
     }
 
     /**
@@ -313,7 +258,7 @@ class QueryDataTable extends DataTableAbstract
                 $keyword = $this->getColumnSearchKeyword($index, true);
                 $this->applyFilterColumn($this->getBaseQueryBuilder(), $column, $keyword);
             } else {
-                $column  = $this->resolveRelationColumn($column);
+                $column = $this->resolveRelationColumn($column);
                 $keyword = $this->getColumnSearchKeyword($index);
                 $this->compileColumnSearch($index, $column, $keyword);
             }
@@ -360,7 +305,7 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function applyFilterColumn($query, $columnName, $keyword, $boolean = 'and')
     {
-        $query    = $this->getBaseQueryBuilder($query);
+        $query = $this->getBaseQueryBuilder($query);
         $callback = $this->columnDef['filter'][$columnName]['method'];
 
         if ($this->query instanceof EloquentBuilder) {
@@ -433,19 +378,19 @@ class QueryDataTable extends DataTableAbstract
         switch ($this->connection->getDriverName()) {
             case 'oracle':
                 $sql = ! $this->config->isCaseInsensitive()
-                    ? 'REGEXP_LIKE( ' . $column . ' , ? )'
-                    : 'REGEXP_LIKE( LOWER(' . $column . ') , ?, \'i\' )';
+                    ? 'REGEXP_LIKE( '.$column.' , ? )'
+                    : 'REGEXP_LIKE( LOWER('.$column.') , ?, \'i\' )';
                 break;
 
             case 'pgsql':
                 $column = $this->castColumn($column);
-                $sql    = ! $this->config->isCaseInsensitive() ? $column . ' ~ ?' : $column . ' ~* ? ';
+                $sql = ! $this->config->isCaseInsensitive() ? $column.' ~ ?' : $column.' ~* ? ';
                 break;
 
             default:
                 $sql = ! $this->config->isCaseInsensitive()
-                    ? $column . ' REGEXP ?'
-                    : 'LOWER(' . $column . ') REGEXP ?';
+                    ? $column.' REGEXP ?'
+                    : 'LOWER('.$column.') REGEXP ?';
                 $keyword = Str::lower($keyword);
         }
 
@@ -462,9 +407,9 @@ class QueryDataTable extends DataTableAbstract
     {
         switch ($this->connection->getDriverName()) {
             case 'pgsql':
-                return 'CAST(' . $column . ' as TEXT)';
+                return 'CAST('.$column.' as TEXT)';
             case 'firebird':
-                return 'CAST(' . $column . ' as VARCHAR(255))';
+                return 'CAST('.$column.' as VARCHAR(255))';
             default:
                 return $column;
         }
@@ -482,13 +427,13 @@ class QueryDataTable extends DataTableAbstract
     {
         $column = $this->addTablePrefix($query, $column);
         $column = $this->castColumn($column);
-        $sql    = $column . ' LIKE ?';
+        $sql = $column.' LIKE ?';
 
         if ($this->config->isCaseInsensitive()) {
-            $sql = 'LOWER(' . $column . ') LIKE ?';
+            $sql = 'LOWER('.$column.') LIKE ?';
         }
 
-        $query->{$boolean . 'WhereRaw'}($sql, [$this->prepareKeyword($keyword)]);
+        $query->{$boolean.'WhereRaw'}($sql, [$this->prepareKeyword($keyword)]);
     }
 
     /**
@@ -501,10 +446,11 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function addTablePrefix($query, $column)
     {
-        if (strpos($column, '.') === false) {
+        if (! str_contains($column, '.')) {
             $q = $this->getBaseQueryBuilder($query);
+            /** @phpstan-ignore-next-line */
             if (! $q->from instanceof Expression) {
-                $column = $q->from . '.' . $column;
+                $column = $q->from.'.'.$column;
             }
         }
 
@@ -644,6 +590,43 @@ class QueryDataTable extends DataTableAbstract
     }
 
     /**
+     * Perform search using search pane values.
+     */
+    protected function searchPanesSearch()
+    {
+        $columns = $this->request->get('searchPanes', []);
+
+        foreach ($columns as $column => $values) {
+            if ($this->isBlacklisted($column)) {
+                continue;
+            }
+
+            if ($this->searchPanes[$column] && $callback = $this->searchPanes[$column]['builder']) {
+                $callback($this->query, $values);
+            } else {
+                $this->query->whereIn($column, $values);
+            }
+
+            $this->isFilterApplied = true;
+        }
+    }
+
+    /**
+     * Count filtered items.
+     *
+     * @return int
+     */
+    protected function filteredCount()
+    {
+        $this->filteredRecords = $this->filteredRecords ?: $this->count();
+        if ($this->skipTotalRecords) {
+            $this->totalRecords = $this->filteredRecords;
+        }
+
+        return $this->filteredRecords;
+    }
+
+    /**
      * Resolve callback parameter instance.
      *
      * @return \Illuminate\Database\Query\Builder
@@ -674,7 +657,7 @@ class QueryDataTable extends DataTableAbstract
                     $this->applyOrderColumn($column, $orderable);
                 } else {
                     $nullsLastSql = $this->getNullsLastSql($column, $orderable['direction']);
-                    $normalSql = $this->wrap($column) . ' ' . $orderable['direction'];
+                    $normalSql = $this->wrap($column).' '.$orderable['direction'];
                     $sql = $this->nullsLast ? $nullsLastSql : $normalSql;
                     $this->query->orderByRaw($sql);
                 }
@@ -708,7 +691,7 @@ class QueryDataTable extends DataTableAbstract
         if (is_callable($sql)) {
             call_user_func($sql, $this->query, $orderable['direction']);
         } else {
-            $sql      = str_replace('$1', $orderable['direction'], $sql);
+            $sql = str_replace('$1', $orderable['direction'], $sql);
             $bindings = $this->columnDef['order'][$column]['bindings'];
             $this->query->orderByRaw($sql, $bindings);
         }
@@ -775,7 +758,7 @@ class QueryDataTable extends DataTableAbstract
         });
 
         $output['queries'] = $query_log;
-        $output['input']   = $this->request->all();
+        $output['input'] = $this->request->all();
 
         return $output;
     }
@@ -798,5 +781,27 @@ class QueryDataTable extends DataTableAbstract
         }
 
         return array_merge($data, $appends);
+    }
+
+    /**
+     * Get filtered, ordered and paginated query.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
+     */
+    public function getFilteredQuery()
+    {
+        $this->prepareQuery();
+
+        return $this->getQuery();
+    }
+
+    /**
+     * Get query builder instance.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
+     */
+    public function getQuery()
+    {
+        return $this->query;
     }
 }

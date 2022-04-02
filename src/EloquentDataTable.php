@@ -2,31 +2,28 @@
 
 namespace Yajra\DataTables;
 
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use JetBrains\PhpStorm\Pure;
 use Yajra\DataTables\Exceptions\Exception;
 
 class EloquentDataTable extends QueryDataTable
 {
-    /**
-     * @var \Illuminate\Database\Eloquent\Builder
-     */
-    protected $query;
-
     /**
      * Can the DataTable engine be created with these parameters.
      *
      * @param  mixed  $source
      * @return bool
      */
-    public static function canCreate($source)
+    public static function canCreate($source): bool
     {
-        return $source instanceof Builder || $source instanceof Relation;
+        return $source instanceof EloquentBuilder || $source instanceof Relation;
     }
 
     /**
@@ -36,7 +33,7 @@ class EloquentDataTable extends QueryDataTable
      */
     public function __construct($model)
     {
-        $builder = $model instanceof Builder ? $model : $model->getQuery();
+        $builder = $model instanceof EloquentBuilder ? $model : $model->getQuery();
         parent::__construct($builder->getQuery());
 
         $this->query = $builder;
@@ -69,7 +66,7 @@ class EloquentDataTable extends QueryDataTable
      *
      * @return string
      */
-    protected function getPrimaryKeyName()
+    protected function getPrimaryKeyName(): string
     {
         return $this->query->getModel()->getKeyName();
     }
@@ -78,27 +75,27 @@ class EloquentDataTable extends QueryDataTable
      * Compile query builder where clause depending on configurations.
      *
      * @param  mixed  $query
-     * @param  string  $columnName
+     * @param  string  $column
      * @param  string  $keyword
      * @param  string  $boolean
      */
-    protected function compileQuerySearch($query, $columnName, $keyword, $boolean = 'or')
+    protected function compileQuerySearch($query, $column, $keyword, $boolean = 'or')
     {
-        $parts    = explode('.', $columnName);
-        $column   = array_pop($parts);
+        $parts    = explode('.', $column);
+        $newColumn   = array_pop($parts);
         $relation = implode('.', $parts);
 
         if ($this->isNotEagerLoaded($relation)) {
-            return parent::compileQuerySearch($query, $columnName, $keyword, $boolean);
+            return parent::compileQuerySearch($query, $column, $keyword, $boolean);
         }
 
         if ($this->isMorphRelation($relation)) {
-            $query->{$boolean . 'WhereHasMorph'}($relation, '*', function (Builder $query) use ($column, $keyword) {
-                parent::compileQuerySearch($query, $column, $keyword, '');
+            $query->{$boolean . 'WhereHasMorph'}($relation, '*', function (EloquentBuilder $query) use ($newColumn, $keyword) {
+                parent::compileQuerySearch($query, $newColumn, $keyword, '');
             });
         } else {
-            $query->{$boolean . 'WhereHas'}($relation, function (Builder $query) use ($column, $keyword) {
-                parent::compileQuerySearch($query, $column, $keyword, '');
+            $query->{$boolean . 'WhereHas'}($relation, function (EloquentBuilder $query) use ($newColumn, $keyword) {
+                parent::compileQuerySearch($query, $newColumn, $keyword, '');
             });
         }
     }

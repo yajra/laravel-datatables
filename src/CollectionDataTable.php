@@ -3,6 +3,7 @@
 namespace Yajra\DataTables;
 
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -14,21 +15,21 @@ class CollectionDataTable extends DataTableAbstract
      *
      * @var \Illuminate\Support\Collection
      */
-    public $collection;
+    public Collection $collection;
 
     /**
      * Collection object.
      *
-     * @var \Illuminate\Support\Collection
+     * @var \Illuminate\Support\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public $original;
+    public Collection|AnonymousResourceCollection $original;
 
     /**
      * The offset of the first record in the full dataset.
      *
      * @var int
      */
-    private $offset = 0;
+    private int $offset = 0;
 
     /**
      * Can the DataTable engine be created with these parameters.
@@ -45,7 +46,7 @@ class CollectionDataTable extends DataTableAbstract
      * Factory method, create and return an instance for the DataTable engine.
      *
      * @param  array|\Illuminate\Support\Collection  $source
-     * @return CollectionDataTable|DataTableAbstract
+     * @return static
      */
     public static function create($source)
     {
@@ -86,15 +87,17 @@ class CollectionDataTable extends DataTableAbstract
      *
      * @return int
      */
-    public function count()
+    public function count(): int
     {
-        return $this->collection->count() > $this->totalRecords ? $this->totalRecords : $this->collection->count();
+        return ($this->collection->count() > $this->totalRecords) ? $this->totalRecords : $this->collection->count();
     }
 
     /**
      * Perform column search.
      *
      * @return void
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function columnSearch()
     {
@@ -122,14 +125,14 @@ class CollectionDataTable extends DataTableAbstract
                             return preg_match('/' . $keyword . '/i', $value) == 1;
                         }
 
-                        return strpos(Str::lower($value), Str::lower($keyword)) !== false;
+                        return str_contains(Str::lower($value), Str::lower($keyword));
                     }
 
                     if ($regex) {
                         return preg_match('/' . $keyword . '/', $value) == 1;
                     }
 
-                    return strpos($value, $keyword) !== false;
+                    return str_contains($value, $keyword);
                 }
             );
         }
