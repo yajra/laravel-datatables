@@ -61,18 +61,21 @@ return datatables(User::all())->toJson();
  6.x.x    | 9.x
  7.x.x    | 9.x
  8.x.x    | 9.x
- 9.x.x    | 9.x
+ 9.x.x    | 10.x
 
 ## DataTables 8.x Upgrade Guide
+
 There are breaking changes since DataTables v8.x.
 If you are upgrading from v7.x to v8.x, please see [upgrade guide](https://yajrabox.com/docs/laravel-datatables/master/upgrade).
 
 ## Quick Installation
+
 ```bash
-$ composer require yajra/laravel-datatables-oracle:"~9.0"
+$ composer require yajra/laravel-datatables-oracle:"^10.0"
 ```
 
 #### Service Provider & Facade (Optional on Laravel 5.5+)
+
 Register provider and facade on your `config/app.php` file.
 ```php
 'providers' => [
@@ -87,6 +90,7 @@ Register provider and facade on your `config/app.php` file.
 ```
 
 #### Configuration (Optional)
+
 ```bash
 $ php artisan vendor:publish --provider="Yajra\DataTables\DataTablesServiceProvider"
 ```
@@ -94,11 +98,13 @@ $ php artisan vendor:publish --provider="Yajra\DataTables\DataTablesServiceProvi
 And that's it! Start building out some awesome DataTables!
 
 ## Debugging Mode
+
 To enable debugging mode, just set `APP_DEBUG=true` and the package will include the queries and inputs used when processing the table.
 
 **IMPORTANT:** Please make sure that APP_DEBUG is set to false when your app is on production.
 
 ## PHP ARTISAN SERVE BUG
+
 Please avoid using `php artisan serve` when developing with the package.
 There are known bugs when using this where Laravel randomly returns a redirect and 401 (Unauthorized) if the route requires authentication and a 404 NotFoundHttpException on valid routes.
 
