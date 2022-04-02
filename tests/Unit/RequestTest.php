@@ -27,7 +27,7 @@ class RequestTest extends TestCase
 
     public function test_column_keyword()
     {
-        $_GET['columns']   = [];
+        $_GET['columns'] = [];
         $_GET['columns'][] = [
             'search' => [
                 'value' => 'foo',
@@ -47,14 +47,14 @@ class RequestTest extends TestCase
 
     public function test_orderable_columns()
     {
-        $_GET['columns']   = [];
+        $_GET['columns'] = [];
         $_GET['columns'][] = [
             'orderable' => 'true',
             'search'    => [
                 'value' => 'foo',
             ],
         ];
-        $_GET['order']   = [];
+        $_GET['order'] = [];
         $_GET['order'][] = [
             'column' => 0,
             'dir'    => 'asc',
@@ -71,14 +71,14 @@ class RequestTest extends TestCase
 
     public function test_orderable_columns_will_set_descending_on_other_values()
     {
-        $_GET['columns']   = [];
+        $_GET['columns'] = [];
         $_GET['columns'][] = [
             'orderable' => 'true',
             'search'    => [
                 'value' => 'foo',
             ],
         ];
-        $_GET['order']   = [];
+        $_GET['order'] = [];
         $_GET['order'][] = [
             'column' => 0,
             'dir'    => 'bar',
@@ -95,7 +95,7 @@ class RequestTest extends TestCase
 
     public function test_searchable_column_index()
     {
-        $_GET['columns']   = [];
+        $_GET['columns'] = [];
         $_GET['columns'][] = ['name' => 'foo', 'searchable' => 'true', 'search' => ['value' => 'foo']];
         $_GET['columns'][] = ['name' => 'bar', 'searchable' => 'false', 'search' => ['value' => 'foo']];
         request()->merge($_GET);
@@ -123,19 +123,19 @@ class RequestTest extends TestCase
 
     public function test_is_paginationable()
     {
-        $_GET['start']  = 1;
+        $_GET['start'] = 1;
         $_GET['length'] = 10;
         request()->merge($_GET);
         $request = $this->getRequest();
         $this->assertTrue($request->isPaginationable());
 
-        $_GET['start']  = 1;
+        $_GET['start'] = 1;
         $_GET['length'] = -1;
         request()->merge($_GET);
         $request = $this->getRequest();
         $this->assertFalse($request->isPaginationable());
 
-        $_GET['start']  = null;
+        $_GET['start'] = null;
         $_GET['length'] = 1;
         request()->merge($_GET);
         $request = $this->getRequest();

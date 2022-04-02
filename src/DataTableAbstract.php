@@ -179,6 +179,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable
      * @param  string|array  $columns
      * @param  string|\Yajra\DataTables\Contracts\Formatter  $formatter
      * @return static
+     *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public function formatColumn($columns, $formatter): self
@@ -896,6 +897,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable
      *
      * @param  \Exception  $exception
      * @return \Illuminate\Http\JsonResponse
+     *
      * @throws \Yajra\DataTables\Exceptions\Exception|\Exception
      */
     protected function errorResponse(\Exception $exception)

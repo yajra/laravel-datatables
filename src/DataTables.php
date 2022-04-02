@@ -22,6 +22,7 @@ class DataTables
      * HTML builder instance.
      *
      * @phpstan-ignore-next-line
+     *
      * @var \Yajra\DataTables\Html\Builder|null
      */
     protected $html = null;
@@ -45,6 +46,7 @@ class DataTables
      *
      * @param  mixed  $source
      * @return mixed
+     *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public static function make($source)
@@ -101,8 +103,8 @@ class DataTables
      * @param  QueryBuilder  $builder
      * @return QueryDataTable
      * @TODO Remove before 10.x release. Add in docs upgrade guide.
-     * @deprecated Please use query() instead, this method will be removed in a next version.
      *
+     * @deprecated Please use query() instead, this method will be removed in a next version.
      */
     public function queryBuilder(QueryBuilder $builder): QueryDataTable
     {
@@ -157,7 +159,9 @@ class DataTables
      * Get html builder instance.
      *
      * @phpstan-ignore-next-line
+     *
      * @return \Yajra\DataTables\Html\Builder
+     *
      * @throws Exception
      */
     public function getHtmlBuilder()

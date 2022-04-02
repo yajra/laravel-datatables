@@ -65,7 +65,7 @@ class ApiResourceEngineTest extends TestCase
     public function it_accepts_a_resource_using_of_factory()
     {
         $dataTable = DataTables::of(UserResource::collection(User::all()));
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(ApiResourceDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -74,7 +74,7 @@ class ApiResourceEngineTest extends TestCase
     public function it_accepts_a_resource_using_facade()
     {
         $dataTable = DatatablesFacade::of(UserResource::collection(User::all()));
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(ApiResourceDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -83,7 +83,7 @@ class ApiResourceEngineTest extends TestCase
     public function it_accepts_a_pagination_resource()
     {
         $dataTable = DataTables::of(UserResource::collection(User::paginate(10)));
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(ApiResourceDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }

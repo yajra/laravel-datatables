@@ -96,6 +96,7 @@ class QueryDataTable extends DataTableAbstract
      *
      * @param  bool  $mDataSupport
      * @return \Illuminate\Http\JsonResponse
+     *
      * @throws \Exception
      */
     public function make($mDataSupport = true)
@@ -597,6 +598,7 @@ class QueryDataTable extends DataTableAbstract
      * Perform search using search pane values.
      *
      * @return void
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -648,6 +650,7 @@ class QueryDataTable extends DataTableAbstract
      * Perform default query orderBy clause.
      *
      * @return void
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -715,6 +718,7 @@ class QueryDataTable extends DataTableAbstract
      * @param  string  $column
      * @param  string  $direction
      * @return string
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */

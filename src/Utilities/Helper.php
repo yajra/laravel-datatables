@@ -23,7 +23,7 @@ class Helper
         }
 
         $count = 0;
-        $last  = $array;
+        $last = $array;
         $first = [];
         foreach ($array as $key => $value) {
             if ($count == $item['order']) {
@@ -58,6 +58,7 @@ class Helper
      * @param  array  $data  data to use with blade template
      * @param  mixed  $param  parameter to call with callable
      * @return mixed
+     *
      * @throws \Exception
      */
     public static function compileContent($content, array $data, $param)
@@ -77,6 +78,7 @@ class Helper
      * @param  string  $str
      * @param  array  $data
      * @return false|string
+     *
      * @throws \Exception
      */
     public static function compileBlade($str, $data = [])
@@ -87,7 +89,7 @@ class Helper
         }
 
         ob_start() && extract($data, EXTR_SKIP);
-        eval('?>' . app('blade.compiler')->compileString($str));
+        eval('?>'.app('blade.compiler')->compileString($str));
         $str = ob_get_contents();
         ob_end_clean();
 
@@ -146,7 +148,7 @@ class Helper
     public static function getOrMethod($method)
     {
         if (! Str::contains(Str::lower($method), 'or')) {
-            return 'or' . ucfirst($method);
+            return 'or'.ucfirst($method);
         }
 
         return $method;
@@ -161,8 +163,8 @@ class Helper
      */
     public static function convertToArray($row, $filters = [])
     {
-        $row  = is_object($row) && method_exists($row, 'makeHidden') ? $row->makeHidden(Arr::get($filters, 'hidden', [])) : $row;
-        $row  = is_object($row) && method_exists($row, 'makeVisible') ? $row->makeVisible(Arr::get($filters, 'visible', [])) : $row;
+        $row = is_object($row) && method_exists($row, 'makeHidden') ? $row->makeHidden(Arr::get($filters, 'hidden', [])) : $row;
+        $row = is_object($row) && method_exists($row, 'makeVisible') ? $row->makeVisible(Arr::get($filters, 'visible', [])) : $row;
         $data = $row instanceof Arrayable ? $row->toArray() : (array) $row;
 
         foreach ($data as &$value) {
@@ -304,12 +306,12 @@ class Helper
      */
     public static function wildcardString($str, $wildcard, $lowercase = true)
     {
-        $wild  = $wildcard;
+        $wild = $wildcard;
         $chars = (array) preg_split('//u', $str, -1, PREG_SPLIT_NO_EMPTY);
 
         if (count($chars) > 0) {
             foreach ($chars as $char) {
-                $wild .= $char . $wildcard;
+                $wild .= $char.$wildcard;
             }
         }
 

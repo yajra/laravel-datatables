@@ -24,7 +24,7 @@ class RowProcessor
     public function __construct($data, $row)
     {
         $this->data = $data;
-        $this->row  = $row;
+        $this->row = $row;
     }
 
     /**

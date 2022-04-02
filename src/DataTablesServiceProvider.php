@@ -68,7 +68,7 @@ class DataTablesServiceProvider extends ServiceProvider
      */
     protected function setupAssets()
     {
-        $this->mergeConfigFrom($config = __DIR__ . '/config/datatables.php', 'datatables');
+        $this->mergeConfigFrom($config = __DIR__.'/config/datatables.php', 'datatables');
 
         if ($this->app->runningInConsole()) {
             $this->publishes([$config => config_path('datatables.php')], 'datatables');

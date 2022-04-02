@@ -47,7 +47,7 @@ class CollectionDataTableTest extends TestCase
     public function it_accepts_a_model_collection_using_of_factory()
     {
         $dataTable = DataTables::of(User::all());
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -56,7 +56,7 @@ class CollectionDataTableTest extends TestCase
     public function it_accepts_a_collection_using_of_factory()
     {
         $dataTable = DataTables::of(collect());
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -65,7 +65,7 @@ class CollectionDataTableTest extends TestCase
     public function it_accepts_a_model_collection_using_facade()
     {
         $dataTable = DatatablesFacade::of(User::all());
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -74,7 +74,7 @@ class CollectionDataTableTest extends TestCase
     public function it_accepts_a_collection_using_facade()
     {
         $dataTable = DatatablesFacade::of(collect());
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -83,7 +83,7 @@ class CollectionDataTableTest extends TestCase
     public function it_accepts_a_model_using_ioc_container()
     {
         $dataTable = app('datatables')->collection(User::all());
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -176,7 +176,7 @@ class CollectionDataTableTest extends TestCase
     public function it_accepts_a_model_using_ioc_container_factory()
     {
         $dataTable = app('datatables')->of(User::all());
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -230,7 +230,7 @@ class CollectionDataTableTest extends TestCase
             ['id' => 2, 'name' => 'bar'],
         ];
         $dataTable = app('datatables')->of($source);
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
