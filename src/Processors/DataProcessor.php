@@ -81,6 +81,7 @@ class DataProcessor
      * @param  array  $data
      * @param  mixed  $row
      * @return array
+     *
      * @throws \Exception
      */
     protected function addColumns(array $data, $row): array
@@ -108,6 +109,7 @@ class DataProcessor
      * @param  mixed  $data
      * @param  mixed  $row
      * @return array
+     *
      * @throws \Exception
      */
     protected function editColumns($data, $row): array
@@ -126,6 +128,7 @@ class DataProcessor
      * @param  array  $data
      * @param  mixed  $row
      * @return array
+     *
      * @throws \Exception
      */
     protected function setupRowVariables($data, $row): array

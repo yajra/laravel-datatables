@@ -20,6 +20,7 @@ class EloquentDataTable extends QueryDataTable
      * EloquentEngine constructor.
      *
      * @param  \Illuminate\Database\Eloquent\Model|EloquentBuilder  $model
+     *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public function __construct($model)

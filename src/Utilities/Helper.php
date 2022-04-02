@@ -125,6 +125,7 @@ class Helper
      *
      * @param  mixed  $param
      * @return array
+     *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public static function castToArray($param): array
