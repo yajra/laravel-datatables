@@ -15,10 +15,6 @@
 This package is created to handle [server-side](https://www.datatables.net/manual/server-side) works of [DataTables](http://datatables.net) jQuery Plugin via [AJAX option](https://datatables.net/reference/option/ajax) by using Eloquent ORM, Fluent Query Builder or Collection.
 
 ```php
-return datatables()->of(User::query())->toJson();
-return datatables()->of(DB::table('users'))->toJson();
-return datatables()->of(User::all())->toJson();
-
 return datatables()->eloquent(User::query())->toJson();
 return datatables()->query(DB::table('users'))->toJson();
 return datatables()->collection(User::all())->toJson();
