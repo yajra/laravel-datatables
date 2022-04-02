@@ -727,6 +727,7 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function getNullsLastSql($column, $direction): string
     {
+        /** @var string $sql */
         $sql = $this->config->get('datatables.nulls_last_sql', '%s %s NULLS LAST');
 
         return str_replace(

@@ -135,17 +135,6 @@ class DataTables
     }
 
     /**
-     * DataTables using Collection.
-     *
-     * @param  array|\Illuminate\Support\Collection  $resource
-     * @return ApiResourceDataTable
-     */
-    public function resource($resource): ApiResourceDataTable
-    {
-        return ApiResourceDataTable::create($resource);
-    }
-
-    /**
      * Get html builder instance.
      *
      * @phpstan-ignore-next-line

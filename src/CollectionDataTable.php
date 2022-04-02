@@ -4,6 +4,7 @@ namespace Yajra\DataTables;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -20,9 +21,9 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Collection object.
      *
-     * @var \Illuminate\Support\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @var \Illuminate\Support\Collection|\Illuminate\Http\Resources\Json\JsonResource
      */
-    public Collection|AnonymousResourceCollection $original;
+    public Collection|JsonResource $original;
 
     /**
      * The offset of the first record in the full dataset.
