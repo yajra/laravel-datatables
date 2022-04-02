@@ -185,6 +185,7 @@ class Request
      *
      * @param  mixed  $keyword
      * @return string
+     *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
     protected function prepareKeyword($keyword): string
@@ -204,6 +205,7 @@ class Request
      * Get global search keyword.
      *
      * @return string
+     *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public function keyword(): string

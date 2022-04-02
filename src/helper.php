@@ -7,6 +7,7 @@ if (! function_exists('datatables')) {
      *
      * @param  object|null  $source
      * @return \Yajra\DataTables\DataTableAbstract|\Yajra\DataTables\DataTables
+     *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
     function datatables($source = null)
