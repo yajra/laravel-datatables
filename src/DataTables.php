@@ -126,7 +126,7 @@ class DataTables
     /**
      * DataTables using Collection.
      *
-     * @param  \Illuminate\Support\Collection<int, mixed>|array  $collection
+     * @param  \Illuminate\Support\Collection<int, array>|array  $collection
      * @return \Yajra\DataTables\CollectionDataTable
      */
     public function collection($collection): CollectionDataTable

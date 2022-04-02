@@ -16,14 +16,14 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Collection object.
      *
-     * @var \Illuminate\Support\Collection<int, mixed>
+     * @var \Illuminate\Support\Collection<int, array>
      */
     public Collection $collection;
 
     /**
      * Collection object.
      *
-     * @var \Illuminate\Support\Collection<int, mixed>|\Illuminate\Http\Resources\Json\JsonResource
+     * @var \Illuminate\Support\Collection<int, array>|\Illuminate\Http\Resources\Json\JsonResource
      */
     public Collection|JsonResource $original;
 
@@ -37,7 +37,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * CollectionEngine constructor.
      *
-     * @param  \Illuminate\Support\Collection<int, mixed>  $collection
+     * @param  \Illuminate\Support\Collection<int, array>  $collection
      */
     public function __construct(Collection $collection)
     {
@@ -73,7 +73,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Factory method, create and return an instance for the DataTable engine.
      *
-     * @param  array|\Illuminate\Support\Collection<int, mixed>  $source
+     * @param  array|\Illuminate\Support\Collection<int, array>  $source
      * @return static
      */
     public static function create($source)
@@ -197,7 +197,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Get results.
      *
-     * @return \Illuminate\Support\Collection<int, mixed>
+     * @return \Illuminate\Support\Collection<int, array>
      */
     public function results(): Collection
     {
@@ -218,7 +218,6 @@ class CollectionDataTable extends DataTableAbstract
             $start = $this->request->start();
 
             $this->collection->transform(function ($data) use ($index, &$start) {
-                // @phpstan-ignore-next-line
                 $data[$index] = ++$start;
 
                 return $data;
@@ -286,7 +285,6 @@ class CollectionDataTable extends DataTableAbstract
 
             $this->collection = $this->collection
                 ->map(function ($data) {
-                    // @phpstan-ignore-next-line
                     return Arr::dot($data);
                 })
                 ->sort($sorter)
