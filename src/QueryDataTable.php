@@ -208,7 +208,7 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Get paginated results.
      *
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Support\Collection<int, object>
      */
     public function results(): Collection
     {

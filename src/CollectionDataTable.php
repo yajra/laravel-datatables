@@ -16,14 +16,14 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Collection object.
      *
-     * @var \Illuminate\Support\Collection<mixed>
+     * @var \Illuminate\Support\Collection<int, mixed>
      */
     public Collection $collection;
 
     /**
      * Collection object.
      *
-     * @var \Illuminate\Support\Collection|\Illuminate\Http\Resources\Json\JsonResource
+     * @var \Illuminate\Support\Collection<int, mixed>|\Illuminate\Http\Resources\Json\JsonResource
      */
     public Collection|JsonResource $original;
 
@@ -37,7 +37,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * CollectionEngine constructor.
      *
-     * @param  \Illuminate\Support\Collection  $collection
+     * @param  \Illuminate\Support\Collection<int, mixed>  $collection
      */
     public function __construct(Collection $collection)
     {
@@ -73,7 +73,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Factory method, create and return an instance for the DataTable engine.
      *
-     * @param  array|\Illuminate\Support\Collection  $source
+     * @param  array|\Illuminate\Support\Collection<int, mixed>  $source
      * @return static
      */
     public static function create($source)
@@ -197,7 +197,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Get results.
      *
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Support\Collection<int, mixed>
      */
     public function results(): Collection
     {
@@ -275,6 +275,8 @@ class CollectionDataTable extends DataTableAbstract
 
     /**
      * Perform default query orderBy clause.
+     *
+     * @return void
      */
     protected function defaultOrdering(): void
     {

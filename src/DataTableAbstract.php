@@ -23,7 +23,7 @@ use Yajra\DataTables\Utilities\Helper;
  *
  * @see https://github.com/yajra/laravel-datatables-fractal for transformer related methods.
  */
-abstract class DataTableAbstract implements DataTable, Arrayable
+abstract class DataTableAbstract implements DataTable
 {
     use Macroable;
 
