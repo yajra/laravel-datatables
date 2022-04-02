@@ -1,1 +1,3 @@
-preset: laravel
+php:
+  preset: laravel
+  version: 8.1
