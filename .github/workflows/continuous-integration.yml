@@ -7,7 +7,7 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
-  tests:
+  phpunit:
 
     runs-on: ubuntu-latest
 
