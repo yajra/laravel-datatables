@@ -111,15 +111,6 @@ class QueryDataTableTest extends TestCase
     }
 
     /** @test */
-    public function it_accepts_a_query_using_deprecated_facade_query_builder_method()
-    {
-        $dataTable = DatatablesFacade::queryBuilder(DB::table('users'));
-        $response = $dataTable->toJson();
-        $this->assertInstanceOf(QueryDataTable::class, $dataTable);
-        $this->assertInstanceOf(JsonResponse::class, $response);
-    }
-
-    /** @test */
     public function it_accepts_a_query_using_ioc_container()
     {
         $dataTable = app('datatables')->query(DB::table('users'));
