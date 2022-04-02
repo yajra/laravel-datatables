@@ -8,11 +8,27 @@ on:
 
 jobs:
   static-analysis-phpstan:
+    name: "Static Analysis with PHPStan"
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        php-version:
+          - "8.1"
+
     steps:
-      - uses: actions/checkout@v2
-      - uses: php-actions/composer@v6
-      - uses: php-actions/phpstan@v3
+      - name: "Checkout code"
+        uses: "actions/checkout@v2"
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
         with:
-          path: src/
+          coverage: "none"
+          php-version: "${{ matrix.php-version }}"
+          tools: "cs2pr"
+
+      - name: "Install dependencies with Composer"
+        uses: "ramsey/composer-install@v1"
+
+      - name: "Run a static analysis with phpstan/phpstan"
+        run: "vendor/bin/phpstan --error-format=checkstyle | cs2pr"
