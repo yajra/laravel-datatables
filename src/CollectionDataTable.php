@@ -2,6 +2,7 @@
 
 namespace Yajra\DataTables;
 
+use Exception;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Arr;
@@ -155,7 +156,7 @@ class CollectionDataTable extends DataTableAbstract
      * @param  bool  $mDataSupport
      * @return \Illuminate\Http\JsonResponse
      *
-     * @throws \Yajra\DataTables\Exceptions\Exception
+     * @throws \Exception
      */
     public function make($mDataSupport = true)
     {
@@ -176,7 +177,7 @@ class CollectionDataTable extends DataTableAbstract
             }
 
             return $this->render($this->collection->values()->all());
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return $this->errorResponse($exception);
         }
     }
