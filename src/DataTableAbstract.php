@@ -262,7 +262,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable
      */
     protected function getColumnsDefinition(): array
     {
-        $config = $this->config->get('datatables.columns');
+        $config = (array) $this->config->get('datatables.columns');
         $allowed = ['excess', 'escape', 'raw', 'blacklist', 'whitelist'];
 
         return array_replace_recursive(Arr::only($config, $allowed), $this->columnDef);
@@ -302,7 +302,8 @@ abstract class DataTableAbstract implements DataTable, Arrayable
      */
     public function makeHidden(array $attributes = []): self
     {
-        $this->columnDef['hidden'] = array_merge_recursive(Arr::get($this->columnDef, 'hidden', []), $attributes);
+        $hidden = (array) Arr::get($this->columnDef, 'hidden', []);
+        $this->columnDef['hidden'] = array_merge_recursive($hidden, $attributes);
 
         return $this;
     }
@@ -315,7 +316,8 @@ abstract class DataTableAbstract implements DataTable, Arrayable
      */
     public function makeVisible(array $attributes = []): self
     {
-        $this->columnDef['visible'] = array_merge_recursive(Arr::get($this->columnDef, 'visible', []), $attributes);
+        $visible = (array) Arr::get($this->columnDef, 'visible', []);
+        $this->columnDef['visible'] = array_merge_recursive($visible, $attributes);
 
         return $this;
     }
@@ -331,6 +333,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable
     public function rawColumns(array $columns, $merge = false): self
     {
         if ($merge) {
+            /** @var array[] $config */
             $config = $this->config->get('datatables.columns');
 
             $this->columnDef['raw'] = array_merge($config['raw'], $columns);
@@ -699,7 +702,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable
      */
     public function toArray(): array
     {
-        return $this->make()->getData(true);
+        return (array) $this->make()->getData(true);
     }
 
     /**
@@ -764,7 +767,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable
      * @param  string  $keyword
      * @return void
      */
-    abstract protected function globalSearch($keyword): void;
+    abstract protected function globalSearch(string $keyword): void;
 
     /**
      * Perform search using search pane values.
@@ -801,8 +804,8 @@ abstract class DataTableAbstract implements DataTable, Arrayable
     /**
      * Transform output.
      *
-     * @param  mixed  $results
-     * @param  mixed  $processed
+     * @param  iterable  $results
+     * @param  array  $processed
      * @return array
      */
     protected function transform($results, $processed): array
@@ -821,17 +824,18 @@ abstract class DataTableAbstract implements DataTable, Arrayable
     /**
      * Get processed data.
      *
-     * @param  mixed  $results
+     * @param  iterable  $results
      * @param  bool  $object
      * @return array
      */
     protected function processResults($results, $object = false): array
     {
+        $start = (int) $this->request->input('start');
         $processor = new DataProcessor(
             $results,
             $this->getColumnsDefinition(),
             $this->templates,
-            $this->request->input('start') ?? 0
+            $start
         );
 
         return $processor->process($object);
@@ -860,11 +864,14 @@ abstract class DataTableAbstract implements DataTable, Arrayable
             $output['searchPanes']['options'][$column] = $searchPane['options'];
         }
 
+        $headers = (array) $this->config->get('datatables.json.header', []);
+        $options = (int) $this->config->get('datatables.json.options', 0);
+
         return new JsonResponse(
             $output,
             200,
-            $this->config->get('datatables.json.header', []),
-            $this->config->get('datatables.json.options', 0)
+            $headers,
+            $options
         );
     }
 
@@ -902,6 +909,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable
      */
     protected function errorResponse(\Exception $exception)
     {
+        /** @var string $error */
         $error = $this->config->get('datatables.error');
         $debug = $this->config->get('app.debug');
 

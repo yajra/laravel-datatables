@@ -78,19 +78,22 @@ class DataProcessor
     /**
      * Process add columns.
      *
-     * @param  mixed  $data
+     * @param  array  $data
      * @param  mixed  $row
      * @return array
+     * @throws \Exception
      */
-    protected function addColumns($data, $row): array
+    protected function addColumns(array $data, $row): array
     {
         foreach ($this->appendColumns as $value) {
-            if ($value['content'] instanceof Formatter) {
+            $content = $value['content'];
+            if ($content instanceof Formatter) {
                 $column = str_replace('_formatted', '', $value['name']);
 
-                $value['content'] = $value['content']->format($data[$column], $row);
+                /** @phpstan-ignore-next-line  */
+                $value['content'] = $content->format($data[$column], $row);
             } else {
-                $value['content'] = Helper::compileContent($value['content'], $data, $row);
+                $value['content'] = Helper::compileContent($content, $data, $row);
             }
 
             $data = Helper::includeInArray($value, $data);
@@ -105,6 +108,7 @@ class DataProcessor
      * @param  mixed  $data
      * @param  mixed  $row
      * @return array
+     * @throws \Exception
      */
     protected function editColumns($data, $row): array
     {
@@ -119,9 +123,10 @@ class DataProcessor
     /**
      * Setup additional DT row variables.
      *
-     * @param  mixed  $data
+     * @param  array  $data
      * @param  mixed  $row
      * @return array
+     * @throws \Exception
      */
     protected function setupRowVariables($data, $row): array
     {
@@ -209,7 +214,9 @@ class DataProcessor
             } elseif (is_array($this->escapeColumns)) {
                 $columns = array_diff($this->escapeColumns, $this->rawColumns);
                 foreach ($columns as $key) {
-                    Arr::set($row, $key, e(Arr::get($row, $key)));
+                    /** @var string $content */
+                    $content = Arr::get($row, $key);
+                    Arr::set($row, $key, e($content));
                 }
             }
 

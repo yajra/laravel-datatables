@@ -6,9 +6,12 @@ parameters:
     paths:
         - src
 
-    level: 8
+    level: max
 
     ignoreErrors:
+        - '#Cannot cast mixed to int.#'
+        - '#Parameter \#1 \$string of function strtolower expects string, mixed given.#'
+        - '#Parameter \#1 \$format of function sprintf expects string, mixed given.#'
 
     excludePaths:
         - 'src/ApiResourceDataTable.php'

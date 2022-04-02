@@ -6,6 +6,8 @@ use DateTime;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use stdClass;
+use Yajra\DataTables\Exceptions\Exception;
 
 class Helper
 {
@@ -123,20 +125,23 @@ class Helper
      *
      * @param  mixed  $param
      * @return array
+     * @throws \Yajra\DataTables\Exceptions\Exception
      */
-    public static function castToArray($param)
+    public static function castToArray($param): array
     {
-        if ($param instanceof \stdClass) {
-            $param = (array) $param;
-
+        if (is_array($param)) {
             return $param;
+        }
+
+        if ($param instanceof stdClass) {
+            return (array) $param;
         }
 
         if ($param instanceof Arrayable) {
             return $param->toArray();
         }
 
-        return $param;
+        throw new Exception('Invalid parameter type.');
     }
 
     /**
@@ -192,7 +197,7 @@ class Helper
     /**
      * Transform row data into an array.
      *
-     * @param  mixed  $row
+     * @param  array  $row
      * @return array
      */
     protected static function transformRow($row)

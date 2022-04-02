@@ -13,7 +13,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Collection object.
      *
-     * @var \Illuminate\Support\Collection
+     * @var \Illuminate\Support\Collection<mixed>
      */
     public Collection $collection;
 
@@ -75,9 +75,9 @@ class CollectionDataTable extends DataTableAbstract
      * Serialize collection.
      *
      * @param  mixed  $collection
-     * @return mixed|null
+     * @return array
      */
-    protected function serialize($collection)
+    protected function serialize($collection): array
     {
         return $collection instanceof Arrayable ? $collection->toArray() : (array) $collection;
     }
@@ -102,6 +102,7 @@ class CollectionDataTable extends DataTableAbstract
      */
     public function columnSearch()
     {
+        /** @var array $columns */
         $columns = $this->request->get('columns', []);
         for ($i = 0, $c = count($columns); $i < $c; $i++) {
             $column = $this->getColumnName($i);
@@ -119,6 +120,7 @@ class CollectionDataTable extends DataTableAbstract
                 function ($row) use ($column, $keyword, $regex) {
                     $data = $this->serialize($row);
 
+                    /** @var string $value */
                     $value = Arr::get($data, $column);
 
                     if ($this->config->isCaseInsensitive()) {
@@ -146,10 +148,10 @@ class CollectionDataTable extends DataTableAbstract
      */
     public function paging()
     {
-        $this->collection = $this->collection->slice(
-            $this->request->input('start') - $this->offset,
-            (int) $this->request->input('length') > 0 ? $this->request->input('length') : 10
-        );
+        $offset = (int) $this->request->input('start') - $this->offset;
+        $length = (int) $this->request->input('length') > 0 ? (int) $this->request->input('length') : 10;
+
+        $this->collection = $this->collection->slice($offset, $length);
     }
 
     /**
@@ -195,7 +197,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Get results.
      *
-     * @return mixed
+     * @return iterable
      */
     public function results()
     {
@@ -211,9 +213,12 @@ class CollectionDataTable extends DataTableAbstract
     private function revertIndexColumn($mDataSupport): void
     {
         if ($this->columnDef['index']) {
-            $index = $mDataSupport ? config('datatables.index_column', 'DT_RowIndex') : 0;
+            $indexColumn = config('datatables.index_column', 'DT_RowIndex');
+            $index = $mDataSupport ? $indexColumn : 0;
             $start = (int) $this->request->input('start');
+
             $this->collection->transform(function ($data) use ($index, &$start) {
+                // @phpstan-ignore-next-line
                 $data[$index] = ++$start;
 
                 return $data;
@@ -227,7 +232,7 @@ class CollectionDataTable extends DataTableAbstract
      * @param  string  $keyword
      * @return void
      */
-    protected function globalSearch($keyword): void
+    protected function globalSearch(string $keyword): void
     {
         $keyword = $this->config->isCaseInsensitive() ? Str::lower($keyword) : $keyword;
 
@@ -238,15 +243,12 @@ class CollectionDataTable extends DataTableAbstract
             foreach ($this->request->searchableColumnIndex() as $index) {
                 $column = $this->getColumnName($index);
                 $value = Arr::get($data, $column);
-                if (! $value || is_array($value)) {
-                    if (! is_numeric($value)) {
-                        continue;
-                    }
-
-                    $value = (string) $value;
+                if (! is_string($value)) {
+                    continue;
+                } else {
+                    $value = $this->config->isCaseInsensitive() ? Str::lower($value) : $value;
                 }
 
-                $value = $this->config->isCaseInsensitive() ? Str::lower($value) : $value;
                 if (Str::contains($value, $keyword)) {
                     return true;
                 }
@@ -267,6 +269,7 @@ class CollectionDataTable extends DataTableAbstract
 
             $this->collection = $this->collection
                 ->map(function ($data) {
+                    // @phpstan-ignore-next-line
                     return Arr::dot($data);
                 })
                 ->sort($sorter)

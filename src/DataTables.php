@@ -31,8 +31,8 @@ class DataTables
      * Make a DataTable instance from source.
      * Alias of make for backward compatibility.
      *
-     * @param  mixed  $source
-     * @return mixed
+     * @param  object  $source
+     * @return DataTableAbstract
      *
      * @throws \Exception
      */
@@ -44,15 +44,15 @@ class DataTables
     /**
      * Make a DataTable instance from source.
      *
-     * @param  mixed  $source
-     * @return mixed
+     * @param  object  $source
+     * @return DataTableAbstract
      *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public static function make($source)
     {
-        $engines = config('datatables.engines');
-        $builders = config('datatables.builders');
+        $engines = (array) config('datatables.engines');
+        $builders = (array) config('datatables.builders');
 
         $args = func_get_args();
         foreach ($builders as $class => $engine) {
@@ -60,6 +60,7 @@ class DataTables
                 $callback = [$engines[$engine], 'create'];
 
                 if (is_callable($callback)) {
+                    // @phpstan-ignore-next-line
                     return call_user_func_array($callback, $args);
                 }
             }
@@ -71,6 +72,7 @@ class DataTables
                 $create = [$engines[$engine], 'create'];
 
                 if (is_callable($create)) {
+                    // @phpstan-ignore-next-line
                     return call_user_func_array($create, $args);
                 }
             }
@@ -135,7 +137,7 @@ class DataTables
     /**
      * DataTables using Collection.
      *
-     * @param  mixed  $resource
+     * @param  array|\Illuminate\Support\Collection  $resource
      * @return ApiResourceDataTable
      */
     public function resource($resource): ApiResourceDataTable

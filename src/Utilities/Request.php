@@ -3,6 +3,7 @@
 namespace Yajra\DataTables\Utilities;
 
 use Illuminate\Http\Request as BaseRequest;
+use Yajra\DataTables\Exceptions\Exception;
 
 /**
  * @mixin \Illuminate\Http\Request
@@ -25,8 +26,8 @@ class Request
     /**
      * Proxy non-existing method calls to base request class.
      *
-     * @param  mixed  $name
-     * @param  mixed  $arguments
+     * @param  string  $name
+     * @param  array  $arguments
      * @return mixed
      */
     public function __call($name, $arguments)
@@ -91,7 +92,7 @@ class Request
         }
 
         $orderable = [];
-        for ($i = 0, $c = count($this->request->input('order')); $i < $c; $i++) {
+        for ($i = 0, $c = count((array) $this->request->input('order')); $i < $c; $i++) {
             $order_col = (int) $this->request->input("order.$i.column");
             $order_dir = strtolower($this->request->input("order.$i.dir")) === 'asc' ? 'asc' : 'desc';
             if ($this->isColumnOrderable($order_col)) {
@@ -109,7 +110,7 @@ class Request
      */
     public function isOrderable()
     {
-        return $this->request->input('order') && count($this->request->input('order')) > 0;
+        return $this->request->input('order') && count((array) $this->request->input('order')) > 0;
     }
 
     /**
@@ -131,7 +132,8 @@ class Request
     public function searchableColumnIndex()
     {
         $searchable = [];
-        for ($i = 0, $c = count($this->request->input('columns')); $i < $c; $i++) {
+        $columns = (array) $this->request->input('columns');
+        for ($i = 0, $c = count($columns); $i < $c; $i++) {
             if ($this->isColumnSearchable($i, false)) {
                 $searchable[] = $i;
             }
@@ -171,7 +173,7 @@ class Request
      * @param  int  $index
      * @return string
      */
-    public function columnKeyword($index)
+    public function columnKeyword($index): string
     {
         $keyword = $this->request->input("columns.$index.search.value") ?? '';
 
@@ -181,24 +183,30 @@ class Request
     /**
      * Prepare keyword string value.
      *
-     * @param  string|array  $keyword
+     * @param  mixed  $keyword
      * @return string
+     * @throws \Yajra\DataTables\Exceptions\Exception
      */
-    protected function prepareKeyword($keyword)
+    protected function prepareKeyword($keyword): string
     {
         if (is_array($keyword)) {
             return implode(' ', $keyword);
         }
 
-        return $keyword;
+        if (is_string($keyword)) {
+            return $keyword;
+        }
+
+        throw new Exception('Invalid keyword value.');
     }
 
     /**
      * Get global search keyword.
      *
      * @return string
+     * @throws \Yajra\DataTables\Exceptions\Exception
      */
-    public function keyword()
+    public function keyword(): string
     {
         $keyword = $this->request->input('search.value') ?? '';
 
@@ -211,8 +219,9 @@ class Request
      * @param  int  $i
      * @return string
      */
-    public function columnName($i)
+    public function columnName(int $i): string
     {
+        /** @var string[] $column */
         $column = $this->request->input("columns.$i");
 
         return isset($column['name']) && $column['name'] != '' ? $column['name'] : $column['data'];
@@ -223,7 +232,7 @@ class Request
      *
      * @return bool
      */
-    public function isPaginationable()
+    public function isPaginationable(): bool
     {
         return ! is_null($this->request->input('start')) &&
             ! is_null($this->request->input('length')) &&

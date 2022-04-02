@@ -7,7 +7,7 @@ interface DataTable
     /**
      * Get results.
      *
-     * @return mixed
+     * @return iterable
      */
     public function results();
 

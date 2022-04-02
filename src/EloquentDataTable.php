@@ -3,6 +3,7 @@
 namespace Yajra\DataTables;
 
 use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
@@ -18,11 +19,22 @@ class EloquentDataTable extends QueryDataTable
     /**
      * EloquentEngine constructor.
      *
-     * @param  mixed  $model
+     * @param  \Illuminate\Database\Eloquent\Model|EloquentBuilder  $model
+     * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public function __construct($model)
     {
-        $builder = $model instanceof EloquentBuilder ? $model : $model->getQuery();
+        switch ($model) {
+            case $model instanceof Model:
+                $builder = $model->newQuery();
+                break;
+            case $model instanceof EloquentBuilder:
+                $builder = $model;
+                break;
+            default:
+                throw new Exception('Invalid model type. Must be an instance of Eloquent Model or Eloquent Builder.');
+        }
+
         parent::__construct($builder->getQuery());
 
         $this->query = $builder;
@@ -138,7 +150,7 @@ class EloquentDataTable extends QueryDataTable
      *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
-    protected function resolveRelationColumn($column)
+    protected function resolveRelationColumn(string $column): string
     {
         $parts = explode('.', $column);
         $columnName = array_pop($parts);

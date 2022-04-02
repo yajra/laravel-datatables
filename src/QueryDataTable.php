@@ -62,7 +62,7 @@ class QueryDataTable extends DataTableAbstract
     protected bool $keepSelectBindings = false;
 
     /**
-     * @param  \Illuminate\Database\Query\Builder  $builder
+     * @param  QueryBuilder  $builder
      */
     public function __construct(QueryBuilder $builder)
     {
@@ -299,7 +299,7 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Apply filterColumn api search.
      *
-     * @param  mixed  $query
+     * @param  QueryBuilder  $query
      * @param  string  $columnName
      * @param  string  $keyword
      * @param  string  $boolean
@@ -318,14 +318,16 @@ class QueryDataTable extends DataTableAbstract
 
         $callback($builder, $keyword);
 
-        $query->addNestedWhereQuery($this->getBaseQueryBuilder($builder), $boolean);
+        /** @var \Illuminate\Database\Query\Builder $baseQueryBuilder */
+        $baseQueryBuilder = $this->getBaseQueryBuilder($builder);
+        $query->addNestedWhereQuery($baseQueryBuilder, $boolean);
     }
 
     /**
      * Get the base query builder instance.
      *
-     * @param  mixed  $instance
-     * @return \Illuminate\Database\Query\Builder
+     * @param  QueryBuilder|EloquentBuilder|null  $instance
+     * @return QueryBuilder
      */
     protected function getBaseQueryBuilder($instance = null)
     {
@@ -346,7 +348,7 @@ class QueryDataTable extends DataTableAbstract
      * @param  string  $column
      * @return string
      */
-    protected function resolveRelationColumn($column)
+    protected function resolveRelationColumn(string $column): string
     {
         return $column;
     }
@@ -371,7 +373,7 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Compile regex query column search.
      *
-     * @param  mixed  $column
+     * @param  string  $column
      * @param  string  $keyword
      * @return void
      */
@@ -570,12 +572,12 @@ class QueryDataTable extends DataTableAbstract
      */
     public function paging()
     {
-        $limit = (int) $this->request->input('length') > 0 ? $this->request->input('length') : 10;
+        $limit = (int) $this->request->input('length') > 0 ? (int) $this->request->input('length') : 10;
         if (is_callable($this->limitCallback)) {
             $this->query->limit($limit);
             call_user_func_array($this->limitCallback, [$this->query]);
         } else {
-            $this->query->skip($this->request->input('start'))->take($limit);
+            $this->query->skip((int) $this->request->input('start'))->take($limit);
         }
     }
 
@@ -604,6 +606,7 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function searchPanesSearch(): void
     {
+        /** @var string[] $columns */
         $columns = $this->request->get('searchPanes', []);
 
         foreach ($columns as $column => $values) {
@@ -722,7 +725,7 @@ class QueryDataTable extends DataTableAbstract
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    protected function getNullsLastSql($column, $direction)
+    protected function getNullsLastSql($column, $direction): string
     {
         $sql = $this->config->get('datatables.nulls_last_sql', '%s %s NULLS LAST');
 
@@ -737,8 +740,9 @@ class QueryDataTable extends DataTableAbstract
      * Perform global search for the given keyword.
      *
      * @param  string  $keyword
+     * @return void
      */
-    protected function globalSearch($keyword): void
+    protected function globalSearch(string $keyword): void
     {
         $this->query->where(function ($query) use ($keyword) {
             collect($this->request->searchableColumnIndex())
