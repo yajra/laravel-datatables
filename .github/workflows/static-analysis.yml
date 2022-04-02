@@ -2,7 +2,21 @@ name: "Static Analysis"
 
 on:
   push:
+    paths:
+      - .github/workflows/static-analysis.yml
+      - composer.*
+      - phpstan.neon.dist
+      - src/**
+      - tests/**
+
   pull_request:
+    paths:
+      - .github/workflows/static-analysis.yml
+      - composer.*
+      - phpstan.neon.dist
+      - src/**
+      - tests/**
+
   schedule:
     - cron: '0 0 * * *'
 
