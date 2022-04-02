@@ -9,7 +9,6 @@ parameters:
     level: max
 
     ignoreErrors:
-        - '#Cannot cast mixed to int.#'
 
     excludePaths:
 

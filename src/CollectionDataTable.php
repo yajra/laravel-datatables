@@ -149,8 +149,8 @@ class CollectionDataTable extends DataTableAbstract
      */
     public function paging()
     {
-        $offset = (int) $this->request->input('start') - $this->offset;
-        $length = (int) $this->request->input('length') > 0 ? (int) $this->request->input('length') : 10;
+        $offset = $this->request->start() - $this->offset;
+        $length = $this->request->length() > 0 ? $this->request->length() : 10;
 
         $this->collection = $this->collection->slice($offset, $length);
     }
@@ -160,6 +160,7 @@ class CollectionDataTable extends DataTableAbstract
      *
      * @param  bool  $mDataSupport
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public function make($mDataSupport = true)
     {
@@ -216,7 +217,7 @@ class CollectionDataTable extends DataTableAbstract
         if ($this->columnDef['index']) {
             $indexColumn = config('datatables.index_column', 'DT_RowIndex');
             $index = $mDataSupport ? $indexColumn : 0;
-            $start = (int) $this->request->input('start');
+            $start = $this->request->start();
 
             $this->collection->transform(function ($data) use ($index, &$start) {
                 // @phpstan-ignore-next-line

@@ -830,12 +830,11 @@ abstract class DataTableAbstract implements DataTable, Arrayable
      */
     protected function processResults($results, $object = false): array
     {
-        $start = (int) $this->request->input('start');
         $processor = new DataProcessor(
             $results,
             $this->getColumnsDefinition(),
             $this->templates,
-            $start
+            $this->request->start()
         );
 
         return $processor->process($object);
@@ -850,7 +849,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable
     protected function render(array $data): JsonResponse
     {
         $output = $this->attachAppends([
-            'draw' => (int) $this->request->input('draw'),
+            'draw' => $this->request->draw(),
             'recordsTotal' => $this->totalRecords,
             'recordsFiltered' => $this->filteredRecords,
             'data' => $data,
@@ -864,14 +863,11 @@ abstract class DataTableAbstract implements DataTable, Arrayable
             $output['searchPanes']['options'][$column] = $searchPane['options'];
         }
 
-        $headers = (array) $this->config->get('datatables.json.header', []);
-        $options = (int) $this->config->get('datatables.json.options', 0);
-
         return new JsonResponse(
             $output,
             200,
-            $headers,
-            $options
+            $this->config->jsonHeaders(),
+            $this->config->jsonOptions()
         );
     }
 
@@ -920,7 +916,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable
         $this->getLogger()->error($exception);
 
         return new JsonResponse([
-            'draw' => (int) $this->request->input('draw'),
+            'draw' => $this->request->draw(),
             'recordsTotal' => $this->totalRecords,
             'recordsFiltered' => 0,
             'data' => [],

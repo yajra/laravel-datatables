@@ -253,4 +253,28 @@ class Request
     {
         return $this->request;
     }
+
+    public function start(): int
+    {
+        /** @var int $start */
+        $start = $this->request->input('start', 0);
+
+        return $start;
+    }
+
+    public function length(): int
+    {
+        /** @var int $length */
+        $length = $this->request->input('length', 10);
+
+        return $length;
+    }
+
+    public function draw(): int
+    {
+        /** @var int $draw */
+        $draw = $this->request->input('draw', 10);
+
+        return $draw;
+    }
 }

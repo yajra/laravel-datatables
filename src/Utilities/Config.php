@@ -104,4 +104,17 @@ class Config
     {
         return (bool) $this->repository->get('datatables.search.starts_with', false);
     }
+
+    public function jsonOptions(): int
+    {
+        /** @var int $options */
+        $options = $this->repository->get('datatables.json.options', 0);
+
+        return $options;
+    }
+
+    public function jsonHeaders(): array
+    {
+        return (array) $this->repository->get('datatables.json.header', []);
+    }
 }
