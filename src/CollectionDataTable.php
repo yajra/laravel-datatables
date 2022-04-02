@@ -205,8 +205,9 @@ class CollectionDataTable extends DataTableAbstract
      * Revert transformed DT_RowIndex back to it's original values.
      *
      * @param  bool  $mDataSupport
+     * @return void
      */
-    private function revertIndexColumn($mDataSupport)
+    private function revertIndexColumn($mDataSupport): void
     {
         if ($this->columnDef['index']) {
             $index = $mDataSupport ? config('datatables.index_column', 'DT_RowIndex') : 0;
@@ -223,8 +224,9 @@ class CollectionDataTable extends DataTableAbstract
      * Perform global search for the given keyword.
      *
      * @param  string  $keyword
+     * @return void
      */
-    protected function globalSearch($keyword)
+    protected function globalSearch($keyword): void
     {
         $keyword = $this->config->isCaseInsensitive() ? Str::lower($keyword) : $keyword;
 
@@ -256,7 +258,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Perform default query orderBy clause.
      */
-    protected function defaultOrdering()
+    protected function defaultOrdering(): void
     {
         $criteria = $this->request->orderableColumns();
         if (! empty($criteria)) {

@@ -55,13 +55,22 @@ class DataTables
         $args = func_get_args();
         foreach ($builders as $class => $engine) {
             if ($source instanceof $class) {
-                return call_user_func_array([$engines[$engine], 'create'], $args);
+                $callback = [$engines[$engine], 'create'];
+
+                if (is_callable($callback)) {
+                    return call_user_func_array($callback, $args);
+                }
             }
         }
 
         foreach ($engines as $engine => $class) {
-            if (call_user_func_array([$engines[$engine], 'canCreate'], $args)) {
-                return call_user_func_array([$engines[$engine], 'create'], $args);
+            $canCreate = [$engines[$engine], 'canCreate'];
+            if (is_callable($canCreate) && call_user_func_array($canCreate, $args)) {
+                $create = [$engines[$engine], 'create'];
+
+                if (is_callable($create)) {
+                    return call_user_func_array($create, $args);
+                }
             }
         }
 

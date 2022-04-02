@@ -23,7 +23,7 @@ class Request
     }
 
     /**
-     * Proxy non existing method calls to request class.
+     * Proxy non-existing method calls to base request class.
      *
      * @param  mixed  $name
      * @param  mixed  $arguments
@@ -31,8 +31,9 @@ class Request
      */
     public function __call($name, $arguments)
     {
-        if (method_exists($this->request, $name)) {
-            return call_user_func_array([$this->request, $name], $arguments);
+        $callback = [$this->request, $name];
+        if (is_callable($callback)) {
+            return call_user_func_array($callback, $arguments);
         }
     }
 

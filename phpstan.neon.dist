@@ -6,10 +6,13 @@ parameters:
     paths:
         - src
 
-    level: 5
+    level: 8
 
     ignoreErrors:
 
     excludePaths:
+        - 'src/ApiResourceDataTable.php'
 
     checkMissingIterableValueType: false
+
+    checkGenericClassInNonGenericObjectType: false

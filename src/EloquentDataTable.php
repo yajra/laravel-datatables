@@ -2,30 +2,20 @@
 
 namespace Yajra\DataTables;
 
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Database\Query\Builder as QueryBuilder;
-use JetBrains\PhpStorm\Pure;
 use Yajra\DataTables\Exceptions\Exception;
 
+/**
+ * @property EloquentBuilder $query
+ */
 class EloquentDataTable extends QueryDataTable
 {
-    /**
-     * Can the DataTable engine be created with these parameters.
-     *
-     * @param  mixed  $source
-     * @return bool
-     */
-    public static function canCreate($source): bool
-    {
-        return $source instanceof EloquentBuilder || $source instanceof Relation;
-    }
-
     /**
      * EloquentEngine constructor.
      *
@@ -37,6 +27,17 @@ class EloquentDataTable extends QueryDataTable
         parent::__construct($builder->getQuery());
 
         $this->query = $builder;
+    }
+
+    /**
+     * Can the DataTable engine be created with these parameters.
+     *
+     * @param  mixed  $source
+     * @return bool
+     */
+    public static function canCreate($source): bool
+    {
+        return $source instanceof EloquentBuilder;
     }
 
     /**
@@ -72,70 +73,30 @@ class EloquentDataTable extends QueryDataTable
     }
 
     /**
-     * Compile query builder where clause depending on configurations.
-     *
-     * @param  mixed  $query
-     * @param  string  $column
-     * @param  string  $keyword
-     * @param  string  $boolean
+     * @inheritDoc
      */
-    protected function compileQuerySearch($query, $column, $keyword, $boolean = 'or')
+    protected function compileQuerySearch($query, string $column, string $keyword, string $boolean = 'or'): void
     {
-        $parts    = explode('.', $column);
-        $newColumn   = array_pop($parts);
+        $parts = explode('.', $column);
+        $newColumn = array_pop($parts);
         $relation = implode('.', $parts);
 
         if ($this->isNotEagerLoaded($relation)) {
-            return parent::compileQuerySearch($query, $column, $keyword, $boolean);
+            parent::compileQuerySearch($query, $column, $keyword, $boolean);
+
+            return;
         }
 
         if ($this->isMorphRelation($relation)) {
-            $query->{$boolean . 'WhereHasMorph'}($relation, '*', function (EloquentBuilder $query) use ($newColumn, $keyword) {
-                parent::compileQuerySearch($query, $newColumn, $keyword, '');
-            });
+            $query->{$boolean.'WhereHasMorph'}($relation, '*',
+                function (EloquentBuilder $query) use ($newColumn, $keyword) {
+                    parent::compileQuerySearch($query, $newColumn, $keyword, '');
+                });
         } else {
-            $query->{$boolean . 'WhereHas'}($relation, function (EloquentBuilder $query) use ($newColumn, $keyword) {
+            $query->{$boolean.'WhereHas'}($relation, function (EloquentBuilder $query) use ($newColumn, $keyword) {
                 parent::compileQuerySearch($query, $newColumn, $keyword, '');
             });
         }
-    }
-
-    /**
-     * Resolve the proper column name be used.
-     *
-     * @param  string  $column
-     * @return string
-     */
-    protected function resolveRelationColumn($column)
-    {
-        $parts      = explode('.', $column);
-        $columnName = array_pop($parts);
-        $relation   = implode('.', $parts);
-
-        if ($this->isNotEagerLoaded($relation)) {
-            return $column;
-        }
-
-        return $this->joinEagerLoadedColumn($relation, $columnName);
-    }
-
-    /**
-     * Check if a relation is a morphed one or not.
-     *
-     * @param  string  $relation
-     * @return bool
-     */
-    protected function isMorphRelation($relation)
-    {
-        $isMorph = false;
-        if ($relation !== null && $relation !== '') {
-            $relationParts = explode('.', $relation);
-            $firstRelation = array_shift($relationParts);
-            $model         = $this->query->getModel();
-            $isMorph       = method_exists($model, $firstRelation) && $model->$firstRelation() instanceof MorphTo;
-        }
-
-        return $isMorph;
     }
 
     /**
@@ -152,6 +113,45 @@ class EloquentDataTable extends QueryDataTable
     }
 
     /**
+     * Check if a relation is a morphed one or not.
+     *
+     * @param  string  $relation
+     * @return bool
+     */
+    protected function isMorphRelation($relation)
+    {
+        $isMorph = false;
+        if ($relation !== null && $relation !== '') {
+            $relationParts = explode('.', $relation);
+            $firstRelation = array_shift($relationParts);
+            $model = $this->query->getModel();
+            $isMorph = method_exists($model, $firstRelation) && $model->$firstRelation() instanceof MorphTo;
+        }
+
+        return $isMorph;
+    }
+
+    /**
+     * Resolve the proper column name be used.
+     *
+     * @param  string  $column
+     * @return string
+     * @throws \Yajra\DataTables\Exceptions\Exception
+     */
+    protected function resolveRelationColumn($column)
+    {
+        $parts = explode('.', $column);
+        $columnName = array_pop($parts);
+        $relation = implode('.', $parts);
+
+        if ($this->isNotEagerLoaded($relation)) {
+            return $column;
+        }
+
+        return $this->joinEagerLoadedColumn($relation, $columnName);
+    }
+
+    /**
      * Join eager loaded relation and get the related column name.
      *
      * @param  string  $relation
@@ -162,62 +162,62 @@ class EloquentDataTable extends QueryDataTable
      */
     protected function joinEagerLoadedColumn($relation, $relationColumn)
     {
-        $table     = '';
+        $table = '';
         $lastQuery = $this->query;
         foreach (explode('.', $relation) as $eachRelation) {
             $model = $lastQuery->getRelation($eachRelation);
             switch (true) {
                 case $model instanceof BelongsToMany:
-                    $pivot   = $model->getTable();
+                    $pivot = $model->getTable();
                     $pivotPK = $model->getExistenceCompareKey();
                     $pivotFK = $model->getQualifiedParentKeyName();
                     $this->performJoin($pivot, $pivotPK, $pivotFK);
 
                     $related = $model->getRelated();
-                    $table   = $related->getTable();
+                    $table = $related->getTable();
                     $tablePK = $related->getForeignKey();
-                    $foreign = $pivot . '.' . $tablePK;
-                    $other   = $related->getQualifiedKeyName();
+                    $foreign = $pivot.'.'.$tablePK;
+                    $other = $related->getQualifiedKeyName();
 
-                    $lastQuery->addSelect($table . '.' . $relationColumn);
+                    $lastQuery->addSelect($table.'.'.$relationColumn);
                     $this->performJoin($table, $foreign, $other);
 
                     break;
 
                 case $model instanceof HasOneThrough:
-                    $pivot    = explode('.', $model->getQualifiedParentKeyName())[0]; // extract pivot table from key
-                    $pivotPK  = $pivot . '.' . $model->getLocalKeyName();
-                    $pivotFK  = $model->getQualifiedLocalKeyName();
+                    $pivot = explode('.', $model->getQualifiedParentKeyName())[0]; // extract pivot table from key
+                    $pivotPK = $pivot.'.'.$model->getLocalKeyName();
+                    $pivotFK = $model->getQualifiedLocalKeyName();
                     $this->performJoin($pivot, $pivotPK, $pivotFK);
 
                     $related = $model->getRelated();
-                    $table   = $related->getTable();
+                    $table = $related->getTable();
                     $tablePK = $related->getForeignKey();
-                    $foreign = $pivot . '.' . $tablePK;
-                    $other   = $related->getQualifiedKeyName();
+                    $foreign = $pivot.'.'.$tablePK;
+                    $other = $related->getQualifiedKeyName();
 
                     break;
 
                 case $model instanceof HasOneOrMany:
-                    $table     = $model->getRelated()->getTable();
-                    $foreign   = $model->getQualifiedForeignKeyName();
-                    $other     = $model->getQualifiedParentKeyName();
+                    $table = $model->getRelated()->getTable();
+                    $foreign = $model->getQualifiedForeignKeyName();
+                    $other = $model->getQualifiedParentKeyName();
                     break;
 
                 case $model instanceof BelongsTo:
-                    $table     = $model->getRelated()->getTable();
-                    $foreign   = $model->getQualifiedForeignKeyName();
-                    $other     = $model->getQualifiedOwnerKeyName();
+                    $table = $model->getRelated()->getTable();
+                    $foreign = $model->getQualifiedForeignKeyName();
+                    $other = $model->getQualifiedOwnerKeyName();
                     break;
 
                 default:
-                    throw new Exception('Relation ' . get_class($model) . ' is not yet supported.');
+                    throw new Exception('Relation '.get_class($model).' is not yet supported.');
             }
             $this->performJoin($table, $foreign, $other);
             $lastQuery = $model->getQuery();
         }
 
-        return $table . '.' . $relationColumn;
+        return $table.'.'.$relationColumn;
     }
 
     /**
@@ -227,8 +227,9 @@ class EloquentDataTable extends QueryDataTable
      * @param  string  $foreign
      * @param  string  $other
      * @param  string  $type
+     * @return void
      */
-    protected function performJoin($table, $foreign, $other, $type = 'left')
+    protected function performJoin($table, $foreign, $other, $type = 'left'): void
     {
         $joins = [];
         foreach ((array) $this->getBaseQueryBuilder()->joins as $key => $join) {

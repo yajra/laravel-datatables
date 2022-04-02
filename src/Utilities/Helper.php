@@ -58,6 +58,7 @@ class Helper
      * @param  array  $data  data to use with blade template
      * @param  mixed  $param  parameter to call with callable
      * @return mixed
+     * @throws \Exception
      */
     public static function compileContent($content, array $data, $param)
     {
@@ -75,13 +76,13 @@ class Helper
      *
      * @param  string  $str
      * @param  array  $data
-     * @return mixed
-     *
+     * @return false|string
      * @throws \Exception
      */
     public static function compileBlade($str, $data = [])
     {
         if (view()->exists($str)) {
+            /** @var view-string $str */
             return view($str, $data)->render();
         }
 
@@ -304,7 +305,7 @@ class Helper
     public static function wildcardString($str, $wildcard, $lowercase = true)
     {
         $wild  = $wildcard;
-        $chars = preg_split('//u', $str, -1, PREG_SPLIT_NO_EMPTY);
+        $chars = (array) preg_split('//u', $str, -1, PREG_SPLIT_NO_EMPTY);
 
         if (count($chars) > 0) {
             foreach ($chars as $char) {
