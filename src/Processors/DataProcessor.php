@@ -51,6 +51,8 @@ class DataProcessor
      *
      * @param  bool  $object
      * @return array
+     *
+     * @throws \Exception
      */
     public function process($object = false): array
     {

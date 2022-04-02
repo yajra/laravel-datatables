@@ -273,7 +273,7 @@ class Request
     public function draw(): int
     {
         /** @var int $draw */
-        $draw = $this->request->input('draw', 10);
+        $draw = $this->request->input('draw', 0);
 
         return $draw;
     }
