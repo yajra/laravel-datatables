@@ -1,8 +1,11 @@
 php:
   preset: laravel
   version: 8.1
-js:
-  finder:
-    not-name:
-      - webpack.mix.js
-css: true
+
+enabled:
+  - no_useless_else
+
+disabled:
+  - align_double_arrow
+  - concat_without_spaces
+  - unalign_equals
