@@ -6,6 +6,7 @@ use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Query\Expression;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Utilities\Helper;
@@ -18,13 +19,6 @@ class QueryDataTable extends DataTableAbstract
      * @var QueryBuilder
      */
     protected QueryBuilder $query;
-
-    /**
-     * Database connection used.
-     *
-     * @var \Illuminate\Database\Connection
-     */
-    protected Connection $connection;
 
     /**
      * Flag for ordering NULLS LAST option.
@@ -71,13 +65,20 @@ class QueryDataTable extends DataTableAbstract
         $this->config = app('datatables.config');
         $this->columns = $builder->columns;
 
-        /** @var \Illuminate\Database\Connection connection */
-        $connection = $builder->getConnection();
-
-        $this->connection = $connection;
         if ($this->config->isDebugging()) {
-            $connection->enableQueryLog();
+            $this->getConnection()->enableQueryLog();
         }
+    }
+
+    /**
+     * @return \Illuminate\Database\Connection
+     */
+    public function getConnection(): Connection
+    {
+        /** @var Connection $connection */
+        $connection = $this->query->getConnection();
+
+        return $connection;
     }
 
     /**
@@ -99,7 +100,7 @@ class QueryDataTable extends DataTableAbstract
      *
      * @throws \Exception
      */
-    public function make($mDataSupport = true)
+    public function make($mDataSupport = true): JsonResponse
     {
         try {
             $this->prepareQuery();
@@ -137,7 +138,7 @@ class QueryDataTable extends DataTableAbstract
      *
      * @return int
      */
-    public function totalCount()
+    public function totalCount(): int
     {
         if ($this->skipTotalRecords) {
             $this->isFilterApplied = true;
@@ -168,13 +169,13 @@ class QueryDataTable extends DataTableAbstract
         $builder = clone $this->query;
 
         if ($this->isComplexQuery($builder)) {
-            $table = $this->connection->raw('('.$builder->toSql().') count_row_table');
+            $table = $this->getConnection()->raw('('.$builder->toSql().') count_row_table');
 
-            return $this->connection->table($table)->setBindings($builder->getBindings());
+            return $this->getConnection()->table($table)->setBindings($builder->getBindings());
         }
 
         $row_count = $this->wrap('row_count');
-        $builder->select($this->connection->raw("'1' as {$row_count}"));
+        $builder->select($this->getConnection()->raw("'1' as {$row_count}"));
         if (! $this->keepSelectBindings) {
             $builder->setBindings([], 'select');
         }
@@ -201,7 +202,7 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function wrap(string $column): string
     {
-        return $this->connection->getQueryGrammar()->wrap($column);
+        return $this->getConnection()->getQueryGrammar()->wrap($column);
     }
 
     /**
@@ -220,7 +221,7 @@ class QueryDataTable extends DataTableAbstract
      *
      * @return static
      */
-    public function skipTotalRecords()
+    public function skipTotalRecords(): self
     {
         $this->skipTotalRecords = true;
 
@@ -232,7 +233,7 @@ class QueryDataTable extends DataTableAbstract
      *
      * @return static
      */
-    public function keepSelectBindings()
+    public function keepSelectBindings(): self
     {
         $this->keepSelectBindings = true;
 
@@ -244,7 +245,7 @@ class QueryDataTable extends DataTableAbstract
      *
      * @return void
      */
-    public function columnSearch()
+    public function columnSearch(): void
     {
         $columns = $this->request->columns();
 
@@ -274,7 +275,7 @@ class QueryDataTable extends DataTableAbstract
      * @param  string  $columnName
      * @return bool
      */
-    public function hasFilterColumn($columnName)
+    public function hasFilterColumn(string $columnName): bool
     {
         return isset($this->columnDef['filter'][$columnName]);
     }
@@ -286,7 +287,7 @@ class QueryDataTable extends DataTableAbstract
      * @param  bool  $raw
      * @return string
      */
-    protected function getColumnSearchKeyword($i, $raw = false)
+    protected function getColumnSearchKeyword(int $i, bool $raw = false): string
     {
         $keyword = $this->request->columnKeyword($i);
         if ($raw || $this->request->isRegex($i)) {
@@ -305,7 +306,7 @@ class QueryDataTable extends DataTableAbstract
      * @param  string  $boolean
      * @return void
      */
-    protected function applyFilterColumn($query, $columnName, $keyword, $boolean = 'and'): void
+    protected function applyFilterColumn($query, string $columnName, string $keyword, string $boolean = 'and'): void
     {
         $query = $this->getBaseQueryBuilder($query);
         $callback = $this->columnDef['filter'][$columnName]['method'];
@@ -361,7 +362,7 @@ class QueryDataTable extends DataTableAbstract
      * @param  string  $keyword
      * @return void
      */
-    protected function compileColumnSearch($i, $column, $keyword): void
+    protected function compileColumnSearch(int $i, string $column, string $keyword): void
     {
         if ($this->request->isRegex($i)) {
             $this->regexColumnSearch($column, $keyword);
@@ -377,11 +378,11 @@ class QueryDataTable extends DataTableAbstract
      * @param  string  $keyword
      * @return void
      */
-    protected function regexColumnSearch($column, $keyword): void
+    protected function regexColumnSearch(string $column, string $keyword): void
     {
         $column = $this->wrap($column);
 
-        switch ($this->connection->getDriverName()) {
+        switch ($this->getConnection()->getDriverName()) {
             case 'oracle':
                 $sql = ! $this->config->isCaseInsensitive()
                     ? 'REGEXP_LIKE( '.$column.' , ? )'
@@ -411,7 +412,7 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function castColumn(string $column): string
     {
-        switch ($this->connection->getDriverName()) {
+        switch ($this->getConnection()->getDriverName()) {
             case 'pgsql':
                 return 'CAST('.$column.' as TEXT)';
             case 'firebird':
@@ -470,7 +471,7 @@ class QueryDataTable extends DataTableAbstract
      * @param  string  $keyword
      * @return string
      */
-    protected function prepareKeyword($keyword)
+    protected function prepareKeyword(string $keyword): string
     {
         if ($this->config->isStartsWithSearch()) {
             return "$keyword%";
@@ -498,7 +499,7 @@ class QueryDataTable extends DataTableAbstract
      * @param  callable  $callback
      * @return static
      */
-    public function filterColumn($column, callable $callback)
+    public function filterColumn($column, callable $callback): self
     {
         $this->columnDef['filter'][$column] = ['method' => $callback];
 
@@ -513,7 +514,7 @@ class QueryDataTable extends DataTableAbstract
      * @param  array  $bindings
      * @return static
      */
-    public function orderColumns(array $columns, $sql, $bindings = [])
+    public function orderColumns(array $columns, $sql, $bindings = []): self
     {
         foreach ($columns as $column) {
             $this->orderColumn($column, str_replace(':column', $column, $sql), $bindings);
@@ -558,7 +559,7 @@ class QueryDataTable extends DataTableAbstract
      * @param  callable  $callback
      * @return static
      */
-    public function limit(callable $callback)
+    public function limit(callable $callback): self
     {
         $this->limitCallback = $callback;
 
@@ -570,7 +571,7 @@ class QueryDataTable extends DataTableAbstract
      *
      * @return void
      */
-    public function paging()
+    public function paging(): void
     {
         $start = $this->request->start();
         $length = $this->request->length();
@@ -777,7 +778,7 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function showDebugger(array $output): array
     {
-        $query_log = $this->connection->getQueryLog();
+        $query_log = $this->getConnection()->getQueryLog();
         array_walk_recursive($query_log, function (&$item) {
             if (is_string($item)) {
                 $item = utf8_encode($item);

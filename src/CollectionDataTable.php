@@ -2,8 +2,10 @@
 
 namespace Yajra\DataTables;
 
+use Closure;
 use Exception;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -33,6 +35,31 @@ class CollectionDataTable extends DataTableAbstract
     private int $offset = 0;
 
     /**
+     * CollectionEngine constructor.
+     *
+     * @param  \Illuminate\Support\Collection  $collection
+     */
+    public function __construct(Collection $collection)
+    {
+        $this->request = app('datatables.request');
+        $this->config = app('datatables.config');
+        $this->collection = $collection;
+        $this->original = $collection;
+        $this->columns = array_keys($this->serialize($collection->first()));
+    }
+
+    /**
+     * Serialize collection.
+     *
+     * @param  mixed  $collection
+     * @return array
+     */
+    protected function serialize($collection): array
+    {
+        return $collection instanceof Arrayable ? $collection->toArray() : (array) $collection;
+    }
+
+    /**
      * Can the DataTable engine be created with these parameters.
      *
      * @param  mixed  $source
@@ -59,31 +86,6 @@ class CollectionDataTable extends DataTableAbstract
     }
 
     /**
-     * CollectionEngine constructor.
-     *
-     * @param  \Illuminate\Support\Collection  $collection
-     */
-    public function __construct(Collection $collection)
-    {
-        $this->request = app('datatables.request');
-        $this->config = app('datatables.config');
-        $this->collection = $collection;
-        $this->original = $collection;
-        $this->columns = array_keys($this->serialize($collection->first()));
-    }
-
-    /**
-     * Serialize collection.
-     *
-     * @param  mixed  $collection
-     * @return array
-     */
-    protected function serialize($collection): array
-    {
-        return $collection instanceof Arrayable ? $collection->toArray() : (array) $collection;
-    }
-
-    /**
      * Count results.
      *
      * @return int
@@ -98,7 +100,7 @@ class CollectionDataTable extends DataTableAbstract
      *
      * @return void
      */
-    public function columnSearch()
+    public function columnSearch(): void
     {
         for ($i = 0, $c = count($this->request->columns()); $i < $c; $i++) {
             $column = $this->getColumnName($i);
@@ -142,7 +144,7 @@ class CollectionDataTable extends DataTableAbstract
      *
      * @return void
      */
-    public function paging()
+    public function paging(): void
     {
         $offset = $this->request->start() - $this->offset;
         $length = $this->request->length() > 0 ? $this->request->length() : 10;
@@ -158,7 +160,7 @@ class CollectionDataTable extends DataTableAbstract
      *
      * @throws \Exception
      */
-    public function make($mDataSupport = true)
+    public function make($mDataSupport = true): JsonResponse
     {
         try {
             $this->totalRecords = $this->totalCount();
@@ -187,19 +189,19 @@ class CollectionDataTable extends DataTableAbstract
      *
      * @return int
      */
-    public function totalCount()
+    public function totalCount(): int
     {
-        return $this->totalRecords ? $this->totalRecords : $this->collection->count();
+        return $this->totalRecords ?: $this->collection->count();
     }
 
     /**
      * Get results.
      *
-     * @return iterable
+     * @return \Illuminate\Support\Collection
      */
-    public function results()
+    public function results(): Collection
     {
-        return $this->collection->all();
+        return $this->collection;
     }
 
     /**
@@ -222,6 +224,21 @@ class CollectionDataTable extends DataTableAbstract
                 return $data;
             });
         }
+    }
+
+    /**
+     * Define the offset of the first item of the collection with respect to
+     * the FULL dataset the collection was sliced from. It effectively allows the
+     * collection to be "pre-sliced".
+     *
+     * @param  int  $offset
+     * @return static
+     */
+    public function setOffset(int $offset): self
+    {
+        $this->offset = $offset;
+
+        return $this;
     }
 
     /**
@@ -288,9 +305,9 @@ class CollectionDataTable extends DataTableAbstract
      * @param  array  $criteria
      * @return \Closure
      */
-    protected function getSorter(array $criteria)
+    protected function getSorter(array $criteria): Closure
     {
-        $sorter = function ($a, $b) use ($criteria) {
+        return function ($a, $b) use ($criteria) {
             foreach ($criteria as $orderable) {
                 $column = $this->getColumnName($orderable['column']);
                 $direction = $orderable['direction'];
@@ -322,32 +339,15 @@ class CollectionDataTable extends DataTableAbstract
             // all elements were equal
             return 0;
         };
-
-        return $sorter;
     }
 
     /**
      * Resolve callback parameter instance.
      *
-     * @return $this
+     * @return static
      */
-    protected function resolveCallbackParameter()
+    protected function resolveCallbackParameter(): self
     {
-        return $this;
-    }
-
-    /**
-     * Define the offset of the first item of the collection with respect to
-     * the FULL dataset the collection was sliced from. It effectively allows the
-     * collection to be "pre-sliced".
-     *
-     * @param  int  $offset
-     * @return $this
-     */
-    public function setOffset(int $offset)
-    {
-        $this->offset = $offset;
-
         return $this;
     }
 }
