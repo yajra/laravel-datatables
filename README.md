@@ -11,7 +11,7 @@
 [![Total Downloads](https://poser.pugx.org/yajra/laravel-datatables-oracle/downloads.png)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 
-This package is created to handle [server-side](https://www.datatables.net/manual/server-side) works of [DataTables](http://datatables.net) jQuery Plugin via [AJAX option](https://datatables.net/reference/option/ajax) by using Eloquent ORM, Fluent Query Builder or Collection.
+Laravel package for handling [server-side](https://www.datatables.net/manual/server-side) works of [DataTables](http://datatables.net) jQuery Plugin via [AJAX option](https://datatables.net/reference/option/ajax) by using Eloquent ORM, Fluent Query Builder or Collection.
 
 ```php
 return datatables()->eloquent(User::query())->toJson();
@@ -24,8 +24,8 @@ return datatables(User::all())->toJson();
 ```
 
 ## Requirements
-- [PHP >= 7.1](http://php.net/)
-- [Laravel 4.2|5.x|6|7|8|9](https://github.com/laravel/framework)
+- [PHP >= 8.0.2](http://php.net/)
+- [Laravel Framework](https://github.com/laravel/framework)
 - [jQuery DataTables v1.10.x](http://datatables.net/)
 
 ## Documentations
@@ -34,10 +34,6 @@ return datatables(User::all())->toJson();
 - [Laravel DataTables Quick Starter](https://yajrabox.com/docs/laravel-datatables/master/quick-starter)
 - [Laravel DataTables Documentation](https://yajrabox.com/docs/laravel-datatables)
 - [Laravel 5.0 - 5.3 Demo Application](https://datatables.yajrabox.com)
-
-**NOTE: Documentation links below are currently offline.**
-
-- [Laravel 5.4 Demo Application](http://dt54.yajrabox.com)
 
 ## Laravel Version Compatibility
 
@@ -57,11 +53,6 @@ return datatables(User::all())->toJson();
 | 7.x.x   | 9.x      |
 | 8.x.x   | 9.x      |
 | 9.x.x   | 10.x     |
-
-## DataTables 8.x Upgrade Guide
-
-There are breaking changes since DataTables v8.x.
-If you are upgrading from v7.x to v8.x, please see [upgrade guide](https://yajrabox.com/docs/laravel-datatables/master/upgrade).
 
 ## Quick Installation
 
