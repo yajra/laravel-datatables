@@ -5,8 +5,8 @@ if (! function_exists('datatables')) {
      * Helper to make a new DataTable instance from source.
      * Or return the factory if source is not set.
      *
-     * @param  object|null  $source
-     * @return \Yajra\DataTables\DataTableAbstract|\Yajra\DataTables\DataTables
+     * @param  \Illuminate\Contracts\Database\Query\Builder|\Illuminate\Contracts\Database\Eloquent\Builder|\Illuminate\Support\Collection|array|null  $source
+     * @return \Yajra\DataTables\DataTables|\Yajra\DataTables\DataTableAbstract
      *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */

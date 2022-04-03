@@ -6,26 +6,26 @@ use Closure;
 use Exception;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+
 
 class CollectionDataTable extends DataTableAbstract
 {
     /**
      * Collection object.
      *
-     * @var \Illuminate\Support\Collection<int, array>
+     * @var \Illuminate\Support\Collection<array-key, array>
      */
     public Collection $collection;
 
     /**
      * Collection object.
      *
-     * @var \Illuminate\Support\Collection<int, array>|\Illuminate\Http\Resources\Json\JsonResource
+     * @var \Illuminate\Support\Collection<array-key, array>
      */
-    public Collection|JsonResource $original;
+    public Collection $original;
 
     /**
      * The offset of the first record in the full dataset.
@@ -37,7 +37,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * CollectionEngine constructor.
      *
-     * @param  \Illuminate\Support\Collection<int, array>  $collection
+     * @param  \Illuminate\Support\Collection<array-key, array>  $collection
      */
     public function __construct(Collection $collection)
     {
@@ -73,7 +73,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Factory method, create and return an instance for the DataTable engine.
      *
-     * @param  array|\Illuminate\Support\Collection<int, array>  $source
+     * @param  array|\Illuminate\Support\Collection<array-key, array>  $source
      * @return static
      */
     public static function create($source)
@@ -197,7 +197,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Get results.
      *
-     * @return \Illuminate\Support\Collection<int, array>
+     * @return \Illuminate\Support\Collection<array-key, array>
      */
     public function results(): Collection
     {
@@ -205,7 +205,7 @@ class CollectionDataTable extends DataTableAbstract
     }
 
     /**
-     * Revert transformed DT_RowIndex back to it's original values.
+     * Revert transformed DT_RowIndex back to its original values.
      *
      * @param  bool  $mDataSupport
      * @return void

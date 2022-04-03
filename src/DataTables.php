@@ -66,10 +66,10 @@ class DataTables
             }
         }
 
-        foreach ($engines as $engine => $class) {
-            $canCreate = [$engines[$engine], 'canCreate'];
+        foreach ($engines as $engine) {
+            $canCreate = [$engine, 'canCreate'];
             if (is_callable($canCreate) && call_user_func_array($canCreate, $args)) {
-                $create = [$engines[$engine], 'create'];
+                $create = [$engine, 'create'];
 
                 if (is_callable($create)) {
                     // @phpstan-ignore-next-line
@@ -126,7 +126,7 @@ class DataTables
     /**
      * DataTables using Collection.
      *
-     * @param  \Illuminate\Support\Collection<int, array>|array  $collection
+     * @param  \Illuminate\Support\Collection<array-key, array>|array  $collection
      * @return \Yajra\DataTables\CollectionDataTable
      */
     public function collection($collection): CollectionDataTable

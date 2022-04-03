@@ -11,5 +11,6 @@ parameters:
     ignoreErrors:
 
     excludePaths:
+        - src/helper.php
 
     checkMissingIterableValueType: false
