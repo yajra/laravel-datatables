@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v9.19.2] - 2022-04-07
+
+- Changed PHPDocs to have the most specific class as their super return type #2771
+
 ### [v9.19.1] - 2022-03-05
 
 - Fix Formatter::format() doc block.
