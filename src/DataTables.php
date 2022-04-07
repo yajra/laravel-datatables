@@ -100,7 +100,7 @@ class DataTables
      * DataTables using Query.
      *
      * @param  \Illuminate\Database\Query\Builder|mixed  $builder
-     * @return DataTableAbstract|QueryDataTable
+     * @return QueryDataTable|DataTableAbstract
      */
     public function query($builder)
     {
@@ -111,7 +111,7 @@ class DataTables
      * DataTables using Eloquent Builder.
      *
      * @param  \Illuminate\Database\Eloquent\Builder|mixed  $builder
-     * @return DataTableAbstract|EloquentDataTable
+     * @return EloquentDataTable|DataTableAbstract
      */
     public function eloquent($builder)
     {
@@ -122,7 +122,7 @@ class DataTables
      * DataTables using Collection.
      *
      * @param  \Illuminate\Support\Collection|array  $collection
-     * @return DataTableAbstract|CollectionDataTable
+     * @return CollectionDataTable|DataTableAbstract
      */
     public function collection($collection)
     {
@@ -133,7 +133,7 @@ class DataTables
      * DataTables using Collection.
      *
      * @param  \Illuminate\Http\Resources\Json\AnonymousResourceCollection|array  $collection
-     * @return DataTableAbstract|ApiResourceDataTable
+     * @return ApiResourceDataTable|DataTableAbstract
      */
     public function resource($resource)
     {
