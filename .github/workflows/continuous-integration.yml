@@ -1,4 +1,4 @@
-name: tests
+name: "Continuous Integration"
 
 on:
   push:
@@ -7,14 +7,14 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
-  tests:
+  phpunit:
 
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: true
       matrix:
-        php: [7.3, 7.4, 8.0]
+        php: [8.0, 8.1]
         stability: [prefer-stable]
 
     name: PHP ${{ matrix.php }} - ${{ matrix.stability }}

@@ -8,17 +8,12 @@
 [![Latest Stable Version](https://img.shields.io/packagist/v/yajra/laravel-datatables-oracle.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![Latest Unstable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/unstable.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 ![Build Status](https://github.com/yajra/laravel-datatables-html/workflows/tests/badge.svg)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/yajra/laravel-datatables/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/yajra/laravel-datatables/?branch=master)
 [![Total Downloads](https://poser.pugx.org/yajra/laravel-datatables-oracle/downloads.png)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 
-This package is created to handle [server-side](https://www.datatables.net/manual/server-side) works of [DataTables](http://datatables.net) jQuery Plugin via [AJAX option](https://datatables.net/reference/option/ajax) by using Eloquent ORM, Fluent Query Builder or Collection.
+Laravel package for handling [server-side](https://www.datatables.net/manual/server-side) works of [DataTables](http://datatables.net) jQuery Plugin via [AJAX option](https://datatables.net/reference/option/ajax) by using Eloquent ORM, Fluent Query Builder or Collection.
 
 ```php
-return datatables()->of(User::query())->toJson();
-return datatables()->of(DB::table('users'))->toJson();
-return datatables()->of(User::all())->toJson();
-
 return datatables()->eloquent(User::query())->toJson();
 return datatables()->query(DB::table('users'))->toJson();
 return datatables()->collection(User::all())->toJson();
@@ -29,8 +24,8 @@ return datatables(User::all())->toJson();
 ```
 
 ## Requirements
-- [PHP >= 7.1](http://php.net/)
-- [Laravel 4.2|5.x|6|7|8|9](https://github.com/laravel/framework)
+- [PHP >= 8.0.2](http://php.net/)
+- [Laravel Framework](https://github.com/laravel/framework)
 - [jQuery DataTables v1.10.x](http://datatables.net/)
 
 ## Documentations
@@ -40,39 +35,33 @@ return datatables(User::all())->toJson();
 - [Laravel DataTables Documentation](https://yajrabox.com/docs/laravel-datatables)
 - [Laravel 5.0 - 5.3 Demo Application](https://datatables.yajrabox.com)
 
-**NOTE: Documentation links below are currently offline.**
-
-- [Laravel 5.4 Demo Application](http://dt54.yajrabox.com)
-
 ## Laravel Version Compatibility
 
- Laravel  | Package
-:---------|:----------
- 4.2.x    | 3.x
- 5.0.x    | 6.x
- 5.1.x    | 6.x
- 5.2.x    | 6.x
- 5.3.x    | 6.x
- 5.4.x    | 7.x, 8.x
- 5.5.x    | 8.x
- 5.6.x    | 8.x
- 5.7.x    | 8.x
- 5.8.x    | 9.x
- 6.x.x    | 9.x
- 7.x.x    | 9.x
- 8.x.x    | 9.x
- 9.x.x    | 9.x
-
-## DataTables 8.x Upgrade Guide
-There are breaking changes since DataTables v8.x.
-If you are upgrading from v7.x to v8.x, please see [upgrade guide](https://yajrabox.com/docs/laravel-datatables/master/upgrade).
+| Laravel | Package  |
+|:--------|:---------|
+| 4.2.x   | 3.x      |
+| 5.0.x   | 6.x      |
+| 5.1.x   | 6.x      |
+| 5.2.x   | 6.x      |
+| 5.3.x   | 6.x      |
+| 5.4.x   | 7.x, 8.x |
+| 5.5.x   | 8.x      |
+| 5.6.x   | 8.x      |
+| 5.7.x   | 8.x      |
+| 5.8.x   | 9.x      |
+| 6.x.x   | 9.x      |
+| 7.x.x   | 9.x      |
+| 8.x.x   | 9.x      |
+| 9.x.x   | 10.x     |
 
 ## Quick Installation
+
 ```bash
-$ composer require yajra/laravel-datatables-oracle:"~9.0"
+$ composer require yajra/laravel-datatables-oracle:"^10.0"
 ```
 
 #### Service Provider & Facade (Optional on Laravel 5.5+)
+
 Register provider and facade on your `config/app.php` file.
 ```php
 'providers' => [
@@ -87,6 +76,7 @@ Register provider and facade on your `config/app.php` file.
 ```
 
 #### Configuration (Optional)
+
 ```bash
 $ php artisan vendor:publish --provider="Yajra\DataTables\DataTablesServiceProvider"
 ```
@@ -94,11 +84,13 @@ $ php artisan vendor:publish --provider="Yajra\DataTables\DataTablesServiceProvi
 And that's it! Start building out some awesome DataTables!
 
 ## Debugging Mode
+
 To enable debugging mode, just set `APP_DEBUG=true` and the package will include the queries and inputs used when processing the table.
 
 **IMPORTANT:** Please make sure that APP_DEBUG is set to false when your app is on production.
 
 ## PHP ARTISAN SERVE BUG
+
 Please avoid using `php artisan serve` when developing with the package.
 There are known bugs when using this where Laravel randomly returns a redirect and 401 (Unauthorized) if the route requires authentication and a 404 NotFoundHttpException on valid routes.
 

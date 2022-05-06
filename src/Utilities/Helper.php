@@ -6,6 +6,8 @@ use DateTime;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use stdClass;
+use Yajra\DataTables\Exceptions\Exception;
 
 class Helper
 {
@@ -23,11 +25,11 @@ class Helper
         }
 
         $count = 0;
-        $last  = $array;
+        $last = $array;
         $first = [];
         foreach ($array as $key => $value) {
             if ($count == $item['order']) {
-                return array_merge($first, [$item['name'] => $item['content']], $last);
+                continue;
             }
 
             unset($last[$key]);
@@ -35,6 +37,8 @@ class Helper
 
             $count++;
         }
+
+        return array_merge($first, [$item['name'] => $item['content']], $last);
     }
 
     /**
@@ -56,6 +60,8 @@ class Helper
      * @param  array  $data  data to use with blade template
      * @param  mixed  $param  parameter to call with callable
      * @return mixed
+     *
+     * @throws \Exception
      */
     public static function compileContent($content, array $data, $param)
     {
@@ -73,18 +79,19 @@ class Helper
      *
      * @param  string  $str
      * @param  array  $data
-     * @return mixed
+     * @return false|string
      *
      * @throws \Exception
      */
     public static function compileBlade($str, $data = [])
     {
         if (view()->exists($str)) {
+            /** @var view-string $str */
             return view($str, $data)->render();
         }
 
         ob_start() && extract($data, EXTR_SKIP);
-        eval('?>' . app('blade.compiler')->compileString($str));
+        eval('?>'.app('blade.compiler')->compileString($str));
         $str = ob_get_contents();
         ob_end_clean();
 
@@ -118,20 +125,24 @@ class Helper
      *
      * @param  mixed  $param
      * @return array
+     *
+     * @throws \Yajra\DataTables\Exceptions\Exception
      */
-    public static function castToArray($param)
+    public static function castToArray($param): array
     {
-        if ($param instanceof \stdClass) {
-            $param = (array) $param;
-
+        if (is_array($param)) {
             return $param;
+        }
+
+        if ($param instanceof stdClass) {
+            return (array) $param;
         }
 
         if ($param instanceof Arrayable) {
             return $param->toArray();
         }
 
-        return $param;
+        throw new Exception('Invalid parameter type.');
     }
 
     /**
@@ -143,7 +154,7 @@ class Helper
     public static function getOrMethod($method)
     {
         if (! Str::contains(Str::lower($method), 'or')) {
-            return 'or' . ucfirst($method);
+            return 'or'.ucfirst($method);
         }
 
         return $method;
@@ -158,8 +169,8 @@ class Helper
      */
     public static function convertToArray($row, $filters = [])
     {
-        $row  = is_object($row) && method_exists($row, 'makeHidden') ? $row->makeHidden(Arr::get($filters, 'hidden', [])) : $row;
-        $row  = is_object($row) && method_exists($row, 'makeVisible') ? $row->makeVisible(Arr::get($filters, 'visible', [])) : $row;
+        $row = is_object($row) && method_exists($row, 'makeHidden') ? $row->makeHidden(Arr::get($filters, 'hidden', [])) : $row;
+        $row = is_object($row) && method_exists($row, 'makeVisible') ? $row->makeVisible(Arr::get($filters, 'visible', [])) : $row;
         $data = $row instanceof Arrayable ? $row->toArray() : (array) $row;
 
         foreach ($data as &$value) {
@@ -187,7 +198,7 @@ class Helper
     /**
      * Transform row data into an array.
      *
-     * @param  mixed  $row
+     * @param  array  $row
      * @return array
      */
     protected static function transformRow($row)
@@ -264,7 +275,7 @@ class Helper
     {
         $matches = explode(' as ', Str::lower($str));
 
-        if (! empty($matches)) {
+        if (count($matches) > 1) {
             if ($wantsAlias) {
                 return array_pop($matches);
             }
@@ -301,12 +312,12 @@ class Helper
      */
     public static function wildcardString($str, $wildcard, $lowercase = true)
     {
-        $wild  = $wildcard;
-        $chars = preg_split('//u', $str, -1, PREG_SPLIT_NO_EMPTY);
+        $wild = $wildcard;
+        $chars = (array) preg_split('//u', $str, -1, PREG_SPLIT_NO_EMPTY);
 
         if (count($chars) > 0) {
             foreach ($chars as $char) {
-                $wild .= $char . $wildcard;
+                $wild .= $char.$wildcard;
             }
         }
 
