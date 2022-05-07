@@ -6,8 +6,6 @@ use DateTime;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use stdClass;
-use Yajra\DataTables\Exceptions\Exception;
 
 class Helper
 {
@@ -58,12 +56,12 @@ class Helper
      *
      * @param  mixed  $content  Pre-processed content
      * @param  array  $data  data to use with blade template
-     * @param  mixed  $param  parameter to call with callable
+     * @param  array|object  $param  parameter to call with callable
      * @return mixed
      *
      * @throws \Exception
      */
-    public static function compileContent($content, array $data, $param)
+    public static function compileContent($content, array $data, array|object $param)
     {
         if (is_string($content)) {
             return static::compileBlade($content, static::getMixedValue($data, $param));
@@ -102,10 +100,10 @@ class Helper
      * Get a mixed value of custom data and the parameters.
      *
      * @param  array  $data
-     * @param  mixed  $param
+     * @param  array|object  $param
      * @return array
      */
-    public static function getMixedValue(array $data, $param)
+    public static function getMixedValue(array $data, array|object $param)
     {
         $casted = self::castToArray($param);
 
@@ -123,26 +121,16 @@ class Helper
     /**
      * Cast the parameter into an array.
      *
-     * @param  mixed  $param
+     * @param  array|object  $param
      * @return array
-     *
-     * @throws \Yajra\DataTables\Exceptions\Exception
      */
-    public static function castToArray($param): array
+    public static function castToArray(array|object $param): array
     {
-        if (is_array($param)) {
-            return $param;
-        }
-
-        if ($param instanceof stdClass) {
-            return (array) $param;
-        }
-
         if ($param instanceof Arrayable) {
             return $param->toArray();
         }
 
-        throw new Exception('Invalid parameter type.');
+        return (array) $param;
     }
 
     /**
@@ -169,8 +157,10 @@ class Helper
      */
     public static function convertToArray($row, $filters = [])
     {
-        $row = is_object($row) && method_exists($row, 'makeHidden') ? $row->makeHidden(Arr::get($filters, 'hidden', [])) : $row;
-        $row = is_object($row) && method_exists($row, 'makeVisible') ? $row->makeVisible(Arr::get($filters, 'visible', [])) : $row;
+        $row = is_object($row) && method_exists($row, 'makeHidden') ? $row->makeHidden(Arr::get($filters, 'hidden',
+            [])) : $row;
+        $row = is_object($row) && method_exists($row, 'makeVisible') ? $row->makeVisible(Arr::get($filters, 'visible',
+            [])) : $row;
         $data = $row instanceof Arrayable ? $row->toArray() : (array) $row;
 
         foreach ($data as &$value) {

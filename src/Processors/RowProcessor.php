@@ -9,9 +9,9 @@ class RowProcessor
 {
     /**
      * @param  array  $data
-     * @param  mixed  $row
+     * @param  array|object  $row
      */
-    public function __construct(protected $data, protected $row)
+    public function __construct(protected array $data, protected $row)
     {
     }
 

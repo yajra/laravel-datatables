@@ -81,7 +81,7 @@ class DataProcessor
      * Process add columns.
      *
      * @param  array  $data
-     * @param  mixed  $row
+     * @param  array|object  $row
      * @return array
      *
      * @throws \Exception
@@ -108,15 +108,15 @@ class DataProcessor
     /**
      * Process edit columns.
      *
-     * @param  mixed  $data
-     * @param  mixed  $row
+     * @param  array  $data
+     * @param  array|object  $row
      * @return array
      *
      * @throws \Exception
      */
-    protected function editColumns($data, $row): array
+    protected function editColumns(array $data, object|array $row): array
     {
-        foreach ($this->editColumns as $key => $value) {
+        foreach ($this->editColumns as $value) {
             $value['content'] = Helper::compileContent($value['content'], $data, $row);
             Arr::set($data, $value['name'], $value['content']);
         }
@@ -128,12 +128,12 @@ class DataProcessor
      * Setup additional DT row variables.
      *
      * @param  array  $data
-     * @param  mixed  $row
+     * @param  array|object  $row
      * @return array
      *
      * @throws \Exception
      */
-    protected function setupRowVariables($data, $row): array
+    protected function setupRowVariables(array $data, object|array $row): array
     {
         $processor = new RowProcessor($data, $row);
 
