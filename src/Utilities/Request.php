@@ -224,14 +224,14 @@ class Request
      * Get column identity from input or database.
      *
      * @param  int  $i
-     * @return string
+     * @return string|null
      */
-    public function columnName(int $i): string
+    public function columnName(int $i): ?string
     {
         /** @var string[] $column */
         $column = $this->request->input("columns.$i");
 
-        return isset($column['name']) && $column['name'] != '' ? $column['name'] : $column['data'];
+        return (isset($column['name']) && $column['name'] != '') ? $column['name'] : $column['data'];
     }
 
     /**

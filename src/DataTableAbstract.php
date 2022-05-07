@@ -975,9 +975,9 @@ abstract class DataTableAbstract implements DataTable
      *
      * @param  int  $index
      * @param  bool  $wantsAlias
-     * @return string
+     * @return string|null
      */
-    protected function getColumnName(int $index, bool $wantsAlias = false): string
+    protected function getColumnName(int $index, bool $wantsAlias = false): ?string
     {
         $column = $this->request->columnName($index);
 
