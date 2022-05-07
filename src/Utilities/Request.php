@@ -133,6 +133,8 @@ class Request
      * Get searchable column indexes.
      *
      * @return array
+     *
+     * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public function searchableColumnIndex()
     {
@@ -153,6 +155,8 @@ class Request
      * @param  int  $i
      * @param  bool  $column_search
      * @return bool
+     *
+     * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public function isColumnSearchable($i, $column_search = true)
     {
@@ -177,6 +181,8 @@ class Request
      *
      * @param  int  $index
      * @return string
+     *
+     * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public function columnKeyword($index): string
     {
