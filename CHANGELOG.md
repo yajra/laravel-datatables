@@ -8,12 +8,13 @@
 
 ### [Unreleased]
 
-### [v10.0.0] - 2022-04-04
+### [v10.0.0] - 2022-05-08
 
 - Laravel DataTables v10.x to support Laravel 9.x
-- Added PHPStan with Level 8 static analysis
+- Added PHPStan with max level static analysis
 - Drop `queryBuilder()` method
 - Drop support for `ApiResourceDataTable`
+- PHP8 syntax / method signature changed
 
 [Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.0.0...10.x
 [v10.0.0]: https://github.com/yajra/laravel-datatables/compare/v10.0.0...10.x
