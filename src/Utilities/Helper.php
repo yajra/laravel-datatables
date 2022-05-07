@@ -327,4 +327,39 @@ class Helper
 
         return $wild;
     }
+
+    public static function toJsonScript(array $parameters, int $options = 0): string
+    {
+        $values = [];
+        $replacements = [];
+
+        foreach (Arr::dot($parameters) as $key => $value) {
+            if (self::isJavascript($value, $key)) {
+                $values[] = trim($value);
+                Arr::set($parameters, $key, '%'.$key.'%');
+                $replacements[] = '"%'.$key.'%"';
+            }
+        }
+
+        $new = [];
+        foreach ($parameters as $key => $value) {
+            Arr::set($new, $key, $value);
+        }
+
+        $json = (string) json_encode($new, $options);
+
+        return str_replace($replacements, $values, $json);
+    }
+
+    public static function isJavascript(string $value, string $key): bool
+    {
+        if (empty($value)) {
+            return false;
+        }
+
+        /** @var array $callbacks */
+        $callbacks = config('datatables.callback', ['$', '$.', 'function']);
+
+        return Str::startsWith(trim($value), $callbacks) || Str::contains($key, ['editor', 'minDate', 'maxDate']);
+    }
 }
