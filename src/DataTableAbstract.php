@@ -981,6 +981,10 @@ abstract class DataTableAbstract implements DataTable
     {
         $column = $this->request->columnName($index);
 
+        if (is_null($column)) {
+            return null;
+        }
+
         // DataTables is using make(false)
         if (is_numeric($column)) {
             $column = $this->getColumnNameByIndex($index);

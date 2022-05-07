@@ -252,6 +252,10 @@ class QueryDataTable extends DataTableAbstract
         foreach ($columns as $index => $column) {
             $column = $this->getColumnName($index);
 
+            if (is_null($column)) {
+                continue;
+            }
+
             if (! $this->request->isColumnSearchable($index) || $this->isBlacklisted($column) && ! $this->hasFilterColumn($column)) {
                 continue;
             }
@@ -755,6 +759,7 @@ class QueryDataTable extends DataTableAbstract
                 ->map(function ($index) {
                     return $this->getColumnName($index);
                 })
+                ->filter()
                 ->reject(function ($column) {
                     return $this->isBlacklisted($column) && ! $this->hasFilterColumn($column);
                 })

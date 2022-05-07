@@ -104,6 +104,10 @@ class CollectionDataTable extends DataTableAbstract
         for ($i = 0, $c = count($this->request->columns()); $i < $c; $i++) {
             $column = $this->getColumnName($i);
 
+            if (is_null($column)) {
+                continue;
+            }
+
             if (! $this->request->isColumnSearchable($i) || $this->isBlacklisted($column)) {
                 continue;
             }
