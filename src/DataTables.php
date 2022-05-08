@@ -6,6 +6,7 @@ use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Traits\Macroable;
 use Yajra\DataTables\Exceptions\Exception;
+use Yajra\DataTables\Html\Builder;
 
 class DataTables
 {
@@ -21,11 +22,9 @@ class DataTables
     /**
      * HTML builder instance.
      *
-     * @phpstan-ignore-next-line
-     *
      * @var \Yajra\DataTables\Html\Builder|null
      */
-    protected $html = null;
+    protected ?Builder $html = null;
 
     /**
      * Make a DataTable instance from source.
@@ -60,8 +59,10 @@ class DataTables
                 $callback = [$engines[$engine], 'create'];
 
                 if (is_callable($callback)) {
-                    // @phpstan-ignore-next-line
-                    return call_user_func_array($callback, $args);
+                    /** @var \Yajra\DataTables\DataTableAbstract $instance */
+                    $instance = call_user_func_array($callback, $args);
+
+                    return $instance;
                 }
             }
         }
@@ -72,8 +73,10 @@ class DataTables
                 $create = [$engine, 'create'];
 
                 if (is_callable($create)) {
-                    // @phpstan-ignore-next-line
-                    return call_user_func_array($create, $args);
+                    /** @var \Yajra\DataTables\DataTableAbstract $instance */
+                    $instance = call_user_func_array($create, $args);
+
+                    return $instance;
                 }
             }
         }
@@ -137,15 +140,13 @@ class DataTables
     /**
      * Get html builder instance.
      *
-     * @phpstan-ignore-next-line
-     *
      * @return \Yajra\DataTables\Html\Builder
      *
-     * @throws Exception
+     * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public function getHtmlBuilder()
     {
-        if (! class_exists('\Yajra\DataTables\Html\Builder')) {
+        if (! class_exists(Builder::class)) {
             throw new Exception('Please install yajra/laravel-datatables-html to be able to use this function.');
         }
 

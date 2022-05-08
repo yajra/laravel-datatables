@@ -6,7 +6,7 @@ interface Formatter
 {
     /**
      * @param  mixed  $value
-     * @param  mixed  $row
+     * @param  array|\Illuminate\Database\Eloquent\Model|object  $row
      * @return string
      */
     public function format($value, $row);

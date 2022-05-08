@@ -23,7 +23,8 @@
   },
   "require-dev": {
     "nunomaduro/larastan": "^2.1",
-    "orchestra/testbench": "^7.3"
+    "orchestra/testbench": "^7.3",
+    "yajra/laravel-datatables-html": "^9.0"
   },
   "suggest": {
     "yajra/laravel-datatables-buttons": "Plugin for server-side exporting of dataTables.",

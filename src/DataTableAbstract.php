@@ -167,11 +167,10 @@ abstract class DataTableAbstract implements DataTable
      * Factory method, create and return an instance for the DataTable engine.
      *
      * @param  mixed  $source
-     * @return $this
+     * @return static
      */
     public static function create($source)
     {
-        /** @phpstan-ignore-next-line */
         return new static($source);
     }
 
