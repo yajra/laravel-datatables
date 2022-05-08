@@ -124,7 +124,7 @@ abstract class DataTableAbstract implements DataTable
     protected $orderCallback = null;
 
     /**
-     * Skip paginate as needed.
+     * Skip pagination as needed.
      *
      * @var bool
      */
