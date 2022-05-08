@@ -939,13 +939,14 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     /**
      * Get column name to be use for filtering and sorting.
      *
-     * @param  int  $index
-     * @param  bool  $wantsAlias
+     * @param int  $index
+     * @param string|null $type
+     * @param bool $wantsAlias
      * @return string
      */
-    protected function getColumnName($index, $wantsAlias = false)
+    protected function getColumnName($index, $type = null, $wantsAlias = false)
     {
-        $column = $this->request->columnName($index);
+        $column = $this->request->columnName($index, $type);
 
         // DataTables is using make(false)
         if (is_numeric($column)) {

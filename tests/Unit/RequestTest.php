@@ -112,6 +112,25 @@ class RequestTest extends TestCase
         $this->assertEquals('bar', $request->columnName(1));
     }
 
+    public function test_searchable_with_filter_column_index()
+    {
+        $_GET['columns']   = [];
+        $_GET['columns'][] = ['name' => 'foo', 'data' => ['_' => 'foo', 'filter' => 'foo.filter'], 'searchable' => 'true', 'search' => ['value' => 'foo']];
+        $_GET['columns'][] = ['name' => 'bar', 'data' => ['_' => 'bar', 'filter' => 'bar.filter'], 'searchable' => 'false', 'search' => ['value' => 'foo']];
+        request()->merge($_GET);
+        $request = $this->getRequest();
+        $this->assertEquals([0], $request->searchableColumnIndex());
+
+        $this->assertTrue($request->isColumnSearchable(0, false));
+        $this->assertFalse($request->isColumnSearchable(1, false));
+
+        $this->assertTrue($request->isColumnSearchable(0, true));
+        $this->assertFalse($request->isColumnSearchable(1, false));
+
+        $this->assertEquals('foo.filter', $request->columnName(0, 'filter'));
+        $this->assertEquals('bar.filter', $request->columnName(1, 'filter'));
+    }
+
     public function test_keyword()
     {
         $_GET['search'] = [];

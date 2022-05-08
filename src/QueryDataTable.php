@@ -660,7 +660,7 @@ class QueryDataTable extends DataTableAbstract
     {
         collect($this->request->orderableColumns())
             ->map(function ($orderable) {
-                $orderable['name'] = $this->getColumnName($orderable['column'], true);
+                $orderable['name'] = $this->getColumnName($orderable['column'], null, true);
 
                 return $orderable;
             })
