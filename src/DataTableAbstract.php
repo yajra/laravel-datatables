@@ -827,6 +827,8 @@ abstract class DataTableAbstract implements DataTable
      * @param  iterable  $results
      * @param  bool  $object
      * @return array
+     *
+     * @throws \Exception
      */
     protected function processResults($results, $object = false): array
     {

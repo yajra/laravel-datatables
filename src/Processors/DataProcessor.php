@@ -51,8 +51,6 @@ class DataProcessor
      *
      * @param  bool  $object
      * @return array
-     *
-     * @throws \Exception
      */
     public function process($object = false): array
     {
@@ -83,8 +81,6 @@ class DataProcessor
      * @param  array  $data
      * @param  array|object  $row
      * @return array
-     *
-     * @throws \Exception
      */
     protected function addColumns(array $data, $row): array
     {
@@ -111,8 +107,6 @@ class DataProcessor
      * @param  array  $data
      * @param  array|object  $row
      * @return array
-     *
-     * @throws \Exception
      */
     protected function editColumns(array $data, object|array $row): array
     {
@@ -130,8 +124,6 @@ class DataProcessor
      * @param  array  $data
      * @param  array|object  $row
      * @return array
-     *
-     * @throws \Exception
      */
     protected function setupRowVariables(array $data, object|array $row): array
     {

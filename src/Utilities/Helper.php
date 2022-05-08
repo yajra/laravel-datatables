@@ -58,8 +58,6 @@ class Helper
      * @param  array  $data  data to use with blade template
      * @param  array|object  $param  parameter to call with callable
      * @return mixed
-     *
-     * @throws \Exception
      */
     public static function compileContent($content, array $data, array|object $param)
     {
@@ -78,8 +76,6 @@ class Helper
      * @param  string  $str
      * @param  array  $data
      * @return false|string
-     *
-     * @throws \Exception
      */
     public static function compileBlade($str, $data = [])
     {
