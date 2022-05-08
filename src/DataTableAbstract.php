@@ -72,16 +72,23 @@ abstract class DataTableAbstract implements DataTable
     /**
      * Total records.
      *
-     * @var int
+     * @var int|null
      */
-    protected int $totalRecords = 0;
+    protected ?int $totalRecords = null;
+
+    /**
+     * Flag to skip total records count query.
+     *
+     * @var bool
+     */
+    protected bool $skipTotalRecords = false;
 
     /**
      * Total filtered records.
      *
-     * @var int
+     * @var int|null
      */
-    protected int $filteredRecords = 0;
+    protected ?int $filteredRecords = null;
 
     /**
      * Auto-filter flag.
@@ -110,16 +117,9 @@ abstract class DataTableAbstract implements DataTable
     ];
 
     /**
-     * [internal] Track if any filter was applied for at least one column.
-     *
-     * @var bool
-     */
-    protected bool $isFilterApplied = false;
-
-    /**
      * Custom ordering callback.
      *
-     * @var ?callable
+     * @var callable|null
      */
     protected $orderCallback = null;
 
@@ -453,7 +453,7 @@ abstract class DataTableAbstract implements DataTable
      * @param  callable  $value
      * @return $this
      */
-    public function withQuery($key, callable $value): static
+    public function withQuery(string $key, callable $value): static
     {
         $this->appends[$key] = $value;
 
@@ -492,7 +492,7 @@ abstract class DataTableAbstract implements DataTable
      * @param  string|array  $whitelist
      * @return $this
      */
-    public function whitelist($whitelist = '*'): static
+    public function whitelist(array|string $whitelist = '*'): static
     {
         $this->columnDef['whitelist'] = $whitelist;
 
@@ -505,7 +505,7 @@ abstract class DataTableAbstract implements DataTable
      * @param  bool  $state
      * @return $this
      */
-    public function smart($state = true): static
+    public function smart(bool $state = true): static
     {
         $this->config->set('datatables.search.smart', $state);
 
@@ -518,7 +518,7 @@ abstract class DataTableAbstract implements DataTable
      * @param  bool  $state
      * @return $this
      */
-    public function startsWithSearch($state = true): static
+    public function startsWithSearch(bool $state = true): static
     {
         $this->config->set('datatables.search.starts_with', $state);
 
@@ -531,7 +531,7 @@ abstract class DataTableAbstract implements DataTable
      * @param  bool  $multiTerm
      * @return $this
      */
-    public function setMultiTerm($multiTerm = true): static
+    public function setMultiTerm(bool $multiTerm = true): static
     {
         $this->config->set('datatables.search.multi_term', $multiTerm);
 
@@ -544,9 +544,24 @@ abstract class DataTableAbstract implements DataTable
      * @param  int  $total
      * @return $this
      */
-    public function setTotalRecords($total): static
+    public function setTotalRecords(int $total): static
     {
+        $this->skipTotalRecords();
         $this->totalRecords = $total;
+
+        return $this;
+    }
+
+    /**
+     * Skip total records and set the recordsTotal equals to recordsFiltered.
+     * This will improve the performance by skipping the total count query.
+     *
+     * @return $this
+     */
+    public function skipTotalRecords(): static
+    {
+        $this->skipTotalRecords = true;
+        $this->totalRecords = 0;
 
         return $this;
     }
@@ -557,7 +572,7 @@ abstract class DataTableAbstract implements DataTable
      * @param  int  $total
      * @return $this
      */
-    public function setFilteredRecords($total): static
+    public function setFilteredRecords(int $total): static
     {
         $this->filteredRecords = $total;
 
@@ -651,7 +666,6 @@ abstract class DataTableAbstract implements DataTable
     public function filter(callable $callback, $globalSearch = false): static
     {
         $this->autoFilter = $globalSearch;
-        $this->isFilterApplied = true;
         $this->filterCallback = $callback;
 
         return $this;
@@ -721,7 +735,7 @@ abstract class DataTableAbstract implements DataTable
 
         $this->columnSearch();
         $this->searchPanesSearch();
-        $this->filteredRecords = $this->isFilterApplied ? $this->filteredCount() : $this->totalRecords;
+        $this->filteredCount();
     }
 
     /**
@@ -779,13 +793,27 @@ abstract class DataTableAbstract implements DataTable
     }
 
     /**
+     * Count total items.
+     *
+     * @return int
+     */
+    public function totalCount(): int
+    {
+        if ($this->skipTotalRecords) {
+            return $this->totalRecords;
+        }
+
+        return $this->totalRecords = $this->count();
+    }
+
+    /**
      * Count filtered items.
      *
      * @return int
      */
     protected function filteredCount(): int
     {
-        return $this->filteredRecords ?: $this->count();
+        return $this->filteredRecords ??= $this->count();
     }
 
     /**
