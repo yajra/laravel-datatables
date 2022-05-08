@@ -7,10 +7,10 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use Yajra\DataTables\Contracts\Formatter;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
 use Yajra\DataTables\QueryDataTable;
+use Yajra\DataTables\Tests\Formatters\DateFormatter;
 use Yajra\DataTables\Tests\Models\User;
 use Yajra\DataTables\Tests\TestCase;
 
@@ -451,24 +451,5 @@ class QueryDataTableTest extends TestCase
                              ->setFilteredRecords(10)
                              ->toJson();
         });
-    }
-}
-
-class DateFormatter implements Formatter
-{
-    protected ?string $format;
-
-    public function __construct(string $format = null)
-    {
-        $this->format = $format;
-    }
-
-    public function format($value, $row)
-    {
-        if ($this->format) {
-            return Carbon::parse($value)->format($this->format);
-        }
-
-        return Carbon::parse($value)->diffForHumans();
     }
 }

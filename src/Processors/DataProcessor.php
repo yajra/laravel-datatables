@@ -143,6 +143,7 @@ class DataProcessor
             if ($content instanceof Formatter) {
                 $column = str_replace('_formatted', '', $value['name']);
 
+                $value['content'] = $content->format($data[$column], $row);
                 if (isset($data[$column])) {
                     $value['content'] = $content->format($data[$column], $row);
                 }
