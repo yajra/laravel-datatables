@@ -91,7 +91,7 @@ class CollectionDataTable extends DataTableAbstract
      */
     public function count(): int
     {
-        return ($this->collection->count() > $this->totalRecords) ? $this->totalRecords : $this->collection->count();
+        return $this->collection->count();
     }
 
     /**
@@ -111,8 +111,6 @@ class CollectionDataTable extends DataTableAbstract
             if (! $this->request->isColumnSearchable($i) || $this->isBlacklisted($column)) {
                 continue;
             }
-
-            $this->isFilterApplied = true;
 
             $regex = $this->request->isRegex($i);
             $keyword = $this->request->columnKeyword($i);
@@ -188,16 +186,6 @@ class CollectionDataTable extends DataTableAbstract
     }
 
     /**
-     * Count total items.
-     *
-     * @return int
-     */
-    public function totalCount(): int
-    {
-        return $this->totalRecords ?: $this->collection->count();
-    }
-
-    /**
      * Get results.
      *
      * @return \Illuminate\Support\Collection<array-key, array>
@@ -254,8 +242,6 @@ class CollectionDataTable extends DataTableAbstract
         $keyword = $this->config->isCaseInsensitive() ? Str::lower($keyword) : $keyword;
 
         $this->collection = $this->collection->filter(function ($row) use ($keyword) {
-            $this->isFilterApplied = true;
-
             $data = $this->serialize($row);
             foreach ($this->request->searchableColumnIndex() as $index) {
                 $column = $this->getColumnName($index);

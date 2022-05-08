@@ -42,13 +42,6 @@ class QueryDataTable extends DataTableAbstract
     protected $limitCallback = null;
 
     /**
-     * Flag to skip total records count query.
-     *
-     * @var bool
-     */
-    protected bool $skipTotalRecords = false;
-
-    /**
      * Flag to keep the select bindings.
      *
      * @var bool
@@ -103,9 +96,7 @@ class QueryDataTable extends DataTableAbstract
     public function make($mDataSupport = true): JsonResponse
     {
         try {
-            $this->prepareQuery();
-
-            $results = $this->results();
+            $results = $this->prepareQuery()->results();
             $processed = $this->processResults($results, $mDataSupport);
             $data = $this->transform($results, $processed);
 
@@ -117,8 +108,10 @@ class QueryDataTable extends DataTableAbstract
 
     /**
      * Prepare query by executing count, filter, order and paginate.
+     *
+     * @return $this
      */
-    protected function prepareQuery(): void
+    protected function prepareQuery(): static
     {
         if (! $this->prepared) {
             $this->totalRecords = $this->totalCount();
@@ -131,22 +124,8 @@ class QueryDataTable extends DataTableAbstract
         }
 
         $this->prepared = true;
-    }
 
-    /**
-     * Count total items.
-     *
-     * @return int
-     */
-    public function totalCount(): int
-    {
-        if ($this->skipTotalRecords) {
-            $this->isFilterApplied = true;
-
-            return 1;
-        }
-
-        return $this->totalRecords ?: $this->count();
+        return  $this;
     }
 
     /**
@@ -216,19 +195,6 @@ class QueryDataTable extends DataTableAbstract
     }
 
     /**
-     * Skip total records and set the recordsTotal equals to recordsFiltered.
-     * This will improve the performance by skipping the total count query.
-     *
-     * @return $this
-     */
-    public function skipTotalRecords(): static
-    {
-        $this->skipTotalRecords = true;
-
-        return $this;
-    }
-
-    /**
      * Keep the select bindings.
      *
      * @return $this
@@ -268,8 +234,6 @@ class QueryDataTable extends DataTableAbstract
                 $keyword = $this->getColumnSearchKeyword($index);
                 $this->compileColumnSearch($index, $column, $keyword);
             }
-
-            $this->isFilterApplied = true;
         }
     }
 
@@ -628,24 +592,7 @@ class QueryDataTable extends DataTableAbstract
             } else {
                 $this->query->whereIn($column, $values);
             }
-
-            $this->isFilterApplied = true;
         }
-    }
-
-    /**
-     * Count filtered items.
-     *
-     * @return int
-     */
-    protected function filteredCount(): int
-    {
-        $this->filteredRecords = $this->filteredRecords ?: $this->count();
-        if ($this->skipTotalRecords) {
-            $this->totalRecords = $this->filteredRecords;
-        }
-
-        return $this->filteredRecords;
     }
 
     /**
@@ -769,8 +716,6 @@ class QueryDataTable extends DataTableAbstract
                     } else {
                         $this->compileQuerySearch($query, $column, $keyword);
                     }
-
-                    $this->isFilterApplied = true;
                 });
         });
     }

@@ -22,27 +22,33 @@ on:
 
 jobs:
   static-analysis-phpstan:
+
     name: "Static Analysis with PHPStan"
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: true
       matrix:
-        php-version:
-          - "8.1"
+        php: [8.1]
+        stability: [prefer-stable]
 
     steps:
-      - name: "Checkout code"
-        uses: "actions/checkout@v2"
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: "Install PHP"
-        uses: "shivammathur/setup-php@v2"
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          coverage: "none"
-          php-version: "${{ matrix.php-version }}"
-          tools: "cs2pr"
+          php-version: ${{ matrix.php }}
+          tools: composer:v2
+          coverage: none
 
-      - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v1"
+      - name: Install dependencies
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 5
+          max_attempts: 5
+          command: COMPOSER_ROOT_VERSION=dev-master composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
       - name: "Run a static analysis with phpstan/phpstan"
-        run: "vendor/bin/phpstan --error-format=checkstyle | cs2pr"
+        run: "vendor/bin/phpstan --error-format=checkstyle"
