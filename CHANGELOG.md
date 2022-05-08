@@ -8,6 +8,14 @@
 
 ### [Unreleased]
 
+### [v10.0.2] - 2022-05-08
+
+- Fix set total & filtered records count https://github.com/yajra/laravel-datatables/pull/2778
+- Fix set total & filtered records count
+- Fix #1453 #1454 #2050 #2609
+- Add feature test
+- Deprecate `skipTotalRecords`, just use `setTotalRecords` directly.
+
 ### [v10.0.1] - 2022-05-08
 
 - Code clean-up and several phpstan fixes
@@ -20,6 +28,7 @@
 - Drop support for `ApiResourceDataTable`
 - PHP8 syntax / method signature changed
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.0.1...10.x
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.0.2...10.x
+[v10.0.2]: https://github.com/yajra/laravel-datatables/compare/v10.0.2...v10.0.1
 [v10.0.1]: https://github.com/yajra/laravel-datatables/compare/v10.0.1...v10.0.0
 [v10.0.0]: https://github.com/yajra/laravel-datatables/compare/v10.0.0...10.x
