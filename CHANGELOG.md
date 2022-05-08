@@ -11,7 +11,7 @@
 ### [v9.20.0] - 2022-22-09
 
 - Added orthogonal sort and filter for collection #2380
-- 
+
 ### [v9.19.2] - 2022-04-07
 
 - Changed PHPDocs to have the most specific class as their super return type #2771
