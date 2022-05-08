@@ -30,6 +30,17 @@ class QueryDataTableTest extends TestCase
     }
 
     /** @test */
+    public function it_can_set_zero_total_records()
+    {
+        $crawler = $this->call('GET', '/zero-total-records');
+        $crawler->assertJson([
+            'draw' => 0,
+            'recordsTotal' => 0,
+            'recordsFiltered' => 20,
+        ]);
+    }
+
+    /** @test */
     public function it_can_set_total_filtered_records()
     {
         $crawler = $this->call('GET', '/set-filtered-records');
@@ -83,7 +94,7 @@ class QueryDataTableTest extends TestCase
         $crawler->assertJson([
             'draw' => 0,
             'recordsTotal' => 0,
-            'recordsFiltered' => 0,
+            'recordsFiltered' => 1,
         ]);
     }
 
@@ -426,6 +437,12 @@ class QueryDataTableTest extends TestCase
         $router->get('/set-total-records', function (DataTables $dataTable) {
             return $dataTable->query(DB::table('users'))
                              ->setTotalRecords(10)
+                             ->toJson();
+        });
+
+        $router->get('/zero-total-records', function (DataTables $dataTable) {
+            return $dataTable->query(DB::table('users'))
+                             ->setTotalRecords(0)
                              ->toJson();
         });
 
