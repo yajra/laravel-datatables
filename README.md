@@ -1,10 +1,10 @@
-# jQuery DataTables API for Laravel 4|5|6|7|8
+# jQuery DataTables API for Laravel 4|5|6|7|8|9
 
 [![Join the chat at https://gitter.im/yajra/laravel-datatables](https://badges.gitter.im/yajra/laravel-datatables.svg)](https://gitter.im/yajra/laravel-datatables?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Donate](https://img.shields.io/badge/donate-paypal-blue.svg)](https://www.paypal.me/yajra)
 [![Donate](https://img.shields.io/badge/donate-patreon-blue.svg)](https://www.patreon.com/bePatron?u=4521203)
 
-[![Laravel 4.2|5.x|6|7|8](https://img.shields.io/badge/Laravel-4.2|5.x|6|7|8-orange.svg)](http://laravel.com)
+[![Laravel 4.2|5.x|6|7|8|9](https://img.shields.io/badge/Laravel-4.2|5.x|6|7|8|9-orange.svg)](http://laravel.com)
 [![Latest Stable Version](https://img.shields.io/packagist/v/yajra/laravel-datatables-oracle.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![Latest Unstable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/unstable.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 ![Build Status](https://github.com/yajra/laravel-datatables-html/workflows/tests/badge.svg)
@@ -29,8 +29,8 @@ return datatables(User::all())->toJson();
 ```
 
 ## Requirements
-- [PHP >= 7.0](http://php.net/)
-- [Laravel 4.2|5.x|6|7|8](https://github.com/laravel/framework)
+- [PHP >= 7.1](http://php.net/)
+- [Laravel 4.2|5.x|6|7|8|9](https://github.com/laravel/framework)
 - [jQuery DataTables v1.10.x](http://datatables.net/)
 
 ## Documentations
@@ -61,6 +61,7 @@ return datatables(User::all())->toJson();
  6.x.x    | 9.x
  7.x.x    | 9.x
  8.x.x    | 9.x
+ 9.x.x    | 9.x
 
 ## DataTables 8.x Upgrade Guide
 There are breaking changes since DataTables v8.x.

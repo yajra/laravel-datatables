@@ -62,7 +62,7 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Can the DataTable engine be created with these parameters.
      *
-     * @param mixed $source
+     * @param  mixed  $source
      * @return bool
      */
     public static function canCreate($source)
@@ -71,7 +71,7 @@ class QueryDataTable extends DataTableAbstract
     }
 
     /**
-     * @param \Illuminate\Database\Query\Builder $builder
+     * @param  \Illuminate\Database\Query\Builder  $builder
      */
     public function __construct(Builder $builder)
     {
@@ -88,8 +88,9 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Organizes works.
      *
-     * @param bool $mDataSupport
+     * @param  bool  $mDataSupport
      * @return \Illuminate\Http\JsonResponse
+     *
      * @throws \Exception
      */
     public function make($mDataSupport = true)
@@ -210,12 +211,7 @@ class QueryDataTable extends DataTableAbstract
      */
     public function count()
     {
-        $builder = $this->prepareCountQuery();
-        $table   = $this->connection->raw('(' . $builder->toSql() . ') count_row_table');
-
-        return $this->connection->table($table)
-                                ->setBindings($builder->getBindings())
-                                ->count();
+        return $this->prepareCountQuery()->count();
     }
 
     /**
@@ -223,16 +219,21 @@ class QueryDataTable extends DataTableAbstract
      *
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    protected function prepareCountQuery()
+    public function prepareCountQuery()
     {
         $builder = clone $this->query;
 
-        if (! $this->isComplexQuery($builder)) {
-            $row_count = $this->wrap('row_count');
-            $builder->select($this->connection->raw("'1' as {$row_count}"));
-            if (! $this->keepSelectBindings) {
-                $builder->setBindings([], 'select');
-            }
+        if ($this->isComplexQuery($builder)) {
+            $table = $this->connection->raw('('.$builder->toSql().') count_row_table');
+
+            return $this->connection->table($table)
+                ->setBindings($builder->getBindings());
+        }
+
+        $row_count = $this->wrap('row_count');
+        $builder->select($this->connection->raw("'1' as {$row_count}"));
+        if (! $this->keepSelectBindings) {
+            $builder->setBindings([], 'select');
         }
 
         return $builder;
@@ -241,7 +242,7 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Check if builder query uses complex sql.
      *
-     * @param \Illuminate\Database\Query\Builder $builder
+     * @param  \Illuminate\Database\Query\Builder  $builder
      * @return bool
      */
     protected function isComplexQuery($builder)
@@ -252,7 +253,7 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Wrap column with DB grammar.
      *
-     * @param string $column
+     * @param  string  $column
      * @return string
      */
     protected function wrap($column)
@@ -309,7 +310,7 @@ class QueryDataTable extends DataTableAbstract
             }
 
             if ($this->hasFilterColumn($column)) {
-                $keyword = $this->getColumnSearchKeyword($index, $raw = true);
+                $keyword = $this->getColumnSearchKeyword($index, true);
                 $this->applyFilterColumn($this->getBaseQueryBuilder(), $column, $keyword);
             } else {
                 $column  = $this->resolveRelationColumn($column);
@@ -324,7 +325,7 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Check if column has custom filter handler.
      *
-     * @param  string $columnName
+     * @param  string  $columnName
      * @return bool
      */
     public function hasFilterColumn($columnName)
@@ -335,8 +336,8 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Get column keyword to use for search.
      *
-     * @param int  $i
-     * @param bool $raw
+     * @param  int  $i
+     * @param  bool  $raw
      * @return string
      */
     protected function getColumnSearchKeyword($i, $raw = false)
@@ -352,10 +353,10 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Apply filterColumn api search.
      *
-     * @param mixed  $query
-     * @param string $columnName
-     * @param string $keyword
-     * @param string $boolean
+     * @param  mixed  $query
+     * @param  string  $columnName
+     * @param  string  $keyword
+     * @param  string  $boolean
      */
     protected function applyFilterColumn($query, $columnName, $keyword, $boolean = 'and')
     {
@@ -376,7 +377,7 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Get the base query builder instance.
      *
-     * @param mixed $instance
+     * @param  mixed  $instance
      * @return \Illuminate\Database\Query\Builder
      */
     protected function getBaseQueryBuilder($instance = null)
@@ -395,7 +396,7 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Resolve the proper column name be used.
      *
-     * @param string $column
+     * @param  string  $column
      * @return string
      */
     protected function resolveRelationColumn($column)
@@ -406,9 +407,9 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Compile queries for column search.
      *
-     * @param int    $i
-     * @param string $column
-     * @param string $keyword
+     * @param  int  $i
+     * @param  string  $column
+     * @param  string  $keyword
      */
     protected function compileColumnSearch($i, $column, $keyword)
     {
@@ -422,8 +423,8 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Compile regex query column search.
      *
-     * @param mixed  $column
-     * @param string $keyword
+     * @param  mixed  $column
+     * @param  string  $keyword
      */
     protected function regexColumnSearch($column, $keyword)
     {
@@ -454,7 +455,7 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Wrap a column and cast based on database driver.
      *
-     * @param  string $column
+     * @param  string  $column
      * @return string
      */
     protected function castColumn($column)
@@ -472,10 +473,10 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Compile query builder where clause depending on configurations.
      *
-     * @param mixed  $query
-     * @param string $column
-     * @param string $keyword
-     * @param string $boolean
+     * @param  mixed  $query
+     * @param  string  $column
+     * @param  string  $keyword
+     * @param  string  $boolean
      */
     protected function compileQuerySearch($query, $column, $keyword, $boolean = 'or')
     {
@@ -494,8 +495,8 @@ class QueryDataTable extends DataTableAbstract
      * Patch for fix about ambiguous field.
      * Ambiguous field error will appear when query use join table and search with keyword.
      *
-     * @param mixed  $query
-     * @param string $column
+     * @param  mixed  $query
+     * @param  string  $column
      * @return string
      */
     protected function addTablePrefix($query, $column)
@@ -513,7 +514,7 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Prepare search keyword based on configurations.
      *
-     * @param string $keyword
+     * @param  string  $keyword
      * @return string
      */
     protected function prepareKeyword($keyword)
@@ -540,8 +541,8 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Add custom filter handler for the give column.
      *
-     * @param string   $column
-     * @param callable $callback
+     * @param  string  $column
+     * @param  callable  $callback
      * @return $this
      */
     public function filterColumn($column, callable $callback)
@@ -554,9 +555,9 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Order each given columns versus the given custom sql.
      *
-     * @param array  $columns
-     * @param string $sql
-     * @param array  $bindings
+     * @param  array  $columns
+     * @param  string  $sql
+     * @param  array  $bindings
      * @return $this
      */
     public function orderColumns(array $columns, $sql, $bindings = [])
@@ -571,10 +572,11 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Override default column ordering.
      *
-     * @param string $column
-     * @param string $sql
-     * @param array  $bindings
+     * @param  string  $column
+     * @param  string|\Closure  $sql
+     * @param  array  $bindings
      * @return $this
+     *
      * @internal string $1 Special variable that returns the requested order direction of the column.
      */
     public function orderColumn($column, $sql, $bindings = [])
@@ -600,7 +602,7 @@ class QueryDataTable extends DataTableAbstract
      * Paginate dataTable using limit without offset
      * with additional where clause via callback.
      *
-     * @param callable $callback
+     * @param  callable  $callback
      * @return $this
      */
     public function limit(callable $callback)
@@ -629,9 +631,9 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Add column in collection.
      *
-     * @param string          $name
-     * @param string|callable $content
-     * @param bool|int        $order
+     * @param  string  $name
+     * @param  string|callable  $content
+     * @param  bool|int  $order
      * @return $this
      */
     public function addColumn($name, $content, $order = false)
@@ -682,7 +684,7 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Check if column has custom sort handler.
      *
-     * @param string $column
+     * @param  string  $column
      * @return bool
      */
     protected function hasOrderColumn($column)
@@ -693,8 +695,8 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Apply orderColumn custom query.
      *
-     * @param string $column
-     * @param array $orderable
+     * @param  string  $column
+     * @param  array  $orderable
      */
     protected function applyOrderColumn($column, $orderable)
     {
@@ -715,8 +717,8 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Get NULLS LAST SQL.
      *
-     * @param  string $column
-     * @param  string $direction
+     * @param  string  $column
+     * @param  string  $direction
      * @return string
      */
     protected function getNullsLastSql($column, $direction)
@@ -733,7 +735,7 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Perform global search for the given keyword.
      *
-     * @param string $keyword
+     * @param  string  $keyword
      */
     protected function globalSearch($keyword)
     {
@@ -760,14 +762,16 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Append debug parameters on output.
      *
-     * @param  array $output
+     * @param  array  $output
      * @return array
      */
     protected function showDebugger(array $output)
     {
         $query_log = $this->connection->getQueryLog();
-        array_walk_recursive($query_log, function (&$item, $key) {
-            $item = utf8_encode($item);
+        array_walk_recursive($query_log, function (&$item) {
+            if (is_string($item)) {
+                $item = utf8_encode($item);
+            }
         });
 
         $output['queries'] = $query_log;
@@ -779,7 +783,7 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Attach custom with meta on response.
      *
-     * @param array $data
+     * @param  array  $data
      * @return array
      */
     protected function attachAppends(array $data)
