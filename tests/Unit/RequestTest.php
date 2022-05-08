@@ -7,7 +7,16 @@ use Yajra\DataTables\Utilities\Request;
 
 class RequestTest extends TestCase
 {
-    public function test_is_searchable()
+    /** @test */
+    public function it_can_get_the_base_request()
+    {
+        $request = $this->getRequest();
+
+        $this->assertInstanceOf(\Illuminate\Http\Request::class, $request->getBaseRequest());
+    }
+
+    /** @test */
+    public function it_is_searchable()
     {
         $_GET['search']['value'] = '';
         request()->merge($_GET);
@@ -25,7 +34,8 @@ class RequestTest extends TestCase
         $this->assertTrue($request->isSearchable());
     }
 
-    public function test_column_keyword()
+    /** @test */
+    public function it_can_get_column_keyword()
     {
         $_GET['columns'] = [];
         $_GET['columns'][] = [
@@ -45,19 +55,20 @@ class RequestTest extends TestCase
         $this->assertEquals('bar', $request->columnKeyword(1));
     }
 
-    public function test_orderable_columns()
+    /** @test */
+    public function it_has_orderable_columns()
     {
         $_GET['columns'] = [];
         $_GET['columns'][] = [
             'orderable' => 'true',
-            'search'    => [
+            'search' => [
                 'value' => 'foo',
             ],
         ];
         $_GET['order'] = [];
         $_GET['order'][] = [
             'column' => 0,
-            'dir'    => 'asc',
+            'dir' => 'asc',
         ];
         request()->merge($_GET);
         $request = $this->getRequest();
@@ -69,19 +80,20 @@ class RequestTest extends TestCase
         $this->assertTrue($request->isColumnOrderable(0));
     }
 
-    public function test_orderable_columns_will_set_descending_on_other_values()
+    /** @test */
+    public function it_has_will_set_descending_on_other_values_on_orderable_columns()
     {
         $_GET['columns'] = [];
         $_GET['columns'][] = [
             'orderable' => 'true',
-            'search'    => [
+            'search' => [
                 'value' => 'foo',
             ],
         ];
         $_GET['order'] = [];
         $_GET['order'][] = [
             'column' => 0,
-            'dir'    => 'bar',
+            'dir' => 'bar',
         ];
         request()->merge($_GET);
         $request = $this->getRequest();
@@ -93,7 +105,8 @@ class RequestTest extends TestCase
         $this->assertTrue($request->isColumnOrderable(0));
     }
 
-    public function test_searchable_column_index()
+    /** @test */
+    public function it_has_searchable_column_index()
     {
         $_GET['columns'] = [];
         $_GET['columns'][] = ['name' => 'foo', 'searchable' => 'true', 'search' => ['value' => 'foo']];
@@ -112,7 +125,8 @@ class RequestTest extends TestCase
         $this->assertEquals('bar', $request->columnName(1));
     }
 
-    public function test_keyword()
+    /** @test */
+    public function it_has_keyword()
     {
         $_GET['search'] = [];
         $_GET['search'] = ['value' => 'foo'];
@@ -121,7 +135,8 @@ class RequestTest extends TestCase
         $this->assertEquals('foo', $request->keyword());
     }
 
-    public function test_is_paginationable()
+    /** @test */
+    public function it_is_paginationable()
     {
         $_GET['start'] = 1;
         $_GET['length'] = 10;
@@ -147,8 +162,6 @@ class RequestTest extends TestCase
      */
     protected function getRequest()
     {
-        $request = new Request();
-
-        return $request;
+        return new Request();
     }
 }

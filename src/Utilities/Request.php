@@ -3,7 +3,6 @@
 namespace Yajra\DataTables\Utilities;
 
 use Illuminate\Http\Request as BaseRequest;
-use Yajra\DataTables\Exceptions\Exception;
 
 /**
  * @mixin \Illuminate\Http\Request
@@ -54,7 +53,7 @@ class Request
      *
      * @return array
      */
-    public function columns()
+    public function columns(): array
     {
         return (array) $this->request->input('columns');
     }
@@ -64,7 +63,7 @@ class Request
      *
      * @return bool
      */
-    public function isSearchable()
+    public function isSearchable(): bool
     {
         return $this->request->input('search.value') != '';
     }
@@ -75,7 +74,7 @@ class Request
      * @param  int  $index
      * @return bool
      */
-    public function isRegex($index)
+    public function isRegex(int $index): bool
     {
         return $this->request->input("columns.$index.search.regex") === 'true';
     }
@@ -85,7 +84,7 @@ class Request
      *
      * @return array
      */
-    public function orderableColumns()
+    public function orderableColumns(): array
     {
         if (! $this->isOrderable()) {
             return [];
@@ -113,7 +112,7 @@ class Request
      *
      * @return bool
      */
-    public function isOrderable()
+    public function isOrderable(): bool
     {
         return $this->request->input('order') && count((array) $this->request->input('order')) > 0;
     }
@@ -124,7 +123,7 @@ class Request
      * @param  int  $index
      * @return bool
      */
-    public function isColumnOrderable($index)
+    public function isColumnOrderable(int $index): bool
     {
         return $this->request->input("columns.$index.orderable", 'true') == 'true';
     }
@@ -133,8 +132,6 @@ class Request
      * Get searchable column indexes.
      *
      * @return array
-     *
-     * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public function searchableColumnIndex()
     {
@@ -155,10 +152,8 @@ class Request
      * @param  int  $i
      * @param  bool  $column_search
      * @return bool
-     *
-     * @throws \Yajra\DataTables\Exceptions\Exception
      */
-    public function isColumnSearchable($i, $column_search = true)
+    public function isColumnSearchable(int $i, bool $column_search = true): bool
     {
         if ($column_search) {
             return
@@ -181,11 +176,10 @@ class Request
      *
      * @param  int  $index
      * @return string
-     *
-     * @throws \Yajra\DataTables\Exceptions\Exception
      */
-    public function columnKeyword($index): string
+    public function columnKeyword(int $index): string
     {
+        /** @var string $keyword */
         $keyword = $this->request->input("columns.$index.search.value") ?? '';
 
         return $this->prepareKeyword($keyword);
@@ -194,40 +188,33 @@ class Request
     /**
      * Prepare keyword string value.
      *
-     * @param  mixed  $keyword
+     * @param  float|array|int|string  $keyword
      * @return string
-     *
-     * @throws \Yajra\DataTables\Exceptions\Exception
      */
-    protected function prepareKeyword($keyword): string
+    protected function prepareKeyword(float|array|int|string $keyword): string
     {
         if (is_array($keyword)) {
             return implode(' ', $keyword);
         }
 
-        if (is_string($keyword)) {
-            return $keyword;
-        }
-
-        throw new Exception('Invalid keyword value.');
+        return (string) $keyword;
     }
 
     /**
      * Get global search keyword.
      *
      * @return string
-     *
-     * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public function keyword(): string
     {
+        /** @var string $keyword */
         $keyword = $this->request->input('search.value') ?? '';
 
         return $this->prepareKeyword($keyword);
     }
 
     /**
-     * Get column identity from input or database.
+     * Get column name by index.
      *
      * @param  int  $i
      * @return string|null
@@ -260,6 +247,11 @@ class Request
         return $this->request;
     }
 
+    /**
+     * Get starting record value.
+     *
+     * @return int
+     */
     public function start(): int
     {
         /** @var int $start */
@@ -268,6 +260,11 @@ class Request
         return $start;
     }
 
+    /**
+     * Get per page length.
+     *
+     * @return int
+     */
     public function length(): int
     {
         /** @var int $length */
@@ -276,6 +273,11 @@ class Request
         return $length;
     }
 
+    /**
+     * Get draw request.
+     *
+     * @return int
+     */
     public function draw(): int
     {
         /** @var int $draw */
