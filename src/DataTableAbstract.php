@@ -550,6 +550,7 @@ abstract class DataTableAbstract implements DataTable
      * This will improve the performance by skipping the total count query.
      *
      * @return $this
+     *
      * @deprecated Just use setTotalRecords instead.
      */
     public function skipTotalRecords(): static
