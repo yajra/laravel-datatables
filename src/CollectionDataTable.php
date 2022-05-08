@@ -231,7 +231,7 @@ class CollectionDataTable extends DataTableAbstract
             $data = $this->serialize($row);
             foreach ($this->request->searchableColumnIndex() as $index) {
                 $column = $this->getColumnName($index, 'sort');
-                $value = Arr::get($data, $column);
+                $value  = Arr::get($data, $column);
                 if (! $value || is_array($value)) {
                     if (! is_numeric($value)) {
                         continue;

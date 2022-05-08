@@ -939,9 +939,9 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     /**
      * Get column name to be use for filtering and sorting.
      *
-     * @param int  $index
-     * @param string|null $type
-     * @param bool $wantsAlias
+     * @param  int  $index
+     * @param  string|null  $type
+     * @param  bool  $wantsAlias
      * @return string
      */
     protected function getColumnName($index, $type = null, $wantsAlias = false)

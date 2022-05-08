@@ -205,8 +205,8 @@ class Request
     /**
      * Get column identity from input or database.
      *
-     * @param int $i
-     * @param string|null $type
+     * @param  int  $i
+     * @param  string|null  $type
      * @return string
      */
     public function columnName($i, $type = null)
