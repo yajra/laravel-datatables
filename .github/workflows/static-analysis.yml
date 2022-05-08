@@ -31,15 +31,15 @@ jobs:
           - "8.1"
 
     steps:
-      - name: "Checkout code"
-        uses: "actions/checkout@v2"
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: "Install PHP"
-        uses: "shivammathur/setup-php@v2"
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          coverage: "none"
-          php-version: "${{ matrix.php-version }}"
-          tools: "cs2pr"
+          php-version: ${{ matrix.php }}
+          tools: composer:v2
+          coverage: none
 
       - name: Install dependencies
         uses: nick-invision/retry@v1
@@ -49,4 +49,4 @@ jobs:
           command: COMPOSER_ROOT_VERSION=dev-master composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
       - name: "Run a static analysis with phpstan/phpstan"
-        run: "vendor/bin/phpstan --error-format=checkstyle | cs2pr"
+        run: "vendor/bin/phpstan --error-format=checkstyle"
