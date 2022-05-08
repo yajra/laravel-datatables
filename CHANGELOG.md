@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v10.0.1] - 2022-05-08
+
+- Code clean-up and several phpstan fixes
+
 ### [v10.0.0] - 2022-05-08
 
 - Laravel DataTables v10.x to support Laravel 9.x
@@ -16,5 +20,6 @@
 - Drop support for `ApiResourceDataTable`
 - PHP8 syntax / method signature changed
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.0.0...10.x
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.0.1...10.x
+[v10.0.1]: https://github.com/yajra/laravel-datatables/compare/v10.0.1...v10.0.0
 [v10.0.0]: https://github.com/yajra/laravel-datatables/compare/v10.0.0...10.x
