@@ -219,9 +219,9 @@ class QueryDataTable extends DataTableAbstract
      * Skip total records and set the recordsTotal equals to recordsFiltered.
      * This will improve the performance by skipping the total count query.
      *
-     * @return static
+     * @return $this
      */
-    public function skipTotalRecords(): self
+    public function skipTotalRecords(): static
     {
         $this->skipTotalRecords = true;
 
@@ -231,9 +231,9 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Keep the select bindings.
      *
-     * @return static
+     * @return $this
      */
-    public function keepSelectBindings(): self
+    public function keepSelectBindings(): static
     {
         $this->keepSelectBindings = true;
 
@@ -501,9 +501,9 @@ class QueryDataTable extends DataTableAbstract
      *
      * @param  string  $column
      * @param  callable  $callback
-     * @return static
+     * @return $this
      */
-    public function filterColumn($column, callable $callback): self
+    public function filterColumn($column, callable $callback): static
     {
         $this->columnDef['filter'][$column] = ['method' => $callback];
 
@@ -516,9 +516,9 @@ class QueryDataTable extends DataTableAbstract
      * @param  array  $columns
      * @param  string  $sql
      * @param  array  $bindings
-     * @return static
+     * @return $this
      */
-    public function orderColumns(array $columns, $sql, $bindings = []): self
+    public function orderColumns(array $columns, $sql, $bindings = []): static
     {
         foreach ($columns as $column) {
             $this->orderColumn($column, str_replace(':column', $column, $sql), $bindings);
@@ -533,11 +533,11 @@ class QueryDataTable extends DataTableAbstract
      * @param  string  $column
      * @param  string|\Closure  $sql
      * @param  array  $bindings
-     * @return static
+     * @return $this
      *
      * @internal string $1 Special variable that returns the requested order direction of the column.
      */
-    public function orderColumn($column, $sql, $bindings = []): self
+    public function orderColumn($column, $sql, $bindings = []): static
     {
         $this->columnDef['order'][$column] = compact('sql', 'bindings');
 
@@ -547,9 +547,9 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Set datatables to do ordering with NULLS LAST option.
      *
-     * @return static
+     * @return $this
      */
-    public function orderByNullsLast(): self
+    public function orderByNullsLast(): static
     {
         $this->nullsLast = true;
 
@@ -561,9 +561,9 @@ class QueryDataTable extends DataTableAbstract
      * with additional where clause via callback.
      *
      * @param  callable  $callback
-     * @return static
+     * @return $this
      */
-    public function limit(callable $callback): self
+    public function limit(callable $callback): static
     {
         $this->limitCallback = $callback;
 
@@ -596,9 +596,9 @@ class QueryDataTable extends DataTableAbstract
      * @param  string  $name
      * @param  string|callable  $content
      * @param  bool|int  $order
-     * @return static
+     * @return $this
      */
-    public function addColumn($name, $content, $order = false): self
+    public function addColumn($name, $content, $order = false): static
     {
         $this->pushToBlacklist($name);
 
