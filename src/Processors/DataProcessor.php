@@ -189,19 +189,18 @@ class DataProcessor
     {
         if (is_null($this->onlyColumns)) {
             return $data;
-        } else {
-            $results = [];
-            foreach ($this->onlyColumns as $onlyColumn) {
-                Arr::set($results, $onlyColumn, Arr::get($data, $onlyColumn));
-            }
-            foreach ($this->exceptions as $exception) {
-                if ($column = Arr::get($data, $exception)) {
-                    Arr::set($results, $exception, $column);
-                }
-            }
-
-            return $results;
         }
+        $results = [];
+        foreach ($this->onlyColumns as $onlyColumn) {
+            Arr::set($results, $onlyColumn, Arr::get($data, $onlyColumn));
+        }
+        foreach ($this->exceptions as $exception) {
+            if ($column = Arr::get($data, $exception)) {
+                Arr::set($results, $exception, $column);
+            }
+        }
+
+        return $results;
     }
 
     /**

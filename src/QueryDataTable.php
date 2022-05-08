@@ -674,8 +674,8 @@ class QueryDataTable extends DataTableAbstract
                     $this->applyOrderColumn($column, $orderable);
                 } else {
                     $nullsLastSql = $this->getNullsLastSql($column, $orderable['direction']);
-                    $normalSql = $this->wrap($column) . ' ' . $orderable['direction'];
-                    $sql = $this->nullsLast ? $nullsLastSql : $normalSql;
+                    $normalSql    = $this->wrap($column) . ' ' . $orderable['direction'];
+                    $sql          = $this->nullsLast ? $nullsLastSql : $normalSql;
                     $this->query->orderByRaw($sql);
                 }
             });
