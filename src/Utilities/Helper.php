@@ -337,7 +337,7 @@ class Helper
         return str_replace($replacements, $values, $json);
     }
 
-    public static function isJavascript(string|array|object $value, string $key): bool
+    public static function isJavascript(string|array|object|null $value, string $key): bool
     {
         if (empty($value) || is_array($value) || is_object($value)) {
             return false;
