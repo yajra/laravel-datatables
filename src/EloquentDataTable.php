@@ -20,17 +20,14 @@ class EloquentDataTable extends QueryDataTable
     /**
      * EloquentEngine constructor.
      *
-     * @param  \Illuminate\Database\Eloquent\Model|EloquentBuilder  $model
-     *
-     * @throws \Yajra\DataTables\Exceptions\Exception
+     * @param  Model|EloquentBuilder  $model
      */
-    public function __construct($model)
+    public function __construct(Model|EloquentBuilder $model)
     {
         $builder = match (true) {
             $model instanceof Model => $model->newQuery(),
             $model instanceof Relation => $model->getQuery(),
             $model instanceof EloquentBuilder => $model,
-            default => throw new Exception('Invalid model type. Must be an instance of Eloquent Model, Eloquent Relation, or Eloquent Builder.'),
         };
 
         parent::__construct($builder->getQuery());
