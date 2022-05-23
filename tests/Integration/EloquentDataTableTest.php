@@ -121,6 +121,17 @@ class EloquentDataTableTest extends TestCase
         $this->assertEquals(Carbon::parse($user->created_at)->format('Y-m-d'), $data['created_at_formatted']);
     }
 
+    /** @test */
+    public function it_accepts_a_relation()
+    {
+        $user = User::first();
+
+        $dataTable = app('datatables')->eloquent($user->posts());
+        $response = $dataTable->toJson();
+        $this->assertInstanceOf(EloquentDataTable::class, $dataTable);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();

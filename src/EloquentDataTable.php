@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Yajra\DataTables\Exceptions\Exception;
 
 /**
@@ -19,22 +20,15 @@ class EloquentDataTable extends QueryDataTable
     /**
      * EloquentEngine constructor.
      *
-     * @param  \Illuminate\Database\Eloquent\Model|EloquentBuilder  $model
-     *
-     * @throws \Yajra\DataTables\Exceptions\Exception
+     * @param  Model|EloquentBuilder  $model
      */
-    public function __construct($model)
+    public function __construct(Model|EloquentBuilder $model)
     {
-        switch ($model) {
-            case $model instanceof Model:
-                $builder = $model->newQuery();
-                break;
-            case $model instanceof EloquentBuilder:
-                $builder = $model;
-                break;
-            default:
-                throw new Exception('Invalid model type. Must be an instance of Eloquent Model or Eloquent Builder.');
-        }
+        $builder = match (true) {
+            $model instanceof Model => $model->newQuery(),
+            $model instanceof Relation => $model->getQuery(),
+            $model instanceof EloquentBuilder => $model,
+        };
 
         parent::__construct($builder->getQuery());
 
@@ -100,10 +94,13 @@ class EloquentDataTable extends QueryDataTable
         }
 
         if ($this->isMorphRelation($relation)) {
-            $query->{$boolean.'WhereHasMorph'}($relation, '*',
+            $query->{$boolean.'WhereHasMorph'}(
+                $relation,
+                '*',
                 function (EloquentBuilder $query) use ($newColumn, $keyword) {
                     parent::compileQuerySearch($query, $newColumn, $keyword, '');
-                });
+                }
+            );
         } else {
             $query->{$boolean.'WhereHas'}($relation, function (EloquentBuilder $query) use ($newColumn, $keyword) {
                 parent::compileQuerySearch($query, $newColumn, $keyword, '');
