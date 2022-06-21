@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v10.1.0] - 2022-06-21
+
+- Add support for dependency injection when using closure. #2800
+
 ### [v10.0.8] - 2022-06-21
 
 - Make canCreate at QueryDataTable accept QueryBuilder only #2798
@@ -53,7 +57,8 @@
 - Drop support for `ApiResourceDataTable`
 - PHP8 syntax / method signature changed
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.0.8...10.x
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.1.0...10.x
+[v10.1.0]: https://github.com/yajra/laravel-datatables/compare/v10.1.0...v10.0.8
 [v10.0.8]: https://github.com/yajra/laravel-datatables/compare/v10.0.8...v10.0.7
 [v10.0.7]: https://github.com/yajra/laravel-datatables/compare/v10.0.7...v10.0.6
 [v10.0.6]: https://github.com/yajra/laravel-datatables/compare/v10.0.6...v10.0.5
