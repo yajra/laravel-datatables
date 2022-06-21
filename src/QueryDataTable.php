@@ -82,7 +82,7 @@ class QueryDataTable extends DataTableAbstract
      */
     public static function canCreate($source): bool
     {
-        return $source instanceof QueryBuilder;
+        return $source instanceof QueryBuilder && ! ($source instanceof EloquentBuilder);
     }
 
     /**
