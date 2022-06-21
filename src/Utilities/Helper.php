@@ -60,6 +60,7 @@ class Helper
      * @param  array  $data  data to use with blade template
      * @param  array|object  $param  parameter to call with callable
      * @return mixed
+     *
      * @throws \ReflectionException
      */
     public static function compileContent($content, array $data, array|object $param)
