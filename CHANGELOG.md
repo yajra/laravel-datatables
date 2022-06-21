@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v10.0.8] - 2022-06-21
+
+- Make canCreate at QueryDataTable accept QueryBuilder only #2798
+
 ### [v10.0.7] - 2022-05-23
 
 - Fix create eloquent datatable from relation #2789
@@ -49,7 +53,8 @@
 - Drop support for `ApiResourceDataTable`
 - PHP8 syntax / method signature changed
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.0.7...10.x
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.0.8...10.x
+[v10.0.8]: https://github.com/yajra/laravel-datatables/compare/v10.0.8...v10.0.7
 [v10.0.7]: https://github.com/yajra/laravel-datatables/compare/v10.0.7...v10.0.6
 [v10.0.6]: https://github.com/yajra/laravel-datatables/compare/v10.0.6...v10.0.5
 [v10.0.5]: https://github.com/yajra/laravel-datatables/compare/v10.0.5...v10.0.4
