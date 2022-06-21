@@ -339,6 +339,26 @@ class QueryDataTableTest extends TestCase
         $this->assertEquals(Carbon::parse($user->created_at)->format('Y-m-d'), $data['created_at_formatted']);
     }
 
+    /** @test */
+    public function it_can_return_added_column_with_dependency_injection()
+    {
+        $crawler = $this->call('GET', '/closure-di');
+
+        $crawler->assertJson([
+            'draw' => 0,
+            'recordsTotal' => 20,
+            'recordsFiltered' => 20,
+        ]);
+
+        $user = DB::table('users')->find(1);
+        $data = $crawler->json('data')[0];
+
+        $this->assertTrue(isset($data['name']));
+        $this->assertTrue(isset($data['name_di']));
+
+        $this->assertEquals($user->name.'_di', $data['name_di']);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -449,6 +469,14 @@ class QueryDataTableTest extends TestCase
         $router->get('/set-filtered-records', function (DataTables $dataTable) {
             return $dataTable->query(DB::table('users'))
                              ->setFilteredRecords(10)
+                             ->toJson();
+        });
+
+        $router->get('/closure-di', function (DataTables $dataTable) {
+            return $dataTable->query(DB::table('users'))
+                             ->addColumn('name_di', function ($user, User $u) {
+                                 return $u->newQuery()->find($user->id)->name.'_di';
+                             })
                              ->toJson();
         });
     }
