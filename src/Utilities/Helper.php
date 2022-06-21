@@ -67,7 +67,7 @@ class Helper
 
         if (is_callable($content)) {
             $reflection = new \ReflectionFunction($content);
-            $arguments  = $reflection->getParameters();
+            $arguments = $reflection->getParameters();
 
             if (count($arguments) > 0) {
                 return app()->call($content, [$arguments[0]->name => $param]);
