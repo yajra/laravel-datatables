@@ -2,10 +2,12 @@
 
 namespace Yajra\DataTables\Utilities;
 
+use Closure;
 use DateTime;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use ReflectionFunction;
 
 class Helper
 {
@@ -58,12 +60,23 @@ class Helper
      * @param  array  $data  data to use with blade template
      * @param  array|object  $param  parameter to call with callable
      * @return mixed
+     *
+     * @throws \ReflectionException
      */
     public static function compileContent($content, array $data, array|object $param)
     {
         if (is_string($content)) {
             return static::compileBlade($content, static::getMixedValue($data, $param));
-        } elseif (is_callable($content)) {
+        }
+
+        if ($content instanceof Closure) {
+            $reflection = new ReflectionFunction($content);
+            $arguments = $reflection->getParameters();
+
+            if (count($arguments) > 0) {
+                return app()->call($content, [$arguments[0]->name => $param]);
+            }
+
             return $content($param);
         }
 
