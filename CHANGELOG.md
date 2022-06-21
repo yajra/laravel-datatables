@@ -8,7 +8,11 @@
 
 ### [Unreleased]
 
-### [v9.20.0] - 2022-22-09
+### [v9.21.0] - 2022-06-21
+
+- Add support for dependency injection when using closure. #2521
+
+### [v9.20.0] - 2022-05-09
 
 - Added orthogonal sort and filter for collection #2380
 
@@ -494,7 +498,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.20.0...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.21.0...9.0
+[v9.21.0]: https://github.com/yajra/laravel-datatables/compare/v9.20.0...v9.21.0
 [v9.20.0]: https://github.com/yajra/laravel-datatables/compare/v9.19.1...v9.20.0
 [v9.19.1]: https://github.com/yajra/laravel-datatables/compare/v9.19.1...v9.19.1
 [v9.19.0]: https://github.com/yajra/laravel-datatables/compare/v9.18.2...v9.19.0
