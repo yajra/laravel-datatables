@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v9.21.1] - 2022-06-22
+
+- Fix sorting and pagination on empty records #2803
+
 ### [v9.21.0] - 2022-06-21
 
 - Add support for dependency injection when using closure. #2521
@@ -498,7 +502,8 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.21.0...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.21.1...9.0
+[v9.21.1]: https://github.com/yajra/laravel-datatables/compare/v9.21.0...v9.21.1
 [v9.21.0]: https://github.com/yajra/laravel-datatables/compare/v9.20.0...v9.21.0
 [v9.20.0]: https://github.com/yajra/laravel-datatables/compare/v9.19.1...v9.20.0
 [v9.19.1]: https://github.com/yajra/laravel-datatables/compare/v9.19.1...v9.19.1
