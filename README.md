@@ -22,6 +22,21 @@ return datatables(User::query())->toJson();
 return datatables(DB::table('users'))->toJson();
 return datatables(User::all())->toJson();
 ```
+## Sponsors
+
+<a href="https://editor.datatables.net?utm_source=laravel-datatables&utm_medium=github_readme&utm_campaign=logo">
+    <img src="http://datatables.net/media/images/logo.png" alt="DataTables" height="64">
+</a>
+
+<a href="https://jb.gg/OpenSourceSupport">
+    <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" alt="JetBrains.com" height="128">
+</a>
+
+<a href="https://blackfire.io/docs/introduction?utm_source=laravel-datatables&utm_medium=github_readme&utm_campaign=logo">
+    <img src="https://i.imgur.com/zR8rsqk.png" alt="Blackfire.io" height="64">
+</a>
+
+
 
 ## Requirements
 - [PHP >= 8.0.2](http://php.net/)
