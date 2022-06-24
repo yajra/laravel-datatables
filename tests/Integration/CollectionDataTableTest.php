@@ -26,6 +26,19 @@ class CollectionDataTableTest extends TestCase
     }
 
     /** @test */
+    public function it_returns_zero_filtered_records_on_empty_collection()
+    {
+        $crawler = $this->call('GET', '/collection/empty');
+        $crawler->assertExactJson([
+            "data" => [],
+            "draw" => 0,
+            "input" => [],
+            'recordsTotal'    => 0,
+            'recordsFiltered' => 0,
+        ]);
+    }
+
+    /** @test */
     public function it_can_perform_global_search()
     {
         $crawler = $this->call('GET', '/collection/users', [
@@ -241,6 +254,10 @@ class CollectionDataTableTest extends TestCase
 
         $this->app['router']->get('/collection/users', function (DataTables $datatables) {
             return $datatables->collection(User::all())->toJson();
+        });
+
+        $this->app['router']->get('/collection/empty', function (DataTables $datatables) {
+            return $datatables->collection([])->toJson();
         });
     }
 }

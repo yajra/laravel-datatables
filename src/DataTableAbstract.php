@@ -869,7 +869,7 @@ abstract class DataTableAbstract implements DataTable
         $output = $this->attachAppends([
             'draw' => $this->request->draw(),
             'recordsTotal' => $this->totalRecords,
-            'recordsFiltered' => $this->filteredRecords,
+            'recordsFiltered' => $this->filteredRecords ?? 0,
             'data' => $data,
         ]);
 
