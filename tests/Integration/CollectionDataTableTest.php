@@ -30,9 +30,9 @@ class CollectionDataTableTest extends TestCase
     {
         $crawler = $this->call('GET', '/collection/empty');
         $crawler->assertExactJson([
-            "data" => [],
-            "draw" => 0,
-            "input" => [],
+            'data' => [],
+            'draw' => 0,
+            'input' => [],
             'recordsTotal'    => 0,
             'recordsFiltered' => 0,
         ]);
