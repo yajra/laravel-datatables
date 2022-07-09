@@ -32,12 +32,12 @@ class HasOneThroughTest extends TestCase
         $response = $this->call('GET', '/relations/hasOneThroughSearchRelation', [
             'columns' => [
                 [
-                    'data' => 'heart.size',
+                    'data'       => 'heart.size',
                     'searchable' => true,
-                    'search' => [
-                        'value' => 'heart-1'
-                    ]
-                ]
+                    'search'     => [
+                        'value' => 'heart-1',
+                    ],
+                ],
             ],
         ]);
 
