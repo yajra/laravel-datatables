@@ -27,6 +27,31 @@ class HasOneThroughTest extends TestCase
     }
 
     /** @test */
+    public function it_can_search_has_one_through_relation()
+    {
+        $response = $this->call('GET', '/relations/hasOneThroughSearchRelation', [
+            'columns' => [
+                [
+                    'data'       => 'heart.size',
+                    'searchable' => true,
+                    'search'     => [
+                        'value' => 'heart-1',
+                    ],
+                ],
+            ],
+        ]);
+
+        $response->assertJson([
+            'draw'            => 0,
+            'recordsTotal'    => 60,
+            'recordsFiltered' => 33,
+        ]);
+
+        $this->assertArrayHasKey('heart', $response->json()['data'][0]);
+        $this->assertCount(33, $response->json()['data']);
+    }
+
+    /** @test */
     public function it_returns_all_records_with_the_deleted_relation_when_called_with_withtrashed_parameter()
     {
         Heart::find(1)->delete();
@@ -99,6 +124,10 @@ class HasOneThroughTest extends TestCase
 
         $this->app['router']->get('/relations/hasOneThrough', function (DataTables $datatables) {
             return $datatables->eloquent(Post::with('heart')->select('posts.*'))->toJson();
+        });
+
+        $this->app['router']->get('/relations/hasOneThroughSearchRelation', function (DataTables $datatables) {
+            return $datatables->eloquent(Post::with('heart'))->addColumns(['hearts.size'])->toJson();
         });
 
         $this->app['router']->get('/relations/hasOneThroughWithTrashed', function (DataTables $datatables) {
