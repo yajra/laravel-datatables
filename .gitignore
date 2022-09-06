@@ -2,3 +2,9 @@
 /coverage
 composer.phar
 composer.lock
+.idea/.gitignore
+.idea/datatableClone.iml
+.idea/deployment.xml
+.idea/modules.xml
+.idea/php.xml
+.idea/vcs.xml

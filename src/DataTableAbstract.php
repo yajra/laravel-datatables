@@ -98,6 +98,12 @@ abstract class DataTableAbstract implements DataTable
     protected $filterCallback = null;
 
     /**
+     * check for used filters
+     *
+     * @var bool
+     */
+    protected bool $isFilterApplied = false;
+    /**
      * DT row templates container.
      *
      * @var array
@@ -718,6 +724,7 @@ abstract class DataTableAbstract implements DataTable
      */
     protected function filterRecords(): void
     {
+        $this->isFilterApplied=false;
         if ($this->autoFilter && $this->request->isSearchable()) {
             $this->filtering();
         }
@@ -728,7 +735,10 @@ abstract class DataTableAbstract implements DataTable
 
         $this->columnSearch();
         $this->searchPanesSearch();
-        $this->filteredCount();
+
+        if ($this->isFilterApplied) {
+            $this->filteredCount();
+        }
     }
 
     /**
@@ -738,6 +748,8 @@ abstract class DataTableAbstract implements DataTable
      */
     public function filtering(): void
     {
+        $this->isFilterApplied=true;
+
         $keyword = $this->request->keyword();
 
         if ($this->config->isMultiTerm()) {

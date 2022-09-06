@@ -112,6 +112,7 @@ class CollectionDataTable extends DataTableAbstract
                 continue;
             }
 
+            $this->isFilterApplied=true;
             $regex = $this->request->isRegex($i);
             $keyword = $this->request->columnKeyword($i);
 

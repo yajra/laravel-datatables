@@ -224,6 +224,7 @@ class QueryDataTable extends DataTableAbstract
                 continue;
             }
 
+            $this->isFilterApplied=true;
             if ($this->hasFilterColumn($column)) {
                 $keyword = $this->getColumnSearchKeyword($index, true);
                 $this->applyFilterColumn($this->getBaseQueryBuilder(), $column, $keyword);
@@ -584,7 +585,7 @@ class QueryDataTable extends DataTableAbstract
             if ($this->isBlacklisted($column)) {
                 continue;
             }
-
+            $this->isFilterApplied=true;
             if ($this->searchPanes[$column] && $callback = $this->searchPanes[$column]['builder']) {
                 $callback($this->query, $values);
             } else {
