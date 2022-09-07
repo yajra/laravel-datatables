@@ -98,7 +98,7 @@ abstract class DataTableAbstract implements DataTable
     protected $filterCallback = null;
 
     /**
-     * check for used filters
+     * check for used filters.
      *
      * @var bool
      */
@@ -724,7 +724,7 @@ abstract class DataTableAbstract implements DataTable
      */
     protected function filterRecords(): void
     {
-        $this->isFilterApplied=false;
+        $this->isFilterApplied = false;
         if ($this->autoFilter && $this->request->isSearchable()) {
             $this->filtering();
         }
@@ -739,7 +739,7 @@ abstract class DataTableAbstract implements DataTable
         if ($this->isFilterApplied) {
             $this->filteredCount();
         }else{
-            $this->filteredRecords =$this->totalRecords;
+            $this->filteredRecords = $this->totalRecords;
         }
     }
 
@@ -750,7 +750,7 @@ abstract class DataTableAbstract implements DataTable
      */
     public function filtering(): void
     {
-        $this->isFilterApplied=true;
+        $this->isFilterApplied = true;
 
         $keyword = $this->request->keyword();
 
