@@ -738,6 +738,8 @@ abstract class DataTableAbstract implements DataTable
 
         if ($this->isFilterApplied) {
             $this->filteredCount();
+        }else{
+            $this->filteredRecords =$this->totalRecords;
         }
     }
 
