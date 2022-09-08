@@ -736,10 +736,11 @@ abstract class DataTableAbstract implements DataTable
         $this->columnSearch();
         $this->searchPanesSearch();
 
-        if ($this->isFilterApplied) {
-            $this->filteredCount();
-        } else {
-            if (!$this->filteredRecords) {
+        if ($this->filteredRecords===NULL)
+        {
+            if ($this->isFilterApplied) {
+                $this->filteredCount();
+            } else {
                 $this->filteredRecords = $this->totalRecords;
             }
         }
