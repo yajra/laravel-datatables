@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v10.1.3] - 2022-09-20
+
+- Fix relation key name for BelongsToMany #2850
+
 ### [v10.1.2] - 2022-07-12
 
 - Fix HasOneThrough #2818
@@ -66,7 +70,8 @@
 - Drop support for `ApiResourceDataTable`
 - PHP8 syntax / method signature changed
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.1.2...10.x
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.1.3...10.x
+[v10.1.3]: https://github.com/yajra/laravel-datatables/compare/v10.1.3...v10.1.2
 [v10.1.2]: https://github.com/yajra/laravel-datatables/compare/v10.1.2...v10.1.1
 [v10.1.1]: https://github.com/yajra/laravel-datatables/compare/v10.1.1...v10.1.0
 [v10.1.0]: https://github.com/yajra/laravel-datatables/compare/v10.1.0...v10.0.8
