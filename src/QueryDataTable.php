@@ -422,9 +422,15 @@ class QueryDataTable extends DataTableAbstract
     {
         if (! str_contains($column, '.')) {
             $q = $this->getBaseQueryBuilder($query);
+            $from = $q->from;
+
             /** @phpstan-ignore-next-line */
-            if (! $q->from instanceof Expression) {
-                $column = $q->from.'.'.$column;
+            if (! $from instanceof Expression) {
+                if (str_contains($from, ' as ')) {
+                    $from = explode(' as ', $from)[1];
+                }
+
+                $column = $from . '.' . $column;
             }
         }
 
