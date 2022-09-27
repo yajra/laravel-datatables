@@ -430,7 +430,7 @@ class QueryDataTable extends DataTableAbstract
                     $from = explode(' as ', $from)[1];
                 }
 
-                $column = $from . '.' . $column;
+                $column = $from.'.'.$column;
             }
         }
 
