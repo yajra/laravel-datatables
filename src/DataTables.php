@@ -112,7 +112,9 @@ class DataTables
      */
     public function query(QueryBuilder $builder): QueryDataTable
     {
-        return QueryDataTable::create($builder);
+        $dataTable = config('datatables.engines.query');
+        
+        return $dataTable::create($builder);
     }
 
     /**
@@ -123,7 +125,9 @@ class DataTables
      */
     public function eloquent(EloquentBuilder $builder): EloquentDataTable
     {
-        return EloquentDataTable::create($builder);
+        $dataTable = config('datatables.engines.eloquent');
+        
+        return $dataTable::create($builder);
     }
 
     /**
@@ -134,7 +138,9 @@ class DataTables
      */
     public function collection($collection): CollectionDataTable
     {
-        return CollectionDataTable::create($collection);
+        $dataTable = config('datatables.engines.collection');
+        
+        return $dataTable::create($builder);
     }
 
     /**
