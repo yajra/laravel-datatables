@@ -430,8 +430,6 @@ abstract class DataTableAbstract implements DataTable
     {
         if (is_array($key)) {
             $this->appends = $key;
-        } elseif (is_callable($value)) {
-            $this->appends[$key] = value($value);
         } else {
             $this->appends[$key] = value($value);
         }
