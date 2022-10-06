@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v10.1.5] - 2022-10-06
+
+- Fix with method error with static analysis #2865
+
 ### [v10.1.4] - 2022-09-27
 
 - Fixed the search column for same table relations #2856
@@ -74,7 +78,8 @@
 - Drop support for `ApiResourceDataTable`
 - PHP8 syntax / method signature changed
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.1.4...10.x
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.1.5...10.x
+[v10.1.5]: https://github.com/yajra/laravel-datatables/compare/v10.1.5...v10.1.4
 [v10.1.4]: https://github.com/yajra/laravel-datatables/compare/v10.1.4...v10.1.3
 [v10.1.3]: https://github.com/yajra/laravel-datatables/compare/v10.1.3...v10.1.2
 [v10.1.2]: https://github.com/yajra/laravel-datatables/compare/v10.1.2...v10.1.1
