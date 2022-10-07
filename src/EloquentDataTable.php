@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Str;
 use Yajra\DataTables\Exceptions\Exception;
 
 /**
@@ -172,7 +173,7 @@ class EloquentDataTable extends QueryDataTable
      */
     protected function joinEagerLoadedColumn($relation, $relationColumn)
     {
-        $table = '';
+        $alias = '';
         $lastQuery = $this->query;
         foreach (explode('.', $relation) as $eachRelation) {
             $model = $lastQuery->getRelation($eachRelation);
@@ -225,11 +226,12 @@ class EloquentDataTable extends QueryDataTable
                 default:
                     throw new Exception('Relation '.get_class($model).' is not yet supported.');
             }
-            $this->performJoin($table, $foreign, $other);
+
+            $alias = $this->performJoin($table, $foreign, $other);
             $lastQuery = $model->getQuery();
         }
 
-        return $table.'.'.$relationColumn;
+        return $alias.'.'.$relationColumn;
     }
 
     /**
@@ -239,17 +241,26 @@ class EloquentDataTable extends QueryDataTable
      * @param  string  $foreign
      * @param  string  $other
      * @param  string  $type
-     * @return void
+     * @return string
      */
-    protected function performJoin($table, $foreign, $other, $type = 'left'): void
+    protected function performJoin($table, $foreign, $other, $type = 'left'): string
     {
+        $alias = $table;
         $joins = [];
+
         foreach ((array) $this->getBaseQueryBuilder()->joins as $key => $join) {
-            $joins[] = $join->table;
+            $joins[] = Str::before($join->table, ' as ');
         }
 
-        if (! in_array($table, $joins)) {
-            $this->getBaseQueryBuilder()->join($table, $foreign, '=', $other, $type);
+        if (in_array($table, $joins)) {
+            $index = count(array_filter($joins, function ($n) use ($table) { return $n === $table; })) + 1;
+            $alias = $table . '_' . $index;
+            $other = str_replace($table, $alias, $other);
+            $table = $table . ' as ' . $alias;
         }
+
+        $this->getBaseQueryBuilder()->join($table, $foreign, '=', $other, $type);
+
+        return $alias;
     }
 }
