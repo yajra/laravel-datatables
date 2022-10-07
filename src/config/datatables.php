@@ -48,6 +48,7 @@ return [
         'eloquent'   => Yajra\DataTables\EloquentDataTable::class,
         'query'      => Yajra\DataTables\QueryDataTable::class,
         'collection' => Yajra\DataTables\CollectionDataTable::class,
+        'resource' => Yajra\DataTables\ApiResourceDataTable::class,
     ],
 
     /*
