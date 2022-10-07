@@ -3,8 +3,6 @@
 namespace Yajra\DataTables;
 
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 
 class ApiResourceDataTable extends CollectionDataTable
 {
@@ -22,7 +20,7 @@ class ApiResourceDataTable extends CollectionDataTable
     /**
      * Factory method, create and return an instance for the DataTable engine.
      *
-     * @param  \Illuminate\Http\Resources\Json\AnonymousResourceCollection<array-key, array>|array   $source
+     * @param  \Illuminate\Http\Resources\Json\AnonymousResourceCollection<array-key, array>|array  $source
      * @return ApiResourceDataTable|DataTableAbstract
      */
     public static function create($source)
@@ -43,4 +41,5 @@ class ApiResourceDataTable extends CollectionDataTable
         $this->original = collect($collection);
         $this->columns = array_keys($this->serialize(collect($collection)->first()));
     }
+
 }
