@@ -17,14 +17,14 @@ class CollectionDataTable extends DataTableAbstract
      *
      * @var \Illuminate\Support\Collection<array-key, array>
      */
-    public Collection $collection;
+    public $collection;
 
     /**
      * Collection object.
      *
      * @var \Illuminate\Support\Collection<array-key, array>
      */
-    public Collection $original;
+    public $original;
 
     /**
      * The offset of the first record in the full dataset.
