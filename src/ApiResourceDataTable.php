@@ -51,11 +51,11 @@ class ApiResourceDataTable extends CollectionDataTable
      */
     public function __construct(AnonymousResourceCollection $collection)
     {
-        $this->request    = app('datatables.request');
-        $this->config     = app('datatables.config');
+        $this->request = app('datatables.request');
+        $this->config = app('datatables.config');
         $this->collection = collect($collection->toArray($this->request));
-        $this->original   = $collection;
-        $this->columns    = array_keys($this->serialize(collect($collection->toArray($this->request))->first()));
+        $this->original = $collection;
+        $this->columns = array_keys($this->serialize(collect($collection->toArray($this->request))->first()));
         if ($collection->resource instanceof LengthAwarePaginator) {
             $this->isFilterApplied = true;
         }
