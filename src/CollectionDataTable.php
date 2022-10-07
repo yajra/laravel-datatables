@@ -6,6 +6,7 @@ use Closure;
 use Exception;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -17,14 +18,14 @@ class CollectionDataTable extends DataTableAbstract
      *
      * @var \Illuminate\Support\Collection<array-key, array>
      */
-    public $collection;
+    public Collection $collection;
 
     /**
      * Collection object.
      *
      * @var \Illuminate\Support\Collection<array-key, array>
      */
-    public $original;
+    public Collection $original;
 
     /**
      * The offset of the first record in the full dataset.
@@ -72,7 +73,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Factory method, create and return an instance for the DataTable engine.
      *
-     * @param  array|\Illuminate\Support\Collection<array-key, array>  $source
+     * @param  AnonymousResourceCollection|array|\Illuminate\Support\Collection<array-key, array>  $source
      * @return static
      */
     public static function create($source)
