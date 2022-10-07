@@ -41,5 +41,4 @@ class ApiResourceDataTable extends CollectionDataTable
         $this->original = collect($collection);
         $this->columns = array_keys($this->serialize(collect($collection)->first()));
     }
-
 }
