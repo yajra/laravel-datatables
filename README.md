@@ -72,7 +72,7 @@ return datatables(User::all())->toJson();
 ## Quick Installation
 
 ```bash
-$ composer require yajra/laravel-datatables-oracle:"^10.0"
+composer require yajra/laravel-datatables-oracle:"^10.0"
 ```
 
 #### Service Provider & Facade (Optional on Laravel 5.5+)
@@ -93,7 +93,7 @@ Register provider and facade on your `config/app.php` file.
 #### Configuration (Optional)
 
 ```bash
-$ php artisan vendor:publish --provider="Yajra\DataTables\DataTablesServiceProvider"
+php artisan vendor:publish --provider="Yajra\DataTables\DataTablesServiceProvider"
 ```
 
 And that's it! Start building out some awesome DataTables!
