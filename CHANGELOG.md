@@ -8,6 +8,12 @@
 
 ### [Unreleased]
 
+### [v10.1.6] - 2022-10-10
+
+- Fix anonymous resource collection #2870
+- Fix #2827
+- Add stale workflow
+
 ### [v10.1.5] - 2022-10-06
 
 - Fix with method error with static analysis #2865
@@ -78,7 +84,8 @@
 - Drop support for `ApiResourceDataTable`
 - PHP8 syntax / method signature changed
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.1.5...10.x
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.1.6...10.x
+[v10.1.6]: https://github.com/yajra/laravel-datatables/compare/v10.1.6...v10.1.5
 [v10.1.5]: https://github.com/yajra/laravel-datatables/compare/v10.1.5...v10.1.4
 [v10.1.4]: https://github.com/yajra/laravel-datatables/compare/v10.1.4...v10.1.3
 [v10.1.3]: https://github.com/yajra/laravel-datatables/compare/v10.1.3...v10.1.2
