@@ -14,8 +14,8 @@ jobs:
       - uses: dessant/lock-threads@v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          issue-inactive-days: "14"
+          issue-inactive-days: "7"
           #issue-comment: |
-          #  This issue has been locked since it has been closed for more than 14 days.
+          #  This issue has been locked since it has been closed for more than 7 days.
           issue-lock-reason: ""
           process-only: "issues"
