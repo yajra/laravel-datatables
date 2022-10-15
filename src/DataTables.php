@@ -140,7 +140,7 @@ class DataTables
     {
         $dataTable = config('datatables.engines.collection');
         
-        return $dataTable::create($builder);
+        return $dataTable::create($collection);
     }
 
     /**
