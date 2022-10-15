@@ -317,9 +317,9 @@ class CollectionDataTable extends DataTableAbstract
                         $cmp = 0;
                     }
                 } elseif ($this->config->isCaseInsensitive()) {
-                    $cmp = strnatcasecmp($first[$column] ?? null, $second[$column] ?? null);
+                    $cmp = strnatcasecmp($first[$column] ?? '', $second[$column] ?? '');
                 } else {
-                    $cmp = strnatcmp($first[$column] ?? null, $second[$column] ?? null);
+                    $cmp = strnatcmp($first[$column] ?? '', $second[$column] ?? '');
                 }
                 if ($cmp != 0) {
                     return $cmp;
