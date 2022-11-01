@@ -113,7 +113,11 @@ class DataTables
     public function query(QueryBuilder $builder): QueryDataTable
     {
         $dataTable = config('datatables.engines.query');
-        
+
+        if (! is_subclass_of($dataTable, QueryDataTable::class)) {
+            $this->throwInvalidEngineException($dataTable, QueryDataTable::class);
+        }
+
         return $dataTable::create($builder);
     }
 
@@ -126,7 +130,11 @@ class DataTables
     public function eloquent(EloquentBuilder $builder): EloquentDataTable
     {
         $dataTable = config('datatables.engines.eloquent');
-        
+
+        if (! is_subclass_of($dataTable, EloquentDataTable::class)) {
+            $this->throwInvalidEngineException($dataTable, EloquentDataTable::class);
+        }
+
         return $dataTable::create($builder);
     }
 
@@ -139,7 +147,11 @@ class DataTables
     public function collection($collection): CollectionDataTable
     {
         $dataTable = config('datatables.engines.collection');
-        
+
+        if (! is_subclass_of($dataTable, CollectionDataTable::class)) {
+            $this->throwInvalidEngineException($dataTable, CollectionDataTable::class);
+        }
+
         return $dataTable::create($collection);
     }
 
@@ -157,5 +169,16 @@ class DataTables
         }
 
         return $this->html ?: $this->html = app('datatables.html');
+    }
+
+    /**
+     * @param string $engine
+     * @param string $parent
+     * 
+     * @throws \Yajra\DataTables\Exceptions\Exception
+     */
+    public function throwInvalidEngineException(string $engine, string $parent)
+    {
+        throw new Exception("The given datatable engine `{$engine}` is not compatible with `{$parent}`.");
     }
 }
