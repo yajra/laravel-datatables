@@ -112,6 +112,7 @@ class DataTables
      */
     public function query(QueryBuilder $builder): QueryDataTable
     {
+        /** @var string */
         $dataTable = config('datatables.engines.query');
 
         $this->validateDataTable($dataTable, QueryDataTable::class);
@@ -127,6 +128,7 @@ class DataTables
      */
     public function eloquent(EloquentBuilder $builder): EloquentDataTable
     {
+        /** @var string */
         $dataTable = config('datatables.engines.eloquent');
 
         $this->validateDataTable($dataTable, EloquentDataTable::class);
@@ -142,6 +144,7 @@ class DataTables
      */
     public function collection($collection): CollectionDataTable
     {
+        /** @var string */
         $dataTable = config('datatables.engines.collection');
 
         $this->validateDataTable($dataTable, CollectionDataTable::class);
@@ -173,7 +176,7 @@ class DataTables
      *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
-    public function validateDataTable(string $engine, string $parent)
+    public function validateDataTable(string $engine, string $parent): void
     {
         if (! ($engine == $parent || is_subclass_of($engine, $parent))) {
             $this->throwInvalidEngineException($engine, $parent);
@@ -184,9 +187,11 @@ class DataTables
      * @param string $engine
      * @param string $parent
      *
+     * @return void
+     *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
-    public function throwInvalidEngineException(string $engine, string $parent)
+    public function throwInvalidEngineException(string $engine, string $parent): void
     {
         throw new Exception("The given datatable engine `{$engine}` is not compatible with `{$parent}`.");
     }
