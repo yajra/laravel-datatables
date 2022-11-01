@@ -114,11 +114,8 @@ class DataTables
     {
         $dataTable = config('datatables.engines.query');
 
-        if (! is_subclass_of($dataTable, QueryDataTable::class)) {
-            $this->throwInvalidEngineException($dataTable, QueryDataTable::class);
-        }
+        $this->validateDataTable($dataTable, QueryDataTable::class);
 
-        /** @phpstan-ignore-next-line */
         return $dataTable::create($builder);
     }
 
@@ -132,11 +129,8 @@ class DataTables
     {
         $dataTable = config('datatables.engines.eloquent');
 
-        if (! is_subclass_of($dataTable, EloquentDataTable::class)) {
-            $this->throwInvalidEngineException($dataTable, EloquentDataTable::class);
-        }
+        $this->validateDataTable($dataTable, EloquentDataTable::class);
 
-        /** @phpstan-ignore-next-line */
         return $dataTable::create($builder);
     }
 
@@ -150,11 +144,8 @@ class DataTables
     {
         $dataTable = config('datatables.engines.collection');
 
-        if (! is_subclass_of($dataTable, CollectionDataTable::class)) {
-            $this->throwInvalidEngineException($dataTable, CollectionDataTable::class);
-        }
+        $this->validateDataTable($dataTable, CollectionDataTable::class);
 
-        /** @phpstan-ignore-next-line */
         return $dataTable::create($collection);
     }
 
@@ -177,7 +168,22 @@ class DataTables
     /**
      * @param string $engine
      * @param string $parent
-     * 
+     *
+     * @return void
+     *
+     * @throws \Yajra\DataTables\Exceptions\Exception
+     */
+    public function validateDataTable(string $engine, string $parent)
+    {
+        if (! ($engine == $parent || is_subclass_of($engine, $parent))) {
+            $this->throwInvalidEngineException($engine, $parent);
+        }
+    }
+
+    /**
+     * @param string $engine
+     * @param string $parent
+     *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public function throwInvalidEngineException(string $engine, string $parent)
