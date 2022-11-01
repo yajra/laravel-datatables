@@ -118,6 +118,7 @@ class DataTables
             $this->throwInvalidEngineException($dataTable, QueryDataTable::class);
         }
 
+        /** @phpstan-ignore-next-line */
         return $dataTable::create($builder);
     }
 
@@ -135,6 +136,7 @@ class DataTables
             $this->throwInvalidEngineException($dataTable, EloquentDataTable::class);
         }
 
+        /** @phpstan-ignore-next-line */
         return $dataTable::create($builder);
     }
 
@@ -152,6 +154,7 @@ class DataTables
             $this->throwInvalidEngineException($dataTable, CollectionDataTable::class);
         }
 
+        /** @phpstan-ignore-next-line */
         return $dataTable::create($collection);
     }
 
