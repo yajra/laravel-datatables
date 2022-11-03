@@ -112,7 +112,12 @@ class DataTables
      */
     public function query(QueryBuilder $builder): QueryDataTable
     {
-        return QueryDataTable::create($builder);
+        /** @var string */
+        $dataTable = config('datatables.engines.query');
+
+        $this->validateDataTable($dataTable, QueryDataTable::class);
+
+        return $dataTable::create($builder);
     }
 
     /**
@@ -123,7 +128,12 @@ class DataTables
      */
     public function eloquent(EloquentBuilder $builder): EloquentDataTable
     {
-        return EloquentDataTable::create($builder);
+        /** @var string */
+        $dataTable = config('datatables.engines.eloquent');
+
+        $this->validateDataTable($dataTable, EloquentDataTable::class);
+
+        return $dataTable::create($builder);
     }
 
     /**
@@ -134,7 +144,12 @@ class DataTables
      */
     public function collection($collection): CollectionDataTable
     {
-        return CollectionDataTable::create($collection);
+        /** @var string */
+        $dataTable = config('datatables.engines.collection');
+
+        $this->validateDataTable($dataTable, CollectionDataTable::class);
+
+        return $dataTable::create($collection);
     }
 
     /**
@@ -162,5 +177,33 @@ class DataTables
         }
 
         return $this->html ?: $this->html = app('datatables.html');
+    }
+
+    /**
+     * @param string $engine
+     * @param string $parent
+     *
+     * @return void
+     *
+     * @throws \Yajra\DataTables\Exceptions\Exception
+     */
+    public function validateDataTable(string $engine, string $parent): void
+    {
+        if (! ($engine == $parent || is_subclass_of($engine, $parent))) {
+            $this->throwInvalidEngineException($engine, $parent);
+        }
+    }
+
+    /**
+     * @param string $engine
+     * @param string $parent
+     *
+     * @return void
+     *
+     * @throws \Yajra\DataTables\Exceptions\Exception
+     */
+    public function throwInvalidEngineException(string $engine, string $parent): void
+    {
+        throw new Exception("The given datatable engine `{$engine}` is not compatible with `{$parent}`.");
     }
 }
