@@ -180,9 +180,8 @@ class DataTables
     }
 
     /**
-     * @param string $engine
-     * @param string $parent
-     *
+     * @param  string  $engine
+     * @param  string  $parent
      * @return void
      *
      * @throws \Yajra\DataTables\Exceptions\Exception
@@ -195,9 +194,8 @@ class DataTables
     }
 
     /**
-     * @param string $engine
-     * @param string $parent
-     *
+     * @param  string  $engine
+     * @param  string  $parent
      * @return void
      *
      * @throws \Yajra\DataTables\Exceptions\Exception
