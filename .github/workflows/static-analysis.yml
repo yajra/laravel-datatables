@@ -51,4 +51,4 @@ jobs:
           command: COMPOSER_ROOT_VERSION=dev-master composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
       - name: "Run a static analysis with phpstan/phpstan"
-        run: "vendor/bin/phpstan --error-format=checkstyle"
+        run: "vendor/bin/phpstan --error-format=github"
