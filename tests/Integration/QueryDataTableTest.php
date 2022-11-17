@@ -81,6 +81,31 @@ class QueryDataTableTest extends TestCase
     }
 
     /** @test */
+    public function it_can_perform_global_search_with_html_string()
+    {
+        User::create([
+            'name' => e('Record & 21'),
+            'email' => 'Email-21@example.com',
+        ]);
+
+        $this->assertEquals('Record &amp; 21', User::find(21)->name);
+
+        $crawler = $this->call('GET', '/query/users', [
+            'columns' => [
+                ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
+            ],
+            'search' => ['value' => 'Record & 21'],
+        ]);
+
+        $crawler->assertJson([
+            'draw' => 0,
+            'recordsTotal' => 21,
+            'recordsFiltered' => 1,
+        ]);
+    }
+
+    /** @test */
     public function it_can_skip_total_records_count_query()
     {
         $crawler = $this->call('GET', '/query/simple', [
