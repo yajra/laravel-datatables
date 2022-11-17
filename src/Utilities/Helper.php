@@ -206,8 +206,8 @@ class Helper
             if ($value instanceof DateTime) {
                 $row[$key] = $value->format('Y-m-d H:i:s');
             } else {
-                if (is_object($value)) {
-                    $row[$key] = (string) $value;
+                if (is_object($value) && method_exists($value, '__toString')) {
+                    $row[$key] = $value->__toString();
                 } else {
                     $row[$key] = $value;
                 }
