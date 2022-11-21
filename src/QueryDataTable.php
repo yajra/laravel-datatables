@@ -633,7 +633,7 @@ class QueryDataTable extends DataTableAbstract
 
                 if ($this->hasOrderColumn($orderable['name'])) {
                     $this->applyOrderColumn($orderable['name'], $orderable);
-                } else if ($this->hasOrderColumn($column)) {
+                } elseif ($this->hasOrderColumn($column)) {
                     $this->applyOrderColumn($column, $orderable);
                 } else {
                     $nullsLastSql = $this->getNullsLastSql($column, $orderable['direction']);

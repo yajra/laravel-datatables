@@ -12,7 +12,7 @@ class CustomOrderTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
-    function it_can_order_with_custom_order()
+    public function it_can_order_with_custom_order()
     {
         $response = $this->getJsonResponse([
             'order'  => [
