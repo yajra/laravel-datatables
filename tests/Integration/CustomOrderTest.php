@@ -32,7 +32,10 @@ class CustomOrderTest extends TestCase
             'recordsFiltered' => 60,
         ]);
 
-        $this->assertEquals($response->json()['data'][0]['user']['id'], collect($response->json()['data'])->pluck('user.id')->max());
+        $this->assertEquals(
+            $response->json()['data'][0]['user']['id'],
+            collect($response->json()['data'])->pluck('user.id')->max()
+        );
     }
 
     protected function getJsonResponse(array $params = [])
