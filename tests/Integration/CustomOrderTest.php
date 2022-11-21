@@ -17,7 +17,7 @@ class CustomOrderTest extends TestCase
         $response = $this->getJsonResponse([
             'order'  => [
                 [
-                    'column' => 1,
+                    'column' => 0,
                     'dir'    => 'asc',
                 ],
             ],
@@ -39,7 +39,7 @@ class CustomOrderTest extends TestCase
     {
         $data = [
             'columns' => [
-                ['data' => 'user.id', 'name' => 'user.name', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'user.id', 'name' => 'user.id', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'user.email', 'name' => 'user.email', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'title', 'name' => 'posts.title', 'searchable' => 'true', 'orderable' => 'true'],
             ],
@@ -54,7 +54,7 @@ class CustomOrderTest extends TestCase
 
         $this->app['router']->get('/relations/belongsTo', function (DataTables $datatables) {
             return $datatables->eloquent(Post::with('user')->select('posts.*'))
-                              ->orderColumn('user.email', function ($query, $order) {
+                              ->orderColumn('user.id', function ($query, $order) {
                                   $query->orderBy('users.id', $order == 'desc' ? 'asc' : 'desc');
                               })->toJson();
         });
