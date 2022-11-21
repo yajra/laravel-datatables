@@ -15,21 +15,12 @@ class CustomOrderTest extends TestCase
     public function it_can_order_with_custom_order()
     {
         $response = $this->getJsonResponse([
-            'order'  => [
+            'order' => [
                 [
                     'column' => 0,
                     'dir'    => 'asc',
                 ],
             ],
-            'length' => 10,
-            'start'  => 0,
-            'draw'   => 1,
-        ]);
-
-        $response->assertJson([
-            'draw'            => 1,
-            'recordsTotal'    => 60,
-            'recordsFiltered' => 60,
         ]);
 
         $this->assertEquals(
@@ -43,12 +34,18 @@ class CustomOrderTest extends TestCase
         $data = [
             'columns' => [
                 ['data' => 'user.id', 'name' => 'user.id', 'searchable' => 'true', 'orderable' => 'true'],
-                ['data' => 'user.email', 'name' => 'user.email', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'title', 'name' => 'posts.title', 'searchable' => 'true', 'orderable' => 'true'],
             ],
+            'length'  => 10,
+            'start'   => 0,
+            'draw'    => 1,
         ];
 
-        return $this->call('GET', '/relations/belongsTo', array_merge($data, $params));
+        return $this->call(
+            'GET',
+            '/relations/belongsTo',
+            array_merge($data, $params)
+        );
     }
 
     protected function setUp(): void
@@ -59,7 +56,8 @@ class CustomOrderTest extends TestCase
             return $datatables->eloquent(Post::with('user')->select('posts.*'))
                               ->orderColumn('user.id', function ($query, $order) {
                                   $query->orderBy('users.id', $order == 'desc' ? 'asc' : 'desc');
-                              })->toJson();
+                              })
+                              ->toJson();
         });
     }
 }
