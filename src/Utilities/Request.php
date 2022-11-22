@@ -197,7 +197,7 @@ class Request
             $keyword = implode(' ', $keyword);
         }
 
-        return e($keyword);
+        return e((string) $keyword);
     }
 
     /**
