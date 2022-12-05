@@ -737,8 +737,8 @@ abstract class DataTableAbstract implements DataTable
     public function filtering(): void
     {
         $keyword = $this->request->keyword();
-        /**Following line of code to convert & or any other special character to html string. **/
-        $keyword = (is_string($keyword) || $keyword instanceof Htmlable) ? e($keyword) : $keyword;
+        /**Following line of code to convert `&` or any other special character to html string. **/
+        $keyword = e($keyword);
 
         if ($this->config->isMultiTerm()) {
             $this->smartGlobalSearch($keyword);
