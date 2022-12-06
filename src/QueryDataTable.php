@@ -445,12 +445,12 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function prepareKeyword(string $keyword): string
     {
-        if ($this->config->isStartsWithSearch()) {
-            return "$keyword%";
-        }
-
         if ($this->config->isCaseInsensitive()) {
             $keyword = Str::lower($keyword);
+        }
+
+        if ($this->config->isStartsWithSearch()) {
+            return "$keyword%";
         }
 
         if ($this->config->isWildcard()) {
