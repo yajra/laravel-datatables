@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v10.2.1] - 2022-12-07
+
+- fix: case insensitive starts with search #2917 #2916
+
 ### [v10.2.0] - 2022-11-03
 
 - PHP 8.1 Depreciation Fix #2877
@@ -89,7 +93,8 @@
 - Drop support for `ApiResourceDataTable`
 - PHP8 syntax / method signature changed
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.2.0...10.x
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.2.1...10.x
+[v10.2.1]: https://github.com/yajra/laravel-datatables/compare/v10.2.1...v10.2.0
 [v10.2.0]: https://github.com/yajra/laravel-datatables/compare/v10.2.0...v10.1.6
 [v10.1.6]: https://github.com/yajra/laravel-datatables/compare/v10.1.6...v10.1.5
 [v10.1.5]: https://github.com/yajra/laravel-datatables/compare/v10.1.5...v10.1.4
