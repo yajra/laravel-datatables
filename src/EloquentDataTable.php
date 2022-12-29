@@ -246,14 +246,14 @@ class EloquentDataTable extends QueryDataTable
     protected function performJoin($table, $foreign, $other, $type = 'left'): string
     {
         $alias = $table;
-        $joins = [];
+        $existingTableNames = [$this->getBaseQueryBuilder()->from];
 
         foreach ((array) $this->getBaseQueryBuilder()->joins as $key => $join) {
-            $joins[] = Str::before($join->table, ' as ');
+            $existingTableNames[] = Str::before($join->table, ' as ');
         }
 
-        if (in_array($table, $joins)) {
-            $index = count(array_filter($joins, function ($n) use ($table) { return $n === $table; })) + 1;
+        if (in_array($table, $existingTableNames)) {
+            $index = count(array_filter($existingTableNames, function ($n) use ($table) { return $n === $table; })) + 1;
             $alias = $table . '_' . $index;
             $other = str_replace($table, $alias, $other);
             $table = $table . ' as ' . $alias;
