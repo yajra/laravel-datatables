@@ -145,6 +145,8 @@ abstract class DataTableAbstract implements DataTable
      */
     protected array $searchPanes = [];
 
+    protected mixed $transformer;
+
     /**
      * Can the DataTable engine be created with these parameters.
      *
