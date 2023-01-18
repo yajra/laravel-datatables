@@ -631,7 +631,9 @@ class QueryDataTable extends DataTableAbstract
             ->each(function ($orderable) {
                 $column = $this->resolveRelationColumn($orderable['name']);
 
-                if ($this->hasOrderColumn($column)) {
+                if ($this->hasOrderColumn($orderable['name'])) {
+                    $this->applyOrderColumn($orderable['name'], $orderable);
+                } elseif ($this->hasOrderColumn($column)) {
                     $this->applyOrderColumn($column, $orderable);
                 } else {
                     $nullsLastSql = $this->getNullsLastSql($column, $orderable['direction']);
