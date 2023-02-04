@@ -36,7 +36,7 @@ class ApiResourceDataTable extends CollectionDataTable
     public function __construct(AnonymousResourceCollection $resourceCollection)
     {
         /** @var \Illuminate\Support\Collection<(int|string), array> $collection */
-        $collection = collect($resourceCollection)->pluck('request');
+        $collection = collect($resourceCollection)->pluck('resource');
         $this->request = app('datatables.request');
         $this->config = app('datatables.config');
         $this->collection = $collection;
