@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v10.3.0] - 2023-02-07
+
+- Add Laravel 10 compatibility #2948
+
 ### [v10.2.3] - 2023-01-18
 
 - fix: Custom Order on eager loaded relationships was not working
@@ -103,7 +107,8 @@
 - Drop support for `ApiResourceDataTable`
 - PHP8 syntax / method signature changed
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.2.3...10.x
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.3.0...10.x
+[v10.3.0]: https://github.com/yajra/laravel-datatables/compare/v10.3.0...v10.2.3
 [v10.2.3]: https://github.com/yajra/laravel-datatables/compare/v10.2.3...v10.2.2
 [v10.2.2]: https://github.com/yajra/laravel-datatables/compare/v10.2.2...v10.2.1
 [v10.2.1]: https://github.com/yajra/laravel-datatables/compare/v10.2.1...v10.2.0
