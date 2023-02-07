@@ -1,10 +1,10 @@
-# jQuery DataTables API for Laravel 4|5|6|7|8|9
+# jQuery DataTables API for Laravel 4|5|6|7|8|9|10
 
 [![Join the chat at https://gitter.im/yajra/laravel-datatables](https://badges.gitter.im/yajra/laravel-datatables.svg)](https://gitter.im/yajra/laravel-datatables?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Donate](https://img.shields.io/badge/donate-paypal-blue.svg)](https://www.paypal.me/yajra)
 [![Donate](https://img.shields.io/badge/donate-patreon-blue.svg)](https://www.patreon.com/bePatron?u=4521203)
 
-[![Laravel 4.2|5.x|6|7|8|9](https://img.shields.io/badge/Laravel-4.2|5.x|6|7|8|9-orange.svg)](http://laravel.com)
+[![Laravel 4.2|5.x|6|7|8|9|10](https://img.shields.io/badge/Laravel-4.2|5.x|6|7|8|9|10-orange.svg)](http://laravel.com)
 [![Latest Stable Version](https://img.shields.io/packagist/v/yajra/laravel-datatables-oracle.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![Latest Unstable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/unstable.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 ![Build Status](https://github.com/yajra/laravel-datatables-html/workflows/tests/badge.svg)
@@ -22,6 +22,7 @@ return datatables(User::query())->toJson();
 return datatables(DB::table('users'))->toJson();
 return datatables(User::all())->toJson();
 ```
+
 ## Sponsors
 
 <a href="https://editor.datatables.net?utm_source=laravel-datatables&utm_medium=github_readme&utm_campaign=logo">
@@ -68,6 +69,7 @@ return datatables(User::all())->toJson();
 | 7.x.x   | 9.x      |
 | 8.x.x   | 9.x      |
 | 9.x.x   | 10.x     |
+| 10.x.x  | 10.x     |
 
 ## Quick Installation
 
