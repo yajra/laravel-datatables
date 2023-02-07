@@ -23,10 +23,11 @@
   },
   "require-dev": {
     "nunomaduro/larastan": "^2.4",
-    "orchestra/testbench": "^7.21",
+    "orchestra/testbench": "^8",
     "yajra/laravel-datatables-html": "^9.3.4|^10"
   },
   "suggest": {
+    "yajra/laravel-datatables-export": "Plugin for server-side exporting using livewire and queue worker.",
     "yajra/laravel-datatables-buttons": "Plugin for server-side exporting of dataTables.",
     "yajra/laravel-datatables-html": "Plugin for server-side HTML builder of dataTables.",
     "yajra/laravel-datatables-fractal": "Plugin for server-side response using Fractal.",
@@ -64,6 +65,12 @@
   "scripts": {
     "test": "vendor/bin/phpunit"
   },
-  "minimum-stability": "dev",
-  "prefer-stable": true
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/yajra"
+    }
+  ]
 }
