@@ -31,14 +31,16 @@ class ApiResourceDataTable extends CollectionDataTable
     /**
      * CollectionEngine constructor.
      *
-     * @param  \Illuminate\Http\Resources\Json\AnonymousResourceCollection<array-key, array>  $collection
+     * @param  \Illuminate\Http\Resources\Json\AnonymousResourceCollection<array-key, array>  $resourceCollection
      */
-    public function __construct(AnonymousResourceCollection $collection)
+    public function __construct(AnonymousResourceCollection $resourceCollection)
     {
+        /** @var \Illuminate\Support\Collection<(int|string), array> $collection */
+        $collection = collect($resourceCollection)->pluck('resource');
         $this->request = app('datatables.request');
         $this->config = app('datatables.config');
-        $this->collection = collect($collection);
-        $this->original = collect($collection);
-        $this->columns = array_keys($this->serialize(collect($collection)->first()));
+        $this->collection = $collection;
+        $this->original = $collection;
+        $this->columns = array_keys($this->serialize($collection->first()));
     }
 }
