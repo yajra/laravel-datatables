@@ -116,7 +116,8 @@ class HelperTest extends TestCase
 
     public function test_compile_content_callable_class()
     {
-        $content = new class {
+        $content = new class
+        {
             public function __invoke($obj)
             {
                 return $obj->id;

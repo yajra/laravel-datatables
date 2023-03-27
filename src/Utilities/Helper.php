@@ -55,10 +55,11 @@ class Helper
     }
 
     /**
-     * Gets the parameter of a callable thing (from is_callable) and returns it's arguments using reflection
+     * Gets the parameter of a callable thing (from is_callable) and returns it's arguments using reflection.
      *
-     * @param callable $callable
+     * @param  callable  $callable
      * @return \ReflectionParameter[]
+     *
      * @throws \ReflectionException
      * @throws \InvalidArgumentException
      */
@@ -70,14 +71,14 @@ class Helper
         */
         if ($callable instanceof Closure) {
             $reflection = new ReflectionFunction($callable);
-        } else if (is_string($callable) && function_exists($callable)) {
+        } elseif (is_string($callable) && function_exists($callable)) {
             $reflection = new ReflectionFunction($callable);
-        } else if (is_string($callable) && str_contains($callable, '::')) {
+        } elseif (is_string($callable) && str_contains($callable, '::')) {
             $reflection = new ReflectionMethod($callable);
-        } else if (is_object($callable) && method_exists($callable, '__invoke')) {
+        } elseif (is_object($callable) && method_exists($callable, '__invoke')) {
             $reflection = new ReflectionMethod($callable, '__invoke');
         } else {
-            throw new \InvalidArgumentException("argument is not callable or the code is wrong");
+            throw new \InvalidArgumentException('argument is not callable or the code is wrong');
         }
 
         return $reflection->getParameters();
