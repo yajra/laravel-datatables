@@ -8,6 +8,11 @@
 
 ### [Unreleased]
 
+### [v10.4.0] - 2023-03-28
+
+- feat: Allow any callable in ->addColumn() #2977
+- fix: #2976
+
 ### [v10.3.1] - 2023-02-20
 
 - fix: Fix anonymous resource collection data formatting #2944
