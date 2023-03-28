@@ -8,6 +8,7 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use ReflectionFunction;
+use ReflectionMethod;
 
 class Helper
 {
@@ -54,6 +55,36 @@ class Helper
     }
 
     /**
+     * Gets the parameter of a callable thing (from is_callable) and returns it's arguments using reflection.
+     *
+     * @param  callable  $callable
+     * @return \ReflectionParameter[]
+     *
+     * @throws \ReflectionException
+     * @throws \InvalidArgumentException
+     */
+    private static function reflectCallableParameters($callable)
+    {
+        /*
+        loosely after https://github.com/technically-php/callable-reflection/blob/main/src/CallableReflection.php#L72-L86.
+        Licence is compatible, both project use MIT
+        */
+        if ($callable instanceof Closure) {
+            $reflection = new ReflectionFunction($callable);
+        } elseif (is_string($callable) && function_exists($callable)) {
+            $reflection = new ReflectionFunction($callable);
+        } elseif (is_string($callable) && str_contains($callable, '::')) {
+            $reflection = new ReflectionMethod($callable);
+        } elseif (is_object($callable) && method_exists($callable, '__invoke')) {
+            $reflection = new ReflectionMethod($callable, '__invoke');
+        } else {
+            throw new \InvalidArgumentException('argument is not callable or the code is wrong');
+        }
+
+        return $reflection->getParameters();
+    }
+
+    /**
      * Determines if content is callable or blade string, processes and returns.
      *
      * @param  mixed  $content  Pre-processed content
@@ -69,9 +100,8 @@ class Helper
             return static::compileBlade($content, static::getMixedValue($data, $param));
         }
 
-        if ($content instanceof Closure) {
-            $reflection = new ReflectionFunction($content);
-            $arguments = $reflection->getParameters();
+        if (is_callable($content)) {
+            $arguments = self::reflectCallableParameters($content);
 
             if (count($arguments) > 0) {
                 return app()->call($content, [$arguments[0]->name => $param]);

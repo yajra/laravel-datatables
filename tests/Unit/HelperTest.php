@@ -101,10 +101,27 @@ class HelperTest extends TestCase
         $this->assertEquals(1, $compiled);
     }
 
-    public function test_compile_content_callable()
+    public function test_compile_content_function()
     {
         $content = function ($obj) {
             return $obj->id;
+        };
+        $data = ['id' => 2];
+        $obj = new stdClass();
+        $obj->id = 2;
+
+        $compiled = Helper::compileContent($content, $data, $obj);
+        $this->assertEquals(2, $compiled);
+    }
+
+    public function test_compile_content_callable_class()
+    {
+        $content = new class
+        {
+            public function __invoke($obj)
+            {
+                return $obj->id;
+            }
         };
         $data = ['id' => 2];
         $obj = new stdClass();
