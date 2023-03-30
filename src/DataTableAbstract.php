@@ -583,7 +583,7 @@ abstract class DataTableAbstract implements DataTable
 
         return $this;
     }
-    
+
     /**
      * Skip auto filtering as needed.
      *
