@@ -583,6 +583,18 @@ abstract class DataTableAbstract implements DataTable
 
         return $this;
     }
+    
+    /**
+     * Skip auto filtering as needed.
+     *
+     * @return $this
+     */
+    public function skipAutoFilter(): static
+    {
+        $this->autoFilter = false;
+
+        return $this;
+    }
 
     /**
      * Push a new column name to blacklist.
