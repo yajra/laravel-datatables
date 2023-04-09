@@ -389,6 +389,6 @@ class Helper
         /** @var array $callbacks */
         $callbacks = config('datatables.callback', ['$', '$.', 'function']);
 
-        return Str::startsWith(trim($value), $callbacks) || Str::contains($key, ['editor', 'minDate', 'maxDate']);
+        return Str::startsWith(trim($value), $callbacks) || Str::startsWith($key, ['editor', 'minDate', 'maxDate']);
     }
 }
