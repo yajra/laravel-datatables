@@ -388,6 +388,10 @@ class Helper
 
         /** @var array $callbacks */
         $callbacks = config('datatables.callback', ['$', '$.', 'function']);
+        
+        if (Str::startsWith($key, 'language.')) {
+            return false;
+        }
 
         return Str::startsWith(trim($value), $callbacks) || Str::contains($key, ['editor', 'minDate', 'maxDate']);
     }
