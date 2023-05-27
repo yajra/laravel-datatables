@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v10.4.1] - 2023-05-27
+
+- fix: Error when setting language config for "editor" #2983
+
 ### [v10.4.0] - 2023-03-28
 
 - feat: Allow any callable in ->addColumn() #2977
