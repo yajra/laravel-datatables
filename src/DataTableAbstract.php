@@ -15,8 +15,8 @@ use Yajra\DataTables\Processors\DataProcessor;
 use Yajra\DataTables\Utilities\Helper;
 
 /**
- * @method DataTableAbstract setTransformer($transformer)
- * @method DataTableAbstract setSerializer($transformer)
+ * @method static setTransformer($transformer)
+ * @method static setSerializer($transformer)
  *
  * @property-read mixed $transformer
  * @property-read mixed $serializer
