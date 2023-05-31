@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v10.4.2] - 2023-05-31
+
+- Fix return type for setTransformer() and setSerializer() #3003
+
 ### [v10.4.1] - 2023-05-27
 
 - fix: Error when setting language config for "editor" #2983
