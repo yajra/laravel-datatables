@@ -34,7 +34,6 @@ class QueryDataTableTest extends TestCase
 
     public function test_simple_queries_with_complexe_select_are_wrapped_without_selects()
     {
-
         /** @var \Yajra\DataTables\QueryDataTable $dataTable */
         $dataTable = app('datatables')->of(
             DB::table('users')->select('users.*')->selectRaw('(select id from posts where posts.user_id = users.id order by created_at desc limit 1) as last_post_id')

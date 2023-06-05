@@ -158,6 +158,7 @@ class QueryDataTable extends DataTableAbstract
 
         if ($this->isComplexQuery($builder)) {
             $builder->select(DB::raw('1'));
+            
             if (! $this->isComplexQuery($builder)) {
                 return $this->getConnection()
                     ->query()
