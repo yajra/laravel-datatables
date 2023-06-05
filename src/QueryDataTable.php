@@ -229,7 +229,7 @@ class QueryDataTable extends DataTableAbstract
         // the filteredRecords equals the totalRecords
         if ($this->query == $initialQuery) {
            $this->filteredRecords ??= $this->totalRecords;
-        }else{
+        } else {
             $this->filteredCount();
         }
     }
