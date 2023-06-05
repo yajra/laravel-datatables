@@ -37,9 +37,9 @@ class QueryDataTableTest extends TestCase
 
         /** @var \Yajra\DataTables\QueryDataTable $dataTable */
         $dataTable = app('datatables')->of(
-            DB::table('users')->select('posts.*')->selectRaw('(select id from posts where posts.user_id = users.id order by created_at desc limit 1) as user_name')
+            DB::table('users')->select('users.*')->selectRaw('(select id from posts where posts.user_id = users.id order by created_at desc limit 1) as last_post_id')
         );
-
+        dd(DB::table('users')->select('users.*')->selectRaw('(select id from posts where posts.user_id = users.id order by created_at desc limit 1) as last_post_id')->toSql());
         $this->assertQueryWrapped(true, $dataTable->prepareCountQuery());
         $this->assertQueryHasNoSelect(true, $dataTable->prepareCountQuery());
         $this->assertEquals(20, $dataTable->count());
