@@ -28,6 +28,20 @@ class QueryDataTableTest extends TestCase
         );
 
         $this->assertQueryWrapped(true, $dataTable->prepareCountQuery());
+        $this->assertQueryHasNoSelect(false, $dataTable->prepareCountQuery());
+        $this->assertEquals(60, $dataTable->count());
+    }
+
+    public function test_simple_queries_with_complexe_select_are_wrapped_without_selects()
+    {
+
+        /** @var \Yajra\DataTables\QueryDataTable $dataTable */
+        $dataTable = app('datatables')->of(
+            DB::table('posts')->select('posts.*')->selectRaw('(select name from users where posts.user_id = users.id order by id limit 1) as user_name')
+        );
+
+        $this->assertQueryWrapped(true, $dataTable->prepareCountQuery());
+        $this->assertQueryHasNoSelect(true, $dataTable->prepareCountQuery());
         $this->assertEquals(60, $dataTable->count());
     }
 
@@ -52,5 +66,20 @@ class QueryDataTableTest extends TestCase
         $sql = $query->toSql();
 
         $this->assertSame($expected, Str::endsWith($sql, 'count_row_table'), "'{$sql}' is not wrapped");
+    }
+
+    /**
+     * @param $expected bool
+     * @param $query \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
+     * @return void
+     */
+    public function assertQueryHasNoSelect($expected, $query)
+    {
+         $sql = $query->toSql();
+
+
+        $this->assertSame($expected, Str::startsWith($sql, 'select * from (select 1 from'), "'{$sql}' is not wrapped");
+
+
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Database\Connection;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Utilities\Helper;
 
@@ -156,15 +157,24 @@ class QueryDataTable extends DataTableAbstract
         $builder = clone $this->query;
 
         if ($this->isComplexQuery($builder)) {
+            $builder->select(DB::raw('1'));
+            if (!$this->isComplexQuery($builder)) {
+                return $this->getConnection()
+                    ->query()
+                    ->fromRaw('(' . $builder->toSql() . ') count_row_table')
+                    ->setBindings($builder->getBindings());
+            }
+
+            $builder = clone $this->query;
             return $this->getConnection()
-                        ->query()
-                        ->fromRaw('('.$builder->toSql().') count_row_table')
-                        ->setBindings($builder->getBindings());
+                ->query()
+                ->fromRaw('(' . $builder->toSql() . ') count_row_table')
+                ->setBindings($builder->getBindings());
         }
 
         $row_count = $this->wrap('row_count');
         $builder->select($this->getConnection()->raw("'1' as {$row_count}"));
-        if (! $this->keepSelectBindings) {
+        if (!$this->keepSelectBindings) {
             $builder->setBindings([], 'select');
         }
 
