@@ -129,5 +129,5 @@ return [
      * Prevent the getters Mutators to be applied when converting a collection
      * of the Models into the final JSON
      */
-    'ignore_getters' => false
+    'ignore_getters' => false,
 ];
