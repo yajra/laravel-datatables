@@ -4,7 +4,6 @@ namespace Yajra\DataTables\Tests\Integration;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Yajra\DataTables\DataTables;
-use Yajra\DataTables\Tests\Models\Post;
 use Yajra\DataTables\Tests\Models\User;
 use Yajra\DataTables\Tests\TestCase;
 
@@ -41,7 +40,7 @@ class IgnoreGettersTest extends TestCase
         $this->assertCount(20, $response->json()['data']);
     }
 
-     /** @test */
+    /** @test */
     public function it_ignore_the_getter_value_with_ignore_getters_config()
     {
         app('config')->set('datatables.ignore_getters', true);
