@@ -29,7 +29,7 @@ class IgnoreGettersTest extends TestCase
     }
 
     /** @test */
-    function it_return_the_getter_value_without_ignore_getters_config()
+    public function it_return_the_getter_value_without_ignore_getters_config()
     {
         $response = $this->call('GET', '/ignore-getters');
         $response->assertJson([
@@ -42,7 +42,7 @@ class IgnoreGettersTest extends TestCase
     }
 
      /** @test */
-    function it_ignore_the_getter_value_with_ignore_getters_config()
+    public function it_ignore_the_getter_value_with_ignore_getters_config()
     {
         app('config')->set('datatables.ignore_getters', true);
 

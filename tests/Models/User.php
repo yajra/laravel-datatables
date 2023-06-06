@@ -2,7 +2,6 @@
 
 namespace Yajra\DataTables\Tests\Models;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
