@@ -15,8 +15,8 @@ class Helper
     /**
      * Places item of extra columns into results by care of their order.
      *
-     * @param  array  $item
-     * @param  array  $array
+     * @param array $item
+     * @param array $array
      * @return array
      */
     public static function includeInArray($item, $array)
@@ -26,7 +26,7 @@ class Helper
         }
 
         $count = 0;
-        $last = $array;
+        $last  = $array;
         $first = [];
         foreach ($array as $key => $value) {
             if ($count == $item['order']) {
@@ -45,8 +45,8 @@ class Helper
     /**
      * Check if item order is valid.
      *
-     * @param  array  $item
-     * @param  array  $array
+     * @param array $item
+     * @param array $array
      * @return bool
      */
     protected static function isItemOrderInvalid($item, $array)
@@ -57,7 +57,7 @@ class Helper
     /**
      * Gets the parameter of a callable thing (from is_callable) and returns it's arguments using reflection.
      *
-     * @param  callable  $callable
+     * @param callable $callable
      * @return \ReflectionParameter[]
      *
      * @throws \ReflectionException
@@ -87,9 +87,9 @@ class Helper
     /**
      * Determines if content is callable or blade string, processes and returns.
      *
-     * @param  mixed  $content  Pre-processed content
-     * @param  array  $data  data to use with blade template
-     * @param  array|object  $param  parameter to call with callable
+     * @param mixed        $content Pre-processed content
+     * @param array        $data    data to use with blade template
+     * @param array|object $param   parameter to call with callable
      * @return mixed
      *
      * @throws \ReflectionException
@@ -116,8 +116,8 @@ class Helper
     /**
      * Parses and compiles strings by using Blade Template System.
      *
-     * @param  string  $str
-     * @param  array  $data
+     * @param string $str
+     * @param array  $data
      * @return false|string
      */
     public static function compileBlade($str, $data = [])
@@ -128,7 +128,7 @@ class Helper
         }
 
         ob_start() && extract($data, EXTR_SKIP);
-        eval('?>'.app('blade.compiler')->compileString($str));
+        eval('?>' . app('blade.compiler')->compileString($str));
         $str = ob_get_contents();
         ob_end_clean();
 
@@ -138,8 +138,8 @@ class Helper
     /**
      * Get a mixed value of custom data and the parameters.
      *
-     * @param  array  $data
-     * @param  array|object  $param
+     * @param array        $data
+     * @param array|object $param
      * @return array
      */
     public static function getMixedValue(array $data, array|object $param)
@@ -160,7 +160,7 @@ class Helper
     /**
      * Cast the parameter into an array.
      *
-     * @param  array|object  $param
+     * @param array|object $param
      * @return array
      */
     public static function castToArray(array|object $param): array
@@ -169,19 +169,19 @@ class Helper
             return $param->toArray();
         }
 
-        return (array) $param;
+        return (array)$param;
     }
 
     /**
      * Get equivalent or method of query builder.
      *
-     * @param  string  $method
+     * @param string $method
      * @return string
      */
     public static function getOrMethod($method)
     {
-        if (! Str::contains(Str::lower($method), 'or')) {
-            return 'or'.ucfirst($method);
+        if (!Str::contains(Str::lower($method), 'or')) {
+            return 'or' . ucfirst($method);
         }
 
         return $method;
@@ -190,31 +190,38 @@ class Helper
     /**
      * Converts array object values to associative array.
      *
-     * @param  mixed  $row
-     * @param  array  $filters
+     * @param mixed $row
+     * @param array $filters
      * @return array
      */
     public static function convertToArray($row, $filters = [])
     {
-        $row = is_object($row) && method_exists($row, 'makeHidden') ? $row->makeHidden(Arr::get($filters, 'hidden',
-            [])) : $row;
-        $row = is_object($row) && method_exists($row, 'makeVisible') ? $row->makeVisible(Arr::get($filters, 'visible',
-            [])) : $row;
-        $data = $row instanceof Arrayable ? $row->toArray() : (array) $row;
-
-        foreach ($data as &$value) {
-            if (is_object($value) || is_array($value)) {
-                $value = self::convertToArray($value);
+        if (config('datatables.ignore_getters') && is_object($row) && method_exists($row, 'getAttributes')) {
+            $data = $row instanceof Arrayable ? $row->getAttributes() : (array)$row;
+            foreach ($row->getRelations() as $key => $value) {
+                $data[$key] = self::convertToArray($value);
             }
+        } else {
+            $row = is_object($row) && method_exists($row, 'makeHidden') ? $row->makeHidden(Arr::get($filters, 'hidden',
+                [])) : $row;
+            $row = is_object($row) && method_exists($row, 'makeVisible') ? $row->makeVisible(Arr::get($filters, 'visible',
+                [])) : $row;
 
-            unset($value);
+            $data = $row instanceof Arrayable ? $row->toArray() : (array)$row;
+            foreach ($data as &$value) {
+                if (is_object($value) || is_array($value)) {
+                    $value = self::convertToArray($value);
+                }
+
+                unset($value);
+            }
         }
 
         return $data;
     }
 
     /**
-     * @param  array  $data
+     * @param array $data
      * @return array
      */
     public static function transform(array $data)
@@ -227,7 +234,7 @@ class Helper
     /**
      * Transform row data into an array.
      *
-     * @param  array  $row
+     * @param array $row
      * @return array
      */
     protected static function transformRow($row)
@@ -250,7 +257,7 @@ class Helper
     /**
      * Build parameters depending on # of arguments passed.
      *
-     * @param  array  $args
+     * @param array $args
      * @return array
      */
     public static function buildParameters(array $args)
@@ -274,9 +281,9 @@ class Helper
     /**
      * Replace all pattern occurrences with keyword.
      *
-     * @param  array  $subject
-     * @param  string  $keyword
-     * @param  string  $pattern
+     * @param array  $subject
+     * @param string $keyword
+     * @param string $pattern
      * @return array
      */
     public static function replacePatternWithKeyword(array $subject, $keyword, $pattern = '$1')
@@ -296,8 +303,8 @@ class Helper
     /**
      * Get column name from string.
      *
-     * @param  string  $str
-     * @param  bool  $wantsAlias
+     * @param string $str
+     * @param bool   $wantsAlias
      * @return string
      */
     public static function extractColumnName($str, $wantsAlias)
@@ -322,8 +329,8 @@ class Helper
     /**
      * Adds % wildcards to the given string.
      *
-     * @param  string  $str
-     * @param  bool  $lowercase
+     * @param string $str
+     * @param bool   $lowercase
      * @return string
      */
     public static function wildcardLikeString($str, $lowercase = true)
@@ -334,19 +341,19 @@ class Helper
     /**
      * Adds wildcards to the given string.
      *
-     * @param  string  $str
-     * @param  string  $wildcard
-     * @param  bool  $lowercase
+     * @param string $str
+     * @param string $wildcard
+     * @param bool   $lowercase
      * @return string
      */
     public static function wildcardString($str, $wildcard, $lowercase = true)
     {
-        $wild = $wildcard;
-        $chars = (array) preg_split('//u', $str, -1, PREG_SPLIT_NO_EMPTY);
+        $wild  = $wildcard;
+        $chars = (array)preg_split('//u', $str, -1, PREG_SPLIT_NO_EMPTY);
 
         if (count($chars) > 0) {
             foreach ($chars as $char) {
-                $wild .= $char.$wildcard;
+                $wild .= $char . $wildcard;
             }
         }
 
@@ -359,14 +366,14 @@ class Helper
 
     public static function toJsonScript(array $parameters, int $options = 0): string
     {
-        $values = [];
+        $values       = [];
         $replacements = [];
 
         foreach (Arr::dot($parameters) as $key => $value) {
             if (self::isJavascript($value, $key)) {
                 $values[] = trim($value);
-                Arr::set($parameters, $key, '%'.$key.'%');
-                $replacements[] = '"%'.$key.'%"';
+                Arr::set($parameters, $key, '%' . $key . '%');
+                $replacements[] = '"%' . $key . '%"';
             }
         }
 
@@ -375,7 +382,7 @@ class Helper
             Arr::set($new, $key, $value);
         }
 
-        $json = (string) json_encode($new, $options);
+        $json = (string)json_encode($new, $options);
 
         return str_replace($replacements, $values, $json);
     }

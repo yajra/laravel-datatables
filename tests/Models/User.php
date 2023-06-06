@@ -2,6 +2,7 @@
 
 namespace Yajra\DataTables\Tests\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
@@ -26,5 +27,10 @@ class User extends Model
     public function user()
     {
         return $this->morphTo();
+    }
+
+    public function getColorAttribute()
+    {
+        return $this->color ?? '#000000';
     }
 }
