@@ -210,6 +210,35 @@ class QueryDataTable extends DataTableAbstract
      *
      * @return void
      */
+    protected function filterRecords(): void
+    {
+        $initialQuery = clone $this->query;
+
+        if ($this->autoFilter && $this->request->isSearchable()) {
+            $this->filtering();
+        }
+
+        if (is_callable($this->filterCallback)) {
+            call_user_func($this->filterCallback, $this->resolveCallbackParameter());
+        }
+
+        $this->columnSearch();
+        $this->searchPanesSearch();
+
+        // If no modification between the original query and the filtered one has been made
+        // the filteredRecords equals the totalRecords
+        if ($this->query == $initialQuery) {
+            $this->filteredRecords ??= $this->totalRecords;
+        } else {
+            $this->filteredCount();
+        }
+    }
+
+    /**
+     * Perform column search.
+     *
+     * @return void
+     */
     public function columnSearch(): void
     {
         $columns = $this->request->columns();
