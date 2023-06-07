@@ -81,7 +81,7 @@ class DataProcessor
     /**
      * @var bool
      */
-    protected bool $ignoreGetters;
+    protected bool $ignoreGetters = false;
 
     /**
      * @param  iterable  $results
