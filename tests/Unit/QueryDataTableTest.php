@@ -42,10 +42,10 @@ class QueryDataTableTest extends TestCase
                     'last_post_id' => DB::table('posts')
                                         ->whereColumn('posts.user_id', 'users.id')
                                         ->orderBy('created_at')
-                                        ->select('id')
+                                        ->select('id'),
                 ])
                 ->orderBy(DB::table('posts')->whereColumn('posts.user_id', 'users.id')->orderBy('created_at')->select('created_at')
-            )
+                )
         );
 
         $this->assertQueryHasNoSelect(false, $dataTable->prepareCountQuery());
@@ -62,10 +62,10 @@ class QueryDataTableTest extends TestCase
                     'last_post_id' => DB::table('posts')
                                         ->whereColumn('posts.user_id', 'users.id')
                                         ->orderBy('created_at')
-                                        ->select('id')
+                                        ->select('id'),
                 ])
                 ->orderBy(DB::table('posts')->whereColumn('posts.user_id', 'users.id')->orderBy('created_at')->select('created_at')
-            )
+                )
         )->ignoreSelectsInCountQuery();
 
         $this->assertQueryHasNoSelect(true, $dataTable->prepareCountQuery());

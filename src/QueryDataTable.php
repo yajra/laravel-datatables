@@ -49,7 +49,7 @@ class QueryDataTable extends DataTableAbstract
      */
     protected bool $keepSelectBindings = false;
 
-     /**
+    /**
      * Flag to ignore the selects in count query.
      *
      * @var bool
