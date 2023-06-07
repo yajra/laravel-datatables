@@ -225,7 +225,7 @@ abstract class DataTableAbstract implements DataTable
 
     /**
      * Prevent the getters Mutators to be applied when converting a collection
-     * of the Models into the final JSON
+     * of the Models into the final JSON.
      *
      * @return $this
      */
