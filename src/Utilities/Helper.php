@@ -201,9 +201,9 @@ class Helper
             foreach ($row->getRelations() as $relationName => $relation) {
                 if (is_iterable($relation)) {
                     foreach ($relation as $relationItem) {
-                         $data[$relationName][] = self::convertToArray($relationItem, ['ignore_getters' => true]);
+                        $data[$relationName][] = self::convertToArray($relationItem, ['ignore_getters' => true]);
                     }
-                }else{
+                } else {
                     $data[$relationName] = self::convertToArray($relation, ['ignore_getters' => true]);
                 }
             }

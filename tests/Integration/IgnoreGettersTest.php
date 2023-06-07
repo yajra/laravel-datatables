@@ -3,7 +3,6 @@
 namespace Yajra\DataTables\Tests\Integration;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Arr;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Tests\Models\User;
 use Yajra\DataTables\Tests\TestCase;
@@ -49,7 +48,7 @@ class IgnoreGettersTest extends TestCase
         ]);
 
         $this->assertNotNull($response->json()['data'][0]['posts']);
-       // Assert the getter color is not call on primary Model
+        // Assert the getter color is not call on primary Model
         $this->assertNull($response->json()['data'][0]['color']);
         // Assert the getter color is not call on relationships
         $this->assertNull($response->json()['data'][0]['posts'][0]['user']['color']);
