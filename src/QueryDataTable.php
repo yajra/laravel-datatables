@@ -49,6 +49,13 @@ class QueryDataTable extends DataTableAbstract
      */
     protected bool $keepSelectBindings = false;
 
+     /**
+     * Flag to ignore the selects in count query.
+     *
+     * @var bool
+     */
+    public bool $ignoreSelectInCountQuery = false;
+
     /**
      * @param  QueryBuilder  $builder
      */
@@ -159,7 +166,7 @@ class QueryDataTable extends DataTableAbstract
         if ($this->isComplexQuery($builder)) {
             $builder->select(DB::raw('1'));
 
-            if (! $this->isComplexQuery($builder)) {
+            if ($this->ignoreSelectInCountQuery || ! $this->isComplexQuery($builder)) {
                 return $this->getConnection()
                     ->query()
                     ->fromRaw('('.$builder->toSql().') count_row_table')
@@ -800,5 +807,12 @@ class QueryDataTable extends DataTableAbstract
         $this->prepareQuery();
 
         return $this->getQuery();
+    }
+
+    public function ignoreSelectsInCountQuery()
+    {
+        $this->ignoreSelectInCountQuery = true;
+
+        return $this;
     }
 }

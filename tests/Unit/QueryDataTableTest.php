@@ -32,11 +32,58 @@ class QueryDataTableTest extends TestCase
         $this->assertEquals(60, $dataTable->count());
     }
 
+    public function test_complex_query_use_select_in_count()
+    {
+        /** @var \Yajra\DataTables\QueryDataTable $dataTable */
+        $dataTable = app('datatables')->of(
+            DB::table('users')
+                ->select('users.*')
+                ->addSelect([
+                    'last_post_id' => DB::table('posts')
+                                        ->whereColumn('posts.user_id', 'users.id')
+                                        ->orderBy('created_at')
+                                        ->select('id')
+                ])
+                ->orderBy(DB::table('posts')->whereColumn('posts.user_id', 'users.id')->orderBy('created_at')->select('created_at')
+            )
+        );
+
+        $this->assertQueryHasNoSelect(false, $dataTable->prepareCountQuery());
+        $this->assertEquals(20, $dataTable->count());
+    }
+
+    public function test_complex_query_can_ignore_select_in_count()
+    {
+        /** @var \Yajra\DataTables\QueryDataTable $dataTable */
+        $dataTable = app('datatables')->of(
+            DB::table('users')
+                ->select('users.*')
+                ->addSelect([
+                    'last_post_id' => DB::table('posts')
+                                        ->whereColumn('posts.user_id', 'users.id')
+                                        ->orderBy('created_at')
+                                        ->select('id')
+                ])
+                ->orderBy(DB::table('posts')->whereColumn('posts.user_id', 'users.id')->orderBy('created_at')->select('created_at')
+            )
+        )->ignoreSelectsInCountQuery();
+
+        $this->assertQueryHasNoSelect(true, $dataTable->prepareCountQuery());
+        $this->assertEquals(20, $dataTable->count());
+    }
+
     public function test_simple_queries_with_complexe_select_are_wrapped_without_selects()
     {
         /** @var \Yajra\DataTables\QueryDataTable $dataTable */
         $dataTable = app('datatables')->of(
-            DB::table('users')->select('users.*')->selectRaw('(select id from posts where posts.user_id = users.id order by created_at desc limit 1) as last_post_id')
+            DB::table('users')
+              ->select('users.*')
+              ->addSelect([
+                  'last_post_id' => DB::table('posts')
+                                      ->whereColumn('posts.user_id', 'users.id')
+                                      ->orderBy('created_at')
+                                      ->select('id')
+              ])
         );
 
         $this->assertQueryWrapped(true, $dataTable->prepareCountQuery());
@@ -45,6 +92,17 @@ class QueryDataTableTest extends TestCase
     }
 
     public function test_simple_queries_are_not_wrapped_and_countable()
+    {
+        /** @var \Yajra\DataTables\QueryDataTable $dataTable */
+        $dataTable = app('datatables')->of(
+            User::with('posts')->select('users.*')
+        );
+
+        $this->assertQueryWrapped(false, $dataTable->prepareCountQuery());
+        $this->assertEquals(20, $dataTable->count());
+    }
+
+    public function test_complexe_queries_can_be_wrapped_and_countable()
     {
         /** @var \Yajra\DataTables\QueryDataTable $dataTable */
         $dataTable = app('datatables')->of(
