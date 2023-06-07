@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v10.4.3] - 2023-06-07
+
+- Fix: Prevent the filteredCount() query if no filter is applied to the initial query #3007
+
 ### [v10.4.2] - 2023-05-31
 
 - Fix return type for setTransformer() and setSerializer() #3003
@@ -127,6 +131,7 @@
 - PHP8 syntax / method signature changed
 
 [Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.3.1...10.x
+[v10.3.1]: https://github.com/yajra/laravel-datatables/compare/v10.3.1...v10.3.0
 [v10.3.1]: https://github.com/yajra/laravel-datatables/compare/v10.3.1...v10.3.0
 [v10.3.0]: https://github.com/yajra/laravel-datatables/compare/v10.3.0...v10.2.3
 [v10.2.3]: https://github.com/yajra/laravel-datatables/compare/v10.2.3...v10.2.2
