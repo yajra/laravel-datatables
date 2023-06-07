@@ -196,15 +196,15 @@ class Helper
      */
     public static function convertToArray($row, $filters = [])
     {
-        if (config('datatables.ignore_getters') && is_object($row) && method_exists($row, 'getAttributes')) {
+        if (Arr::get($filters, 'ignore_getters') && is_object($row) && method_exists($row, 'getAttributes')) {
             $data = $row->getAttributes();
             foreach ($row->getRelations() as $relationName => $relation) {
                 if (is_iterable($relation)) {
                     foreach ($relation as $relationItem) {
-                         $data[$relationName][] = self::convertToArray($relationItem);
+                         $data[$relationName][] = self::convertToArray($relationItem, ['ignore_getters' => true]);
                     }
                 }else{
-                    $data[$relationName] = self::convertToArray($relation);
+                    $data[$relationName] = self::convertToArray($relation, ['ignore_getters' => true]);
                 }
             }
 

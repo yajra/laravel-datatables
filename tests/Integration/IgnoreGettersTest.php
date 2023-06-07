@@ -13,68 +13,46 @@ class IgnoreGettersTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
-    public function it_returns_all_records_with_the_relation_when_called_without_parameters()
+    public function it_return_the_getter_value_without_ignore_getters()
     {
-        app('config')->set('datatables.ignore_getters', true);
-
-        $response = $this->call('GET', '/ignore-getters');
-        $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
-            'recordsFiltered' => 20,
-        ]);
-
-        $this->assertArrayHasKey('posts', $response->json()['data'][0]);
-        $this->assertCount(20, $response->json()['data']);
-    }
-
-    /** @test */
-    public function it_return_the_getter_value_without_ignore_getters_config()
-    {
-        $response = $this->call('GET', '/ignore-getters');
-        $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
-            'recordsFiltered' => 20,
-        ]);
-
-        $this->assertNotNull($response->json()['data'][0]['posts']);
-        // Assert the getter color is not call on primary Model
-        $this->assertNotNull($response->json()['data'][0]['color']);
-        // Assert the getter color is not call on relationships
-        $this->assertNotNull($response->json()['data'][0]['posts'][0]['user']['color']);
-        $this->assertNull(Arr::get($response->json()['data'][0], 'roles'));
-        $this->assertCount(20, $response->json()['data']);
-    }
-
-    /** @test */
-    public function it_ignore_the_getter_value_with_ignore_getters_config()
-    {
-        app('config')->set('datatables.ignore_getters', true);
-
-        $response = $this->call('GET', '/ignore-getters');
-        $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
-            'recordsFiltered' => 20,
-        ]);
-
-        $this->assertNotNull($response->json()['data'][0]['posts']);
-
-       // Assert the getter color is not call on primary Model
-        $this->assertNotNull($response->json()['data'][0]['color']);
-        // Assert the getter color is not call on relationships
-        $this->assertNull($response->json()['data'][0]['posts'][0]['user']['color']);
-        $this->assertNull(Arr::get($response->json()['data'][0], 'roles'));
-        $this->assertCount(20, $response->json()['data']);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
         $this->app['router']->get('/ignore-getters', function (DataTables $datatables) {
             return $datatables->eloquent(User::with('posts.user')->select('users.*'))->toJson();
         });
+
+        $response = $this->call('GET', '/ignore-getters');
+        $response->assertJson([
+            'draw'            => 0,
+            'recordsTotal'    => 20,
+            'recordsFiltered' => 20,
+        ]);
+
+        $this->assertNotNull($response->json()['data'][0]['posts']);
+        // Assert the getter color is call on primary Model
+        $this->assertNotNull($response->json()['data'][0]['color']);
+        // Assert the getter color is call on relationships
+        $this->assertNotNull($response->json()['data'][0]['posts'][0]['user']['color']);
+        $this->assertCount(20, $response->json()['data']);
+    }
+
+    /** @test */
+    public function it_ignore_the_getter_value_with_ignore_getters()
+    {
+        $this->app['router']->get('/ignore-getters', function (DataTables $datatables) {
+            return $datatables->eloquent(User::with('posts.user')->select('users.*'))->ignoreGetters()->toJson();
+        });
+
+        $response = $this->call('GET', '/ignore-getters');
+        $response->assertJson([
+            'draw'            => 0,
+            'recordsTotal'    => 20,
+            'recordsFiltered' => 20,
+        ]);
+
+        $this->assertNotNull($response->json()['data'][0]['posts']);
+       // Assert the getter color is not call on primary Model
+        $this->assertNull($response->json()['data'][0]['color']);
+        // Assert the getter color is not call on relationships
+        $this->assertNull($response->json()['data'][0]['posts'][0]['user']['color']);
+        $this->assertCount(20, $response->json()['data']);
     }
 }

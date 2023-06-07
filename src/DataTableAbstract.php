@@ -53,6 +53,7 @@ abstract class DataTableAbstract implements DataTable
      */
     protected array $columnDef = [
         'index' => false,
+        'ignore_getters' => false,
         'append' => [],
         'edit' => [],
         'filter' => [],
@@ -218,6 +219,18 @@ abstract class DataTableAbstract implements DataTable
     public function addIndexColumn(): static
     {
         $this->columnDef['index'] = true;
+
+        return $this;
+    }
+
+    /**
+     * Prevent the getters Mutators to be applied when converting a collection
+     * of the Models into the final JSON
+     * @return $this
+     */
+    public function ignoreGetters(): static
+    {
+        $this->columnDef['ignore_getters'] = true;
 
         return $this;
     }
