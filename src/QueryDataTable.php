@@ -809,10 +809,15 @@ class QueryDataTable extends DataTableAbstract
         return $this->getQuery();
     }
 
-    public function ignoreSelectsInCountQuery()
-    {
-        $this->ignoreSelectInCountQuery = true;
+   /**
+     * Ignore the selects in count query.
+     *
+     * @return $this
+     */
+   public function ignoreSelectsInCountQuery()
+   {
+       $this->ignoreSelectInCountQuery = true;
 
-        return $this;
-    }
+       return $this;
+   }
 }
