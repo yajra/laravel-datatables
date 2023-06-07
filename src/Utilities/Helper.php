@@ -197,24 +197,26 @@ class Helper
     public static function convertToArray($row, $filters = [])
     {
         if (config('datatables.ignore_getters') && is_object($row) && method_exists($row, 'getAttributes')) {
-            $data = $row instanceof Arrayable ? $row->getAttributes() : (array) $row;
-            foreach ($row->getRelations() as $key => $value) {
-                $data[$key] = self::convertToArray($value);
+            $data = $row->getAttributes();
+            foreach ($row->getRelations() as $relationName => $collection) {
+                $data[$relationName] = self::convertToArray($collection);
             }
-        } else {
-            $row = is_object($row) && method_exists($row, 'makeHidden') ? $row->makeHidden(Arr::get($filters, 'hidden',
-                [])) : $row;
-            $row = is_object($row) && method_exists($row, 'makeVisible') ? $row->makeVisible(Arr::get($filters, 'visible',
-                [])) : $row;
 
-            $data = $row instanceof Arrayable ? $row->toArray() : (array) $row;
-            foreach ($data as &$value) {
-                if (is_object($value) || is_array($value)) {
-                    $value = self::convertToArray($value);
-                }
+            return $data;
+        }
 
-                unset($value);
+        $row = is_object($row) && method_exists($row, 'makeHidden') ? $row->makeHidden(Arr::get($filters, 'hidden',
+            [])) : $row;
+        $row = is_object($row) && method_exists($row, 'makeVisible') ? $row->makeVisible(Arr::get($filters, 'visible',
+            [])) : $row;
+
+        $data = $row instanceof Arrayable ? $row->toArray() : (array) $row;
+        foreach ($data as &$value) {
+            if (is_object($value) || is_array($value)) {
+                $value = self::convertToArray($value);
             }
+
+            unset($value);
         }
 
         return $data;
