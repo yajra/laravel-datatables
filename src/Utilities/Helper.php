@@ -198,7 +198,7 @@ class Helper
     {
         if (Arr::get($filters, 'ignore_getters') && is_object($row) && method_exists($row, 'getAttributes')) {
             $data = $row->getAttributes();
-            if(method_exists($row, 'getRelations')) {
+            if (method_exists($row, 'getRelations')) {
                 foreach ($row->getRelations() as $relationName => $relation) {
                     if (is_iterable($relation)) {
                         foreach ($relation as $relationItem) {
