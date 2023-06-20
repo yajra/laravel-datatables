@@ -164,16 +164,15 @@ class QueryDataTable extends DataTableAbstract
         $builder = clone $this->query;
 
         if ($this->isComplexQuery($builder)) {
-            $builder->select(DB::raw('1'));
+            $query_without_selects = clone $this->query;
+            $query_without_selects->select(DB::raw('1'));
 
-            if ($this->ignoreSelectInCountQuery || ! $this->isComplexQuery($builder)) {
+            if ($this->ignoreSelectInCountQuery || ! $this->isComplexQuery($query_without_selects)) {
                 return $this->getConnection()
                     ->query()
-                    ->fromRaw('('.$builder->toSql().') count_row_table')
-                    ->setBindings($builder->getBindings());
+                    ->fromRaw('('.$query_without_selects->toSql().') count_row_table')
+                    ->setBindings($query_without_selects->getBindings());
             }
-
-            $builder = clone $this->query;
 
             return $this->getConnection()
                 ->query()
