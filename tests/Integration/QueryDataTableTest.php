@@ -188,6 +188,19 @@ class QueryDataTableTest extends TestCase
         $this->assertArrayHasKey('name', $json['data'][0]);
     }
 
+        /** @test */
+    public function it_edit_only_the_selected_columns()
+    {
+        $json = $this->call('GET', '/query/edit-columns', [
+            'columns' => [
+                ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
+            ],
+        ])->json();
+
+        $this->assertEquals('edited', $json['data'][0]['name']);
+        $this->assertNotEquals('edited', $json['data'][0]['email']);
+    }
+
     /** @test */
     public function it_does_not_allow_raw_html_on_added_columns()
     {
@@ -414,6 +427,17 @@ class QueryDataTableTest extends TestCase
             return $dataTable->query(DB::table('users'))
                              ->addColumn('foo', 'bar')
                              ->only(['name'])
+                             ->toJson();
+        });
+
+        $router->get('/query/edit-columns', function (DataTables $dataTable) {
+            return $dataTable->query(DB::table('users'))
+                             ->editColumn('name', function () {
+                                 return 'edited';
+                             })
+                             ->editColumn('email', function () {
+                                 return 'edited';
+                             })
                              ->toJson();
         });
 

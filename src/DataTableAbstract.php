@@ -231,7 +231,9 @@ abstract class DataTableAbstract implements DataTable
      */
     public function editColumn($name, $content): static
     {
-        $this->columnDef['edit'][] = ['name' => $name, 'content' => $content];
+        if (!count($this->request->columns()) || in_array($name, Arr::pluck($this->request->columns(), 'name'))) {
+            $this->columnDef['edit'][] = ['name' => $name, 'content' => $content];
+        }
 
         return $this;
     }
