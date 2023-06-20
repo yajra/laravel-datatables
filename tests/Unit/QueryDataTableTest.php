@@ -114,8 +114,8 @@ class QueryDataTableTest extends TestCase
     }
 
     /**
-     * @param $expected bool
-     * @param $query \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
+     * @param  $expected bool
+     * @param  $query \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      * @return void
      */
     protected function assertQueryWrapped($expected, $query)
@@ -126,8 +126,8 @@ class QueryDataTableTest extends TestCase
     }
 
     /**
-     * @param $expected bool
-     * @param $query \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
+     * @param  $expected  bool
+     * @param  $query  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      * @return void
      */
     public function assertQueryHasNoSelect($expected, $query)
