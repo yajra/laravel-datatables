@@ -54,7 +54,7 @@ class QueryDataTable extends DataTableAbstract
      *
      * @var bool
      */
-    public bool $ignoreSelectInCountQuery = false;
+    protected bool $ignoreSelectInCountQuery = false;
 
     /**
      * @param  QueryBuilder  $builder
