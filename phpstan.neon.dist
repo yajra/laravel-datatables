@@ -6,7 +6,7 @@ parameters:
     paths:
         - src
 
-    level: 8
+    level: max
 
     ignoreErrors:
         - '#Unsafe usage of new static\(\).#'
