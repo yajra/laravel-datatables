@@ -23,8 +23,8 @@ class QueryDataTableTest extends TestCase
     {
         $crawler = $this->call('GET', '/set-total-records');
         $crawler->assertJson([
-            'draw' => 0,
-            'recordsTotal' => 10,
+            'draw'            => 0,
+            'recordsTotal'    => 10,
             'recordsFiltered' => 10,
         ]);
     }
@@ -34,8 +34,8 @@ class QueryDataTableTest extends TestCase
     {
         $crawler = $this->call('GET', '/zero-total-records');
         $crawler->assertJson([
-            'draw' => 0,
-            'recordsTotal' => 0,
+            'draw'            => 0,
+            'recordsTotal'    => 0,
             'recordsFiltered' => 0,
         ]);
     }
@@ -45,8 +45,8 @@ class QueryDataTableTest extends TestCase
     {
         $crawler = $this->call('GET', '/set-filtered-records');
         $crawler->assertJson([
-            'draw' => 0,
-            'recordsTotal' => 20,
+            'draw'            => 0,
+            'recordsTotal'    => 20,
             'recordsFiltered' => 10,
         ]);
     }
@@ -56,8 +56,8 @@ class QueryDataTableTest extends TestCase
     {
         $crawler = $this->call('GET', '/query/users');
         $crawler->assertJson([
-            'draw' => 0,
-            'recordsTotal' => 20,
+            'draw'            => 0,
+            'recordsTotal'    => 20,
             'recordsFiltered' => 20,
         ]);
     }
@@ -70,12 +70,12 @@ class QueryDataTableTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'search' => ['value' => 'Record-19'],
+            'search'  => ['value' => 'Record-19'],
         ]);
 
         $crawler->assertJson([
-            'draw' => 0,
-            'recordsTotal' => 20,
+            'draw'            => 0,
+            'recordsTotal'    => 20,
             'recordsFiltered' => 1,
         ]);
     }
@@ -88,12 +88,12 @@ class QueryDataTableTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'search' => ['value' => 'Record-19'],
+            'search'  => ['value' => 'Record-19'],
         ]);
 
         $crawler->assertJson([
-            'draw' => 0,
-            'recordsTotal' => 0,
+            'draw'            => 0,
+            'recordsTotal'    => 0,
             'recordsFiltered' => 1,
         ]);
     }
@@ -106,12 +106,12 @@ class QueryDataTableTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'search' => ['value' => 'Record-19 Email-19'],
+            'search'  => ['value' => 'Record-19 Email-19'],
         ]);
 
         $crawler->assertJson([
-            'draw' => 0,
-            'recordsTotal' => 20,
+            'draw'            => 0,
+            'recordsTotal'    => 20,
             'recordsFiltered' => 1,
         ]);
     }
@@ -120,7 +120,7 @@ class QueryDataTableTest extends TestCase
     public function it_accepts_a_query_using_of_factory()
     {
         $dataTable = DataTables::of(DB::table('users'));
-        $response = $dataTable->toJson();
+        $response  = $dataTable->toJson();
         $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -129,7 +129,7 @@ class QueryDataTableTest extends TestCase
     public function it_accepts_a_query_using_facade()
     {
         $dataTable = DatatablesFacade::of(DB::table('users'));
-        $response = $dataTable->toJson();
+        $response  = $dataTable->toJson();
         $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -138,7 +138,7 @@ class QueryDataTableTest extends TestCase
     public function it_accepts_a_query_using_facade_query_method()
     {
         $dataTable = DatatablesFacade::query(DB::table('users'));
-        $response = $dataTable->toJson();
+        $response  = $dataTable->toJson();
         $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -147,7 +147,7 @@ class QueryDataTableTest extends TestCase
     public function it_accepts_a_query_using_ioc_container()
     {
         $dataTable = app('datatables')->query(DB::table('users'));
-        $response = $dataTable->toJson();
+        $response  = $dataTable->toJson();
         $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -156,7 +156,7 @@ class QueryDataTableTest extends TestCase
     public function it_accepts_a_query_using_ioc_container_factory()
     {
         $dataTable = app('datatables')->of(DB::table('users'));
-        $response = $dataTable->toJson();
+        $response  = $dataTable->toJson();
         $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -170,12 +170,12 @@ class QueryDataTableTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'search' => ['value' => 'Record-19'],
+            'search'  => ['value' => 'Record-19'],
         ]);
 
         $crawler->assertJson([
-            'draw' => 0,
-            'recordsTotal' => 20,
+            'draw'            => 0,
+            'recordsTotal'    => 20,
             'recordsFiltered' => 1,
         ]);
     }
@@ -188,8 +188,8 @@ class QueryDataTableTest extends TestCase
         $this->assertArrayHasKey('name', $json['data'][0]);
     }
 
-        /** @test */
-    public function it_edit_only_the_selected_columns()
+    /** @test */
+    public function it_edit_only_the_selected_columns_after_using_editOnlySelectedColumns()
     {
         $json = $this->call('GET', '/query/edit-columns', [
             'columns' => [
@@ -198,6 +198,7 @@ class QueryDataTableTest extends TestCase
         ])->json();
 
         $this->assertEquals('edited', $json['data'][0]['name']);
+        $this->assertEquals('edited', $json['data'][0]['id']);
         $this->assertNotEquals('edited', $json['data'][0]['email']);
     }
 
@@ -235,12 +236,12 @@ class QueryDataTableTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'search' => ['value' => 'Record-19'],
+            'search'  => ['value' => 'Record-19'],
         ]);
 
         $crawler->assertJson([
-            'draw' => 0,
-            'recordsTotal' => 20,
+            'draw'            => 0,
+            'recordsTotal'    => 20,
             'recordsFiltered' => 1,
         ]);
 
@@ -256,12 +257,12 @@ class QueryDataTableTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'search' => ['value' => 'Record-19'],
+            'search'  => ['value' => 'Record-19'],
         ]);
 
         $crawler->assertJson([
-            'draw' => 0,
-            'recordsTotal' => 20,
+            'draw'            => 0,
+            'recordsTotal'    => 20,
             'recordsFiltered' => 1,
         ]);
 
@@ -275,10 +276,10 @@ class QueryDataTableTest extends TestCase
         $crawler = $this->call('GET', '/query/search-panes');
 
         $crawler->assertJson([
-            'draw' => 0,
-            'recordsTotal' => 20,
+            'draw'            => 0,
+            'recordsTotal'    => 20,
             'recordsFiltered' => 20,
-            'searchPanes' => [
+            'searchPanes'     => [
                 'options' => [
                     'id' => [],
                 ],
@@ -300,8 +301,8 @@ class QueryDataTableTest extends TestCase
         ]);
 
         $crawler->assertJson([
-            'draw' => 0,
-            'recordsTotal' => 20,
+            'draw'            => 0,
+            'recordsTotal'    => 20,
             'recordsFiltered' => 2,
         ]);
     }
@@ -312,21 +313,21 @@ class QueryDataTableTest extends TestCase
         $crawler = $this->call('GET', '/query/blacklisted-filter', [
             'columns' => [
                 [
-                    'data' => 'foo',
-                    'name' => 'foo',
+                    'data'       => 'foo',
+                    'name'       => 'foo',
                     'searchable' => 'true',
-                    'orderable' => 'true',
-                    'search' => ['value' => 'Record-1'],
+                    'orderable'  => 'true',
+                    'search'     => ['value' => 'Record-1'],
                 ],
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'search' => ['value' => ''],
+            'search'  => ['value' => ''],
         ]);
 
         $crawler->assertJson([
-            'draw' => 0,
-            'recordsTotal' => 20,
+            'draw'            => 0,
+            'recordsTotal'    => 20,
             'recordsFiltered' => 1,
         ]);
     }
@@ -337,8 +338,8 @@ class QueryDataTableTest extends TestCase
         $crawler = $this->call('GET', '/query/formatColumn');
 
         $crawler->assertJson([
-            'draw' => 0,
-            'recordsTotal' => 20,
+            'draw'            => 0,
+            'recordsTotal'    => 20,
             'recordsFiltered' => 20,
         ]);
 
@@ -358,8 +359,8 @@ class QueryDataTableTest extends TestCase
         $crawler = $this->call('GET', '/closure-di');
 
         $crawler->assertJson([
-            'draw' => 0,
-            'recordsTotal' => 20,
+            'draw'            => 0,
+            'recordsTotal'    => 20,
             'recordsFiltered' => 20,
         ]);
 
@@ -369,7 +370,7 @@ class QueryDataTableTest extends TestCase
         $this->assertTrue(isset($data['name']));
         $this->assertTrue(isset($data['name_di']));
 
-        $this->assertEquals($user->name.'_di', $data['name_di']);
+        $this->assertEquals($user->name . '_di', $data['name_di']);
     }
 
     protected function setUp(): void
@@ -432,6 +433,10 @@ class QueryDataTableTest extends TestCase
 
         $router->get('/query/edit-columns', function (DataTables $dataTable) {
             return $dataTable->query(DB::table('users'))
+                             ->editColumn('id', function () {
+                                 return 'edited';
+                             })
+                             ->editOnlySelectedColumns()
                              ->editColumn('name', function () {
                                  return 'edited';
                              })
@@ -499,7 +504,7 @@ class QueryDataTableTest extends TestCase
         $router->get('/closure-di', function (DataTables $dataTable) {
             return $dataTable->query(DB::table('users'))
                              ->addColumn('name_di', function ($user, User $u) {
-                                 return $u->newQuery()->find($user->id)->name.'_di';
+                                 return $u->newQuery()->find($user->id)->name . '_di';
                              })
                              ->toJson();
         });
