@@ -120,7 +120,7 @@ class QueryDataTableTest extends TestCase
     public function it_accepts_a_query_using_of_factory()
     {
         $dataTable = DataTables::of(DB::table('users'));
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -129,7 +129,7 @@ class QueryDataTableTest extends TestCase
     public function it_accepts_a_query_using_facade()
     {
         $dataTable = DatatablesFacade::of(DB::table('users'));
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -138,7 +138,7 @@ class QueryDataTableTest extends TestCase
     public function it_accepts_a_query_using_facade_query_method()
     {
         $dataTable = DatatablesFacade::query(DB::table('users'));
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -147,7 +147,7 @@ class QueryDataTableTest extends TestCase
     public function it_accepts_a_query_using_ioc_container()
     {
         $dataTable = app('datatables')->query(DB::table('users'));
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -156,7 +156,7 @@ class QueryDataTableTest extends TestCase
     public function it_accepts_a_query_using_ioc_container_factory()
     {
         $dataTable = app('datatables')->of(DB::table('users'));
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(QueryDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -370,7 +370,7 @@ class QueryDataTableTest extends TestCase
         $this->assertTrue(isset($data['name']));
         $this->assertTrue(isset($data['name_di']));
 
-        $this->assertEquals($user->name . '_di', $data['name_di']);
+        $this->assertEquals($user->name.'_di', $data['name_di']);
     }
 
     protected function setUp(): void
@@ -504,7 +504,7 @@ class QueryDataTableTest extends TestCase
         $router->get('/closure-di', function (DataTables $dataTable) {
             return $dataTable->query(DB::table('users'))
                              ->addColumn('name_di', function ($user, User $u) {
-                                 return $u->newQuery()->find($user->id)->name . '_di';
+                                 return $u->newQuery()->find($user->id)->name.'_di';
                              })
                              ->toJson();
         });
