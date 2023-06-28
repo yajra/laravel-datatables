@@ -254,7 +254,9 @@ class Request
      */
     public function start(): int
     {
-        return intval($this->request->input('start', 0));
+        $start = $this->request->input('start', 0);
+
+        return is_numeric($start) ? intval($start) : 0;
     }
 
     /**
@@ -264,7 +266,9 @@ class Request
      */
     public function length(): int
     {
-        return intval($this->request->input('length', 10));
+        $length = $this->request->input('length', 10);
+
+        return is_numeric($length) ? intval($length) : 10;
     }
 
     /**
@@ -274,6 +278,8 @@ class Request
      */
     public function draw(): int
     {
-        return intval($this->request->input('draw', 0));
+        $draw = $this->request->input('draw', 0);
+
+        return is_numeric($draw) ? intval($draw) : 0;
     }
 }

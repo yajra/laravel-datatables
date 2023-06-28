@@ -25,7 +25,7 @@ class QueryDataTableTest extends TestCase
         $crawler->assertJson([
             'draw' => 0,
             'recordsTotal' => 10,
-            'recordsFiltered' => 20,
+            'recordsFiltered' => 10,
         ]);
     }
 
@@ -36,7 +36,7 @@ class QueryDataTableTest extends TestCase
         $crawler->assertJson([
             'draw' => 0,
             'recordsTotal' => 0,
-            'recordsFiltered' => 20,
+            'recordsFiltered' => 0,
         ]);
     }
 

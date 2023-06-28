@@ -8,6 +8,7 @@ use Illuminate\Database\Connection;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Utilities\Helper;
 
@@ -47,6 +48,13 @@ class QueryDataTable extends DataTableAbstract
      * @var bool
      */
     protected bool $keepSelectBindings = false;
+
+    /**
+     * Flag to ignore the selects in count query.
+     *
+     * @var bool
+     */
+    protected bool $ignoreSelectInCountQuery = false;
 
     /**
      * @param  QueryBuilder  $builder
@@ -156,10 +164,20 @@ class QueryDataTable extends DataTableAbstract
         $builder = clone $this->query;
 
         if ($this->isComplexQuery($builder)) {
+            $builder->select(DB::raw('1'));
+            if ($this->ignoreSelectInCountQuery || ! $this->isComplexQuery($builder)) {
+                return $this->getConnection()
+                    ->query()
+                    ->fromRaw('('.$builder->toSql().') count_row_table')
+                    ->setBindings($builder->getBindings());
+            }
+
+            $builder = clone $this->query;
+
             return $this->getConnection()
-                        ->query()
-                        ->fromRaw('('.$builder->toSql().') count_row_table')
-                        ->setBindings($builder->getBindings());
+                ->query()
+                ->fromRaw('('.$builder->toSql().') count_row_table')
+                ->setBindings($builder->getBindings());
         }
 
         $row_count = $this->wrap('row_count');
@@ -203,6 +221,35 @@ class QueryDataTable extends DataTableAbstract
         $this->keepSelectBindings = true;
 
         return $this;
+    }
+
+    /**
+     * Perform column search.
+     *
+     * @return void
+     */
+    protected function filterRecords(): void
+    {
+        $initialQuery = clone $this->query;
+
+        if ($this->autoFilter && $this->request->isSearchable()) {
+            $this->filtering();
+        }
+
+        if (is_callable($this->filterCallback)) {
+            call_user_func($this->filterCallback, $this->resolveCallbackParameter());
+        }
+
+        $this->columnSearch();
+        $this->searchPanesSearch();
+
+        // If no modification between the original query and the filtered one has been made
+        // the filteredRecords equals the totalRecords
+        if ($this->query == $initialQuery) {
+            $this->filteredRecords ??= $this->totalRecords;
+        } else {
+            $this->filteredCount();
+        }
     }
 
     /**
@@ -789,4 +836,16 @@ class QueryDataTable extends DataTableAbstract
 
         return $this->getQuery();
     }
+
+   /**
+    * Ignore the selects in count query.
+    *
+    * @return $this
+    */
+   public function ignoreSelectsInCountQuery(): static
+   {
+       $this->ignoreSelectInCountQuery = true;
+
+       return $this;
+   }
 }
