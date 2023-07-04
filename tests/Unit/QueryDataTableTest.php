@@ -44,7 +44,8 @@ class QueryDataTableTest extends TestCase
                                         ->orderBy('created_at')
                                         ->select('id'),
                 ])
-                ->orderBy(DB::table('posts')->whereColumn('posts.user_id', 'users.id')->orderBy('created_at')->select('created_at')
+                ->orderBy(
+                    DB::table('posts')->whereColumn('posts.user_id', 'users.id')->orderBy('created_at')->select('created_at')
                 )
         );
 
@@ -64,7 +65,8 @@ class QueryDataTableTest extends TestCase
                                         ->orderBy('created_at')
                                         ->select('id'),
                 ])
-                ->orderBy(DB::table('posts')->whereColumn('posts.user_id', 'users.id')->orderBy('created_at')->select('created_at')
+                ->orderBy(
+                    DB::table('posts')->whereColumn('posts.user_id', 'users.id')->orderBy('created_at')->select('created_at')
                 )
         )->ignoreSelectsInCountQuery();
 
@@ -134,6 +136,6 @@ class QueryDataTableTest extends TestCase
     {
         $sql = $query->toSql();
 
-        $this->assertSame($expected, Str::startsWith($sql, 'select * from (select 1 from'), "'{$sql}' is not wrapped");
+        $this->assertSame($expected, Str::startsWith($sql, 'select * from (select 1 as dt_row_count from'), "'{$sql}' is not wrapped");
     }
 }

@@ -164,7 +164,7 @@ class QueryDataTable extends DataTableAbstract
         $builder = clone $this->query;
 
         if ($this->isComplexQuery($builder)) {
-            $builder->select(DB::raw('1'));
+            $builder->select(DB::raw('1 as dt_row_count'));
             if ($this->ignoreSelectInCountQuery || ! $this->isComplexQuery($builder)) {
                 return $this->getConnection()
                     ->query()
