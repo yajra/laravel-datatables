@@ -8,6 +8,11 @@
 
 ### [Unreleased]
 
+### [v10.6.1] - 2023-07-05
+
+- fix: #3025 #3026
+- fix the error introduced in 10.4.4 as described in #3025.
+
 ### [v10.6.0] - 2023-06-29
 
 - feat: Expose autoFilter setter to disable post filtering #2981
@@ -143,7 +148,8 @@
 - Drop support for `ApiResourceDataTable`
 - PHP8 syntax / method signature changed
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.6.0...10.x
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.6.1...10.x
+[v10.6.1]: https://github.com/yajra/laravel-datatables/compare/v10.6.1...v10.6.0
 [v10.6.0]: https://github.com/yajra/laravel-datatables/compare/v10.6.0...v10.5.0
 [v10.5.0]: https://github.com/yajra/laravel-datatables/compare/v10.5.0...v10.4.4
 [v10.4.4]: https://github.com/yajra/laravel-datatables/compare/v10.4.4...v10.4.3
