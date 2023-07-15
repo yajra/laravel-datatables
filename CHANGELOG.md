@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v10.6.2] - 2023-07-15
+
+- fix: #3010 - convert expressions to strings #3029
+
 ### [v10.6.1] - 2023-07-05
 
 - fix: #3025 #3026
@@ -148,7 +152,8 @@
 - Drop support for `ApiResourceDataTable`
 - PHP8 syntax / method signature changed
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.6.1...10.x
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.6.2...10.x
+[v10.6.2]: https://github.com/yajra/laravel-datatables/compare/v10.6.2...v10.6.1
 [v10.6.1]: https://github.com/yajra/laravel-datatables/compare/v10.6.1...v10.6.0
 [v10.6.0]: https://github.com/yajra/laravel-datatables/compare/v10.6.0...v10.5.0
 [v10.5.0]: https://github.com/yajra/laravel-datatables/compare/v10.5.0...v10.4.4
