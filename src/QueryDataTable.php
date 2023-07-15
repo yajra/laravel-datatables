@@ -311,6 +311,19 @@ class QueryDataTable extends DataTableAbstract
         return $this->setupKeyword($keyword);
     }
 
+    protected function getColumnNameByIndex(int $index): string
+    {
+        $name = (isset($this->columns[$index]) && $this->columns[$index] != '*')
+            ? $this->columns[$index]
+            : $this->getPrimaryKeyName();
+
+        if ($name instanceof Expression) {
+            $name = $name->getValue($this->query->getGrammar());
+        }
+
+        return in_array($name, $this->extraColumns, true) ? $this->getPrimaryKeyName() : $name;
+    }
+
     /**
      * Apply filterColumn api search.
      *
