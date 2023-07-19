@@ -8,6 +8,23 @@
 
 ### [Unreleased]
 
+### [v10.6.2] - 2023-07-15
+
+- fix: #3010 - convert expressions to strings #3029
+
+### [v10.6.1] - 2023-07-05
+
+- fix: #3025 #3026
+- fix the error introduced in 10.4.4 as described in #3025.
+
+### [v10.6.0] - 2023-06-29
+
+- feat: Expose autoFilter setter to disable post filtering #2981
+ 
+### [v10.5.0] - 2023-06-29
+
+- feat: Prevent editColumn when column is not shown #3018
+
 ### [v10.4.4] - 2023-06-27
 
 - feat: Optimize countQuery with complex select #3008
@@ -135,7 +152,11 @@
 - Drop support for `ApiResourceDataTable`
 - PHP8 syntax / method signature changed
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.4.4...10.x
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.6.2...10.x
+[v10.6.2]: https://github.com/yajra/laravel-datatables/compare/v10.6.2...v10.6.1
+[v10.6.1]: https://github.com/yajra/laravel-datatables/compare/v10.6.1...v10.6.0
+[v10.6.0]: https://github.com/yajra/laravel-datatables/compare/v10.6.0...v10.5.0
+[v10.5.0]: https://github.com/yajra/laravel-datatables/compare/v10.5.0...v10.4.4
 [v10.4.4]: https://github.com/yajra/laravel-datatables/compare/v10.4.4...v10.4.3
 [v10.3.1]: https://github.com/yajra/laravel-datatables/compare/v10.3.1...v10.3.0
 [v10.3.1]: https://github.com/yajra/laravel-datatables/compare/v10.3.1...v10.3.0
