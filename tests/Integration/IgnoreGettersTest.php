@@ -12,7 +12,7 @@ class IgnoreGettersTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
-    function it_return_the_default_value_when_attribute_is_null()
+    public function it_return_the_default_value_when_attribute_is_null()
     {
         $user = User::create([
                 'name'  => 'foo',
