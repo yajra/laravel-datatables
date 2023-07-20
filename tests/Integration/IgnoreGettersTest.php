@@ -12,6 +12,19 @@ class IgnoreGettersTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
+    function it_return_the_default_value_when_attribute_is_null()
+    {
+        $user = User::create([
+                'name'  => 'foo',
+                'email' => 'foo@bar.com',
+                'color' => null
+            ]);
+
+        $this->assertEquals('#000000', $user->color);
+        $this->assertEquals('#000000', $user->refresh()->toArray()['color']);
+    }
+
+    /** @test */
     public function it_return_the_getter_value_without_ignore_getters()
     {
         $this->app['router']->get('/ignore-getters', function (DataTables $datatables) {
