@@ -58,7 +58,7 @@ class DeepRelationTest extends TestCase
     {
         $data = [
             'columns' => [
-                ['data' => 'user.roles.name', 'name' => 'user.roles.role', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'user.roles.role', 'name' => 'user.roles.role', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'user.name', 'name' => 'user.name', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'user.email', 'name' => 'user.email', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'title', 'name' => 'title', 'searchable' => 'true', 'orderable' => 'true'],
