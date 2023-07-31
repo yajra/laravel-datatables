@@ -196,12 +196,29 @@ class Helper
      */
     public static function convertToArray($row, $filters = [])
     {
+        if (Arr::get($filters, 'ignore_getters') && is_object($row) && method_exists($row, 'getAttributes')) {
+            $data = $row->getAttributes();
+            if (method_exists($row, 'getRelations')) {
+                foreach ($row->getRelations() as $relationName => $relation) {
+                    if (is_iterable($relation)) {
+                        foreach ($relation as $relationItem) {
+                            $data[$relationName][] = self::convertToArray($relationItem, ['ignore_getters' => true]);
+                        }
+                    } else {
+                        $data[$relationName] = self::convertToArray($relation, ['ignore_getters' => true]);
+                    }
+                }
+            }
+
+            return $data;
+        }
+
         $row = is_object($row) && method_exists($row, 'makeHidden') ? $row->makeHidden(Arr::get($filters, 'hidden',
             [])) : $row;
         $row = is_object($row) && method_exists($row, 'makeVisible') ? $row->makeVisible(Arr::get($filters, 'visible',
             [])) : $row;
-        $data = $row instanceof Arrayable ? $row->toArray() : (array) $row;
 
+        $data = $row instanceof Arrayable ? $row->toArray() : (array) $row;
         foreach ($data as &$value) {
             if (is_object($value) || is_array($value)) {
                 $value = self::convertToArray($value);

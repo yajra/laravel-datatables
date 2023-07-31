@@ -27,4 +27,9 @@ class User extends Model
     {
         return $this->morphTo();
     }
+
+    public function getColorAttribute()
+    {
+        return $this->color ?? '#000000';
+    }
 }

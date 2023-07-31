@@ -29,6 +29,7 @@ abstract class TestCase extends BaseTestCase
                 $table->increments('id');
                 $table->string('name');
                 $table->string('email');
+                $table->string('color')->nullable();
                 $table->string('user_type')->nullable();
                 $table->unsignedInteger('user_id')->nullable();
                 $table->timestamps();

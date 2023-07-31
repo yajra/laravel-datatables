@@ -79,6 +79,11 @@ class DataProcessor
     protected bool $includeIndex = false;
 
     /**
+     * @var bool
+     */
+    protected bool $ignoreGetters = false;
+
+    /**
      * @param  iterable  $results
      * @param  array  $columnDef
      * @param  array  $templates
@@ -96,6 +101,7 @@ class DataProcessor
         $this->rawColumns = $columnDef['raw'] ?? [];
         $this->makeHidden = $columnDef['hidden'] ?? [];
         $this->makeVisible = $columnDef['visible'] ?? [];
+        $this->ignoreGetters = $columnDef['ignore_getters'] ?? false;
         $this->templates = $templates;
         $this->start = $start;
     }
@@ -112,7 +118,7 @@ class DataProcessor
         $indexColumn = config('datatables.index_column', 'DT_RowIndex');
 
         foreach ($this->results as $row) {
-            $data = Helper::convertToArray($row, ['hidden' => $this->makeHidden, 'visible' => $this->makeVisible]);
+            $data = Helper::convertToArray($row, ['hidden' => $this->makeHidden, 'visible' => $this->makeVisible, 'ignore_getters' => $this->ignoreGetters]);
             $value = $this->addColumns($data, $row);
             $value = $this->editColumns($value, $row);
             $value = $this->setupRowVariables($value, $row);
