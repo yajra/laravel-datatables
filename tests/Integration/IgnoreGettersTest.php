@@ -15,10 +15,10 @@ class IgnoreGettersTest extends TestCase
     public function it_return_the_default_value_when_attribute_is_null()
     {
         $user = User::create([
-                'name'  => 'foo',
-                'email' => 'foo@bar.com',
-                'color' => null
-            ]);
+            'name'  => 'foo',
+            'email' => 'foo@bar.com',
+            'color' => null,
+        ]);
 
         $this->assertEquals('#000000', $user->color);
         $this->assertEquals('#000000', $user->refresh()->toArray()['color']);
