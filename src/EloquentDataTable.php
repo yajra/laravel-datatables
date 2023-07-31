@@ -81,13 +81,35 @@ class EloquentDataTable extends QueryDataTable
     /**
      * @inheritDoc
      */
-    protected function compileQuerySearch($query, string $column, string $keyword, string $boolean = 'or'): void
+    protected function compileQuerySearch($query, string $column, string $keyword, string $boolean = 'or', bool $nested = false): void
     {
+        if (substr_count($column, '.') > 1) {
+            $parts = explode('.', $column);
+            $firstRelation = array_shift($parts);
+            $column = implode('.', $parts);
+
+            if ($this->isMorphRelation($firstRelation)) {
+                $query->{$boolean.'WhereHasMorph'}(
+                    $firstRelation,
+                    '*',
+                    function (EloquentBuilder $query) use ($column, $keyword) {
+                        parent::compileQuerySearch($query, $column, $keyword, '');
+                    }
+                );
+            } else {
+                $query->{$boolean.'WhereHas'}($firstRelation, function (EloquentBuilder $query) use ($column, $keyword) {
+                    self::compileQuerySearch($query, $column, $keyword, '', true);
+                });
+            }
+
+            return;
+        }
+
         $parts = explode('.', $column);
         $newColumn = array_pop($parts);
         $relation = implode('.', $parts);
 
-        if ($this->isNotEagerLoaded($relation)) {
+        if (!$nested && $this->isNotEagerLoaded($relation)) {
             parent::compileQuerySearch($query, $column, $keyword, $boolean);
 
             return;
