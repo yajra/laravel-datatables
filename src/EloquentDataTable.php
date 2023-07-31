@@ -109,7 +109,7 @@ class EloquentDataTable extends QueryDataTable
         $newColumn = array_pop($parts);
         $relation = implode('.', $parts);
 
-        if (!$nested && $this->isNotEagerLoaded($relation)) {
+        if (! $nested && $this->isNotEagerLoaded($relation)) {
             parent::compileQuerySearch($query, $column, $keyword, $boolean);
 
             return;
