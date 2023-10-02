@@ -194,7 +194,7 @@ class EloquentDataTableTest extends TestCase
         });
         $router->get('/eloquent/formatColumn-closure', function (DataTables $dataTable) {
             return $dataTable->eloquent(User::query())
-                             ->formatColumn('created_at', fn($value, $row) => Carbon::parse($value)->format('Y-m-d'))
+                             ->formatColumn('created_at', fn ($value, $row) => Carbon::parse($value)->format('Y-m-d'))
                              ->toJson();
         });
 
