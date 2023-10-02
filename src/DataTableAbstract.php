@@ -173,7 +173,7 @@ abstract class DataTableAbstract implements DataTable
 
     /**
      * @param  string|array  $columns
-     * @param  string|\Yajra\DataTables\Contracts\Formatter  $formatter
+     * @param  string|callable|\Yajra\DataTables\Contracts\Formatter  $formatter
      * @return $this
      */
     public function formatColumn($columns, $formatter): static
