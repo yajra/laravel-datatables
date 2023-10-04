@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v10.10.0] - 2023-10-04
+
+- feat: allow closure on formatColumn #3073
+
 ### [v10.9.0] - 2023-09-29
 
 - feat: Ability to pass static data to a blade render #3067
@@ -165,7 +169,8 @@
 - Drop support for `ApiResourceDataTable`
 - PHP8 syntax / method signature changed
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.8.0...10.x
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.10.0...10.x
+[v10.10.0]: https://github.com/yajra/laravel-datatables/compare/v10.10.0...v10.9.0
 [v10.9.0]: https://github.com/yajra/laravel-datatables/compare/v10.9.0...v10.8.0
 [v10.8.0]: https://github.com/yajra/laravel-datatables/compare/v10.8.0...v10.7.0
 [v10.7.0]: https://github.com/yajra/laravel-datatables/compare/v10.7.0...v10.6.2
