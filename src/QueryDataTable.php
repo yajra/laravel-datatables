@@ -5,6 +5,7 @@ namespace Yajra\DataTables;
 use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Connection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
@@ -55,6 +56,35 @@ class QueryDataTable extends DataTableAbstract
      * @var bool
      */
     protected bool $ignoreSelectInCountQuery = false;
+
+    /**
+     * Enable scout search and use this model for searching.
+     *
+     * @var string|null
+     */
+    protected ?string $scoutModel = null;
+
+    /**
+     * Maximum number of hits to return from scout.
+     *
+     * @var int
+     */
+    protected int $scoutMaxHits = 1000;
+
+    /**
+     * Add dynamic filters to scout search.
+     *
+     * @var callable|null
+     */
+    protected $scoutFilterCallback = null;
+
+    /**
+     * Flag to disable user ordering if a fixed ordering was performed (e.g. scout search).
+     * Only works with corresponding javascript listener.
+     *
+     * @var bool
+     */
+    protected $disableUserOrdering = false;
 
     /**
      * @param  QueryBuilder  $builder
@@ -778,6 +808,9 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function globalSearch(string $keyword): void
     {
+        // Try scout search first & fall back to default search if disabled/failed
+        if ($this->applyScoutSearch($keyword)) return;
+
         $this->query->where(function ($query) use ($keyword) {
             collect($this->request->searchableColumnIndex())
                 ->map(function ($index) {
@@ -835,6 +868,9 @@ class QueryDataTable extends DataTableAbstract
             }
         }
 
+        // Set flag to disable ordering
+        $appends['disableOrdering'] = $this->disableUserOrdering;
+
         return array_merge($data, $appends);
     }
 
@@ -860,5 +896,142 @@ class QueryDataTable extends DataTableAbstract
         $this->ignoreSelectInCountQuery = true;
 
         return $this;
+    }
+
+    /**
+     * Perform sorting of columns.
+     *
+     * @return void
+     */
+    public function ordering(): void
+    {
+        // Skip if user ordering is disabled (e.g. scout search)
+        if ($this->disableUserOrdering)
+        {
+            return;
+        }
+
+        parent::ordering();
+    }
+
+    /**
+     * Enable scout search and use provided model for searching.
+     * $max_hits is the maximum number of hits to return from scout.
+     *
+     * @param  string  $model
+     * @param  int  $max_hits
+     * @return $this
+     */
+    public function enableScoutSearch(string $model, int $max_hits = 1000): static
+    {
+        if (
+            class_exists($model)
+            &&
+            is_subclass_of($model, Model::class)
+            &&
+            in_array("Laravel\Scout\Searchable", class_uses_recursive($model))
+            )
+        {
+            $this->scoutModel = $model;
+            $this->scoutMaxHits = $max_hits;
+        }
+        return $this;
+    }
+
+    /**
+     * Add dynamic filters to scout search.
+     *
+     * @param  callable  $callback
+     * @return $this
+     */
+    public function scoutFilter(callable $callback): static
+    {
+        $this->scoutFilterCallback = $callback;
+
+        return $this;
+    }
+
+    protected function applyScoutSearch(string $search_keyword): bool
+    {
+        if ($this->scoutModel == null) return false;
+
+        try
+        {
+            // Perform scout search
+            $scout_index = (new $this->scoutModel)->searchableAs();
+            $scout_key = (new $this->scoutModel)->getScoutKeyName();
+            $search_filters = [];
+            if (is_callable($this->scoutFilterCallback))
+            {
+                $search_filters = ($this->scoutFilterCallback)($search_keyword);
+            }
+
+            $search_results = $this->performScoutSearch($scout_index, $scout_key, $search_keyword, $search_filters);
+
+            // Apply scout search results to query
+            $this->query->where(function ($query) use ($scout_key, $search_results) {
+                $this->query->whereIn($scout_key, $search_results);
+            });
+
+            // Order by scout search results & disable user ordering
+            if (count($search_results) > 0)
+            {
+                $escaped_ids = collect($search_results)
+                    ->map(function ($id) {
+                        return \DB::connection()->getPdo()->quote($id);
+                    })
+                    ->implode(',');
+
+                $this->query->orderByRaw("FIELD($scout_key, $escaped_ids)");
+            }
+
+            // Disable user ordering because we already order by search relevancy
+            $this->disableUserOrdering = true;
+
+            return true;
+        }
+        catch (\Exception)
+        {
+            // Scout search failed, fallback to default search
+            return false;
+        }
+    }
+
+    /**
+     * Perform a scout search with the configured engine and given parameters. Return matching model IDs.
+     *
+     * @param  string  $scoutIndex
+     * @param  string  $scoutKey
+     * @param  string  $searchKeyword
+     * @param  array  $searchFilters
+     * @return array
+     */
+    protected function performScoutSearch(string $scoutIndex, string $scoutKey, string $searchKeyword, array $searchFilters = []): array
+    {
+        if (!class_exists('\Laravel\Scout\EngineManager'))
+        {
+            throw new \Exception('Laravel Scout is not installed.');
+        }
+        $engine = app(\Laravel\Scout\EngineManager::class)->engine();
+
+        if ($engine instanceof \Laravel\Scout\Engines\MeilisearchEngine)
+        {
+            // Meilisearch Engine
+            $search_results = $engine
+                ->index($scoutIndex)
+                ->rawSearch($searchKeyword, [
+                    'limit' => $this->scoutMaxHits,
+                    'attributesToRetrieve' => [ $scoutKey ],
+                    'filter' => $searchFilters,
+                ]);
+
+            return collect($search_results['hits'] ?? [])
+                ->pluck($scoutKey)
+                ->all();
+        }
+        else
+        {
+            throw new \Exception('Unsupported Scout Engine. Currently supported: Meilisearch');
+        }
     }
 }
