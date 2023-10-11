@@ -79,6 +79,13 @@ class QueryDataTable extends DataTableAbstract
     protected $scoutFilterCallback = null;
 
     /**
+     * Flag if scout search was performed.
+     *
+     * @var bool
+     */
+    protected bool $scoutSearched = false;
+
+    /**
      * Flag to disable user ordering if a fixed ordering was performed (e.g. scout search).
      * Only works with corresponding javascript listener.
      *
@@ -267,7 +274,7 @@ class QueryDataTable extends DataTableAbstract
         }
 
         if (is_callable($this->filterCallback)) {
-            call_user_func($this->filterCallback, $this->resolveCallbackParameter());
+            call_user_func_array($this->filterCallback, $this->resolveCallbackParameter());
         }
 
         $this->columnSearch();
@@ -703,11 +710,11 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Resolve callback parameter instance.
      *
-     * @return QueryBuilder
+     * @return array
      */
-    protected function resolveCallbackParameter()
+    protected function resolveCallbackParameter(): array
     {
-        return $this->query;
+        return [$this->query, $this->scoutSearched];
     }
 
     /**
@@ -960,7 +967,7 @@ class QueryDataTable extends DataTableAbstract
             // Perform scout search
             $scout_index = (new $this->scoutModel)->searchableAs();
             $scout_key = (new $this->scoutModel)->getScoutKeyName();
-            $search_filters = [];
+            $search_filters = '';
             if (is_callable($this->scoutFilterCallback))
             {
                 $search_filters = ($this->scoutFilterCallback)($search_keyword);
@@ -988,6 +995,7 @@ class QueryDataTable extends DataTableAbstract
             // Disable user ordering because we already order by search relevancy
             $this->disableUserOrdering = true;
 
+            $this->scoutSearched = true;
             return true;
         }
         catch (\Exception)
@@ -1003,10 +1011,10 @@ class QueryDataTable extends DataTableAbstract
      * @param  string  $scoutIndex
      * @param  string  $scoutKey
      * @param  string  $searchKeyword
-     * @param  array  $searchFilters
+     * @param  mixed  $searchFilters
      * @return array
      */
-    protected function performScoutSearch(string $scoutIndex, string $scoutKey, string $searchKeyword, array $searchFilters = []): array
+    protected function performScoutSearch(string $scoutIndex, string $scoutKey, string $searchKeyword, mixed $searchFilters = []): array
     {
         if (!class_exists('\Laravel\Scout\EngineManager'))
         {

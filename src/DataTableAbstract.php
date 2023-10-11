@@ -681,7 +681,7 @@ abstract class DataTableAbstract implements DataTable
     public function ordering(): void
     {
         if ($this->orderCallback) {
-            call_user_func($this->orderCallback, $this->resolveCallbackParameter());
+            call_user_func_array($this->orderCallback, $this->resolveCallbackParameter());
         } else {
             $this->defaultOrdering();
         }
@@ -776,7 +776,7 @@ abstract class DataTableAbstract implements DataTable
         }
 
         if (is_callable($this->filterCallback)) {
-            call_user_func($this->filterCallback, $this->resolveCallbackParameter());
+            call_user_func_array($this->filterCallback, $this->resolveCallbackParameter());
         }
 
         $this->columnSearch();
