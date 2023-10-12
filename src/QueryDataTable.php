@@ -1033,8 +1033,23 @@ class QueryDataTable extends DataTableAbstract
             return collect($search_results['hits'] ?? [])
                 ->pluck($scoutKey)
                 ->all();
+        } elseif ($engine instanceof \Laravel\Scout\Engines\AlgoliaEngine) {
+            // Algolia Engine
+            $algolia = $engine->initIndex($scoutIndex);
+
+            $search_results = $algolia->search($searchKeyword, [
+                'offset' => 0,
+                'length' => $this->scoutMaxHits,
+                'attributesToRetrieve' => [ $scoutKey ],
+                'attributesToHighlight' => [],
+                'filters' => $searchFilters,
+            ]);
+
+            return collect($search_results['hits'] ?? [])
+                ->pluck($scoutKey)
+                ->all();
         } else {
-            throw new \Exception('Unsupported Scout Engine. Currently supported: Meilisearch');
+            throw new \Exception('Unsupported Scout Engine. Currently supported: Meilisearch, Algolia');
         }
     }
 }
