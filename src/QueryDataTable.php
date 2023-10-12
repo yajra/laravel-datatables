@@ -60,9 +60,9 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Enable scout search and use this model for searching.
      *
-     * @var string|null
+     * @var Model|null
      */
-    protected ?string $scoutModel = null;
+    protected ?Model $scoutModel = null;
 
     /**
      * Maximum number of hits to return from scout.
@@ -84,6 +84,20 @@ class QueryDataTable extends DataTableAbstract
      * @var bool
      */
     protected bool $scoutSearched = false;
+
+    /**
+     * Scout index name
+     *
+     * @var string
+     */
+    protected string $scoutIndex;
+
+    /**
+     * Scout key name
+     *
+     * @var string
+     */
+    protected string $scoutKey;
 
     /**
      * Flag to disable user ordering if a fixed ordering was performed (e.g. scout search).
@@ -932,16 +946,18 @@ class QueryDataTable extends DataTableAbstract
      */
     public function enableScoutSearch(string $model, int $max_hits = 1000): static
     {
-        if (
-            class_exists($model)
-            &&
-            is_subclass_of($model, Model::class)
-            &&
-            in_array("Laravel\Scout\Searchable", class_uses_recursive($model))
-        ) {
-            $this->scoutModel = $model;
-            $this->scoutMaxHits = $max_hits;
+        $scout_model = new $model;
+        if (!class_exists($model) || !($scout_model instanceof Model)) {
+            throw new \Exception("$model must be an Eloquent Model.");
         }
+        if (!method_exists($scout_model, 'searchableAs') || !method_exists($scout_model, 'getScoutKeyName')) {
+            throw new \Exception("$model must use the Searchable trait.");
+        }
+
+        $this->scoutModel = $scout_model;
+        $this->scoutMaxHits = $max_hits;
+        $this->scoutIndex = $this->scoutModel->searchableAs();
+        $this->scoutKey = $this->scoutModel->getScoutKeyName();
 
         return $this;
     }
@@ -967,18 +983,16 @@ class QueryDataTable extends DataTableAbstract
 
         try {
             // Perform scout search
-            $scout_index = (new $this->scoutModel)->searchableAs();
-            $scout_key = (new $this->scoutModel)->getScoutKeyName();
             $search_filters = '';
             if (is_callable($this->scoutFilterCallback)) {
                 $search_filters = ($this->scoutFilterCallback)($search_keyword);
             }
 
-            $search_results = $this->performScoutSearch($scout_index, $scout_key, $search_keyword, $search_filters);
+            $search_results = $this->performScoutSearch($search_keyword, $search_filters);
 
             // Apply scout search results to query
-            $this->query->where(function ($query) use ($scout_key, $search_results) {
-                $this->query->whereIn($scout_key, $search_results);
+            $this->query->where(function ($query) use ($search_results) {
+                $this->query->whereIn($this->scoutKey, $search_results);
             });
 
             // Order by scout search results & disable user ordering
@@ -989,7 +1003,7 @@ class QueryDataTable extends DataTableAbstract
                     })
                     ->implode(',');
 
-                $this->query->orderByRaw("FIELD($scout_key, $escaped_ids)");
+                $this->query->orderByRaw("FIELD($this->scoutKey, $escaped_ids)");
             }
 
             // Disable user ordering because we already order by search relevancy
@@ -1007,13 +1021,11 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Perform a scout search with the configured engine and given parameters. Return matching model IDs.
      *
-     * @param  string  $scoutIndex
-     * @param  string  $scoutKey
      * @param  string  $searchKeyword
      * @param  mixed  $searchFilters
      * @return array
      */
-    protected function performScoutSearch(string $scoutIndex, string $scoutKey, string $searchKeyword, mixed $searchFilters = []): array
+    protected function performScoutSearch(string $searchKeyword, mixed $searchFilters = []): array
     {
         if (! class_exists('\Laravel\Scout\EngineManager')) {
             throw new \Exception('Laravel Scout is not installed.');
@@ -1021,32 +1033,38 @@ class QueryDataTable extends DataTableAbstract
         $engine = app(\Laravel\Scout\EngineManager::class)->engine();
 
         if ($engine instanceof \Laravel\Scout\Engines\MeilisearchEngine) {
-            // Meilisearch Engine
+            /** @var \Meilisearch\Client $engine */
             $search_results = $engine
-                ->index($scoutIndex)
+                ->index($this->scoutIndex)
                 ->rawSearch($searchKeyword, [
                     'limit' => $this->scoutMaxHits,
-                    'attributesToRetrieve' => [$scoutKey],
+                    'attributesToRetrieve' => [$this->scoutKey],
                     'filter' => $searchFilters,
                 ]);
 
-            return collect($search_results['hits'] ?? [])
-                ->pluck($scoutKey)
+            /** @var array<int, array<string, mixed>> $hits */
+            $hits = $search_results['hits'] ?? [];
+
+            return collect($hits)
+                ->pluck($this->scoutKey)
                 ->all();
         } elseif ($engine instanceof \Laravel\Scout\Engines\AlgoliaEngine) {
-            // Algolia Engine
-            $algolia = $engine->initIndex($scoutIndex);
+            /** @var \Algolia\AlgoliaSearch\SearchClient $engine */
+            $algolia = $engine->initIndex($this->scoutIndex);
 
             $search_results = $algolia->search($searchKeyword, [
                 'offset' => 0,
                 'length' => $this->scoutMaxHits,
-                'attributesToRetrieve' => [$scoutKey],
+                'attributesToRetrieve' => [$this->scoutKey],
                 'attributesToHighlight' => [],
                 'filters' => $searchFilters,
             ]);
 
-            return collect($search_results['hits'] ?? [])
-                ->pluck($scoutKey)
+            /** @var array<int, array<string, mixed>> $hits */
+            $hits = $search_results['hits'] ?? [];
+
+            return collect($hits)
+                ->pluck($this->scoutKey)
                 ->all();
         } else {
             throw new \Exception('Unsupported Scout Engine. Currently supported: Meilisearch, Algolia');
