@@ -86,14 +86,14 @@ class QueryDataTable extends DataTableAbstract
     protected bool $scoutSearched = false;
 
     /**
-     * Scout index name
+     * Scout index name.
      *
      * @var string
      */
     protected string $scoutIndex;
 
     /**
-     * Scout key name
+     * Scout key name.
      *
      * @var string
      */
@@ -947,10 +947,10 @@ class QueryDataTable extends DataTableAbstract
     public function enableScoutSearch(string $model, int $max_hits = 1000): static
     {
         $scout_model = new $model;
-        if (!class_exists($model) || !($scout_model instanceof Model)) {
+        if (! class_exists($model) || ! ($scout_model instanceof Model)) {
             throw new \Exception("$model must be an Eloquent Model.");
         }
-        if (!method_exists($scout_model, 'searchableAs') || !method_exists($scout_model, 'getScoutKeyName')) {
+        if (! method_exists($scout_model, 'searchableAs') || ! method_exists($scout_model, 'getScoutKeyName')) {
             throw new \Exception("$model must use the Searchable trait.");
         }
 
