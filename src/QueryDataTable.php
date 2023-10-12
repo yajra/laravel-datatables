@@ -710,7 +710,7 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Resolve callback parameter instance.
      *
-     * @return array
+     * @return array<int|string, mixed>
      */
     protected function resolveCallbackParameter(): array
     {
@@ -816,7 +816,9 @@ class QueryDataTable extends DataTableAbstract
     protected function globalSearch(string $keyword): void
     {
         // Try scout search first & fall back to default search if disabled/failed
-        if ($this->applyScoutSearch($keyword)) return;
+        if ($this->applyScoutSearch($keyword)) {
+            return;
+        }
 
         $this->query->where(function ($query) use ($keyword) {
             collect($this->request->searchableColumnIndex())
@@ -913,8 +915,7 @@ class QueryDataTable extends DataTableAbstract
     public function ordering(): void
     {
         // Skip if user ordering is disabled (e.g. scout search)
-        if ($this->disableUserOrdering)
-        {
+        if ($this->disableUserOrdering) {
             return;
         }
 
@@ -937,11 +938,11 @@ class QueryDataTable extends DataTableAbstract
             is_subclass_of($model, Model::class)
             &&
             in_array("Laravel\Scout\Searchable", class_uses_recursive($model))
-            )
-        {
+        ) {
             $this->scoutModel = $model;
             $this->scoutMaxHits = $max_hits;
         }
+
         return $this;
     }
 
@@ -960,16 +961,16 @@ class QueryDataTable extends DataTableAbstract
 
     protected function applyScoutSearch(string $search_keyword): bool
     {
-        if ($this->scoutModel == null) return false;
+        if ($this->scoutModel == null) {
+            return false;
+        }
 
-        try
-        {
+        try {
             // Perform scout search
             $scout_index = (new $this->scoutModel)->searchableAs();
             $scout_key = (new $this->scoutModel)->getScoutKeyName();
             $search_filters = '';
-            if (is_callable($this->scoutFilterCallback))
-            {
+            if (is_callable($this->scoutFilterCallback)) {
                 $search_filters = ($this->scoutFilterCallback)($search_keyword);
             }
 
@@ -981,8 +982,7 @@ class QueryDataTable extends DataTableAbstract
             });
 
             // Order by scout search results & disable user ordering
-            if (count($search_results) > 0)
-            {
+            if (count($search_results) > 0) {
                 $escaped_ids = collect($search_results)
                     ->map(function ($id) {
                         return \DB::connection()->getPdo()->quote($id);
@@ -997,9 +997,7 @@ class QueryDataTable extends DataTableAbstract
 
             $this->scoutSearched = true;
             return true;
-        }
-        catch (\Exception)
-        {
+        } catch (\Exception) {
             // Scout search failed, fallback to default search
             return false;
         }
@@ -1016,29 +1014,25 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function performScoutSearch(string $scoutIndex, string $scoutKey, string $searchKeyword, mixed $searchFilters = []): array
     {
-        if (!class_exists('\Laravel\Scout\EngineManager'))
-        {
+        if (!class_exists('\Laravel\Scout\EngineManager')) {
             throw new \Exception('Laravel Scout is not installed.');
         }
         $engine = app(\Laravel\Scout\EngineManager::class)->engine();
 
-        if ($engine instanceof \Laravel\Scout\Engines\MeilisearchEngine)
-        {
+        if ($engine instanceof \Laravel\Scout\Engines\MeilisearchEngine) {
             // Meilisearch Engine
             $search_results = $engine
                 ->index($scoutIndex)
                 ->rawSearch($searchKeyword, [
                     'limit' => $this->scoutMaxHits,
-                    'attributesToRetrieve' => [ $scoutKey ],
+                    'attributesToRetrieve' => [$scoutKey],
                     'filter' => $searchFilters,
                 ]);
 
             return collect($search_results['hits'] ?? [])
                 ->pluck($scoutKey)
                 ->all();
-        }
-        else
-        {
+        } else {
             throw new \Exception('Unsupported Scout Engine. Currently supported: Meilisearch');
         }
     }

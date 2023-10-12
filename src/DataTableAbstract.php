@@ -690,7 +690,7 @@ abstract class DataTableAbstract implements DataTable
     /**
      * Resolve callback parameter instance.
      *
-     * @return mixed
+     * @return array<int|string, mixed>
      */
     abstract protected function resolveCallbackParameter();
 
