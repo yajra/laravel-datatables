@@ -996,6 +996,7 @@ class QueryDataTable extends DataTableAbstract
             $this->disableUserOrdering = true;
 
             $this->scoutSearched = true;
+
             return true;
         } catch (\Exception) {
             // Scout search failed, fallback to default search
@@ -1014,7 +1015,7 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function performScoutSearch(string $scoutIndex, string $scoutKey, string $searchKeyword, mixed $searchFilters = []): array
     {
-        if (!class_exists('\Laravel\Scout\EngineManager')) {
+        if (! class_exists('\Laravel\Scout\EngineManager')) {
             throw new \Exception('Laravel Scout is not installed.');
         }
         $engine = app(\Laravel\Scout\EngineManager::class)->engine();
