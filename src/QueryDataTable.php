@@ -1040,7 +1040,7 @@ class QueryDataTable extends DataTableAbstract
             $search_results = $algolia->search($searchKeyword, [
                 'offset' => 0,
                 'length' => $this->scoutMaxHits,
-                'attributesToRetrieve' => [ $scoutKey ],
+                'attributesToRetrieve' => [$scoutKey],
                 'attributesToHighlight' => [],
                 'filters' => $searchFilters,
             ]);
