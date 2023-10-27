@@ -1047,29 +1047,29 @@ class QueryDataTable extends DataTableAbstract
                 $this->query->orderByRaw("FIELD($keyName, ".$orderedKeys->implode(',').')');
                 break;
 
-                 /*
-                 TODO: test implementations, fix if necessary and uncomment
-                 case 'pgsql':
-                     // PostgreSQL
-                     $this->query->orderByRaw("array_position(ARRAY[" . $orderedKeys->implode(',') . "], $keyName)");
-                     break;
+                /*
+                TODO: test implementations, fix if necessary and uncomment
+                case 'pgsql':
+                    // PostgreSQL
+                    $this->query->orderByRaw("array_position(ARRAY[" . $orderedKeys->implode(',') . "], $keyName)");
+                    break;
 
-                 case 'sqlite':
-                 case 'sqlsrv':
-                     // SQLite & Microsoft SQL Server
+                case 'sqlite':
+                case 'sqlsrv':
+                    // SQLite & Microsoft SQL Server
 
-                     // should be generally compatible with all drivers using SQL syntax (but ugly solution)
-                     $this->query->orderByRaw(
-                         "CASE $keyName "
-                         .
-                         $orderedKeys
-                             ->map(fn($value, $index) => "WHEN $keyName = $value THEN $index")
-                             ->implode(' ')
-                         .
-                         " END"
-                     );
-                     break;
-                 */
+                    // should be generally compatible with all drivers using SQL syntax (but ugly solution)
+                    $this->query->orderByRaw(
+                        "CASE $keyName "
+                        .
+                        $orderedKeys
+                            ->map(fn($value, $index) => "WHEN $keyName = $value THEN $index")
+                            ->implode(' ')
+                        .
+                        " END"
+                    );
+                    break;
+                */
 
             default:
                 throw new \Exception("Unsupported database driver: $driver_name");
