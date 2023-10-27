@@ -975,6 +975,12 @@ class QueryDataTable extends DataTableAbstract
         return $this;
     }
 
+    /**
+     * Apply scout search to query if enabled.
+     *
+     * @param  string  $search_keyword
+     * @return bool
+     */
     protected function applyScoutSearch(string $search_keyword): bool
     {
         if ($this->scoutModel == null) {
@@ -997,17 +1003,11 @@ class QueryDataTable extends DataTableAbstract
 
             // Order by scout search results & disable user ordering
             if (count($search_results) > 0) {
-                $escaped_ids = collect($search_results)
-                    ->map(function ($id) {
-                        return \DB::connection()->getPdo()->quote($id);
-                    })
-                    ->implode(',');
+                $this->applyFixedOrderingToQuery($this->scoutKey, $search_results);
 
-                $this->query->orderByRaw("FIELD($this->scoutKey, $escaped_ids)");
+                // Disable user ordering because we already order by search relevancy
+                $this->disableUserOrdering = true;
             }
-
-            // Disable user ordering because we already order by search relevancy
-            $this->disableUserOrdering = true;
 
             $this->scoutSearched = true;
 
@@ -1015,6 +1015,64 @@ class QueryDataTable extends DataTableAbstract
         } catch (\Exception) {
             // Scout search failed, fallback to default search
             return false;
+        }
+    }
+
+    /**
+     * Apply fixed ordering to query by a fixed set of values depending on database driver (used for scout search).
+     *
+     * Currently supported drivers: MySQL
+     *
+     * @param  string  $keyName
+     * @param  array  $orderedKeys
+     * @return void
+     * @throws \Exception If the database driver is unsupported.
+     */
+    protected function applyFixedOrderingToQuery(string $keyName, array $orderedKeys)
+    {
+        $connection = $this->query->getConnection();
+        $driver_name = $connection->getDriverName();
+
+        // Escape keyName and orderedKeys
+        $keyName = $connection->escape($keyName);
+        $orderedKeys = collect($orderedKeys)
+            ->map(function ($value) use ($connection) {
+                return $connection->escape($value);
+            });
+
+        switch ($driver_name)
+        {
+            case 'mysql':
+                // MySQL
+                $this->query->orderByRaw("FIELD($keyName, " . $orderedKeys->implode(',') . ")");
+                break;
+
+            /*
+            TODO: test implementations, fix if necessary and uncomment
+            case 'pgsql':
+                // PostgreSQL
+                $this->query->orderByRaw("array_position(ARRAY[" . $orderedKeys->implode(',') . "], $keyName)");
+                break;
+
+            case 'sqlite':
+            case 'sqlsrv':
+                // SQLite & Microsoft SQL Server
+
+                // should be generally compatible with all drivers using SQL syntax (but ugly solution)
+                $this->query->orderByRaw(
+                    "CASE $keyName "
+                    .
+                    $orderedKeys
+                        ->map(fn($value, $index) => "WHEN $keyName = $value THEN $index")
+                        ->implode(' ')
+                    .
+                    " END"
+                );
+                break;
+            */
+
+            default:
+                throw new \Exception("Unsupported database driver: $driver_name");
         }
     }
 
