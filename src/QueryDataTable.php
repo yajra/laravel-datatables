@@ -1001,11 +1001,9 @@ class QueryDataTable extends DataTableAbstract
                 $this->query->whereIn($this->scoutKey, $search_results);
             });
 
-            // Order by scout search results & disable user ordering
-            if (count($search_results) > 0) {
-                $this->applyFixedOrderingToQuery($this->scoutKey, $search_results);
-
-                // Disable user ordering because we already order by search relevancy
+            // Order by scout search results & disable user ordering (if db driver is supported)
+            if (count($search_results) > 0 && $this->applyFixedOrderingToQuery($this->scoutKey, $search_results)) {
+                // Disable user ordering because we already ordered by search relevancy
                 $this->disableUserOrdering = true;
             }
 
@@ -1025,9 +1023,7 @@ class QueryDataTable extends DataTableAbstract
      *
      * @param  string  $keyName
      * @param  array  $orderedKeys
-     * @return void
-     *
-     * @throws \Exception If the database driver is unsupported.
+     * @return bool
      */
     protected function applyFixedOrderingToQuery(string $keyName, array $orderedKeys)
     {
@@ -1035,6 +1031,7 @@ class QueryDataTable extends DataTableAbstract
         $driver_name = $connection->getDriverName();
 
         // Escape keyName and orderedKeys
+        $rawKeyName = $keyName;
         $keyName = $connection->escape($keyName);
         $orderedKeys = collect($orderedKeys)
             ->map(function ($value) use ($connection) {
@@ -1043,36 +1040,37 @@ class QueryDataTable extends DataTableAbstract
 
         switch ($driver_name) {
             case 'mysql':
-                // MySQL
+                // MySQL / MariaDB
                 $this->query->orderByRaw("FIELD($keyName, ".$orderedKeys->implode(',').')');
-                break;
+                return true;
 
                 /*
                 TODO: test implementations, fix if necessary and uncomment
                 case 'pgsql':
                     // PostgreSQL
                     $this->query->orderByRaw("array_position(ARRAY[" . $orderedKeys->implode(',') . "], $keyName)");
-                    break;
+                    return true;
 
-                case 'sqlite':
-                case 'sqlsrv':
-                    // SQLite & Microsoft SQL Server
-
-                    // should be generally compatible with all drivers using SQL syntax (but ugly solution)
-                    $this->query->orderByRaw(
-                        "CASE $keyName "
-                        .
-                        $orderedKeys
-                            ->map(fn($value, $index) => "WHEN $keyName = $value THEN $index")
-                            ->implode(' ')
-                        .
-                        " END"
-                    );
-                    break;
                 */
 
+            case 'sqlite':
+            case 'sqlsrv':
+                // SQLite & Microsoft SQL Server
+                // Compatible with all SQL drivers (but ugly solution)
+
+                $this->query->orderByRaw(
+                    "CASE `$rawKeyName` "
+                    .
+                    $orderedKeys
+                        ->map(fn($value, $index) => "WHEN $value THEN $index")
+                        ->implode(' ')
+                    .
+                    " END"
+                );
+                return true;
+
             default:
-                throw new \Exception("Unsupported database driver: $driver_name");
+                return false;
         }
     }
 
