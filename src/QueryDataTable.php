@@ -1042,6 +1042,7 @@ class QueryDataTable extends DataTableAbstract
             case 'mysql':
                 // MySQL / MariaDB
                 $this->query->orderByRaw("FIELD($keyName, ".$orderedKeys->implode(',').')');
+
                 return true;
 
                 /*
@@ -1062,11 +1063,12 @@ class QueryDataTable extends DataTableAbstract
                     "CASE `$rawKeyName` "
                     .
                     $orderedKeys
-                        ->map(fn($value, $index) => "WHEN $value THEN $index")
+                        ->map(fn ($value, $index) => "WHEN $value THEN $index")
                         ->implode(' ')
                     .
-                    " END"
+                    ' END'
                 );
+
                 return true;
 
             default:
