@@ -1040,19 +1040,21 @@ class QueryDataTable extends DataTableAbstract
         switch ($driverName) {
             case 'mysql':
                 $this->query->orderByRaw("FIELD($keyName, ".$orderedKeys->implode(',').')');
+
                 return true;
 
             case 'pgsql':
             case 'oracle':
                 $this->query->orderByRaw(
-                    "CASE "
+                    'CASE '
                     .
                     $orderedKeys
-                        ->map(fn($value, $index) => "WHEN $keyName=$value THEN $index")
+                        ->map(fn ($value, $index) => "WHEN $keyName=$value THEN $index")
                         ->implode(' ')
                     .
-                    " END"
+                    ' END'
                 );
+
                 return true;
 
             case 'sqlite':
@@ -1061,11 +1063,12 @@ class QueryDataTable extends DataTableAbstract
                     "CASE $keyName "
                     .
                     $orderedKeys
-                        ->map(fn($value, $index) => "WHEN $value THEN $index")
+                        ->map(fn ($value, $index) => "WHEN $value THEN $index")
                         ->implode(' ')
                     .
-                    " END"
+                    ' END'
                 );
+
                 return true;
 
             default:
