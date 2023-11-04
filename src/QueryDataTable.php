@@ -1028,45 +1028,47 @@ class QueryDataTable extends DataTableAbstract
     protected function applyFixedOrderingToQuery(string $keyName, array $orderedKeys)
     {
         $connection = $this->getConnection();
-        $driver_name = $connection->getDriverName();
+        $driverName = $connection->getDriverName();
 
         // Escape keyName and orderedKeys
-        $rawKeyName = $keyName;
-        $keyName = $connection->escape($keyName);
+        $keyName = $connection->getQueryGrammar()->wrap($keyName);
         $orderedKeys = collect($orderedKeys)
             ->map(function ($value) use ($connection) {
                 return $connection->escape($value);
             });
 
-        switch ($driver_name) {
+        switch ($driverName) {
             case 'mysql':
-                // MySQL / MariaDB
                 $this->query->orderByRaw("FIELD($keyName, ".$orderedKeys->implode(',').')');
+
                 return true;
 
-                /*
-                TODO: test implementations, fix if necessary and uncomment
-                case 'pgsql':
-                    // PostgreSQL
-                    $this->query->orderByRaw("array_position(ARRAY[" . $orderedKeys->implode(',') . "], $keyName)");
-                    return true;
+            case 'pgsql':
+            case 'oracle':
+                $this->query->orderByRaw(
+                    'CASE '
+                    .
+                    $orderedKeys
+                        ->map(fn ($value, $index) => "WHEN $keyName=$value THEN $index")
+                        ->implode(' ')
+                    .
+                    ' END'
+                );
 
-                */
+                return true;
 
             case 'sqlite':
             case 'sqlsrv':
-                // SQLite & Microsoft SQL Server
-                // Compatible with all SQL drivers (but ugly solution)
-
                 $this->query->orderByRaw(
-                    "CASE `$rawKeyName` "
+                    "CASE $keyName "
                     .
                     $orderedKeys
-                        ->map(fn($value, $index) => "WHEN $value THEN $index")
+                        ->map(fn ($value, $index) => "WHEN $value THEN $index")
                         ->implode(' ')
                     .
-                    " END"
+                    ' END'
                 );
+
                 return true;
 
             default:
