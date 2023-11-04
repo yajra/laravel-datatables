@@ -943,6 +943,7 @@ class QueryDataTable extends DataTableAbstract
      * @param  string  $model
      * @param  int  $max_hits
      * @return $this
+     *
      * @throws \Exception
      */
     public function enableScoutSearch(string $model, int $max_hits = 1000): static
@@ -1083,6 +1084,7 @@ class QueryDataTable extends DataTableAbstract
      * @param  string  $searchKeyword
      * @param  mixed  $searchFilters
      * @return array
+     *
      * @throws \Exception
      */
     protected function performScoutSearch(string $searchKeyword, mixed $searchFilters = []): array
