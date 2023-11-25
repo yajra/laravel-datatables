@@ -863,7 +863,7 @@ class QueryDataTable extends DataTableAbstract
     {
         $query_log = $this->getConnection()->getQueryLog();
         array_walk_recursive($query_log, function (&$item) {
-            if (is_string($item)) {
+            if (is_string($item) && extension_loaded('iconv')) {
                 $item = iconv('iso-8859-1', 'utf-8', $item);
             }
         });
