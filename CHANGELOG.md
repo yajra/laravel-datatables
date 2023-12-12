@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v10.11.2] - 2023-12-12
+
+- fix: scout search with smart search #3105
+
 ### [v10.11.1] - 2023-11-25
 
 - fix: Prevent error when PHP extension iconv not enabled. #3098
@@ -179,6 +183,7 @@
 - PHP8 syntax / method signature changed
 
 [Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.11.1...10.x
+[v10.11.2]: https://github.com/yajra/laravel-datatables/compare/v10.11.2...v10.11.1
 [v10.11.1]: https://github.com/yajra/laravel-datatables/compare/v10.11.1...v10.11.0
 [v10.11.0]: https://github.com/yajra/laravel-datatables/compare/v10.11.0...v10.10.0
 [v10.10.0]: https://github.com/yajra/laravel-datatables/compare/v10.10.0...v10.9.0
