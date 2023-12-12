@@ -854,6 +854,23 @@ class QueryDataTable extends DataTableAbstract
     }
 
     /**
+     * Perform multi-term search by splitting keyword into
+     * individual words and searches for each of them.
+     *
+     * @param  string  $keyword
+     * @return void
+     */
+    protected function smartGlobalSearch($keyword): void
+    {
+        // Try scout search first & fall back to default search if disabled/failed
+        if ($this->applyScoutSearch($keyword)) {
+            return;
+        }
+
+        parent::smartGlobalSearch($keyword);
+    }
+
+    /**
      * Append debug parameters on output.
      *
      * @param  array  $output
