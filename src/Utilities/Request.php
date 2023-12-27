@@ -194,10 +194,10 @@ class Request
     protected function prepareKeyword(float|array|int|string $keyword): string
     {
         if (is_array($keyword)) {
-            return implode(' ', $keyword);
+            $keyword = implode(' ', $keyword);
         }
 
-        return (string) $keyword;
+        return e((string) $keyword);
     }
 
     /**
