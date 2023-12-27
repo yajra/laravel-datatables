@@ -16,8 +16,8 @@ class EloquentJoinTest extends TestCase
     {
         $response = $this->getJsonResponse();
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 60,
+            'draw' => 0,
+            'recordsTotal' => 60,
             'recordsFiltered' => 60,
         ]);
 
@@ -35,8 +35,8 @@ class EloquentJoinTest extends TestCase
         ]);
 
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 60,
+            'draw' => 0,
+            'recordsTotal' => 60,
             'recordsFiltered' => 3,
         ]);
 
@@ -63,17 +63,17 @@ class EloquentJoinTest extends TestCase
             'order' => [
                 [
                     'column' => 1,
-                    'dir'    => 'desc',
+                    'dir' => 'desc',
                 ],
             ],
             'length' => 10,
-            'start'  => 0,
-            'draw'   => 1,
+            'start' => 0,
+            'draw' => 1,
         ]);
 
         $response->assertJson([
-            'draw'            => 1,
-            'recordsTotal'    => 60,
+            'draw' => 1,
+            'recordsTotal' => 60,
             'recordsFiltered' => 60,
         ]);
 

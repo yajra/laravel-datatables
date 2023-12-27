@@ -20,8 +20,8 @@ class MorphToRelationTest extends TestCase
     {
         $response = $this->call('GET', '/relations/morphTo');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
 
@@ -36,8 +36,8 @@ class MorphToRelationTest extends TestCase
 
         $response = $this->call('GET', '/relations/morphToWithTrashed');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
 
@@ -54,8 +54,8 @@ class MorphToRelationTest extends TestCase
 
         $response = $this->call('GET', '/relations/morphToOnlyTrashed');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
 
@@ -73,8 +73,8 @@ class MorphToRelationTest extends TestCase
         ]);
 
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 10,
         ]);
 

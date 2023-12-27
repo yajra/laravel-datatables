@@ -17,8 +17,8 @@ class HasOneThroughTest extends TestCase
     {
         $response = $this->call('GET', '/relations/hasOneThrough');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 60,
+            'draw' => 0,
+            'recordsTotal' => 60,
             'recordsFiltered' => 60,
         ]);
 
@@ -32,9 +32,9 @@ class HasOneThroughTest extends TestCase
         $response = $this->call('GET', '/relations/hasOneThroughSearchRelation', [
             'columns' => [
                 [
-                    'data'       => 'heart.size',
+                    'data' => 'heart.size',
                     'searchable' => true,
-                    'search'     => [
+                    'search' => [
                         'value' => 'heart-1',
                     ],
                 ],
@@ -42,8 +42,8 @@ class HasOneThroughTest extends TestCase
         ]);
 
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 60,
+            'draw' => 0,
+            'recordsTotal' => 60,
             'recordsFiltered' => 33,
         ]);
 
@@ -58,8 +58,8 @@ class HasOneThroughTest extends TestCase
 
         $response = $this->call('GET', '/relations/hasOneThroughWithTrashed');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 60,
+            'draw' => 0,
+            'recordsTotal' => 60,
             'recordsFiltered' => 60,
         ]);
 
@@ -76,8 +76,8 @@ class HasOneThroughTest extends TestCase
 
         $response = $this->call('GET', '/relations/hasOneThroughOnlyTrashed');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 60,
+            'draw' => 0,
+            'recordsTotal' => 60,
             'recordsFiltered' => 60,
         ]);
 
@@ -98,8 +98,8 @@ class HasOneThroughTest extends TestCase
         ]);
 
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 60,
+            'draw' => 0,
+            'recordsTotal' => 60,
             'recordsFiltered' => 3,
         ]);
 

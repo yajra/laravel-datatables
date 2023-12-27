@@ -15,7 +15,7 @@ class IgnoreGettersTest extends TestCase
     public function it_return_the_default_value_when_attribute_is_null()
     {
         $user = User::create([
-            'name'  => 'foo',
+            'name' => 'foo',
             'email' => 'foo@bar.com',
             'color' => null,
         ]);
@@ -33,8 +33,8 @@ class IgnoreGettersTest extends TestCase
 
         $response = $this->call('GET', '/ignore-getters');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
 
@@ -55,8 +55,8 @@ class IgnoreGettersTest extends TestCase
 
         $response = $this->call('GET', '/ignore-getters');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
 

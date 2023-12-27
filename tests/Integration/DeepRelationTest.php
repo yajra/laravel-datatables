@@ -16,8 +16,8 @@ class DeepRelationTest extends TestCase
     {
         $response = $this->getJsonResponse();
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 60,
+            'draw' => 0,
+            'recordsTotal' => 60,
             'recordsFiltered' => 60,
         ]);
 
@@ -32,8 +32,8 @@ class DeepRelationTest extends TestCase
         ]);
 
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 60,
+            'draw' => 0,
+            'recordsTotal' => 60,
             'recordsFiltered' => 3,
         ]);
 

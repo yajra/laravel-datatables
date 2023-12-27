@@ -16,8 +16,8 @@ class BelongsToManyRelationTest extends TestCase
     {
         $response = $this->call('GET', '/relations/belongsToMany');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
 
@@ -33,8 +33,8 @@ class BelongsToManyRelationTest extends TestCase
         ]);
 
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 10,
         ]);
 
@@ -61,17 +61,17 @@ class BelongsToManyRelationTest extends TestCase
             'order' => [
                 [
                     'column' => 2,
-                    'dir'    => 'desc',
+                    'dir' => 'desc',
                 ],
             ],
             'length' => 10,
-            'start'  => 0,
-            'draw'   => 1,
+            'start' => 0,
+            'draw' => 1,
         ]);
 
         $response->assertJson([
-            'draw'            => 1,
-            'recordsTotal'    => 20,
+            'draw' => 1,
+            'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
 
