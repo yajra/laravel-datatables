@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v10.11.3] - 2023-12-27
+
+- fix: Update composer.json to use Larastan Org #3107
+
 ### [v10.11.2] - 2023-12-12
 
 - fix: scout search with smart search #3105
@@ -182,7 +186,8 @@
 - Drop support for `ApiResourceDataTable`
 - PHP8 syntax / method signature changed
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.11.1...10.x
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v10.11.3...10.x
+[v10.11.3]: https://github.com/yajra/laravel-datatables/compare/v10.11.3...v10.11.2
 [v10.11.2]: https://github.com/yajra/laravel-datatables/compare/v10.11.2...v10.11.1
 [v10.11.1]: https://github.com/yajra/laravel-datatables/compare/v10.11.1...v10.11.0
 [v10.11.0]: https://github.com/yajra/laravel-datatables/compare/v10.11.0...v10.10.0
