@@ -103,10 +103,10 @@ abstract class DataTableAbstract implements DataTable
      * @var array
      */
     protected array $templates = [
-        'DT_RowId'    => '',
+        'DT_RowId' => '',
         'DT_RowClass' => '',
-        'DT_RowData'  => [],
-        'DT_RowAttr'  => [],
+        'DT_RowData' => [],
+        'DT_RowAttr' => [],
     ];
 
     /**
@@ -920,10 +920,10 @@ abstract class DataTableAbstract implements DataTable
     protected function render(array $data): JsonResponse
     {
         $output = $this->attachAppends([
-            'draw'            => $this->request->draw(),
-            'recordsTotal'    => $this->totalRecords,
+            'draw' => $this->request->draw(),
+            'recordsTotal' => $this->totalRecords,
             'recordsFiltered' => $this->filteredRecords ?? 0,
-            'data'            => $data,
+            'data' => $data,
         ]);
 
         if ($this->config->isDebugging()) {
@@ -987,11 +987,11 @@ abstract class DataTableAbstract implements DataTable
         $this->getLogger()->error($exception);
 
         return new JsonResponse([
-            'draw'            => $this->request->draw(),
-            'recordsTotal'    => $this->totalRecords,
+            'draw' => $this->request->draw(),
+            'recordsTotal' => $this->totalRecords,
             'recordsFiltered' => 0,
-            'data'            => [],
-            'error'           => $error ? __($error) : "Exception Message:\n\n".$exception->getMessage(),
+            'data' => [],
+            'error' => $error ? __($error) : "Exception Message:\n\n".$exception->getMessage(),
         ]);
     }
 

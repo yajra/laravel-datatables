@@ -18,7 +18,7 @@ class CustomOrderTest extends TestCase
             'order' => [
                 [
                     'column' => 0,
-                    'dir'    => 'asc',
+                    'dir' => 'asc',
                 ],
             ],
         ]);
@@ -36,9 +36,9 @@ class CustomOrderTest extends TestCase
                 ['data' => 'user.id', 'name' => 'user.id', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'title', 'name' => 'posts.title', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'length'  => 10,
-            'start'   => 0,
-            'draw'    => 1,
+            'length' => 10,
+            'start' => 0,
+            'draw' => 1,
         ];
 
         return $this->call(

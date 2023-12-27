@@ -95,7 +95,7 @@ abstract class TestCase extends BaseTestCase
         collect(range(1, 20))->each(function ($i) use ($userRole, $animal, $human) {
             /** @var User $user */
             $user = User::query()->create([
-                'name'  => 'Record-'.$i,
+                'name' => 'Record-'.$i,
                 'email' => 'Email-'.$i.'@example.com',
             ]);
 
@@ -129,9 +129,9 @@ abstract class TestCase extends BaseTestCase
         $app['config']->set('app.debug', true);
         $app['config']->set('database.default', 'sqlite');
         $app['config']->set('database.connections.sqlite', [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => '',
+            'prefix' => '',
         ]);
     }
 

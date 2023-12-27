@@ -19,8 +19,8 @@ class CollectionDataTableTest extends TestCase
     {
         $crawler = $this->call('GET', '/collection/users');
         $crawler->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
     }
@@ -33,7 +33,7 @@ class CollectionDataTableTest extends TestCase
             'data' => [],
             'draw' => 0,
             'input' => [],
-            'recordsTotal'    => 0,
+            'recordsTotal' => 0,
             'recordsFiltered' => 0,
         ]);
     }
@@ -50,8 +50,8 @@ class CollectionDataTableTest extends TestCase
         ]);
 
         $crawler->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 1,
         ]);
     }
@@ -109,10 +109,10 @@ class CollectionDataTableTest extends TestCase
             'columns' => [
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'order'  => [['column' => 0, 'dir' => 'asc']],
-            'start'  => 0,
+            'order' => [['column' => 0, 'dir' => 'asc']],
+            'start' => 0,
             'length' => 10,
-            'draw'   => 1,
+            'draw' => 1,
         ]);
 
         $collection = collect([
@@ -129,10 +129,10 @@ class CollectionDataTableTest extends TestCase
         $response = $dataTable->toJson();
 
         $this->assertEquals([
-            'draw'            => 1,
-            'recordsTotal'    => 6,
+            'draw' => 1,
+            'recordsTotal' => 6,
             'recordsFiltered' => 6,
-            'data'            => [
+            'data' => [
                 ['name' => 'aaa'],
                 ['name' => 'ABC'],
                 ['name' => 'bbb'],
@@ -151,10 +151,10 @@ class CollectionDataTableTest extends TestCase
             'columns' => [
                 ['data' => 'amount', 'name' => 'amount', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'order'  => [['column' => 0, 'dir' => 'asc']],
-            'start'  => 0,
+            'order' => [['column' => 0, 'dir' => 'asc']],
+            'start' => 0,
             'length' => 10,
-            'draw'   => 1,
+            'draw' => 1,
         ]);
 
         $collection = collect([
@@ -171,10 +171,10 @@ class CollectionDataTableTest extends TestCase
         $response = $dataTable->toJson();
 
         $this->assertEquals([
-            'draw'            => 1,
-            'recordsTotal'    => 6,
+            'draw' => 1,
+            'recordsTotal' => 6,
             'recordsFiltered' => 6,
-            'data'            => [
+            'data' => [
                 ['amount' => '-8'],
                 ['amount' => '-3'],
                 ['amount' => '0'],
@@ -203,13 +203,13 @@ class CollectionDataTableTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'foo',  'name' => 'foo', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'order'  => [['column' => 0, 'dir' => 'asc']],
-            'start'  => 0,
+            'order' => [['column' => 0, 'dir' => 'asc']],
+            'start' => 0,
             'search' => [
                 'value' => 'bar aaa',
             ],
             'length' => 10,
-            'draw'   => 1,
+            'draw' => 1,
         ]);
 
         $collection = collect([
@@ -226,10 +226,10 @@ class CollectionDataTableTest extends TestCase
         $response = $dataTable->addColumn('foo', 'bar {{$name}}')->toJson();
 
         $this->assertEquals([
-            'draw'            => 1,
-            'recordsTotal'    => 6,
+            'draw' => 1,
+            'recordsTotal' => 6,
             'recordsFiltered' => 1,
-            'data'            => [
+            'data' => [
                 ['name' => 'aaa', 'foo' => 'bar aaa'],
             ],
         ], $response->getData(true));

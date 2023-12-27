@@ -17,8 +17,8 @@ class HasManyRelationTest extends TestCase
     {
         $response = $this->call('GET', '/relations/hasMany');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
 
@@ -33,8 +33,8 @@ class HasManyRelationTest extends TestCase
 
         $response = $this->call('GET', '/relations/hasManyWithTrashed');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
 
@@ -48,8 +48,8 @@ class HasManyRelationTest extends TestCase
         Post::find(1)->delete();
         $response = $this->call('GET', '/relations/hasManyOnlyTrashed');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
 
@@ -65,8 +65,8 @@ class HasManyRelationTest extends TestCase
         ]);
 
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 1,
         ]);
         $this->assertCount(1, $response->json()['data']);

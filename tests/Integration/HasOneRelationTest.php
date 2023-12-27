@@ -17,8 +17,8 @@ class HasOneRelationTest extends TestCase
     {
         $response = $this->call('GET', '/relations/hasOne');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
 
@@ -33,8 +33,8 @@ class HasOneRelationTest extends TestCase
 
         $response = $this->call('GET', '/relations/hasOneWithTrashed');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
 
@@ -51,8 +51,8 @@ class HasOneRelationTest extends TestCase
 
         $response = $this->call('GET', '/relations/hasOneOnlyTrashed');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
 
@@ -70,8 +70,8 @@ class HasOneRelationTest extends TestCase
         ]);
 
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 1,
         ]);
 
@@ -98,17 +98,17 @@ class HasOneRelationTest extends TestCase
             'order' => [
                 [
                     'column' => 0,
-                    'dir'    => 'desc',
+                    'dir' => 'desc',
                 ],
             ],
             'length' => 10,
-            'start'  => 0,
-            'draw'   => 1,
+            'start' => 0,
+            'draw' => 1,
         ]);
 
         $response->assertJson([
-            'draw'            => 1,
-            'recordsTotal'    => 20,
+            'draw' => 1,
+            'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
 
