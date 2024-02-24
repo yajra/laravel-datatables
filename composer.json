@@ -14,12 +14,12 @@
     }
   ],
   "require": {
-    "php": "^8.0.2",
-    "illuminate/database": "^9|^10",
-    "illuminate/filesystem": "^9|^10",
-    "illuminate/http": "^9|^10",
-    "illuminate/support": "^9|^10",
-    "illuminate/view": "^9|^10"
+    "php": "^8.2",
+    "illuminate/database": "^11",
+    "illuminate/filesystem": "^11",
+    "illuminate/http": "^11",
+    "illuminate/support": "^11",
+    "illuminate/view": "^11"
   },
   "require-dev": {
     "algolia/algoliasearch-client-php": "^3.4",
@@ -51,7 +51,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "10.x-dev"
+      "dev-master": "11.x-dev"
     },
     "laravel": {
       "providers": [
