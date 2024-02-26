@@ -20,13 +20,6 @@ class DataTables
     protected Utilities\Request $request;
 
     /**
-     * HTML builder instance.
-     *
-     * @var \Yajra\DataTables\Html\Builder|null
-     */
-    protected ?Builder $html = null;
-
-    /**
      * Make a DataTable instance from source.
      * Alias of make for backward compatibility.
      *
@@ -109,10 +102,11 @@ class DataTables
      *
      * @param  QueryBuilder  $builder
      * @return \Yajra\DataTables\QueryDataTable
+     * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public function query(QueryBuilder $builder): QueryDataTable
     {
-        /** @var string */
+        /** @var string $dataTable */
         $dataTable = config('datatables.engines.query');
 
         $this->validateDataTable($dataTable, QueryDataTable::class);
@@ -125,10 +119,11 @@ class DataTables
      *
      * @param  \Illuminate\Contracts\Database\Eloquent\Builder  $builder
      * @return \Yajra\DataTables\EloquentDataTable
+     * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public function eloquent(EloquentBuilder $builder): EloquentDataTable
     {
-        /** @var string */
+        /** @var string $dataTable */
         $dataTable = config('datatables.engines.eloquent');
 
         $this->validateDataTable($dataTable, EloquentDataTable::class);
@@ -141,10 +136,11 @@ class DataTables
      *
      * @param  \Illuminate\Support\Collection<array-key, array>|array  $collection
      * @return \Yajra\DataTables\CollectionDataTable
+     * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public function collection($collection): CollectionDataTable
     {
-        /** @var string */
+        /** @var string $dataTable */
         $dataTable = config('datatables.engines.collection');
 
         $this->validateDataTable($dataTable, CollectionDataTable::class);
@@ -161,22 +157,6 @@ class DataTables
     public function resource($resource)
     {
         return ApiResourceDataTable::create($resource);
-    }
-
-    /**
-     * Get html builder instance.
-     *
-     * @return \Yajra\DataTables\Html\Builder
-     *
-     * @throws \Yajra\DataTables\Exceptions\Exception
-     */
-    public function getHtmlBuilder()
-    {
-        if (! class_exists(Builder::class)) {
-            throw new Exception('Please install yajra/laravel-datatables-html to be able to use this function.');
-        }
-
-        return $this->html ?: $this->html = app('datatables.html');
     }
 
     /**
