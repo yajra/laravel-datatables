@@ -1,10 +1,10 @@
-# jQuery DataTables API for Laravel 4|5|6|7|8|9|10
+# jQuery DataTables API for Laravel 4|5|6|7|8|9|10|11
 
 [![Join the chat at https://gitter.im/yajra/laravel-datatables](https://badges.gitter.im/yajra/laravel-datatables.svg)](https://gitter.im/yajra/laravel-datatables?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Donate](https://img.shields.io/badge/donate-paypal-blue.svg)](https://www.paypal.me/yajra)
 [![Donate](https://img.shields.io/badge/donate-patreon-blue.svg)](https://www.patreon.com/bePatron?u=4521203)
 
-[![Laravel 4.2|5.x|6|7|8|9|10](https://img.shields.io/badge/Laravel-4.2|5.x|6|7|8|9|10-orange.svg)](http://laravel.com)
+[![Laravel 4.2|5.x|6|7|8|9|10|11](https://img.shields.io/badge/Laravel-4.2|5.x|6|7|8|9|10|11-orange.svg)](http://laravel.com)
 [![Latest Stable Version](https://img.shields.io/packagist/v/yajra/laravel-datatables-oracle.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![Continuous Integration](https://github.com/yajra/laravel-datatables/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/yajra/laravel-datatables/actions/workflows/continuous-integration.yml)
 [![Static Analysis](https://github.com/yajra/laravel-datatables/actions/workflows/static-analysis.yml/badge.svg)](https://github.com/yajra/laravel-datatables/actions/workflows/static-analysis.yml)
@@ -40,16 +40,15 @@ return datatables(User::all())->toJson();
 
 
 ## Requirements
-- [PHP >= 8.0.2](http://php.net/)
+- [PHP >= 8.2](http://php.net/)
 - [Laravel Framework](https://github.com/laravel/framework)
-- [jQuery DataTables v1.10.x](http://datatables.net/)
+- [jQuery DataTables](http://datatables.net/)
 
 ## Documentations
 
 - [Github Docs](https://github.com/yajra/laravel-datatables-docs)
 - [Laravel DataTables Quick Starter](https://yajrabox.com/docs/laravel-datatables/master/quick-starter)
 - [Laravel DataTables Documentation](https://yajrabox.com/docs/laravel-datatables)
-- [Laravel 5.0 - 5.3 Demo Application](https://datatables.yajrabox.com)
 
 ## Laravel Version Compatibility
 
@@ -70,6 +69,7 @@ return datatables(User::all())->toJson();
 | 8.x.x   | 9.x      |
 | 9.x.x   | 10.x     |
 | 10.x.x  | 10.x     |
+| 11.x.x  | 11.x     |
 
 ## Quick Installation
 
