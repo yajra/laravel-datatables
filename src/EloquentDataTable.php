@@ -266,7 +266,8 @@ class EloquentDataTable extends QueryDataTable
     protected function performJoin($table, $foreign, $other, $type = 'left'): void
     {
         $joins = [];
-        foreach ((array) $this->getBaseQueryBuilder()->joins as $key => $join) {
+        $builder = $this->getBaseQueryBuilder();
+        foreach ($builder->joins ?? [] as $join) {
             $joins[] = $join->table;
         }
 

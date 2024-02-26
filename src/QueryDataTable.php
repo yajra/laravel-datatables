@@ -105,17 +105,14 @@ class QueryDataTable extends DataTableAbstract
      *
      * @var bool
      */
-    protected $disableUserOrdering = false;
+    protected bool $disableUserOrdering = false;
 
-    /**
-     * @param  QueryBuilder  $builder
-     */
     public function __construct(QueryBuilder $builder)
     {
         $this->query = $builder;
         $this->request = app('datatables.request');
         $this->config = app('datatables.config');
-        $this->columns = $builder->columns;
+        $this->columns = $builder->getColumns();
 
         if ($this->config->isDebugging()) {
             $this->getConnection()->enableQueryLog();
@@ -408,7 +405,7 @@ class QueryDataTable extends DataTableAbstract
      * @param  QueryBuilder|EloquentBuilder|null  $instance
      * @return QueryBuilder
      */
-    protected function getBaseQueryBuilder($instance = null)
+    protected function getBaseQueryBuilder($instance = null): QueryBuilder
     {
         if (! $instance) {
             $instance = $this->query;
@@ -544,9 +541,8 @@ class QueryDataTable extends DataTableAbstract
     {
         if (! str_contains($column, '.')) {
             $q = $this->getBaseQueryBuilder($query);
-            $from = $q->from;
+            $from = $q->from ?? '';
 
-            /** @phpstan-ignore-next-line */
             if (! $from instanceof Expression) {
                 if (str_contains($from, ' as ')) {
                     $from = explode(' as ', $from)[1];
