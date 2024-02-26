@@ -102,6 +102,7 @@ class DataTables
      *
      * @param  QueryBuilder  $builder
      * @return \Yajra\DataTables\QueryDataTable
+     *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public function query(QueryBuilder $builder): QueryDataTable
@@ -119,6 +120,7 @@ class DataTables
      *
      * @param  \Illuminate\Contracts\Database\Eloquent\Builder  $builder
      * @return \Yajra\DataTables\EloquentDataTable
+     *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public function eloquent(EloquentBuilder $builder): EloquentDataTable
@@ -136,6 +138,7 @@ class DataTables
      *
      * @param  \Illuminate\Support\Collection<array-key, array>|array  $collection
      * @return \Yajra\DataTables\CollectionDataTable
+     *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public function collection($collection): CollectionDataTable
