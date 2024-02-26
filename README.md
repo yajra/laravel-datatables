@@ -74,7 +74,7 @@ return datatables(User::all())->toJson();
 ## Quick Installation
 
 ```bash
-composer require yajra/laravel-datatables-oracle:"^10.0"
+composer require yajra/laravel-datatables-oracle:"^11"
 ```
 
 #### Service Provider & Facade (Optional on Laravel 5.5+)
