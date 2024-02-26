@@ -3,6 +3,7 @@
 namespace Yajra\DataTables\Tests\Integration;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Tests\Models\Post;
 use Yajra\DataTables\Tests\TestCase;
@@ -11,7 +12,7 @@ class BelongsToRelationTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function it_returns_all_records_with_the_relation_when_called_without_parameters()
     {
         $response = $this->call('GET', '/relations/belongsTo');
@@ -25,7 +26,7 @@ class BelongsToRelationTest extends TestCase
         $this->assertCount(60, $response->json()['data']);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_perform_global_search_on_the_relation()
     {
         $response = $this->getJsonResponse([
@@ -54,7 +55,7 @@ class BelongsToRelationTest extends TestCase
         return $this->call('GET', '/relations/belongsTo', array_merge($data, $params));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_sort_using_the_relation_with_pagination()
     {
         $response = $this->getJsonResponse([

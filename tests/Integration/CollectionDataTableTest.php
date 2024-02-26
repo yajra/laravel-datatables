@@ -4,6 +4,7 @@ namespace Yajra\DataTables\Tests\Integration;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
+use PHPUnit\Framework\Attributes\Test;
 use Yajra\DataTables\CollectionDataTable;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
@@ -14,7 +15,7 @@ class CollectionDataTableTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function it_returns_all_records_when_no_parameters_is_passed()
     {
         $crawler = $this->call('GET', '/collection/users');
@@ -25,7 +26,7 @@ class CollectionDataTableTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_zero_filtered_records_on_empty_collection()
     {
         $crawler = $this->call('GET', '/collection/empty');
@@ -38,7 +39,7 @@ class CollectionDataTableTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_perform_global_search()
     {
         $crawler = $this->call('GET', '/collection/users', [
@@ -56,7 +57,7 @@ class CollectionDataTableTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_a_model_collection_using_of_factory()
     {
         $dataTable = DataTables::of(User::all());
@@ -65,7 +66,7 @@ class CollectionDataTableTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_a_collection_using_of_factory()
     {
         $dataTable = DataTables::of(collect());
@@ -74,7 +75,7 @@ class CollectionDataTableTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_a_model_collection_using_facade()
     {
         $dataTable = DatatablesFacade::of(User::all());
@@ -83,7 +84,7 @@ class CollectionDataTableTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_a_collection_using_facade()
     {
         $dataTable = DatatablesFacade::of(collect());
@@ -92,7 +93,7 @@ class CollectionDataTableTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_a_model_using_ioc_container()
     {
         $dataTable = app('datatables')->collection(User::all());
@@ -101,7 +102,7 @@ class CollectionDataTableTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_sort_case_insensitive_strings()
     {
         config()->set('app.debug', false);
@@ -143,7 +144,7 @@ class CollectionDataTableTest extends TestCase
         ], $response->getData(true));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_sort_numeric_strings()
     {
         config()->set('app.debug', false);
@@ -185,7 +186,7 @@ class CollectionDataTableTest extends TestCase
         ], $response->getData(true));
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_a_model_using_ioc_container_factory()
     {
         $dataTable = app('datatables')->of(User::all());
@@ -194,7 +195,7 @@ class CollectionDataTableTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_search_on_added_columns()
     {
         config()->set('app.debug', false);
@@ -235,7 +236,7 @@ class CollectionDataTableTest extends TestCase
         ], $response->getData(true));
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_array_data_source()
     {
         $source = [

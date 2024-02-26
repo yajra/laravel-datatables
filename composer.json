@@ -26,8 +26,7 @@
     "laravel/scout": "^10.5",
     "meilisearch/meilisearch-php": "^1.4",
     "larastan/larastan": "^2.4",
-    "orchestra/testbench": "^8",
-    "yajra/laravel-datatables-html": "^9.3.4|^10"
+    "orchestra/testbench": "^9"
   },
   "suggest": {
     "yajra/laravel-datatables-export": "Plugin for server-side exporting using livewire and queue worker.",

@@ -5,6 +5,7 @@ namespace Yajra\DataTables\Tests\Integration;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
+use PHPUnit\Framework\Attributes\Test;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
@@ -17,7 +18,7 @@ class EloquentDataTableTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function it_returns_all_records_when_no_parameters_is_passed()
     {
         $crawler = $this->call('GET', '/eloquent/users');
@@ -28,7 +29,7 @@ class EloquentDataTableTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_perform_global_search()
     {
         $crawler = $this->call('GET', '/eloquent/users', [
@@ -46,7 +47,7 @@ class EloquentDataTableTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_a_model_using_of_factory()
     {
         $dataTable = DataTables::of(User::query());
@@ -55,7 +56,7 @@ class EloquentDataTableTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_a_model_using_facade()
     {
         $dataTable = DatatablesFacade::of(User::query());
@@ -64,7 +65,7 @@ class EloquentDataTableTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_a_model_using_facade_eloquent_method()
     {
         $dataTable = DatatablesFacade::eloquent(User::query());
@@ -73,7 +74,7 @@ class EloquentDataTableTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_a_model_using_ioc_container()
     {
         $dataTable = app('datatables')->eloquent(User::query());
@@ -82,7 +83,7 @@ class EloquentDataTableTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_a_model_using_ioc_container_factory()
     {
         $dataTable = app('datatables')->of(User::query());
@@ -91,7 +92,7 @@ class EloquentDataTableTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_only_the_selected_columns_with_dotted_notation()
     {
         $json = $this->call('GET', '/eloquent/only')->json();
@@ -101,7 +102,7 @@ class EloquentDataTableTest extends TestCase
         $this->assertArrayHasKey('name', $json['data'][0]['user']);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_return_formatted_columns()
     {
         $crawler = $this->call('GET', '/eloquent/formatColumn');
@@ -121,7 +122,7 @@ class EloquentDataTableTest extends TestCase
         $this->assertEquals(Carbon::parse($user->created_at)->format('Y-m-d'), $data['created_at_formatted']);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_return_formatted_column_using_closure()
     {
         $crawler = $this->call('GET', '/eloquent/formatColumn-closure');
@@ -141,7 +142,7 @@ class EloquentDataTableTest extends TestCase
         $this->assertEquals(Carbon::parse($user->created_at)->format('Y-m-d'), $data['created_at_formatted']);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_return_formatted_column_on_invalid_formatter()
     {
         $crawler = $this->call('GET', '/eloquent/formatColumn-fallback');
@@ -161,7 +162,7 @@ class EloquentDataTableTest extends TestCase
         $this->assertEquals($user->created_at, $data['created_at_formatted']);
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_a_relation()
     {
         $user = User::first();

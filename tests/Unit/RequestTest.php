@@ -2,12 +2,13 @@
 
 namespace Yajra\DataTables\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\Test;
 use Yajra\DataTables\Tests\TestCase;
 use Yajra\DataTables\Utilities\Request;
 
 class RequestTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_can_get_the_base_request()
     {
         $request = $this->getRequest();
@@ -15,7 +16,15 @@ class RequestTest extends TestCase
         $this->assertInstanceOf(\Illuminate\Http\Request::class, $request->getBaseRequest());
     }
 
-    /** @test */
+    /**
+     * @return \Yajra\DataTables\Utilities\Request
+     */
+    protected function getRequest()
+    {
+        return new Request();
+    }
+
+    #[Test]
     public function it_is_searchable()
     {
         $_GET['search']['value'] = '';
@@ -34,7 +43,7 @@ class RequestTest extends TestCase
         $this->assertTrue($request->isSearchable());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_column_keyword()
     {
         $_GET['columns'] = [];
@@ -55,7 +64,7 @@ class RequestTest extends TestCase
         $this->assertEquals('bar', $request->columnKeyword(1));
     }
 
-    /** @test */
+    #[Test]
     public function it_has_orderable_columns()
     {
         $_GET['columns'] = [];
@@ -80,7 +89,7 @@ class RequestTest extends TestCase
         $this->assertTrue($request->isColumnOrderable(0));
     }
 
-    /** @test */
+    #[Test]
     public function it_has_will_set_descending_on_other_values_on_orderable_columns()
     {
         $_GET['columns'] = [];
@@ -105,7 +114,7 @@ class RequestTest extends TestCase
         $this->assertTrue($request->isColumnOrderable(0));
     }
 
-    /** @test */
+    #[Test]
     public function it_has_searchable_column_index()
     {
         $_GET['columns'] = [];
@@ -125,7 +134,7 @@ class RequestTest extends TestCase
         $this->assertEquals('bar', $request->columnName(1));
     }
 
-    /** @test */
+    #[Test]
     public function it_has_keyword()
     {
         $_GET['search'] = [];
@@ -135,7 +144,7 @@ class RequestTest extends TestCase
         $this->assertEquals('foo', $request->keyword());
     }
 
-    /** @test */
+    #[Test]
     public function it_is_paginationable()
     {
         $_GET['start'] = 1;
@@ -155,13 +164,5 @@ class RequestTest extends TestCase
         request()->merge($_GET);
         $request = $this->getRequest();
         $this->assertFalse($request->isPaginationable());
-    }
-
-    /**
-     * @return \Yajra\DataTables\Utilities\Request
-     */
-    protected function getRequest()
-    {
-        return new Request();
     }
 }
