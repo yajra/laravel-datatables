@@ -1,7 +1,8 @@
 {
     "name": "yajra/laravel-datatables-oracle",
-    "description": "jQuery DataTables API for Laravel 4|5|6|7|8|9|10",
+    "description": "jQuery DataTables API for Laravel",
     "keywords": [
+        "yajra",
         "laravel",
         "dataTables",
         "jquery"
