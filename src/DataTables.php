@@ -7,6 +7,8 @@ use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Traits\Macroable;
 use Yajra\DataTables\Exceptions\Exception;
 use Yajra\DataTables\Html\Builder;
+use Yajra\DataTables\Utilities\Config;
+use Yajra\DataTables\Utilities\Request;
 
 class DataTables
 {
@@ -14,8 +16,6 @@ class DataTables
 
     /**
      * DataTables request object.
-     *
-     * @var \Yajra\DataTables\Utilities\Request
      */
     protected Utilities\Request $request;
 
@@ -79,29 +79,22 @@ class DataTables
 
     /**
      * Get request object.
-     *
-     * @return \Yajra\DataTables\Utilities\Request
      */
-    public function getRequest()
+    public function getRequest(): Request
     {
         return app('datatables.request');
     }
 
     /**
      * Get config instance.
-     *
-     * @return \Yajra\DataTables\Utilities\Config
      */
-    public function getConfig()
+    public function getConfig(): Config
     {
         return app('datatables.config');
     }
 
     /**
      * DataTables using Query.
-     *
-     * @param  QueryBuilder  $builder
-     * @return \Yajra\DataTables\QueryDataTable
      *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
@@ -117,9 +110,6 @@ class DataTables
 
     /**
      * DataTables using Eloquent Builder.
-     *
-     * @param  \Illuminate\Contracts\Database\Eloquent\Builder  $builder
-     * @return \Yajra\DataTables\EloquentDataTable
      *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
@@ -137,7 +127,6 @@ class DataTables
      * DataTables using Collection.
      *
      * @param  \Illuminate\Support\Collection<array-key, array>|array  $collection
-     * @return \Yajra\DataTables\CollectionDataTable
      *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
@@ -163,10 +152,6 @@ class DataTables
     }
 
     /**
-     * @param  string  $engine
-     * @param  string  $parent
-     * @return void
-     *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public function validateDataTable(string $engine, string $parent): void
@@ -177,10 +162,6 @@ class DataTables
     }
 
     /**
-     * @param  string  $engine
-     * @param  string  $parent
-     * @return void
-     *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
     public function throwInvalidEngineException(string $engine, string $parent): void

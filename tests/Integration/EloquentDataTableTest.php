@@ -184,26 +184,26 @@ class EloquentDataTableTest extends TestCase
 
         $router->get('/eloquent/only', function (DataTables $datatables) {
             return $datatables->eloquent(Post::with('user'))
-                              ->only(['title', 'user.name'])
-                              ->toJson();
+                ->only(['title', 'user.name'])
+                ->toJson();
         });
 
         $router->get('/eloquent/formatColumn', function (DataTables $dataTable) {
             return $dataTable->eloquent(User::query())
-                             ->formatColumn('created_at', new DateFormatter('Y-m-d'))
-                             ->toJson();
+                ->formatColumn('created_at', new DateFormatter('Y-m-d'))
+                ->toJson();
         });
 
         $router->get('/eloquent/formatColumn-closure', function (DataTables $dataTable) {
             return $dataTable->eloquent(User::query())
-                             ->formatColumn('created_at', fn ($value, $row) => Carbon::parse($value)->format('Y-m-d'))
-                             ->toJson();
+                ->formatColumn('created_at', fn ($value, $row) => Carbon::parse($value)->format('Y-m-d'))
+                ->toJson();
         });
 
         $router->get('/eloquent/formatColumn-fallback', function (DataTables $dataTable) {
             return $dataTable->eloquent(User::query())
-                             ->formatColumn('created_at', 'InvalidFormatter::class')
-                             ->toJson();
+                ->formatColumn('created_at', 'InvalidFormatter::class')
+                ->toJson();
         });
     }
 }

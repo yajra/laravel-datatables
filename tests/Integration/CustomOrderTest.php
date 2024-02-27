@@ -55,10 +55,10 @@ class CustomOrderTest extends TestCase
 
         $this->app['router']->get('/relations/belongsTo', function (DataTables $datatables) {
             return $datatables->eloquent(Post::with('user')->select('posts.*'))
-                              ->orderColumn('user.id', function ($query, $order) {
-                                  $query->orderBy('users.id', $order == 'desc' ? 'asc' : 'desc');
-                              })
-                              ->toJson();
+                ->orderColumn('user.id', function ($query, $order) {
+                    $query->orderBy('users.id', $order == 'desc' ? 'asc' : 'desc');
+                })
+                ->toJson();
         });
     }
 }

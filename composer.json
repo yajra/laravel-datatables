@@ -1,81 +1,84 @@
 {
-  "name": "yajra/laravel-datatables-oracle",
-  "description": "jQuery DataTables API for Laravel 4|5|6|7|8|9|10",
-  "keywords": [
-    "laravel",
-    "dataTables",
-    "jquery"
-  ],
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Arjay Angeles",
-      "email": "aqangeles@gmail.com"
-    }
-  ],
-  "require": {
-    "php": "^8.2",
-    "illuminate/database": "^11",
-    "illuminate/filesystem": "^11",
-    "illuminate/http": "^11",
-    "illuminate/support": "^11",
-    "illuminate/view": "^11"
-  },
-  "require-dev": {
-    "algolia/algoliasearch-client-php": "^3.4",
-    "laravel/scout": "^10.5",
-    "meilisearch/meilisearch-php": "^1.4",
-    "larastan/larastan": "^2.4",
-    "orchestra/testbench": "^9"
-  },
-  "suggest": {
-    "yajra/laravel-datatables-export": "Plugin for server-side exporting using livewire and queue worker.",
-    "yajra/laravel-datatables-buttons": "Plugin for server-side exporting of dataTables.",
-    "yajra/laravel-datatables-html": "Plugin for server-side HTML builder of dataTables.",
-    "yajra/laravel-datatables-fractal": "Plugin for server-side response using Fractal.",
-    "yajra/laravel-datatables-editor": "Plugin to use DataTables Editor (requires a license)."
-  },
-  "autoload": {
-    "psr-4": {
-      "Yajra\\DataTables\\": "src/"
+    "name": "yajra/laravel-datatables-oracle",
+    "description": "jQuery DataTables API for Laravel 4|5|6|7|8|9|10",
+    "keywords": [
+        "laravel",
+        "dataTables",
+        "jquery"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Arjay Angeles",
+            "email": "aqangeles@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "illuminate/database": "^11",
+        "illuminate/filesystem": "^11",
+        "illuminate/http": "^11",
+        "illuminate/support": "^11",
+        "illuminate/view": "^11"
     },
-    "files": [
-      "src/helper.php"
+    "require-dev": {
+        "algolia/algoliasearch-client-php": "^3.4",
+        "larastan/larastan": "^2.4",
+        "laravel/pint": "^1.14",
+        "laravel/scout": "^10.5",
+        "meilisearch/meilisearch-php": "^1.4",
+        "orchestra/testbench": "^9"
+    },
+    "suggest": {
+        "yajra/laravel-datatables-export": "Plugin for server-side exporting using livewire and queue worker.",
+        "yajra/laravel-datatables-buttons": "Plugin for server-side exporting of dataTables.",
+        "yajra/laravel-datatables-html": "Plugin for server-side HTML builder of dataTables.",
+        "yajra/laravel-datatables-fractal": "Plugin for server-side response using Fractal.",
+        "yajra/laravel-datatables-editor": "Plugin to use DataTables Editor (requires a license)."
+    },
+    "autoload": {
+        "psr-4": {
+            "Yajra\\DataTables\\": "src/"
+        },
+        "files": [
+            "src/helper.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Yajra\\DataTables\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "11.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Yajra\\DataTables\\DataTablesServiceProvider"
+            ],
+            "aliases": {
+                "DataTables": "Yajra\\DataTables\\Facades\\DataTables"
+            }
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit",
+        "pint": "./vendor/bin/pint",
+        "stan": "./vendor/bin/phpstan analyse --memory-limit=2G --ansi --no-progress --no-interaction --configuration=phpstan.neon.dist"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/yajra"
+        }
     ]
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Yajra\\DataTables\\Tests\\": "tests/"
-    }
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "11.x-dev"
-    },
-    "laravel": {
-      "providers": [
-        "Yajra\\DataTables\\DataTablesServiceProvider"
-      ],
-      "aliases": {
-        "DataTables": "Yajra\\DataTables\\Facades\\DataTables"
-      }
-    }
-  },
-  "config": {
-    "sort-packages": true,
-    "allow-plugins": {
-      "php-http/discovery": true
-    }
-  },
-  "scripts": {
-    "test": "vendor/bin/phpunit"
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
-  "funding": [
-    {
-      "type": "github",
-      "url": "https://github.com/sponsors/yajra"
-    }
-  ]
 }

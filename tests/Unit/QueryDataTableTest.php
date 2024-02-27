@@ -40,9 +40,9 @@ class QueryDataTableTest extends TestCase
                 ->select('users.*')
                 ->addSelect([
                     'last_post_id' => DB::table('posts')
-                                        ->whereColumn('posts.user_id', 'users.id')
-                                        ->orderBy('created_at')
-                                        ->select('id'),
+                        ->whereColumn('posts.user_id', 'users.id')
+                        ->orderBy('created_at')
+                        ->select('id'),
                 ])
                 ->orderBy(
                     DB::table('posts')->whereColumn('posts.user_id', 'users.id')->orderBy('created_at')->select('created_at')
@@ -61,9 +61,9 @@ class QueryDataTableTest extends TestCase
                 ->select('users.*')
                 ->addSelect([
                     'last_post_id' => DB::table('posts')
-                                        ->whereColumn('posts.user_id', 'users.id')
-                                        ->orderBy('created_at')
-                                        ->select('id'),
+                        ->whereColumn('posts.user_id', 'users.id')
+                        ->orderBy('created_at')
+                        ->select('id'),
                 ])
                 ->orderBy(
                     DB::table('posts')->whereColumn('posts.user_id', 'users.id')->orderBy('created_at')->select('created_at')
@@ -79,13 +79,13 @@ class QueryDataTableTest extends TestCase
         /** @var \Yajra\DataTables\QueryDataTable $dataTable */
         $dataTable = app('datatables')->of(
             DB::table('users')
-              ->select('users.*')
-              ->addSelect([
-                  'last_post_id' => DB::table('posts')
-                                      ->whereColumn('posts.user_id', 'users.id')
-                                      ->orderBy('created_at')
-                                      ->select('id'),
-              ])
+                ->select('users.*')
+                ->addSelect([
+                    'last_post_id' => DB::table('posts')
+                        ->whereColumn('posts.user_id', 'users.id')
+                        ->orderBy('created_at')
+                        ->select('id'),
+                ])
         );
 
         $this->assertQueryWrapped(true, $dataTable->prepareCountQuery());

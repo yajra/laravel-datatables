@@ -88,8 +88,8 @@ class EloquentJoinTest extends TestCase
 
         $this->app['router']->get('/eloquent/join', function (DataTables $datatables) {
             $builder = Post::query()
-                           ->join('users', 'users.id', '=', 'posts.user_id')
-                           ->select('users.name', 'users.email', 'posts.title');
+                ->join('users', 'users.id', '=', 'posts.user_id')
+                ->select('users.name', 'users.email', 'posts.title');
 
             return $datatables->eloquent($builder)->toJson();
         });
