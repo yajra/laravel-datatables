@@ -23,9 +23,10 @@
   },
   "require-dev": {
     "algolia/algoliasearch-client-php": "^3.4",
+    "larastan/larastan": "^2.4",
+    "laravel/pint": "^1.14",
     "laravel/scout": "^10.5",
     "meilisearch/meilisearch-php": "^1.4",
-    "larastan/larastan": "^2.4",
     "orchestra/testbench": "^9"
   },
   "suggest": {

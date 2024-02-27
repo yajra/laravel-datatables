@@ -144,8 +144,6 @@ class Helper
     /**
      * Get a mixed value of custom data and the parameters.
      *
-     * @param  array  $data
-     * @param  array|object  $param
      * @return array
      */
     public static function getMixedValue(array $data, array|object $param)
@@ -165,9 +163,6 @@ class Helper
 
     /**
      * Cast the parameter into an array.
-     *
-     * @param  array|object  $param
-     * @return array
      */
     public static function castToArray(array|object $param): array
     {
@@ -237,7 +232,6 @@ class Helper
     }
 
     /**
-     * @param  array  $data
      * @return array
      */
     public static function transform(array $data)
@@ -273,7 +267,6 @@ class Helper
     /**
      * Build parameters depending on # of arguments passed.
      *
-     * @param  array  $args
      * @return array
      */
     public static function buildParameters(array $args)
@@ -297,7 +290,6 @@ class Helper
     /**
      * Replace all pattern occurrences with keyword.
      *
-     * @param  array  $subject
      * @param  string  $keyword
      * @param  string  $pattern
      * @return array

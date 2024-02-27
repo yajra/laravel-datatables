@@ -8,7 +8,6 @@ use Yajra\DataTables\Utilities\Helper;
 class RowProcessor
 {
     /**
-     * @param  array  $data
      * @param  array|object  $row
      */
     public function __construct(protected array $data, protected $row)
@@ -39,7 +38,6 @@ class RowProcessor
      * Process DT Row Data and Attr.
      *
      * @param  string  $attribute
-     * @param  array  $template
      * @return $this
      */
     public function rowData($attribute, array $template)

@@ -29,8 +29,6 @@ class CollectionDataTable extends DataTableAbstract
 
     /**
      * The offset of the first record in the full dataset.
-     *
-     * @var int
      */
     private int $offset = 0;
 
@@ -52,7 +50,6 @@ class CollectionDataTable extends DataTableAbstract
      * Serialize collection.
      *
      * @param  mixed  $collection
-     * @return array
      */
     protected function serialize($collection): array
     {
@@ -87,8 +84,6 @@ class CollectionDataTable extends DataTableAbstract
 
     /**
      * Count results.
-     *
-     * @return int
      */
     public function count(): int
     {
@@ -97,8 +92,6 @@ class CollectionDataTable extends DataTableAbstract
 
     /**
      * Perform column search.
-     *
-     * @return void
      */
     public function columnSearch(): void
     {
@@ -143,8 +136,6 @@ class CollectionDataTable extends DataTableAbstract
 
     /**
      * Perform pagination.
-     *
-     * @return void
      */
     public function paging(): void
     {
@@ -158,7 +149,6 @@ class CollectionDataTable extends DataTableAbstract
      * Organizes works.
      *
      * @param  bool  $mDataSupport
-     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Exception
      */
@@ -200,7 +190,6 @@ class CollectionDataTable extends DataTableAbstract
      * Revert transformed DT_RowIndex back to its original values.
      *
      * @param  bool  $mDataSupport
-     * @return void
      */
     private function revertIndexColumn($mDataSupport): void
     {
@@ -222,7 +211,6 @@ class CollectionDataTable extends DataTableAbstract
      * the FULL dataset the collection was sliced from. It effectively allows the
      * collection to be "pre-sliced".
      *
-     * @param  int  $offset
      * @return static
      */
     public function setOffset(int $offset): self
@@ -234,9 +222,6 @@ class CollectionDataTable extends DataTableAbstract
 
     /**
      * Perform global search for the given keyword.
-     *
-     * @param  string  $keyword
-     * @return void
      */
     protected function globalSearch(string $keyword): void
     {
@@ -264,8 +249,6 @@ class CollectionDataTable extends DataTableAbstract
 
     /**
      * Perform default query orderBy clause.
-     *
-     * @return void
      */
     protected function defaultOrdering(): void
     {
@@ -291,9 +274,6 @@ class CollectionDataTable extends DataTableAbstract
 
     /**
      * Get array sorter closure.
-     *
-     * @param  array  $criteria
-     * @return \Closure
      */
     protected function getSorter(array $criteria): Closure
     {

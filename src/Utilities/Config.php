@@ -6,15 +6,10 @@ use Illuminate\Contracts\Config\Repository;
 
 class Config
 {
-    /**
-     * @var \Illuminate\Contracts\Config\Repository
-     */
     private Repository $repository;
 
     /**
      * Config constructor.
-     *
-     * @param  \Illuminate\Contracts\Config\Repository  $repository
      */
     public function __construct(Repository $repository)
     {
@@ -23,8 +18,6 @@ class Config
 
     /**
      * Check if config uses wild card search.
-     *
-     * @return bool
      */
     public function isWildcard(): bool
     {
@@ -33,8 +26,6 @@ class Config
 
     /**
      * Check if config uses smart search.
-     *
-     * @return bool
      */
     public function isSmartSearch(): bool
     {
@@ -43,8 +34,6 @@ class Config
 
     /**
      * Check if config uses case-insensitive search.
-     *
-     * @return bool
      */
     public function isCaseInsensitive(): bool
     {
@@ -53,8 +42,6 @@ class Config
 
     /**
      * Check if app is in debug mode.
-     *
-     * @return bool
      */
     public function isDebugging(): bool
     {
@@ -87,8 +74,6 @@ class Config
 
     /**
      * Check if dataTable config uses multi-term searching.
-     *
-     * @return bool
      */
     public function isMultiTerm(): bool
     {
@@ -97,8 +82,6 @@ class Config
 
     /**
      * Check if dataTable config uses starts_with searching.
-     *
-     * @return bool
      */
     public function isStartsWithSearch(): bool
     {
