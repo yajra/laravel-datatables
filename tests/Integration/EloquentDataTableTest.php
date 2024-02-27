@@ -178,32 +178,22 @@ class EloquentDataTableTest extends TestCase
         parent::setUp();
 
         $router = $this->app['router'];
-        $router->get('/eloquent/users', function (DataTables $datatables) {
-            return $datatables->eloquent(User::query())->toJson();
-        });
+        $router->get('/eloquent/users', fn (DataTables $datatables) => $datatables->eloquent(User::query())->toJson());
 
-        $router->get('/eloquent/only', function (DataTables $datatables) {
-            return $datatables->eloquent(Post::with('user'))
-                ->only(['title', 'user.name'])
-                ->toJson();
-        });
+        $router->get('/eloquent/only', fn (DataTables $datatables) => $datatables->eloquent(Post::with('user'))
+            ->only(['title', 'user.name'])
+            ->toJson());
 
-        $router->get('/eloquent/formatColumn', function (DataTables $dataTable) {
-            return $dataTable->eloquent(User::query())
-                ->formatColumn('created_at', new DateFormatter('Y-m-d'))
-                ->toJson();
-        });
+        $router->get('/eloquent/formatColumn', fn (DataTables $dataTable) => $dataTable->eloquent(User::query())
+            ->formatColumn('created_at', new DateFormatter('Y-m-d'))
+            ->toJson());
 
-        $router->get('/eloquent/formatColumn-closure', function (DataTables $dataTable) {
-            return $dataTable->eloquent(User::query())
-                ->formatColumn('created_at', fn ($value, $row) => Carbon::parse($value)->format('Y-m-d'))
-                ->toJson();
-        });
+        $router->get('/eloquent/formatColumn-closure', fn (DataTables $dataTable) => $dataTable->eloquent(User::query())
+            ->formatColumn('created_at', fn ($value, $row) => Carbon::parse($value)->format('Y-m-d'))
+            ->toJson());
 
-        $router->get('/eloquent/formatColumn-fallback', function (DataTables $dataTable) {
-            return $dataTable->eloquent(User::query())
-                ->formatColumn('created_at', 'InvalidFormatter::class')
-                ->toJson();
-        });
+        $router->get('/eloquent/formatColumn-fallback', fn (DataTables $dataTable) => $dataTable->eloquent(User::query())
+            ->formatColumn('created_at', 'InvalidFormatter::class')
+            ->toJson());
     }
 }

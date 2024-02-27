@@ -18,13 +18,6 @@ class CollectionDataTable extends DataTableAbstract
      *
      * @var \Illuminate\Support\Collection<array-key, array>
      */
-    public Collection $collection;
-
-    /**
-     * Collection object.
-     *
-     * @var \Illuminate\Support\Collection<array-key, array>
-     */
     public Collection $original;
 
     /**
@@ -37,21 +30,18 @@ class CollectionDataTable extends DataTableAbstract
      *
      * @param  \Illuminate\Support\Collection<array-key, array>  $collection
      */
-    public function __construct(Collection $collection)
+    public function __construct(public Collection $collection)
     {
         $this->request = app('datatables.request');
         $this->config = app('datatables.config');
-        $this->collection = $collection;
-        $this->original = $collection;
-        $this->columns = array_keys($this->serialize($collection->first()));
+        $this->original = $this->collection;
+        $this->columns = array_keys($this->serialize($this->collection->first()));
     }
 
     /**
      * Serialize collection.
-     *
-     * @param  mixed  $collection
      */
-    protected function serialize($collection): array
+    protected function serialize(mixed $collection): array
     {
         return $collection instanceof Arrayable ? $collection->toArray() : (array) $collection;
     }
@@ -257,9 +247,7 @@ class CollectionDataTable extends DataTableAbstract
             $sorter = $this->getSorter($criteria);
 
             $this->collection = $this->collection
-                ->map(function ($data) {
-                    return Arr::dot($data);
-                })
+                ->map(fn ($data) => Arr::dot($data))
                 ->sort($sorter)
                 ->map(function ($data) {
                     foreach ($data as $key => $value) {

@@ -16,11 +16,6 @@ use Yajra\DataTables\Utilities\Helper;
 class QueryDataTable extends DataTableAbstract
 {
     /**
-     * Builder object.
-     */
-    protected QueryBuilder $query;
-
-    /**
      * Flag for ordering NULLS LAST option.
      */
     protected bool $nullsLast = false;
@@ -85,12 +80,14 @@ class QueryDataTable extends DataTableAbstract
      */
     protected bool $disableUserOrdering = false;
 
-    public function __construct(QueryBuilder $builder)
+    public function __construct(/**
+     * Builder object.
+     */
+        protected QueryBuilder $query)
     {
-        $this->query = $builder;
         $this->request = app('datatables.request');
         $this->config = app('datatables.config');
-        $this->columns = $builder->getColumns();
+        $this->columns = $this->query->getColumns();
 
         if ($this->config->isDebugging()) {
             $this->getConnection()->enableQueryLog();
@@ -429,14 +426,11 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function castColumn(string $column): string
     {
-        switch ($this->getConnection()->getDriverName()) {
-            case 'pgsql':
-                return 'CAST('.$column.' as TEXT)';
-            case 'firebird':
-                return 'CAST('.$column.' as VARCHAR(255))';
-            default:
-                return $column;
-        }
+        return match ($this->getConnection()->getDriverName()) {
+            'pgsql' => 'CAST('.$column.' as TEXT)',
+            'firebird' => 'CAST('.$column.' as VARCHAR(255))',
+            default => $column,
+        };
     }
 
     /**
@@ -470,8 +464,8 @@ class QueryDataTable extends DataTableAbstract
             $from = $q->from ?? '';
 
             if (! $from instanceof Expression) {
-                if (str_contains($from, ' as ')) {
-                    $from = explode(' as ', $from)[1];
+                if (str_contains((string) $from, ' as ')) {
+                    $from = explode(' as ', (string) $from)[1];
                 }
 
                 $column = $from.'.'.$column;
@@ -659,9 +653,7 @@ class QueryDataTable extends DataTableAbstract
 
                 return $orderable;
             })
-            ->reject(function ($orderable) {
-                return $this->isBlacklisted($orderable['name']) && ! $this->hasOrderColumn($orderable['name']);
-            })
+            ->reject(fn ($orderable) => $this->isBlacklisted($orderable['name']) && ! $this->hasOrderColumn($orderable['name']))
             ->each(function ($orderable) {
                 $column = $this->resolveRelationColumn($orderable['name']);
 
@@ -699,7 +691,7 @@ class QueryDataTable extends DataTableAbstract
         if (is_callable($sql)) {
             call_user_func($sql, $this->query, $orderable['direction']);
         } else {
-            $sql = str_replace('$1', $orderable['direction'], $sql);
+            $sql = str_replace('$1', $orderable['direction'], (string) $sql);
             $bindings = $this->columnDef['order'][$column]['bindings'];
             $this->query->orderByRaw($sql, $bindings);
         }
@@ -738,13 +730,9 @@ class QueryDataTable extends DataTableAbstract
 
         $this->query->where(function ($query) use ($keyword) {
             collect($this->request->searchableColumnIndex())
-                ->map(function ($index) {
-                    return $this->getColumnName($index);
-                })
+                ->map(fn ($index) => $this->getColumnName($index))
                 ->filter()
-                ->reject(function ($column) {
-                    return $this->isBlacklisted($column) && ! $this->hasFilterColumn($column);
-                })
+                ->reject(fn ($column) => $this->isBlacklisted($column) && ! $this->hasFilterColumn($column))
                 ->each(function ($column) use ($keyword, $query) {
                     if ($this->hasFilterColumn($column)) {
                         $this->applyFilterColumn($query, $column, $keyword, 'or');
@@ -935,9 +923,7 @@ class QueryDataTable extends DataTableAbstract
         // Escape keyName and orderedKeys
         $keyName = $connection->getQueryGrammar()->wrap($keyName);
         $orderedKeys = collect($orderedKeys)
-            ->map(function ($value) use ($connection) {
-                return $connection->escape($value);
-            });
+            ->map(fn ($value) => $connection->escape($value));
 
         switch ($driverName) {
             case 'mysql':
@@ -986,7 +972,7 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function performScoutSearch(string $searchKeyword, mixed $searchFilters = []): array
     {
-        if (! class_exists('\Laravel\Scout\EngineManager')) {
+        if (! class_exists(\Laravel\Scout\EngineManager::class)) {
             throw new \Exception('Laravel Scout is not installed.');
         }
         $engine = app(\Laravel\Scout\EngineManager::class)->engine();

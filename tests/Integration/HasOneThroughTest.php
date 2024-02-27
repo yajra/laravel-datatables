@@ -123,24 +123,16 @@ class HasOneThroughTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['router']->get('/relations/hasOneThrough', function (DataTables $datatables) {
-            return $datatables->eloquent(Post::with('heart')->select('posts.*'))->toJson();
-        });
+        $this->app['router']->get('/relations/hasOneThrough', fn (DataTables $datatables) => $datatables->eloquent(Post::with('heart')->select('posts.*'))->toJson());
 
-        $this->app['router']->get('/relations/hasOneThroughSearchRelation', function (DataTables $datatables) {
-            return $datatables->eloquent(Post::with('heart'))->addColumns(['hearts.size'])->toJson();
-        });
+        $this->app['router']->get('/relations/hasOneThroughSearchRelation', fn (DataTables $datatables) => $datatables->eloquent(Post::with('heart'))->addColumns(['hearts.size'])->toJson());
 
-        $this->app['router']->get('/relations/hasOneThroughWithTrashed', function (DataTables $datatables) {
-            return $datatables->eloquent(Post::with(['heart' => function ($query) {
-                $query->withTrashed();
-            }])->select('posts.*'))->toJson();
-        });
+        $this->app['router']->get('/relations/hasOneThroughWithTrashed', fn (DataTables $datatables) => $datatables->eloquent(Post::with(['heart' => function ($query) {
+            $query->withTrashed();
+        }])->select('posts.*'))->toJson());
 
-        $this->app['router']->get('/relations/hasOneThroughOnlyTrashed', function (DataTables $datatables) {
-            return $datatables->eloquent(Post::with(['heart' => function ($query) {
-                $query->onlyTrashed();
-            }])->select('posts.*'))->toJson();
-        });
+        $this->app['router']->get('/relations/hasOneThroughOnlyTrashed', fn (DataTables $datatables) => $datatables->eloquent(Post::with(['heart' => function ($query) {
+            $query->onlyTrashed();
+        }])->select('posts.*'))->toJson());
     }
 }

@@ -56,9 +56,7 @@ class EloquentDataTable extends QueryDataTable
                 $name = $attribute;
             }
 
-            $this->addColumn($name, function ($model) use ($attribute) {
-                return $model->getAttribute($attribute);
-            }, is_int($order) ? $order++ : $order);
+            $this->addColumn($name, fn ($model) => $model->getAttribute($attribute), is_int($order) ? $order++ : $order);
         }
 
         return $this;
@@ -237,7 +235,7 @@ class EloquentDataTable extends QueryDataTable
                     break;
 
                 default:
-                    throw new Exception('Relation '.get_class($model).' is not yet supported.');
+                    throw new Exception('Relation '.$model::class.' is not yet supported.');
             }
             $this->performJoin($table, $foreign, $other);
             $lastQuery = $model->getQuery();

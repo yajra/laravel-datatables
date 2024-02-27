@@ -99,24 +99,18 @@ class MorphToRelationTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['router']->get('/relations/morphTo', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with('user')->select('users.*'))->toJson();
-        });
+        $this->app['router']->get('/relations/morphTo', fn (DataTables $datatables) => $datatables->eloquent(User::with('user')->select('users.*'))->toJson());
 
-        $this->app['router']->get('/relations/morphToWithTrashed', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with([
-                'user' => function ($query) {
-                    $query->withTrashed();
-                },
-            ])->select('users.*'))->toJson();
-        });
+        $this->app['router']->get('/relations/morphToWithTrashed', fn (DataTables $datatables) => $datatables->eloquent(User::with([
+            'user' => function ($query) {
+                $query->withTrashed();
+            },
+        ])->select('users.*'))->toJson());
 
-        $this->app['router']->get('/relations/morphToOnlyTrashed', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with([
-                'user' => function ($query) {
-                    $query->onlyTrashed();
-                },
-            ])->select('users.*'))->toJson();
-        });
+        $this->app['router']->get('/relations/morphToOnlyTrashed', fn (DataTables $datatables) => $datatables->eloquent(User::with([
+            'user' => function ($query) {
+                $query->onlyTrashed();
+            },
+        ])->select('users.*'))->toJson());
     }
 }

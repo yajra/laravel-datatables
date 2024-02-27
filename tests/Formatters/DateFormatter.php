@@ -8,11 +8,8 @@ use Yajra\DataTables\Contracts\Formatter;
 
 class DateFormatter implements Formatter
 {
-    public string $format;
-
-    public function __construct(string $format = 'Y-m-d h:i a')
+    public function __construct(public string $format = 'Y-m-d h:i a')
     {
-        $this->format = $format;
     }
 
     public function format($value, $row): string

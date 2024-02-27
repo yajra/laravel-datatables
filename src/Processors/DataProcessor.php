@@ -9,8 +9,6 @@ use Yajra\DataTables\Utilities\Helper;
 
 class DataProcessor
 {
-    protected int $start;
-
     protected array $output = [];
 
     /**
@@ -22,8 +20,6 @@ class DataProcessor
      * @var array<array-key, array{name: string, content: mixed}>
      */
     protected array $editColumns = [];
-
-    protected array $templates = [];
 
     protected array $rawColumns = [];
 
@@ -45,18 +41,12 @@ class DataProcessor
      */
     protected mixed $escapeColumns = [];
 
-    protected iterable $results;
-
     protected bool $includeIndex = false;
 
     protected bool $ignoreGetters = false;
 
-    /**
-     * @param  iterable  $results
-     */
-    public function __construct($results, array $columnDef, array $templates, int $start = 0)
+    public function __construct(protected iterable $results, array $columnDef, protected array $templates, protected int $start = 0)
     {
-        $this->results = $results;
         $this->appendColumns = $columnDef['append'] ?? [];
         $this->editColumns = $columnDef['edit'] ?? [];
         $this->excessColumns = $columnDef['excess'] ?? [];
@@ -67,8 +57,6 @@ class DataProcessor
         $this->makeHidden = $columnDef['hidden'] ?? [];
         $this->makeVisible = $columnDef['visible'] ?? [];
         $this->ignoreGetters = $columnDef['ignore_getters'] ?? false;
-        $this->templates = $templates;
-        $this->start = $start;
     }
 
     /**

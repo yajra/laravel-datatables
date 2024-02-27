@@ -120,10 +120,9 @@ abstract class DataTableAbstract implements DataTable
     /**
      * Can the DataTable engine be created with these parameters.
      *
-     * @param  mixed  $source
      * @return bool
      */
-    public static function canCreate($source)
+    public static function canCreate(mixed $source)
     {
         return false;
     }
@@ -131,10 +130,9 @@ abstract class DataTableAbstract implements DataTable
     /**
      * Factory method, create and return an instance for the DataTable engine.
      *
-     * @param  mixed  $source
      * @return static
      */
-    public static function create($source)
+    public static function create(mixed $source)
     {
         return new static($source);
     }
@@ -162,9 +160,7 @@ abstract class DataTableAbstract implements DataTable
             foreach ((array) $columns as $column) {
                 $this->addColumn(
                     $column.'_formatted',
-                    function ($row) use ($column, $formatter) {
-                        return $formatter(data_get($row, $column), $row);
-                    }
+                    fn ($row) => $formatter(data_get($row, $column), $row)
                 );
             }
 
@@ -174,9 +170,7 @@ abstract class DataTableAbstract implements DataTable
         foreach ((array) $columns as $column) {
             $this->addColumn(
                 $column.'_formatted',
-                function ($row) use ($column) {
-                    return data_get($row, $column);
-                }
+                fn ($row) => data_get($row, $column)
             );
         }
 
@@ -425,11 +419,9 @@ abstract class DataTableAbstract implements DataTable
     /**
      * Append data on json response.
      *
-     * @param  mixed  $key
-     * @param  mixed  $value
      * @return $this
      */
-    public function with($key, $value = ''): static
+    public function with(mixed $key, mixed $value = ''): static
     {
         if (is_array($key)) {
             $this->appends = $key;
@@ -680,10 +672,9 @@ abstract class DataTableAbstract implements DataTable
      * Add a search pane options on response.
      *
      * @param  string  $column
-     * @param  mixed  $options
      * @return $this
      */
-    public function searchPane($column, $options, ?callable $builder = null): static
+    public function searchPane($column, mixed $options, ?callable $builder = null): static
     {
         $options = value($options);
 
@@ -748,9 +739,7 @@ abstract class DataTableAbstract implements DataTable
     protected function smartGlobalSearch($keyword): void
     {
         collect(explode(' ', $keyword))
-            ->reject(function ($keyword) {
-                return trim($keyword) === '';
-            })
+            ->reject(fn ($keyword) => trim((string) $keyword) === '')
             ->each(function ($keyword) {
                 $this->globalSearch($keyword);
             });

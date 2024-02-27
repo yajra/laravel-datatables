@@ -103,9 +103,7 @@ class HelperTest extends TestCase
 
     public function test_compile_content_function()
     {
-        $content = function ($obj) {
-            return $obj->id;
-        };
+        $content = fn ($obj) => $obj->id;
         $data = ['id' => 2];
         $obj = new stdClass();
         $obj->id = 2;

@@ -90,20 +90,14 @@ class HasManyRelationTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['router']->get('/relations/hasMany', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with('posts')->select('users.*'))->toJson();
-        });
+        $this->app['router']->get('/relations/hasMany', fn (DataTables $datatables) => $datatables->eloquent(User::with('posts')->select('users.*'))->toJson());
 
-        $this->app['router']->get('/relations/hasManyWithTrashed', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with(['posts' => function ($query) {
-                $query->withTrashed();
-            }])->select('users.*'))->toJson();
-        });
+        $this->app['router']->get('/relations/hasManyWithTrashed', fn (DataTables $datatables) => $datatables->eloquent(User::with(['posts' => function ($query) {
+            $query->withTrashed();
+        }])->select('users.*'))->toJson());
 
-        $this->app['router']->get('/relations/hasManyOnlyTrashed', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with(['posts' => function ($query) {
-                $query->onlyTrashed();
-            }])->select('users.*'))->toJson();
-        });
+        $this->app['router']->get('/relations/hasManyOnlyTrashed', fn (DataTables $datatables) => $datatables->eloquent(User::with(['posts' => function ($query) {
+            $query->onlyTrashed();
+        }])->select('users.*'))->toJson());
     }
 }

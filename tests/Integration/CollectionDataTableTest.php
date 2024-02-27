@@ -253,12 +253,8 @@ class CollectionDataTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['router']->get('/collection/users', function (DataTables $datatables) {
-            return $datatables->collection(User::all())->toJson();
-        });
+        $this->app['router']->get('/collection/users', fn (DataTables $datatables) => $datatables->collection(User::all())->toJson());
 
-        $this->app['router']->get('/collection/empty', function (DataTables $datatables) {
-            return $datatables->collection([])->toJson();
-        });
+        $this->app['router']->get('/collection/empty', fn (DataTables $datatables) => $datatables->collection([])->toJson());
     }
 }

@@ -6,14 +6,11 @@ use Illuminate\Contracts\Config\Repository;
 
 class Config
 {
-    private Repository $repository;
-
     /**
      * Config constructor.
      */
-    public function __construct(Repository $repository)
+    public function __construct(private readonly Repository $repository)
     {
-        $this->repository = $repository;
     }
 
     /**
@@ -52,10 +49,9 @@ class Config
      * Get the specified configuration value.
      *
      * @param  string  $key
-     * @param  mixed  $default
      * @return mixed
      */
-    public function get($key, $default = null)
+    public function get($key, mixed $default = null)
     {
         return $this->repository->get($key, $default);
     }
@@ -64,10 +60,9 @@ class Config
      * Set a given configuration value.
      *
      * @param  array|string  $key
-     * @param  mixed  $value
      * @return void
      */
-    public function set($key, $value = null)
+    public function set($key, mixed $value = null)
     {
         $this->repository->set($key, $value);
     }

@@ -28,7 +28,8 @@
         "laravel/pint": "^1.14",
         "laravel/scout": "^10.8.3",
         "meilisearch/meilisearch-php": "^1.6.1",
-        "orchestra/testbench": "^9"
+        "orchestra/testbench": "^9",
+        "rector/rector": "^1.0"
     },
     "suggest": {
         "yajra/laravel-datatables-export": "Plugin for server-side exporting using livewire and queue worker.",
@@ -72,7 +73,14 @@
     "scripts": {
         "test": "./vendor/bin/phpunit",
         "pint": "./vendor/bin/pint",
-        "stan": "./vendor/bin/phpstan analyse --memory-limit=2G --ansi --no-progress --no-interaction --configuration=phpstan.neon.dist"
+        "rector": "./vendor/bin/rector",
+        "stan": "./vendor/bin/phpstan analyse --memory-limit=2G --ansi --no-progress --no-interaction --configuration=phpstan.neon.dist",
+        "pr": [
+            "@rector",
+            "@pint",
+            "@stan",
+            "@test"
+        ]
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

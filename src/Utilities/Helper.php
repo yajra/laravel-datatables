@@ -94,7 +94,7 @@ class Helper
      *
      * @throws \ReflectionException
      */
-    public static function compileContent($content, array $data, array|object $param)
+    public static function compileContent(mixed $content, array $data, array|object $param)
     {
         if (is_string($content)) {
             return static::compileBlade($content, static::getMixedValue($data, $param));
@@ -191,11 +191,10 @@ class Helper
     /**
      * Converts array object values to associative array.
      *
-     * @param  mixed  $row
      * @param  array  $filters
      * @return array
      */
-    public static function convertToArray($row, $filters = [])
+    public static function convertToArray(mixed $row, $filters = [])
     {
         if (Arr::get($filters, 'ignore_getters') && is_object($row) && method_exists($row, 'getAttributes')) {
             $data = $row->getAttributes();
@@ -236,9 +235,7 @@ class Helper
      */
     public static function transform(array $data)
     {
-        return array_map(function ($row) {
-            return self::transformRow($row);
-        }, $data);
+        return array_map(fn ($row) => self::transformRow($row), $data);
     }
 
     /**
@@ -301,7 +298,7 @@ class Helper
             if (is_array($param)) {
                 $parameters[] = self::replacePatternWithKeyword($param, $keyword, $pattern);
             } else {
-                $parameters[] = str_replace($pattern, $keyword, $param);
+                $parameters[] = str_replace($pattern, $keyword, (string) $param);
             }
         }
 
@@ -379,7 +376,7 @@ class Helper
 
         foreach (Arr::dot($parameters) as $key => $value) {
             if (self::isJavascript($value, $key)) {
-                $values[] = trim($value);
+                $values[] = trim((string) $value);
                 Arr::set($parameters, $key, '%'.$key.'%');
                 $replacements[] = '"%'.$key.'%"';
             }

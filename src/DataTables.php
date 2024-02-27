@@ -74,7 +74,7 @@ class DataTables
             }
         }
 
-        throw new Exception('No available engine for '.get_class($source));
+        throw new Exception('No available engine for '.$source::class);
     }
 
     /**

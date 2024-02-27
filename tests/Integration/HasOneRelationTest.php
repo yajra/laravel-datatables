@@ -121,24 +121,18 @@ class HasOneRelationTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['router']->get('/relations/hasOne', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with('heart')->select('users.*'))->toJson();
-        });
+        $this->app['router']->get('/relations/hasOne', fn (DataTables $datatables) => $datatables->eloquent(User::with('heart')->select('users.*'))->toJson());
 
-        $this->app['router']->get('/relations/hasOneWithTrashed', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with([
-                'heart' => function ($query) {
-                    $query->withTrashed();
-                },
-            ])->select('users.*'))->toJson();
-        });
+        $this->app['router']->get('/relations/hasOneWithTrashed', fn (DataTables $datatables) => $datatables->eloquent(User::with([
+            'heart' => function ($query) {
+                $query->withTrashed();
+            },
+        ])->select('users.*'))->toJson());
 
-        $this->app['router']->get('/relations/hasOneOnlyTrashed', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with([
-                'heart' => function ($query) {
-                    $query->onlyTrashed();
-                },
-            ])->select('users.*'))->toJson();
-        });
+        $this->app['router']->get('/relations/hasOneOnlyTrashed', fn (DataTables $datatables) => $datatables->eloquent(User::with([
+            'heart' => function ($query) {
+                $query->onlyTrashed();
+            },
+        ])->select('users.*'))->toJson());
     }
 }

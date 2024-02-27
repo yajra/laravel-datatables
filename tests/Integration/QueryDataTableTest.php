@@ -380,101 +380,65 @@ class QueryDataTableTest extends TestCase
 
         $router = $this->app['router'];
 
-        $router->get('/query/users', function (DataTables $dataTable) {
-            return $dataTable->query(DB::table('users'))->toJson();
-        });
+        $router->get('/query/users', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))->toJson());
 
-        $router->get('/query/formatColumn', function (DataTables $dataTable) {
-            return $dataTable->query(DB::table('users'))
-                ->formatColumn('created_at', new DateFormatter('Y-m-d'))
-                ->toJson();
-        });
+        $router->get('/query/formatColumn', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
+            ->formatColumn('created_at', new DateFormatter('Y-m-d'))
+            ->toJson());
 
-        $router->get('/query/simple', function (DataTables $dataTable) {
-            return $dataTable->query(DB::table('users'))->skipTotalRecords()->toJson();
-        });
+        $router->get('/query/simple', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))->skipTotalRecords()->toJson());
 
-        $router->get('/query/addColumn', function (DataTables $dataTable) {
-            return $dataTable->query(DB::table('users'))
-                ->addColumn('foo', 'bar')
-                ->toJson();
-        });
+        $router->get('/query/addColumn', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
+            ->addColumn('foo', 'bar')
+            ->toJson());
 
-        $router->get('/query/indexColumn', function (DataTables $dataTable) {
-            return $dataTable->query(DB::table('users'))
-                ->addIndexColumn()
-                ->toJson();
-        });
+        $router->get('/query/indexColumn', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
+            ->addIndexColumn()
+            ->toJson());
 
-        $router->get('/query/filterColumn', function (DataTables $dataTable) {
-            return $dataTable->query(DB::table('users'))
-                ->addColumn('foo', 'bar')
-                ->filterColumn('foo', function (Builder $builder, $keyword) {
-                    $builder->where('1', $keyword);
-                })
-                ->toJson();
-        });
+        $router->get('/query/filterColumn', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
+            ->addColumn('foo', 'bar')
+            ->filterColumn('foo', function (Builder $builder, $keyword) {
+                $builder->where('1', $keyword);
+            })
+            ->toJson());
 
-        $router->get('/query/blacklisted-filter', function (DataTables $dataTable) {
-            return $dataTable->query(DB::table('users'))
-                ->addColumn('foo', 'bar')
-                ->filterColumn('foo', function (Builder $builder, $keyword) {
-                    $builder->where('name', $keyword);
-                })
-                ->blacklist(['foo'])
-                ->toJson();
-        });
+        $router->get('/query/blacklisted-filter', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
+            ->addColumn('foo', 'bar')
+            ->filterColumn('foo', function (Builder $builder, $keyword) {
+                $builder->where('name', $keyword);
+            })
+            ->blacklist(['foo'])
+            ->toJson());
 
-        $router->get('/query/only', function (DataTables $dataTable) {
-            return $dataTable->query(DB::table('users'))
-                ->addColumn('foo', 'bar')
-                ->only(['name'])
-                ->toJson();
-        });
+        $router->get('/query/only', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
+            ->addColumn('foo', 'bar')
+            ->only(['name'])
+            ->toJson());
 
-        $router->get('/query/edit-columns', function (DataTables $dataTable) {
-            return $dataTable->query(DB::table('users'))
-                ->editColumn('id', function () {
-                    return 'edited';
-                })
-                ->editOnlySelectedColumns()
-                ->editColumn('name', function () {
-                    return 'edited';
-                })
-                ->editColumn('email', function () {
-                    return 'edited';
-                })
-                ->toJson();
-        });
+        $router->get('/query/edit-columns', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
+            ->editColumn('id', fn () => 'edited')
+            ->editOnlySelectedColumns()
+            ->editColumn('name', fn () => 'edited')
+            ->editColumn('email', fn () => 'edited')
+            ->toJson());
 
-        $router->get('/query/xss-add', function (DataTables $dataTable) {
-            return $dataTable->query(DB::table('users'))
-                ->addColumn('foo', '<a href="#">Allowed</a>')
-                ->addColumn('bar', function () {
-                    return '<a href="#">Allowed</a>';
-                })
-                ->toJson();
-        });
+        $router->get('/query/xss-add', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
+            ->addColumn('foo', '<a href="#">Allowed</a>')
+            ->addColumn('bar', fn () => '<a href="#">Allowed</a>')
+            ->toJson());
 
-        $router->get('/query/xss-edit', function (DataTables $dataTable) {
-            return $dataTable->query(DB::table('users'))
-                ->editColumn('name', '<a href="#">Allowed</a>')
-                ->editColumn('email', function () {
-                    return '<a href="#">Allowed</a>';
-                })
-                ->toJson();
-        });
+        $router->get('/query/xss-edit', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
+            ->editColumn('name', '<a href="#">Allowed</a>')
+            ->editColumn('email', fn () => '<a href="#">Allowed</a>')
+            ->toJson());
 
-        $router->get('/query/xss-raw', function (DataTables $dataTable) {
-            return $dataTable->query(DB::table('users'))
-                ->addColumn('foo', '<a href="#">Allowed</a>')
-                ->editColumn('name', '<a href="#">Allowed</a>')
-                ->editColumn('email', function () {
-                    return '<a href="#">Allowed</a>';
-                })
-                ->rawColumns(['name', 'email'])
-                ->toJson();
-        });
+        $router->get('/query/xss-raw', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
+            ->addColumn('foo', '<a href="#">Allowed</a>')
+            ->editColumn('name', '<a href="#">Allowed</a>')
+            ->editColumn('email', fn () => '<a href="#">Allowed</a>')
+            ->rawColumns(['name', 'email'])
+            ->toJson());
 
         $router->get('/query/search-panes', function (DataTables $dataTable) {
             $options = User::select('id as value', 'name as label')->get();
@@ -484,30 +448,20 @@ class QueryDataTableTest extends TestCase
                 ->toJson();
         });
 
-        $router->get('/set-total-records', function (DataTables $dataTable) {
-            return $dataTable->query(DB::table('users'))
-                ->setTotalRecords(10)
-                ->toJson();
-        });
+        $router->get('/set-total-records', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
+            ->setTotalRecords(10)
+            ->toJson());
 
-        $router->get('/zero-total-records', function (DataTables $dataTable) {
-            return $dataTable->query(DB::table('users'))
-                ->setTotalRecords(0)
-                ->toJson();
-        });
+        $router->get('/zero-total-records', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
+            ->setTotalRecords(0)
+            ->toJson());
 
-        $router->get('/set-filtered-records', function (DataTables $dataTable) {
-            return $dataTable->query(DB::table('users'))
-                ->setFilteredRecords(10)
-                ->toJson();
-        });
+        $router->get('/set-filtered-records', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
+            ->setFilteredRecords(10)
+            ->toJson());
 
-        $router->get('/closure-di', function (DataTables $dataTable) {
-            return $dataTable->query(DB::table('users'))
-                ->addColumn('name_di', function ($user, User $u) {
-                    return $u->newQuery()->find($user->id)->name.'_di';
-                })
-                ->toJson();
-        });
+        $router->get('/closure-di', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
+            ->addColumn('name_di', fn ($user, User $u) => $u->newQuery()->find($user->id)->name.'_di')
+            ->toJson());
     }
 }
