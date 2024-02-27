@@ -6,7 +6,6 @@ use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Traits\Macroable;
 use Yajra\DataTables\Exceptions\Exception;
-use Yajra\DataTables\Html\Builder;
 use Yajra\DataTables\Utilities\Config;
 use Yajra\DataTables\Utilities\Request;
 
@@ -94,7 +93,7 @@ class DataTables
     }
 
     /**
-     * DataTables using Query.
+     * DataTables using query builder.
      *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
@@ -157,15 +156,7 @@ class DataTables
     public function validateDataTable(string $engine, string $parent): void
     {
         if (! ($engine == $parent || is_subclass_of($engine, $parent))) {
-            $this->throwInvalidEngineException($engine, $parent);
+            throw new Exception("The given datatable engine `$engine` is not compatible with `$parent`.");
         }
-    }
-
-    /**
-     * @throws \Yajra\DataTables\Exceptions\Exception
-     */
-    public function throwInvalidEngineException(string $engine, string $parent): void
-    {
-        throw new Exception("The given datatable engine `{$engine}` is not compatible with `{$parent}`.");
     }
 }
