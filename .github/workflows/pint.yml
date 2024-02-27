@@ -15,7 +15,6 @@ jobs:
           preset: laravel
           verboseMode: true
           testMode: false
-          onlyDirty: true
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "fix: pint"
