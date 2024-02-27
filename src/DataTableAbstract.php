@@ -642,10 +642,9 @@ abstract class DataTableAbstract implements DataTable
      * Set auto filter off and run your own filter.
      * Overrides global search.
      *
-     * @param  bool  $globalSearch
      * @return $this
      */
-    public function filter(callable $callback, $globalSearch = false): static
+    public function filter(callable $callback, bool $globalSearch = false): self
     {
         $this->autoFilter = $globalSearch;
         $this->filterCallback = $callback;
@@ -694,6 +693,21 @@ abstract class DataTableAbstract implements DataTable
     public function toArray(): array
     {
         return (array) $this->make()->getData(true);
+    }
+
+    /**
+     * Count total items.
+     */
+    public function totalCount(): int
+    {
+        return $this->totalRecords ??= $this->count();
+    }
+
+    public function editOnlySelectedColumns(): static
+    {
+        $this->editOnlySelectedColumns = true;
+
+        return $this;
     }
 
     /**
@@ -756,14 +770,6 @@ abstract class DataTableAbstract implements DataTable
     protected function searchPanesSearch(): void
     {
         // Add support for search pane.
-    }
-
-    /**
-     * Count total items.
-     */
-    public function totalCount(): int
-    {
-        return $this->totalRecords ??= $this->count();
     }
 
     /**
@@ -872,11 +878,9 @@ abstract class DataTableAbstract implements DataTable
     /**
      * Return an error json response.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Yajra\DataTables\Exceptions\Exception|\Exception
      */
-    protected function errorResponse(\Exception $exception)
+    protected function errorResponse(\Exception $exception): JsonResponse
     {
         /** @var string $error */
         $error = $this->config->get('datatables.error');
@@ -893,7 +897,7 @@ abstract class DataTableAbstract implements DataTable
             'recordsTotal' => $this->totalRecords,
             'recordsFiltered' => 0,
             'data' => [],
-            'error' => $error ? __($error) : "Exception Message:\n\n".$exception->getMessage(),
+            'error' => $error ? __($error) : 'Exception Message:'.PHP_EOL.PHP_EOL.$exception->getMessage(),
         ]);
     }
 
@@ -940,7 +944,7 @@ abstract class DataTableAbstract implements DataTable
     }
 
     /**
-     * Get column name to be use for filtering and sorting.
+     * Get column name to be used for filtering and sorting.
      */
     protected function getColumnName(int $index, bool $wantsAlias = false): ?string
     {
@@ -980,12 +984,5 @@ abstract class DataTableAbstract implements DataTable
     protected function getPrimaryKeyName(): string
     {
         return 'id';
-    }
-
-    public function editOnlySelectedColumns(): static
-    {
-        $this->editOnlySelectedColumns = true;
-
-        return $this;
     }
 }

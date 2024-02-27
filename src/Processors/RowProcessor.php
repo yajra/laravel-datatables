@@ -20,6 +20,8 @@ class RowProcessor
      * @param  string  $attribute
      * @param  string|callable  $template
      * @return $this
+     *
+     * @throws \ReflectionException
      */
     public function rowValue($attribute, $template)
     {
@@ -39,6 +41,8 @@ class RowProcessor
      *
      * @param  string  $attribute
      * @return $this
+     *
+     * @throws \ReflectionException
      */
     public function rowData($attribute, array $template)
     {

@@ -80,10 +80,7 @@ class QueryDataTable extends DataTableAbstract
      */
     protected bool $disableUserOrdering = false;
 
-    public function __construct(/**
-     * Builder object.
-     */
-        protected QueryBuilder $query)
+    public function __construct(protected QueryBuilder $query)
     {
         $this->request = app('datatables.request');
         $this->config = app('datatables.config');
@@ -115,11 +112,9 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Organizes works.
      *
-     * @param  bool  $mDataSupport
-     *
      * @throws \Exception
      */
-    public function make($mDataSupport = true): JsonResponse
+    public function make(bool $mDataSupport = true): JsonResponse
     {
         try {
             $results = $this->prepareQuery()->results();

@@ -14,12 +14,8 @@ class Helper
 {
     /**
      * Places item of extra columns into results by care of their order.
-     *
-     * @param  array  $item
-     * @param  array  $array
-     * @return array
      */
-    public static function includeInArray($item, $array)
+    public static function includeInArray(array $item, array $array): array
     {
         if (self::isItemOrderInvalid($item, $array)) {
             return array_merge($array, [$item['name'] => $item['content']]);
@@ -44,12 +40,8 @@ class Helper
 
     /**
      * Check if item order is valid.
-     *
-     * @param  array  $item
-     * @param  array  $array
-     * @return bool
      */
-    protected static function isItemOrderInvalid($item, $array)
+    protected static function isItemOrderInvalid(array $item, array $array): bool
     {
         return $item['order'] === false || $item['order'] >= count($array);
     }
@@ -122,11 +114,10 @@ class Helper
     /**
      * Parses and compiles strings by using Blade Template System.
      *
-     * @param  string  $str
-     * @param  array  $data
-     * @return false|string
+     *
+     * @throws \Throwable
      */
-    public static function compileBlade($str, $data = [])
+    public static function compileBlade(string $str, array $data = []): false|string
     {
         if (view()->exists($str)) {
             /** @var view-string $str */
@@ -143,10 +134,8 @@ class Helper
 
     /**
      * Get a mixed value of custom data and the parameters.
-     *
-     * @return array
      */
-    public static function getMixedValue(array $data, array|object $param)
+    public static function getMixedValue(array $data, array|object $param): array
     {
         $casted = self::castToArray($param);
 
@@ -175,11 +164,8 @@ class Helper
 
     /**
      * Get equivalent or method of query builder.
-     *
-     * @param  string  $method
-     * @return string
      */
-    public static function getOrMethod($method)
+    public static function getOrMethod(string $method): string
     {
         if (! Str::contains(Str::lower($method), 'or')) {
             return 'or'.ucfirst($method);
@@ -190,11 +176,8 @@ class Helper
 
     /**
      * Converts array object values to associative array.
-     *
-     * @param  array  $filters
-     * @return array
      */
-    public static function convertToArray(mixed $row, $filters = [])
+    public static function convertToArray(mixed $row, array $filters = []): array
     {
         if (Arr::get($filters, 'ignore_getters') && is_object($row) && method_exists($row, 'getAttributes')) {
             $data = $row->getAttributes();
@@ -230,10 +213,7 @@ class Helper
         return $data;
     }
 
-    /**
-     * @return array
-     */
-    public static function transform(array $data)
+    public static function transform(array $data): array
     {
         return array_map(fn ($row) => self::transformRow($row), $data);
     }
@@ -242,9 +222,8 @@ class Helper
      * Transform row data into an array.
      *
      * @param  array  $row
-     * @return array
      */
-    protected static function transformRow($row)
+    protected static function transformRow($row): array
     {
         foreach ($row as $key => $value) {
             if ($value instanceof DateTime) {
@@ -263,10 +242,8 @@ class Helper
 
     /**
      * Build parameters depending on # of arguments passed.
-     *
-     * @return array
      */
-    public static function buildParameters(array $args)
+    public static function buildParameters(array $args): array
     {
         $parameters = [];
 
@@ -286,12 +263,8 @@ class Helper
 
     /**
      * Replace all pattern occurrences with keyword.
-     *
-     * @param  string  $keyword
-     * @param  string  $pattern
-     * @return array
      */
-    public static function replacePatternWithKeyword(array $subject, $keyword, $pattern = '$1')
+    public static function replacePatternWithKeyword(array $subject, string $keyword, string $pattern = '$1'): array
     {
         $parameters = [];
         foreach ($subject as $param) {
@@ -307,12 +280,8 @@ class Helper
 
     /**
      * Get column name from string.
-     *
-     * @param  string  $str
-     * @param  bool  $wantsAlias
-     * @return string
      */
-    public static function extractColumnName($str, $wantsAlias)
+    public static function extractColumnName(string $str, bool $wantsAlias): string
     {
         $matches = explode(' as ', Str::lower($str));
 
@@ -333,25 +302,16 @@ class Helper
 
     /**
      * Adds % wildcards to the given string.
-     *
-     * @param  string  $str
-     * @param  bool  $lowercase
-     * @return string
      */
-    public static function wildcardLikeString($str, $lowercase = true)
+    public static function wildcardLikeString(string $str, bool $lowercase = true): string
     {
         return static::wildcardString($str, '%', $lowercase);
     }
 
     /**
      * Adds wildcards to the given string.
-     *
-     * @param  string  $str
-     * @param  string  $wildcard
-     * @param  bool  $lowercase
-     * @return string
      */
-    public static function wildcardString($str, $wildcard, $lowercase = true)
+    public static function wildcardString(string $str, string $wildcard, bool $lowercase = true): string
     {
         $wild = $wildcard;
         $chars = (array) preg_split('//u', $str, -1, PREG_SPLIT_NO_EMPTY);
