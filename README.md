@@ -15,13 +15,15 @@
 Laravel package for handling [server-side](https://www.datatables.net/manual/server-side) works of [DataTables](http://datatables.net) jQuery Plugin via [AJAX option](https://datatables.net/reference/option/ajax) by using Eloquent ORM, Fluent Query Builder or Collection.
 
 ```php
-return datatables()->eloquent(User::query())->toJson();
-return datatables()->query(DB::table('users'))->toJson();
-return datatables()->collection(User::all())->toJson();
+use \Yajra\DataTables\Facades\DataTables;
 
-return datatables(User::query())->toJson();
-return datatables(DB::table('users'))->toJson();
-return datatables(User::all())->toJson();
+return DataTables::eloquent(User::query())->toJson();
+return DataTables::query(DB::table('users'))->toJson();
+return DataTables::collection(User::all())->toJson();
+
+return DataTables::make(User::query())->toJson();
+return DataTables::make(DB::table('users'))->toJson();
+return DataTables::make(User::all())->toJson();
 ```
 
 ## Sponsors
