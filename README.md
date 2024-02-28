@@ -67,12 +67,12 @@ return DataTables::make(User::all())->toJson();
 | 5.6.x   | 8.x      |
 | 5.7.x   | 8.x      |
 | 5.8.x   | 9.x      |
-| 6.x.x   | 9.x      |
-| 7.x.x   | 9.x      |
-| 8.x.x   | 9.x      |
-| 9.x.x   | 10.x     |
-| 10.x.x  | 10.x     |
-| 11.x.x  | 11.x     |
+| 6.x     | 9.x      |
+| 7.x     | 9.x      |
+| 8.x     | 9.x      |
+| 9.x     | 10.x     |
+| 10.x    | 10.x     |
+| 11.x    | 11.x     |
 
 ## Quick Installation
 
