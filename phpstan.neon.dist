@@ -10,7 +10,6 @@ parameters:
 
     ignoreErrors:
         - '#Unsafe usage of new static\(\).#'
-        - '#Negated boolean expression is always false.#'
 
     excludePaths:
         - src/helper.php
