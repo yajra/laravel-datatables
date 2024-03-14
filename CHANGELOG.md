@@ -8,6 +8,10 @@
 
 ### [Unreleased]
 
+### [v10.11.4] - 2024-02-28
+
+- fix: EloquentDataTable return type typo #3123
+
 ### [v10.11.3] - 2023-12-27
 
 - fix: Update composer.json to use Larastan Org #3107
