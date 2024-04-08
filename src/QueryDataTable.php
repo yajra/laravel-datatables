@@ -172,7 +172,7 @@ class QueryDataTable extends DataTableAbstract
     {
         $builder = clone $this->query;
         $builder->reorder(); // remove all sorting from query, because here it's useless and take time.
-        $row_count = $this->wrap('row_count');
+        $row_count = 'row_count';
         if ($this->isComplexQuery($builder)) {
             $builder->select(DB::raw("1 as {$row_count}"));
             if ($this->ignoreSelectInCountQuery || ! $this->isComplexQuery($builder)) {
