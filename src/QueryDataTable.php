@@ -171,7 +171,7 @@ class QueryDataTable extends DataTableAbstract
     public function prepareCountQuery(): QueryBuilder
     {
         $builder = clone $this->query;
-
+        $builder->reorder(); // remove all sorting from query, because here it's useless and take time.
         if ($this->isComplexQuery($builder)) {
             $builder->select(DB::raw('1 as dt_row_count'));
             if ($this->ignoreSelectInCountQuery || ! $this->isComplexQuery($builder)) {
