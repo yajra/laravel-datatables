@@ -172,8 +172,9 @@ class QueryDataTable extends DataTableAbstract
     {
         $builder = clone $this->query;
         $builder->reorder(); // remove all sorting from query, because here it's useless and take time.
+        $row_count = $this->wrap('row_count');
         if ($this->isComplexQuery($builder)) {
-            $builder->select(DB::raw('1 as dt_row_count'));
+            $builder->select(DB::raw("1 as {$row_count}"));
             if ($this->ignoreSelectInCountQuery || ! $this->isComplexQuery($builder)) {
                 return $this->getConnection()
                     ->query()
@@ -189,7 +190,6 @@ class QueryDataTable extends DataTableAbstract
                 ->setBindings($builder->getBindings());
         }
 
-        $row_count = $this->wrap('row_count');
         $builder->select($this->getConnection()->raw("'1' as {$row_count}"));
         if (! $this->keepSelectBindings) {
             $builder->setBindings([], 'select');
