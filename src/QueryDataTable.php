@@ -205,6 +205,7 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function isComplexQuery($query): bool
     {
+        
         return Str::contains(Str::lower($query->toSql()), ['union', 'having', 'distinct', 'order by', 'group by']);
     }
 
