@@ -190,7 +190,7 @@ class QueryDataTable extends DataTableAbstract
         }
 
         $row_count = $this->wrap('row_count');
-        $builder->select($this->getConnection()->raw("'1' as {$row_count}"));
+        $builder->select($this->getConnection()->raw("'1' as {$row_count}"))->reorder();
         if (! $this->keepSelectBindings) {
             $builder->setBindings([], 'select');
         }
@@ -205,8 +205,9 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function isComplexQuery($query): bool
     {
-        
-        return Str::contains(Str::lower($query->toSql()), ['union', 'having', 'distinct', 'order by', 'group by']);
+        $queryCheck = (clone $query)->select(DB::raw('1 AS dt_row_count'));
+
+        return Str::contains(Str::lower($queryCheck->toSql()), ['union', 'having', 'distinct', 'group by']);
     }
 
     /**
