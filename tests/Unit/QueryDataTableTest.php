@@ -130,7 +130,7 @@ class QueryDataTableTest extends TestCase
         );
 
         $this->assertQueryWrapped(false, $dataTable->prepareCountQuery());
-        $this->assertEquals(1, $dataTable->prepareCountQuery()->first()->row_count);
+        $this->assertEquals(1, $dataTable->prepareCountQuery()->count());
     }
 
     public function test_simple_queries_are_not_wrapped_and_countable()
