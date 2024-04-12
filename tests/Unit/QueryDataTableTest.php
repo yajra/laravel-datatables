@@ -74,7 +74,29 @@ class QueryDataTableTest extends TestCase
         $this->assertEquals(20, $dataTable->count());
     }
 
-    public function test_simple_queries_with_complexe_select_are_wrapped_without_selects()
+    public function test_complexe_queries_with_complexe_select_are_wrapped_without_selects()
+    {
+        /** @var \Yajra\DataTables\QueryDataTable $dataTable */
+        $dataTable = app('datatables')->of(
+             DB::table('users')
+                ->select(['users.*', DB::raw('count(*) as posts_count')])
+                ->addSelect([
+                    'last_post_id' => DB::table('posts')
+                        ->whereColumn('posts.user_id', 'users.id')
+                        ->orderBy('created_at')
+                        ->select('id'),
+                ])
+            ->join('posts', 'posts.user_id', 'users.id')
+            ->groupBy('users.id')
+        );
+
+
+        $this->assertQueryWrapped(true, $dataTable->prepareCountQuery());
+        $this->assertQueryHasNoSelect(false, $dataTable->prepareCountQuery());
+        $this->assertEquals(20, $dataTable->count());
+    }
+
+    public function test_simple_queries_with_complexe_select_are_not_wrapped()
     {
         /** @var \Yajra\DataTables\QueryDataTable $dataTable */
         $dataTable = app('datatables')->of(
@@ -88,8 +110,8 @@ class QueryDataTableTest extends TestCase
                 ])
         );
 
-        $this->assertQueryWrapped(true, $dataTable->prepareCountQuery());
-        $this->assertQueryHasNoSelect(true, $dataTable->prepareCountQuery());
+        $this->assertQueryWrapped(false, $dataTable->prepareCountQuery());
+        $this->assertQueryIsFromSub(false, $dataTable->prepareCountQuery());
         $this->assertEquals(20, $dataTable->count());
     }
 
@@ -134,8 +156,20 @@ class QueryDataTableTest extends TestCase
      */
     public function assertQueryHasNoSelect($expected, $query)
     {
-        $sql = $query->toSql();
+        $sql = $query->select(DB::raw('count(*)'))->toSql();
 
-        $this->assertSame($expected, Str::startsWith($sql, 'select * from (select 1 as dt_row_count from'), "'{$sql}' is not wrapped");
+        $this->assertSame($expected, Str::startsWith($sql, 'select count(*) from (select 1 as dt_row_count from'), "'{$sql}' has select");
+    }
+
+    /**
+     * @param  $expected  bool
+     * @param  $query  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
+     * @return void
+     */
+    public function assertQueryIsFromSub($expected, $query)
+    {
+        $sql = $query->select(DB::raw('count(*)'))->toSql();
+
+        $this->assertSame($expected, Str::startsWith($sql, 'select count(*) from (select'), "'{$sql}' is from sub query");
     }
 }
