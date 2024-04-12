@@ -176,7 +176,12 @@ class QueryDataTable extends DataTableAbstract
             $builder->select(DB::raw('1 as dt_row_count'));
             $clone = $builder->clone();
             $clone->setBindings([]);
-            $clone->wheres = [];
+            if ($clone instanceof EloquentBuilder) {
+                $clone->getQuery()->wheres = [];
+            } else {
+                $clone->wheres = [];
+            }
+
             if ($this->isComplexQuery($clone)) {
                 if (!$this->ignoreSelectInCountQuery) {
                     $builder = clone $this->query;
@@ -188,8 +193,8 @@ class QueryDataTable extends DataTableAbstract
                             ->setBindings($builder->getBindings());
             }
         }
-            $row_count = $this->wrap('row_count');
-            $builder->select($this->getConnection()->raw("'1' as {$row_count}"));
+        $row_count = $this->wrap('row_count');
+        $builder->select($this->getConnection()->raw("'1' as {$row_count}"));
 
         if (!$this->keepSelectBindings) {
             $builder->setBindings([], 'select');
