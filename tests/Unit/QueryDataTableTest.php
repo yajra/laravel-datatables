@@ -156,6 +156,6 @@ class QueryDataTableTest extends TestCase
     {
         $sql = $query->toSql();
 
-        $this->assertSame($expected, Str::startsWith($sql, 'select * from (select 1 as dt_row_count from'), "'{$sql}' is not wrapped");
+        $this->assertSame($expected, Str::startsWith($sql, 'select * from (select 1 as dt_row_count from') || Str::startsWith($sql, 'select * from (select 1 as row_count from'), "'{$sql}' is not wrapped");
     }
 }
