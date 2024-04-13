@@ -108,7 +108,7 @@ class QueryDataTableTest extends TestCase
                 ])
         );
 
-        $this->assertQueryWrapped(true, $dataTable->prepareCountQuery());
+        $this->assertQueryWrapped(false, $dataTable->prepareCountQuery());
         $this->assertQueryHasNoSelect(true, $dataTable->prepareCountQuery());
         $this->assertEquals(20, $dataTable->count());
     }
