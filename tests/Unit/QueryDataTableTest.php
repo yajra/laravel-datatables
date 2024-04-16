@@ -4,7 +4,6 @@ namespace Yajra\DataTables\Tests\Unit;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Yajra\DataTables\Tests\Models\Post;
 use Yajra\DataTables\Tests\Models\User;
 use Yajra\DataTables\Tests\TestCase;
 
@@ -74,7 +73,7 @@ class QueryDataTableTest extends TestCase
         $this->assertQueryHasNoSelect(true, $dataTable->prepareCountQuery());
         $this->assertEquals(20, $dataTable->count());
     }
-    
+
     public function test_simple_queries_with_complexe_select_are_not_wrapped()
     {
         /** @var \Yajra\DataTables\QueryDataTable $dataTable */
@@ -115,7 +114,7 @@ class QueryDataTableTest extends TestCase
     {
         /** @var \Yajra\DataTables\QueryDataTable $dataTable */
         $dataTable = app('datatables')->of(
-           User::query()
+            User::query()
                 ->select('users.*')
                 ->where(
                     DB::table('posts')
@@ -153,8 +152,7 @@ class QueryDataTableTest extends TestCase
 
     /**
      * @param  $expected  bool
-     * @param $query \Illuminate\Contracts\Database\Query\Builder
-     * @return void
+     * @param  $query  \Illuminate\Contracts\Database\Query\Builder
      */
     protected function assertQueryWrapped($expected, $query): void
     {
@@ -166,7 +164,6 @@ class QueryDataTableTest extends TestCase
     /**
      * @param  $expected  bool
      * @param  $query  \Illuminate\Contracts\Database\Query\Builder
-     * @return void
      */
     public function assertQueryHasNoSelect($expected, $query): void
     {
