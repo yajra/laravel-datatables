@@ -4,6 +4,7 @@ namespace Yajra\DataTables\Tests\Unit;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Yajra\DataTables\Tests\Models\Post;
 use Yajra\DataTables\Tests\Models\User;
 use Yajra\DataTables\Tests\TestCase;
 
@@ -73,8 +74,8 @@ class QueryDataTableTest extends TestCase
         $this->assertQueryHasNoSelect(true, $dataTable->prepareCountQuery());
         $this->assertEquals(20, $dataTable->count());
     }
-
-    public function test_simple_queries_with_complexe_select_are_wrapped_without_selects()
+    
+    public function test_simple_queries_with_complexe_select_are_not_wrapped()
     {
         /** @var \Yajra\DataTables\QueryDataTable $dataTable */
         $dataTable = app('datatables')->of(
@@ -88,9 +89,44 @@ class QueryDataTableTest extends TestCase
                 ])
         );
 
-        $this->assertQueryWrapped(true, $dataTable->prepareCountQuery());
-        $this->assertQueryHasNoSelect(true, $dataTable->prepareCountQuery());
+        $this->assertQueryWrapped(false, $dataTable->prepareCountQuery());
         $this->assertEquals(20, $dataTable->count());
+    }
+
+    public function test_simple_queries_with_complexe_where_are_not_wrapped()
+    {
+        /** @var \Yajra\DataTables\QueryDataTable $dataTable */
+        $dataTable = app('datatables')->of(
+            DB::table('users')
+                ->select('users.*')
+                ->where(
+                    DB::table('posts')
+                        ->whereColumn('posts.user_id', 'users.id')
+                        ->orderBy('created_at')
+                        ->select('title'), 'User-1 Post-1'
+                )
+        );
+
+        $this->assertQueryWrapped(false, $dataTable->prepareCountQuery());
+        $this->assertEquals(1, $dataTable->prepareCountQuery()->count());
+    }
+
+    public function test_simple_eloquent_queries_with_complexe_where_are_not_wrapped()
+    {
+        /** @var \Yajra\DataTables\QueryDataTable $dataTable */
+        $dataTable = app('datatables')->of(
+           User::query()
+                ->select('users.*')
+                ->where(
+                    DB::table('posts')
+                        ->whereColumn('posts.user_id', 'users.id')
+                        ->orderBy('created_at')
+                        ->select('title'), 'User-1 Post-1'
+                )
+        );
+
+        $this->assertQueryWrapped(false, $dataTable->prepareCountQuery());
+        $this->assertEquals(1, $dataTable->prepareCountQuery()->count());
     }
 
     public function test_simple_queries_are_not_wrapped_and_countable()
@@ -117,10 +153,10 @@ class QueryDataTableTest extends TestCase
 
     /**
      * @param  $expected  bool
-     * @param  $query  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
+     * @param $query \Illuminate\Contracts\Database\Query\Builder
      * @return void
      */
-    protected function assertQueryWrapped($expected, $query)
+    protected function assertQueryWrapped($expected, $query): void
     {
         $sql = $query->toSql();
 
@@ -129,13 +165,13 @@ class QueryDataTableTest extends TestCase
 
     /**
      * @param  $expected  bool
-     * @param  $query  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
+     * @param  $query  \Illuminate\Contracts\Database\Query\Builder
      * @return void
      */
-    public function assertQueryHasNoSelect($expected, $query)
+    public function assertQueryHasNoSelect($expected, $query): void
     {
-        $sql = $query->toSql();
+        $sql = $query->select(DB::raw('count(*)'))->toSql();
 
-        $this->assertSame($expected, Str::startsWith($sql, 'select * from (select 1 as dt_row_count from'), "'{$sql}' is not wrapped");
+        $this->assertSame($expected, Str::startsWith($sql, 'select count(*) from (select 1 as dt_row_count from'), "'{$sql}' has select");
     }
 }
