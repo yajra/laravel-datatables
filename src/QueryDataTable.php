@@ -926,6 +926,7 @@ class QueryDataTable extends DataTableAbstract
             ->map(fn ($value) => $connection->escape($value));
 
         switch ($driverName) {
+            case 'mariadb':
             case 'mysql':
                 $this->query->orderByRaw("FIELD($keyName, ".$orderedKeys->implode(',').')');
 
