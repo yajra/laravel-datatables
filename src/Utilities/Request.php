@@ -86,7 +86,7 @@ class Request
             /** @var string $direction */
             $direction = $this->request->input("order.$i.dir");
 
-            $order_dir = strtolower($direction) === 'asc' ? 'asc' : 'desc';
+            $order_dir = $direction && strtolower($direction) === 'asc' ? 'asc' : 'desc';
             if ($this->isColumnOrderable($order_col)) {
                 $orderable[] = ['column' => $order_col, 'direction' => $order_dir];
             }
