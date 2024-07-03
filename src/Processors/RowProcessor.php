@@ -10,9 +10,7 @@ class RowProcessor
     /**
      * @param  array|object  $row
      */
-    public function __construct(protected array $data, protected $row)
-    {
-    }
+    public function __construct(protected array $data, protected $row) {}
 
     /**
      * Process DT RowId and Class value.
