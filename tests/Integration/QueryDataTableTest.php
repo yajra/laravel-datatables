@@ -55,12 +55,19 @@ class QueryDataTableTest extends TestCase
     #[Test]
     public function it_returns_all_records_when_no_parameters_is_passed()
     {
+        DB::enableQueryLog();
+
         $crawler = $this->call('GET', '/query/users');
         $crawler->assertJson([
             'draw' => 0,
             'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
+
+        DB::disableQueryLog();
+        $queryLog = DB::getQueryLog();
+
+        $this->assertCount(2, $queryLog);
     }
 
     #[Test]
