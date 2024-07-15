@@ -26,7 +26,7 @@ class QueryDataTableTest extends TestCase
         $crawler->assertJson([
             'draw' => 0,
             'recordsTotal' => 10,
-            'recordsFiltered' => 10,
+            'recordsFiltered' => 20,
         ]);
     }
 
@@ -37,7 +37,7 @@ class QueryDataTableTest extends TestCase
         $crawler->assertJson([
             'draw' => 0,
             'recordsTotal' => 0,
-            'recordsFiltered' => 0,
+            'recordsFiltered' => 20,
         ]);
     }
 
@@ -55,12 +55,19 @@ class QueryDataTableTest extends TestCase
     #[Test]
     public function it_returns_all_records_when_no_parameters_is_passed()
     {
+        DB::enableQueryLog();
+
         $crawler = $this->call('GET', '/query/users');
         $crawler->assertJson([
             'draw' => 0,
             'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
+
+        DB::disableQueryLog();
+        $queryLog = DB::getQueryLog();
+
+        $this->assertCount(2, $queryLog);
     }
 
     #[Test]
