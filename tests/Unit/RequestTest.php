@@ -21,7 +21,7 @@ class RequestTest extends TestCase
      */
     protected function getRequest()
     {
-        return new Request();
+        return new Request;
     }
 
     #[Test]
