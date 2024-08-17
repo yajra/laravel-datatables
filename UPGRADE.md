@@ -1,3 +1,19 @@
+# UPGRADE GUIDE
+
+## Upgrading from v9.x to v10.x
+
+- `ApiResourceDataTable` support dropped, use `CollectionDataTable` instead.
+- `queryBuilder()` deprecated method removed, use `query()` instead.
+- Methods signature were updated to PHP8 syntax, adjust as needed if you extended the package.
+
+## Upgrading from v8.x to v9.x
+
+No breaking changes with only a bump on php version requirements.
+
+## Upgrading from v7.x to v8.x
+
+There are breaking changes since DataTables v8.x. If you are upgrading from v7.x to v8.x, please see [upgrade guide](https://yajrabox.com/docs/laravel-datatables/master/upgrade).
+
 ## Upgrading from v6.x to v7.x
   - composer require yajra/laravel-datatables-oracle 
   - composer require yajra/laravel-datatables-buttons

@@ -22,4 +22,14 @@ class User extends Model
     {
         return $this->belongsToMany(Role::class);
     }
+
+    public function user()
+    {
+        return $this->morphTo();
+    }
+
+    public function getColorAttribute()
+    {
+        return $this->color ?? '#000000';
+    }
 }

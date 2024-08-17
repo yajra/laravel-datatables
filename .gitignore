@@ -2,3 +2,4 @@
 /coverage
 composer.phar
 composer.lock
+/.phpunit.cache

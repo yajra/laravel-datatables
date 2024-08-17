@@ -3,6 +3,7 @@
 namespace Yajra\DataTables\Tests\Integration;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Tests\Models\Heart;
 use Yajra\DataTables\Tests\Models\Post;
@@ -12,13 +13,13 @@ class HasOneThroughTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function it_returns_all_records_with_the_relation_when_called_without_parameters()
     {
         $response = $this->call('GET', '/relations/hasOneThrough');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 60,
+            'draw' => 0,
+            'recordsTotal' => 60,
             'recordsFiltered' => 60,
         ]);
 
@@ -26,15 +27,40 @@ class HasOneThroughTest extends TestCase
         $this->assertCount(60, $response->json()['data']);
     }
 
-    /** @test */
+    #[Test]
+    public function it_can_search_has_one_through_relation()
+    {
+        $response = $this->call('GET', '/relations/hasOneThroughSearchRelation', [
+            'columns' => [
+                [
+                    'data' => 'heart.size',
+                    'searchable' => true,
+                    'search' => [
+                        'value' => 'heart-1',
+                    ],
+                ],
+            ],
+        ]);
+
+        $response->assertJson([
+            'draw' => 0,
+            'recordsTotal' => 60,
+            'recordsFiltered' => 33,
+        ]);
+
+        $this->assertArrayHasKey('heart', $response->json()['data'][0]);
+        $this->assertCount(33, $response->json()['data']);
+    }
+
+    #[Test]
     public function it_returns_all_records_with_the_deleted_relation_when_called_with_withtrashed_parameter()
     {
         Heart::find(1)->delete();
 
         $response = $this->call('GET', '/relations/hasOneThroughWithTrashed');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 60,
+            'draw' => 0,
+            'recordsTotal' => 60,
             'recordsFiltered' => 60,
         ]);
 
@@ -44,15 +70,15 @@ class HasOneThroughTest extends TestCase
         $this->assertNotEmpty($response->json()['data'][1]['heart']);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_all_records_with_the_only_deleted_relation_when_called_with_onlytrashed_parameter()
     {
         Heart::find(1)->delete();
 
         $response = $this->call('GET', '/relations/hasOneThroughOnlyTrashed');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 60,
+            'draw' => 0,
+            'recordsTotal' => 60,
             'recordsFiltered' => 60,
         ]);
 
@@ -65,7 +91,7 @@ class HasOneThroughTest extends TestCase
         $this->assertEmpty($response->json()['data'][3]['heart']);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_perform_global_search_on_the_relation()
     {
         $response = $this->getJsonResponse([
@@ -73,8 +99,8 @@ class HasOneThroughTest extends TestCase
         ]);
 
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 60,
+            'draw' => 0,
+            'recordsTotal' => 60,
             'recordsFiltered' => 3,
         ]);
 
@@ -97,20 +123,16 @@ class HasOneThroughTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['router']->get('/relations/hasOneThrough', function (DataTables $datatables) {
-            return $datatables->eloquent(Post::with('heart')->select('posts.*'))->toJson();
-        });
+        $this->app['router']->get('/relations/hasOneThrough', fn (DataTables $datatables) => $datatables->eloquent(Post::with('heart')->select('posts.*'))->toJson());
 
-        $this->app['router']->get('/relations/hasOneThroughWithTrashed', function (DataTables $datatables) {
-            return $datatables->eloquent(Post::with(['heart' => function ($query) {
-                $query->withTrashed();
-            }])->select('posts.*'))->toJson();
-        });
+        $this->app['router']->get('/relations/hasOneThroughSearchRelation', fn (DataTables $datatables) => $datatables->eloquent(Post::with('heart'))->addColumns(['hearts.size'])->toJson());
 
-        $this->app['router']->get('/relations/hasOneThroughOnlyTrashed', function (DataTables $datatables) {
-            return $datatables->eloquent(Post::with(['heart' => function ($query) {
-                $query->onlyTrashed();
-            }])->select('posts.*'))->toJson();
-        });
+        $this->app['router']->get('/relations/hasOneThroughWithTrashed', fn (DataTables $datatables) => $datatables->eloquent(Post::with(['heart' => function ($query) {
+            $query->withTrashed();
+        }])->select('posts.*'))->toJson());
+
+        $this->app['router']->get('/relations/hasOneThroughOnlyTrashed', fn (DataTables $datatables) => $datatables->eloquent(Post::with(['heart' => function ($query) {
+            $query->onlyTrashed();
+        }])->select('posts.*'))->toJson());
     }
 }

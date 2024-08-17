@@ -8,21 +8,20 @@ use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Tests\Models\Post;
 use Yajra\DataTables\Tests\TestCase;
 
-class BelongsToRelationTest extends TestCase
+class DeepRelationTest extends TestCase
 {
     use DatabaseTransactions;
 
     #[Test]
     public function it_returns_all_records_with_the_relation_when_called_without_parameters()
     {
-        $response = $this->call('GET', '/relations/belongsTo');
+        $response = $this->getJsonResponse();
         $response->assertJson([
             'draw' => 0,
             'recordsTotal' => 60,
             'recordsFiltered' => 60,
         ]);
 
-        $this->assertArrayHasKey('user', $response->json()['data'][0]);
         $this->assertCount(60, $response->json()['data']);
     }
 
@@ -42,48 +41,30 @@ class BelongsToRelationTest extends TestCase
         $this->assertCount(3, $response->json()['data']);
     }
 
-    protected function getJsonResponse(array $params = [])
-    {
-        $data = [
-            'columns' => [
-                ['data' => 'user.name', 'name' => 'user.name', 'searchable' => 'true', 'orderable' => 'true'],
-                ['data' => 'user.email', 'name' => 'user.email', 'searchable' => 'true', 'orderable' => 'true'],
-                ['data' => 'title', 'name' => 'posts.title', 'searchable' => 'true', 'orderable' => 'true'],
-            ],
-        ];
-
-        return $this->call('GET', '/relations/belongsTo', array_merge($data, $params));
-    }
-
-    #[Test]
-    public function it_can_sort_using_the_relation_with_pagination()
-    {
-        $response = $this->getJsonResponse([
-            'order' => [
-                [
-                    'column' => 1,
-                    'dir' => 'desc',
-                ],
-            ],
-            'length' => 10,
-            'start' => 0,
-            'draw' => 1,
-        ]);
-
-        $response->assertJson([
-            'draw' => 1,
-            'recordsTotal' => 60,
-            'recordsFiltered' => 60,
-        ]);
-
-        $this->assertEquals('Email-9@example.com', $response->json()['data'][0]['user']['email']);
-        $this->assertCount(10, $response->json()['data']);
-    }
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->app['router']->get('/relations/belongsTo', fn (DataTables $datatables) => $datatables->eloquent(Post::with('user')->select('posts.*'))->toJson());
+        $this->app['router']->get('/relations/deep', function (DataTables $datatables) {
+            $query = Post::with('user.roles')->select('posts.*');
+
+            return $datatables
+                ->eloquent($query)
+                ->toJson();
+        });
+    }
+
+    protected function getJsonResponse(array $params = [])
+    {
+        $data = [
+            'columns' => [
+                ['data' => 'user.roles.role', 'name' => 'user.roles.role', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'user.name', 'name' => 'user.name', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'user.email', 'name' => 'user.email', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'title', 'name' => 'title', 'searchable' => 'true', 'orderable' => 'true'],
+            ],
+        ];
+
+        return $this->call('GET', '/relations/deep', array_merge($data, $params));
     }
 }

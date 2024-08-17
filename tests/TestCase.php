@@ -4,6 +4,8 @@ namespace Yajra\DataTables\Tests;
 
 use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase as BaseTestCase;
+use Yajra\DataTables\Tests\Models\AnimalUser;
+use Yajra\DataTables\Tests\Models\HumanUser;
 use Yajra\DataTables\Tests\Models\Role;
 use Yajra\DataTables\Tests\Models\User;
 
@@ -27,6 +29,9 @@ abstract class TestCase extends BaseTestCase
                 $table->increments('id');
                 $table->string('name');
                 $table->string('email');
+                $table->string('color')->nullable();
+                $table->string('user_type')->nullable();
+                $table->unsignedInteger('user_id')->nullable();
                 $table->timestamps();
             });
         }
@@ -62,18 +67,36 @@ abstract class TestCase extends BaseTestCase
                 $table->timestamps();
             });
         }
+        if (! $schemaBuilder->hasTable('animal_users')) {
+            $schemaBuilder->create('animal_users', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name');
+                $table->timestamps();
+                $table->softDeletes();
+            });
+        }
+        if (! $schemaBuilder->hasTable('human_users')) {
+            $schemaBuilder->create('human_users', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name');
+                $table->timestamps();
+                $table->softDeletes();
+            });
+        }
     }
 
     protected function seedDatabase()
     {
         $adminRole = Role::create(['role' => 'Administrator']);
-        $userRole  = Role::create(['role' => 'User']);
+        $userRole = Role::create(['role' => 'User']);
+        $animal = AnimalUser::create(['name' => 'Animal']);
+        $human = HumanUser::create(['name' => 'Human']);
 
-        collect(range(1, 20))->each(function ($i) use ($userRole) {
+        collect(range(1, 20))->each(function ($i) use ($userRole, $animal, $human) {
             /** @var User $user */
             $user = User::query()->create([
-                'name'  => 'Record-' . $i,
-                'email' => 'Email-' . $i . '@example.com',
+                'name' => 'Record-'.$i,
+                'email' => 'Email-'.$i.'@example.com',
             ]);
 
             collect(range(1, 3))->each(function ($i) use ($user) {
@@ -83,13 +106,15 @@ abstract class TestCase extends BaseTestCase
             });
 
             $user->heart()->create([
-                'size' => 'heart-' . $user->id,
+                'size' => 'heart-'.$user->id,
             ]);
 
             if ($i % 2) {
                 $user->roles()->attach(Role::all());
+                $human->users()->save($user);
             } else {
                 $user->roles()->attach($userRole);
+                $animal->users()->save($user);
             }
         });
     }
@@ -97,16 +122,16 @@ abstract class TestCase extends BaseTestCase
     /**
      * Set up the environment.
      *
-     * @param \Illuminate\Foundation\Application $app
+     * @param  \Illuminate\Foundation\Application  $app
      */
     protected function getEnvironmentSetUp($app)
     {
         $app['config']->set('app.debug', true);
         $app['config']->set('database.default', 'sqlite');
         $app['config']->set('database.connections.sqlite', [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => '',
+            'prefix' => '',
         ]);
     }
 

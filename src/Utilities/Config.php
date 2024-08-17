@@ -7,68 +7,49 @@ use Illuminate\Contracts\Config\Repository;
 class Config
 {
     /**
-     * @var \Illuminate\Contracts\Config\Repository
-     */
-    private $repository;
-
-    /**
      * Config constructor.
-     *
-     * @param \Illuminate\Contracts\Config\Repository $repository
      */
-    public function __construct(Repository $repository)
-    {
-        $this->repository = $repository;
-    }
+    public function __construct(private readonly Repository $repository) {}
 
     /**
      * Check if config uses wild card search.
-     *
-     * @return bool
      */
-    public function isWildcard()
+    public function isWildcard(): bool
     {
-        return $this->repository->get('datatables.search.use_wildcards', false);
+        return (bool) $this->repository->get('datatables.search.use_wildcards', false);
     }
 
     /**
      * Check if config uses smart search.
-     *
-     * @return bool
      */
-    public function isSmartSearch()
+    public function isSmartSearch(): bool
     {
-        return $this->repository->get('datatables.search.smart', true);
+        return (bool) $this->repository->get('datatables.search.smart', true);
     }
 
     /**
-     * Check if config uses case insensitive search.
-     *
-     * @return bool
+     * Check if config uses case-insensitive search.
      */
-    public function isCaseInsensitive()
+    public function isCaseInsensitive(): bool
     {
-        return $this->repository->get('datatables.search.case_insensitive', false);
+        return (bool) $this->repository->get('datatables.search.case_insensitive', false);
     }
 
     /**
      * Check if app is in debug mode.
-     *
-     * @return bool
      */
-    public function isDebugging()
+    public function isDebugging(): bool
     {
-        return $this->repository->get('app.debug', false);
+        return (bool) $this->repository->get('app.debug', false);
     }
 
     /**
      * Get the specified configuration value.
      *
-     * @param string $key
-     * @param mixed  $default
+     * @param  string  $key
      * @return mixed
      */
-    public function get($key, $default = null)
+    public function get($key, mixed $default = null)
     {
         return $this->repository->get($key, $default);
     }
@@ -76,32 +57,40 @@ class Config
     /**
      * Set a given configuration value.
      *
-     * @param  array|string $key
-     * @param  mixed        $value
+     * @param  array|string  $key
      * @return void
      */
-    public function set($key, $value = null)
+    public function set($key, mixed $value = null)
     {
         $this->repository->set($key, $value);
     }
 
     /**
      * Check if dataTable config uses multi-term searching.
-     *
-     * @return bool
      */
-    public function isMultiTerm()
+    public function isMultiTerm(): bool
     {
-        return $this->repository->get('datatables.search.multi_term', true);
+        return (bool) $this->repository->get('datatables.search.multi_term', true);
     }
 
     /**
      * Check if dataTable config uses starts_with searching.
-     *
-     * @return bool
      */
-    public function isStartsWithSearch()
+    public function isStartsWithSearch(): bool
     {
-        return $this->repository->get('datatables.search.starts_with', false);
+        return (bool) $this->repository->get('datatables.search.starts_with', false);
+    }
+
+    public function jsonOptions(): int
+    {
+        /** @var int $options */
+        $options = $this->repository->get('datatables.json.options', 0);
+
+        return $options;
+    }
+
+    public function jsonHeaders(): array
+    {
+        return (array) $this->repository->get('datatables.json.header', []);
     }
 }

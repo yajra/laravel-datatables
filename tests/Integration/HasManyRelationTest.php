@@ -3,6 +3,7 @@
 namespace Yajra\DataTables\Tests\Integration;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Tests\Models\Post;
 use Yajra\DataTables\Tests\Models\User;
@@ -12,13 +13,13 @@ class HasManyRelationTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function it_returns_all_records_with_the_relation_when_called_without_parameters()
     {
         $response = $this->call('GET', '/relations/hasMany');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
 
@@ -26,15 +27,15 @@ class HasManyRelationTest extends TestCase
         $this->assertCount(20, $response->json()['data']);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_all_records_with_deleted_relations_when_called_with_withtrashed_parameter()
     {
         Post::find(1)->delete();
 
         $response = $this->call('GET', '/relations/hasManyWithTrashed');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
 
@@ -42,14 +43,14 @@ class HasManyRelationTest extends TestCase
         $this->assertCount(3, $response->json()['data'][0]['posts']);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_all_records_with_only_deleted_relations_when_called_with_onlytrashed_parameter()
     {
         Post::find(1)->delete();
         $response = $this->call('GET', '/relations/hasManyOnlyTrashed');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
 
@@ -57,7 +58,7 @@ class HasManyRelationTest extends TestCase
         $this->assertCount(1, $response->json()['data'][0]['posts']);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_perform_global_search_on_the_relation()
     {
         $response = $this->getJsonResponse([
@@ -65,8 +66,8 @@ class HasManyRelationTest extends TestCase
         ]);
 
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 1,
         ]);
         $this->assertCount(1, $response->json()['data']);
@@ -89,20 +90,14 @@ class HasManyRelationTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['router']->get('/relations/hasMany', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with('posts')->select('users.*'))->toJson();
-        });
+        $this->app['router']->get('/relations/hasMany', fn (DataTables $datatables) => $datatables->eloquent(User::with('posts')->select('users.*'))->toJson());
 
-        $this->app['router']->get('/relations/hasManyWithTrashed', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with(['posts' => function ($query) {
-                $query->withTrashed();
-            }])->select('users.*'))->toJson();
-        });
+        $this->app['router']->get('/relations/hasManyWithTrashed', fn (DataTables $datatables) => $datatables->eloquent(User::with(['posts' => function ($query) {
+            $query->withTrashed();
+        }])->select('users.*'))->toJson());
 
-        $this->app['router']->get('/relations/hasManyOnlyTrashed', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with(['posts' => function ($query) {
-                $query->onlyTrashed();
-            }])->select('users.*'))->toJson();
-        });
+        $this->app['router']->get('/relations/hasManyOnlyTrashed', fn (DataTables $datatables) => $datatables->eloquent(User::with(['posts' => function ($query) {
+            $query->onlyTrashed();
+        }])->select('users.*'))->toJson());
     }
 }

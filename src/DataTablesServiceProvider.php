@@ -23,13 +23,9 @@ class DataTablesServiceProvider extends ServiceProvider
         $this->setupAssets();
 
         $this->app->alias('datatables', DataTables::class);
-        $this->app->singleton('datatables', function () {
-            return new DataTables;
-        });
+        $this->app->singleton('datatables', fn () => new DataTables);
 
-        $this->app->singleton('datatables.request', function () {
-            return new Request;
-        });
+        $this->app->singleton('datatables.request', fn () => new Request);
 
         $this->app->singleton('datatables.config', Config::class);
     }
@@ -47,11 +43,15 @@ class DataTablesServiceProvider extends ServiceProvider
 
             if (! method_exists(DataTables::class, $engine) && ! DataTables::hasMacro($engine)) {
                 DataTables::macro($engine, function () use ($class) {
-                    if (! call_user_func_array([$class, 'canCreate'], func_get_args())) {
-                        throw new \InvalidArgumentException();
+                    $canCreate = [$class, 'canCreate'];
+                    if (is_callable($canCreate) && ! call_user_func_array($canCreate, func_get_args())) {
+                        throw new \InvalidArgumentException;
                     }
 
-                    return call_user_func_array([$class, 'create'], func_get_args());
+                    $create = [$class, 'create'];
+                    if (is_callable($create)) {
+                        return call_user_func_array($create, func_get_args());
+                    }
                 });
             }
         }
@@ -64,7 +64,7 @@ class DataTablesServiceProvider extends ServiceProvider
      */
     protected function setupAssets()
     {
-        $this->mergeConfigFrom($config = __DIR__ . '/config/datatables.php', 'datatables');
+        $this->mergeConfigFrom($config = __DIR__.'/config/datatables.php', 'datatables');
 
         if ($this->app->runningInConsole()) {
             $this->publishes([$config => config_path('datatables.php')], 'datatables');

@@ -4,6 +4,7 @@ namespace Yajra\DataTables\Tests\Integration;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
+use PHPUnit\Framework\Attributes\Test;
 use Yajra\DataTables\CollectionDataTable;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
@@ -14,18 +15,31 @@ class CollectionDataTableTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function it_returns_all_records_when_no_parameters_is_passed()
     {
         $crawler = $this->call('GET', '/collection/users');
         $crawler->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
     }
 
-    /** @test */
+    #[Test]
+    public function it_returns_zero_filtered_records_on_empty_collection()
+    {
+        $crawler = $this->call('GET', '/collection/empty');
+        $crawler->assertExactJson([
+            'data' => [],
+            'draw' => 0,
+            'input' => [],
+            'recordsTotal' => 0,
+            'recordsFiltered' => 0,
+        ]);
+    }
+
+    #[Test]
     public function it_can_perform_global_search()
     {
         $crawler = $this->call('GET', '/collection/users', [
@@ -37,58 +51,58 @@ class CollectionDataTableTest extends TestCase
         ]);
 
         $crawler->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 1,
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_a_model_collection_using_of_factory()
     {
         $dataTable = DataTables::of(User::all());
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_a_collection_using_of_factory()
     {
         $dataTable = DataTables::of(collect());
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_a_model_collection_using_facade()
     {
         $dataTable = DatatablesFacade::of(User::all());
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_a_collection_using_facade()
     {
         $dataTable = DatatablesFacade::of(collect());
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_a_model_using_ioc_container()
     {
         $dataTable = app('datatables')->collection(User::all());
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_sort_case_insensitive_strings()
     {
         config()->set('app.debug', false);
@@ -96,10 +110,10 @@ class CollectionDataTableTest extends TestCase
             'columns' => [
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'order'  => [['column' => 0, 'dir' => 'asc']],
-            'start'  => 0,
+            'order' => [['column' => 0, 'dir' => 'asc']],
+            'start' => 0,
             'length' => 10,
-            'draw'   => 1,
+            'draw' => 1,
         ]);
 
         $collection = collect([
@@ -116,10 +130,10 @@ class CollectionDataTableTest extends TestCase
         $response = $dataTable->toJson();
 
         $this->assertEquals([
-            'draw'            => 1,
-            'recordsTotal'    => 6,
+            'draw' => 1,
+            'recordsTotal' => 6,
             'recordsFiltered' => 6,
-            'data'            => [
+            'data' => [
                 ['name' => 'aaa'],
                 ['name' => 'ABC'],
                 ['name' => 'bbb'],
@@ -130,7 +144,7 @@ class CollectionDataTableTest extends TestCase
         ], $response->getData(true));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_sort_numeric_strings()
     {
         config()->set('app.debug', false);
@@ -138,10 +152,10 @@ class CollectionDataTableTest extends TestCase
             'columns' => [
                 ['data' => 'amount', 'name' => 'amount', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'order'  => [['column' => 0, 'dir' => 'asc']],
-            'start'  => 0,
+            'order' => [['column' => 0, 'dir' => 'asc']],
+            'start' => 0,
             'length' => 10,
-            'draw'   => 1,
+            'draw' => 1,
         ]);
 
         $collection = collect([
@@ -158,10 +172,10 @@ class CollectionDataTableTest extends TestCase
         $response = $dataTable->toJson();
 
         $this->assertEquals([
-            'draw'            => 1,
-            'recordsTotal'    => 6,
+            'draw' => 1,
+            'recordsTotal' => 6,
             'recordsFiltered' => 6,
-            'data'            => [
+            'data' => [
                 ['amount' => '-8'],
                 ['amount' => '-3'],
                 ['amount' => '0'],
@@ -172,16 +186,16 @@ class CollectionDataTableTest extends TestCase
         ], $response->getData(true));
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_a_model_using_ioc_container_factory()
     {
         $dataTable = app('datatables')->of(User::all());
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_search_on_added_columns()
     {
         config()->set('app.debug', false);
@@ -190,13 +204,13 @@ class CollectionDataTableTest extends TestCase
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'foo',  'name' => 'foo', 'searchable' => 'true', 'orderable' => 'true'],
             ],
-            'order'  => [['column' => 0, 'dir' => 'asc']],
-            'start'  => 0,
+            'order' => [['column' => 0, 'dir' => 'asc']],
+            'start' => 0,
             'search' => [
                 'value' => 'bar aaa',
             ],
             'length' => 10,
-            'draw'   => 1,
+            'draw' => 1,
         ]);
 
         $collection = collect([
@@ -213,16 +227,16 @@ class CollectionDataTableTest extends TestCase
         $response = $dataTable->addColumn('foo', 'bar {{$name}}')->toJson();
 
         $this->assertEquals([
-            'draw'            => 1,
-            'recordsTotal'    => 6,
+            'draw' => 1,
+            'recordsTotal' => 6,
             'recordsFiltered' => 1,
-            'data'            => [
+            'data' => [
                 ['name' => 'aaa', 'foo' => 'bar aaa'],
             ],
         ], $response->getData(true));
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_array_data_source()
     {
         $source = [
@@ -230,7 +244,7 @@ class CollectionDataTableTest extends TestCase
             ['id' => 2, 'name' => 'bar'],
         ];
         $dataTable = app('datatables')->of($source);
-        $response  = $dataTable->toJson();
+        $response = $dataTable->toJson();
         $this->assertInstanceOf(CollectionDataTable::class, $dataTable);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
@@ -239,8 +253,8 @@ class CollectionDataTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['router']->get('/collection/users', function (DataTables $datatables) {
-            return $datatables->collection(User::all())->toJson();
-        });
+        $this->app['router']->get('/collection/users', fn (DataTables $datatables) => $datatables->collection(User::all())->toJson());
+
+        $this->app['router']->get('/collection/empty', fn (DataTables $datatables) => $datatables->collection([])->toJson());
     }
 }

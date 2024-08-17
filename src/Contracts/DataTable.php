@@ -2,72 +2,58 @@
 
 namespace Yajra\DataTables\Contracts;
 
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
+
 interface DataTable
 {
     /**
      * Get results.
      *
-     * @return mixed
+     * @return \Illuminate\Support\Collection<int, array>
      */
-    public function results();
+    public function results(): Collection;
 
     /**
      * Count results.
-     *
-     * @return int
      */
-    public function count();
+    public function count(): int;
 
     /**
      * Count total items.
-     *
-     * @return int
      */
-    public function totalCount();
+    public function totalCount(): int;
 
     /**
      * Set auto filter off and run your own filter.
      * Overrides global search.
      *
-     * @param callable $callback
-     * @param bool     $globalSearch
-     * @return $this
+     * @return static
      */
-    public function filter(callable $callback, $globalSearch = false);
+    public function filter(callable $callback, bool $globalSearch = false): self;
 
     /**
      * Perform global search.
-     *
-     * @return void
      */
-    public function filtering();
+    public function filtering(): void;
 
     /**
      * Perform column search.
-     *
-     * @return void
      */
-    public function columnSearch();
+    public function columnSearch(): void;
 
     /**
      * Perform pagination.
-     *
-     * @return void
      */
-    public function paging();
+    public function paging(): void;
 
     /**
      * Perform sorting of columns.
-     *
-     * @return void
      */
-    public function ordering();
+    public function ordering(): void;
 
     /**
      * Organizes works.
-     *
-     * @param bool $mDataSupport
-     * @return \Illuminate\Http\JsonResponse
      */
-    public function make($mDataSupport = true);
+    public function make(bool $mDataSupport = true): JsonResponse;
 }

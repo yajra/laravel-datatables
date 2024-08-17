@@ -1,0 +1,17 @@
+includes:
+    - ./vendor/larastan/larastan/extension.neon
+
+parameters:
+
+    paths:
+        - src
+
+    level: max
+
+    ignoreErrors:
+        - '#Unsafe usage of new static\(\).#'
+
+    excludePaths:
+        - src/helper.php
+
+    checkMissingIterableValueType: false
