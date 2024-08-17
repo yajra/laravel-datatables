@@ -4,6 +4,11 @@
 
 ### [Unreleased]
 
+### [v11.1.4](https://github.com/yajra/laravel-datatables/compare/v11.1.3...v11.1.4) - 2024-08-17
+
+- fix: Ensure dates are not turned into arrays by the processor #3163
+- fix: ##3156
+
 ### [v11.1.3](https://github.com/yajra/laravel-datatables/compare/v11.1.2...v11.1.3) - 2024-07-15
 
 - fix: make query for filteredRecords when totalRecords was manually set #3157
