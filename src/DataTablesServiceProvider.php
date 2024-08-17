@@ -45,7 +45,7 @@ class DataTablesServiceProvider extends ServiceProvider
                 DataTables::macro($engine, function () use ($class) {
                     $canCreate = [$class, 'canCreate'];
                     if (is_callable($canCreate) && ! call_user_func_array($canCreate, func_get_args())) {
-                        throw new \InvalidArgumentException();
+                        throw new \InvalidArgumentException;
                     }
 
                     $create = [$class, 'create'];

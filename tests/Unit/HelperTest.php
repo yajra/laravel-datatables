@@ -72,7 +72,7 @@ class HelperTest extends TestCase
     {
         $content = '{!! $id !!}';
         $data = ['id' => 2];
-        $obj = new stdClass();
+        $obj = new stdClass;
         $obj->id = 2;
 
         $compiled = Helper::compileContent($content, $data, $obj);
@@ -83,7 +83,7 @@ class HelperTest extends TestCase
     {
         $content = 'string';
         $data = ['id' => 2];
-        $obj = new stdClass();
+        $obj = new stdClass;
         $obj->id = 2;
 
         $compiled = Helper::compileContent($content, $data, $obj);
@@ -94,7 +94,7 @@ class HelperTest extends TestCase
     {
         $content = 1;
         $data = ['id' => 2];
-        $obj = new stdClass();
+        $obj = new stdClass;
         $obj->id = 2;
 
         $compiled = Helper::compileContent($content, $data, $obj);
@@ -105,7 +105,7 @@ class HelperTest extends TestCase
     {
         $content = fn ($obj) => $obj->id;
         $data = ['id' => 2];
-        $obj = new stdClass();
+        $obj = new stdClass;
         $obj->id = 2;
 
         $compiled = Helper::compileContent($content, $data, $obj);
@@ -122,7 +122,7 @@ class HelperTest extends TestCase
             }
         };
         $data = ['id' => 2];
-        $obj = new stdClass();
+        $obj = new stdClass;
         $obj->id = 2;
 
         $compiled = Helper::compileContent($content, $data, $obj);
@@ -145,7 +145,7 @@ class HelperTest extends TestCase
             'name' => 'John',
             'created_at' => '1234',
         ];
-        $class = new stdClass();
+        $class = new stdClass;
         $class->id = 1;
         $class->name = 'John';
         $class->created_at = $carbon;
@@ -162,7 +162,7 @@ class HelperTest extends TestCase
 
     public function test_cast_to_array_an_object()
     {
-        $class = new stdClass();
+        $class = new stdClass;
         $class->id = 1;
         $compiled = Helper::castToArray($class);
         $this->assertEquals(['id' => 1], $compiled);
@@ -188,11 +188,11 @@ class HelperTest extends TestCase
 
     public function test_convert_to_array()
     {
-        $row = new stdClass();
+        $row = new stdClass;
         $row->id = 1;
         $row->name = 'John';
         $row->posts = ['id' => 1, 'title' => 'Demo'];
-        $author = new stdClass();
+        $author = new stdClass;
         $author->name = 'Billy';
         $row->author = $author;
 
