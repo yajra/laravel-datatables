@@ -9,9 +9,7 @@ class Config
     /**
      * Config constructor.
      */
-    public function __construct(private readonly Repository $repository)
-    {
-    }
+    public function __construct(private readonly Repository $repository) {}
 
     /**
      * Check if config uses wild card search.
