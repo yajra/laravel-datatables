@@ -203,7 +203,7 @@ class Helper
 
         $data = $row instanceof Arrayable ? $row->toArray() : (array) $row;
         foreach ($data as &$value) {
-            if (is_object($value) || is_array($value)) {
+            if ((is_object($value) && ! $value instanceof DateTime) || is_array($value)) {
                 $value = self::convertToArray($value);
             }
 
