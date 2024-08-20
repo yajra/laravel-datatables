@@ -524,6 +524,7 @@ abstract class DataTableAbstract implements DataTable
     public function setTotalRecords(int $total): static
     {
         $this->totalRecords = $total;
+        $this->performedTotalRecordsCount = true;
 
         return $this;
     }
