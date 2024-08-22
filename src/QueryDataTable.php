@@ -161,6 +161,19 @@ class QueryDataTable extends DataTableAbstract
 
         return $this;
     }
+    
+    /**
+     * Set total records manually.
+     *
+     * @return $this
+     */
+    public function setTotalRecords(int $total): static
+    {
+        parent::setTotalRecords($total);
+        $this->performedTotalRecordsCount = true;
+
+        return $this;
+    }
 
     /**
      * Count total items.
