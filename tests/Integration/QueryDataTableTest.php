@@ -26,7 +26,7 @@ class QueryDataTableTest extends TestCase
         $crawler->assertJson([
             'draw' => 0,
             'recordsTotal' => 10,
-            'recordsFiltered' => 20,
+            'recordsFiltered' => 10,
         ]);
     }
 
@@ -37,8 +37,26 @@ class QueryDataTableTest extends TestCase
         $crawler->assertJson([
             'draw' => 0,
             'recordsTotal' => 0,
+            'recordsFiltered' => 0,
+        ]);
+    }
+
+    #[Test]
+    public function it_can_set_skip_total_records()
+    {
+        DB::enableQueryLog();
+
+        $crawler = $this->call('GET', '/skip-total-records');
+        $crawler->assertJson([
+            'draw' => 0,
+            'recordsTotal' => 0,
             'recordsFiltered' => 20,
         ]);
+
+        DB::disableQueryLog();
+        $queryLog = DB::getQueryLog();
+
+        $this->assertCount(2, $queryLog);
     }
 
     #[Test]
@@ -461,6 +479,10 @@ class QueryDataTableTest extends TestCase
 
         $router->get('/zero-total-records', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
             ->setTotalRecords(0)
+            ->toJson());
+
+        $router->get('/skip-total-records', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
+            ->skipTotalRecords()
             ->toJson());
 
         $router->get('/set-filtered-records', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
