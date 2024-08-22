@@ -161,7 +161,7 @@ class QueryDataTable extends DataTableAbstract
 
         return $this;
     }
-    
+
     /**
      * Set total records manually.
      *
