@@ -257,6 +257,10 @@ class QueryDataTable extends DataTableAbstract
             $this->filteredRecords ??= $this->totalRecords;
         } else {
             $this->filteredCount();
+
+            if ($this->skipTotalRecords) {
+                $this->totalRecords = $this->filteredRecords;
+            }
         }
     }
 
