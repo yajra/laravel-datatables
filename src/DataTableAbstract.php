@@ -69,6 +69,11 @@ abstract class DataTableAbstract implements DataTable
     protected ?int $filteredRecords = null;
 
     /**
+     * Flag to check if the total records count should be skipped.
+     */
+    protected bool $skipTotalRecords = false;
+
+    /**
      * Auto-filter flag.
      */
     protected bool $autoFilter = true;
@@ -533,12 +538,11 @@ abstract class DataTableAbstract implements DataTable
      * This will improve the performance by skipping the total count query.
      *
      * @return $this
-     *
-     * @deprecated Just use setTotalRecords instead.
      */
     public function skipTotalRecords(): static
     {
         $this->totalRecords = 0;
+        $this->skipTotalRecords = true;
 
         return $this;
     }

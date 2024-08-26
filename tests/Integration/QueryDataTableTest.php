@@ -26,7 +26,7 @@ class QueryDataTableTest extends TestCase
         $crawler->assertJson([
             'draw' => 0,
             'recordsTotal' => 10,
-            'recordsFiltered' => 20,
+            'recordsFiltered' => 10,
         ]);
     }
 
@@ -37,7 +37,7 @@ class QueryDataTableTest extends TestCase
         $crawler->assertJson([
             'draw' => 0,
             'recordsTotal' => 0,
-            'recordsFiltered' => 20,
+            'recordsFiltered' => 0,
         ]);
     }
 
@@ -91,7 +91,27 @@ class QueryDataTableTest extends TestCase
     #[Test]
     public function it_can_skip_total_records_count_query()
     {
-        $crawler = $this->call('GET', '/query/simple', [
+        DB::enableQueryLog();
+
+        $crawler = $this->call('GET', '/skip-total-records');
+        $crawler->assertJson([
+            'draw' => 0,
+            'recordsTotal' => 20,
+            'recordsFiltered' => 20,
+        ]);
+
+        DB::disableQueryLog();
+        $queryLog = DB::getQueryLog();
+
+        $this->assertCount(2, $queryLog);
+    }
+
+    #[Test]
+    public function it_can_skip_total_records_count_query_with_filter_applied()
+    {
+        DB::enableQueryLog();
+
+        $crawler = $this->call('GET', '/skip-total-records', [
             'columns' => [
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
@@ -101,9 +121,14 @@ class QueryDataTableTest extends TestCase
 
         $crawler->assertJson([
             'draw' => 0,
-            'recordsTotal' => 0,
+            'recordsTotal' => 1,
             'recordsFiltered' => 1,
         ]);
+
+        DB::disableQueryLog();
+        $queryLog = DB::getQueryLog();
+
+        $this->assertCount(2, $queryLog);
     }
 
     #[Test]
@@ -393,8 +418,6 @@ class QueryDataTableTest extends TestCase
             ->formatColumn('created_at', new DateFormatter('Y-m-d'))
             ->toJson());
 
-        $router->get('/query/simple', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))->skipTotalRecords()->toJson());
-
         $router->get('/query/addColumn', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
             ->addColumn('foo', 'bar')
             ->toJson());
@@ -461,6 +484,10 @@ class QueryDataTableTest extends TestCase
 
         $router->get('/zero-total-records', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
             ->setTotalRecords(0)
+            ->toJson());
+
+        $router->get('/skip-total-records', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
+            ->skipTotalRecords()
             ->toJson());
 
         $router->get('/set-filtered-records', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))

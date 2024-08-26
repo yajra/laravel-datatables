@@ -26,11 +26,6 @@ class QueryDataTable extends DataTableAbstract
     protected bool $prepared = false;
 
     /**
-     * Flag to check if the total records count query has been performed.
-     */
-    protected bool $performedTotalRecordsCount = false;
-
-    /**
      * Query callback for custom pagination using limit without offset.
      *
      * @var callable|null
@@ -163,20 +158,6 @@ class QueryDataTable extends DataTableAbstract
     }
 
     /**
-     * Count total items.
-     */
-    public function totalCount(): int
-    {
-        if ($this->totalRecords !== null) {
-            return $this->totalRecords;
-        }
-
-        $this->performedTotalRecordsCount = true;
-
-        return $this->totalRecords = $this->count();
-    }
-
-    /**
      * Counts current query.
      */
     public function count(): int
@@ -272,10 +253,14 @@ class QueryDataTable extends DataTableAbstract
 
         // If no modification between the original query and the filtered one has been made
         // the filteredRecords equals the totalRecords
-        if ($this->query == $initialQuery && $this->performedTotalRecordsCount) {
+        if (! $this->skipTotalRecords && $this->query == $initialQuery) {
             $this->filteredRecords ??= $this->totalRecords;
         } else {
             $this->filteredCount();
+
+            if ($this->skipTotalRecords) {
+                $this->totalRecords = $this->filteredRecords;
+            }
         }
     }
 
