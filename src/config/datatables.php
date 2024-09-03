@@ -42,7 +42,7 @@ return [
 
     /*
      * List of available builders for DataTables.
-     * This is where you can register your custom dataTables builder.
+     * This is where you can register your custom DataTables builder.
      */
     'engines' => [
         'eloquent' => Yajra\DataTables\EloquentDataTable::class,
@@ -79,7 +79,7 @@ return [
     'error' => env('DATATABLES_ERROR', null),
 
     /*
-     * Default columns definition of dataTable utility functions.
+     * Default columns definition of DataTable utility functions.
      */
     'columns' => [
         /*
@@ -105,7 +105,7 @@ return [
         'blacklist' => ['password', 'remember_token'],
 
         /*
-         * List of columns that are only allowed fo search/sort.
+         * List of columns that are only allowed for search/sort.
          * If set to *, all columns are allowed.
          */
         'whitelist' => '*',
