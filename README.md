@@ -28,19 +28,31 @@ return DataTables::make(User::all())->toJson();
 
 ## Sponsors
 
-<a href="https://editor.datatables.net?utm_source=laravel-datatables&utm_medium=github_readme&utm_campaign=logo">
-    <img src="http://datatables.net/media/images/logo.png" alt="DataTables" height="64">
-</a>
+<table>
+    <body>
+        <tr>
+            <td>A big thank you to <a href="https://editor.datatables.net">DataTables</a> for supporting this project with a free DataTables Editor license.</td>
+        </tr>
+    </body>
+</table>
 
-<a href="https://jb.gg/OpenSourceSupport">
-    <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" alt="JetBrains.com" height="128">
-</a>
+<table>
+    <body>
+        <tr>
+            <td><img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" width="50" alt="JetBrains Logo"></td>
+            <td>A big thank you to <a href="https://www.jetbrains.com">JetBrains</a> for supporting this project with free open-source licenses of their IDEs.</td>
+        </tr>
+    </body>
+</table>
 
-<a href="https://blackfire.io/docs/introduction?utm_source=laravel-datatables&utm_medium=github_readme&utm_campaign=logo">
-    <img src="https://i.imgur.com/zR8rsqk.png" alt="Blackfire.io" height="64">
-</a>
-
-
+<table>
+    <body>
+        <tr>
+            <td><img src="https://i.imgur.com/zR8rsqk.png" width="100" alt="Blackfire.io Logo"></td>
+            <td>A big thank you to <a href="https://blackfire.io/docs/introduction?utm_source=laravel-datatables&utm_medium=github_readme&utm_campaign=logo">Blackfire.io</a> for supporting this project with a free open-source license.</td>
+        </tr>
+    </body>
+</table>
 
 ## Requirements
 - [PHP >= 8.2](http://php.net/)
