@@ -58,7 +58,7 @@ return DataTables::make(User::all())->toJson();
 ## Requirements
 - [PHP >= 8.2](http://php.net/)
 - [Laravel Framework](https://github.com/laravel/framework)
-- [jQuery DataTables](http://datatables.net/)
+- [DataTables](http://datatables.net/)
 
 ## Documentations
 
@@ -89,13 +89,21 @@ return DataTables::make(User::all())->toJson();
 
 ## Quick Installation
 
+### Option 1: Install all DataTables libraries
+
+```bash
+composer require yajra/laravel-datatables:"^11"
+```
+
+### Option 2: Install only this library
+
 ```bash
 composer require yajra/laravel-datatables-oracle:"^11"
 ```
 
 #### Service Provider & Facade (Optional on Laravel 5.5+)
 
-Register provider and facade on your `config/app.php` file.
+Register the provider and facade on your `config/app.php` file.
 ```php
 'providers' => [
     ...,
@@ -120,11 +128,12 @@ And that's it! Start building out some awesome DataTables!
 
 To enable debugging mode, just set `APP_DEBUG=true` and the package will include the queries and inputs used when processing the table.
 
-**IMPORTANT:** Please make sure that APP_DEBUG is set to false when your app is on production.
+> [!IMPORTANT]
+> Please ensure that the `APP_DEBUG` config is set to false when your app is in production.
 
 ## PHP ARTISAN SERVE BUG
 
-Please avoid using `php artisan serve` when developing with the package.
+Please avoid using `php artisan serve` when developing the package.
 There are known bugs when using this where Laravel randomly returns a redirect and 401 (Unauthorized) if the route requires authentication and a 404 NotFoundHttpException on valid routes.
 
 It is advised to use [Homestead](https://laravel.com/docs/5.4/homestead) or [Valet](https://laravel.com/docs/5.4/valet) when working with the package.
@@ -135,7 +144,7 @@ Please see [CONTRIBUTING](https://github.com/yajra/laravel-datatables/blob/maste
 
 ## Security
 
-If you discover any security related issues, please email [aqangeles@gmail.com](mailto:aqangeles@gmail.com) instead of using the issue tracker.
+If you discover any security-related issues, please email [aqangeles@gmail.com](mailto:aqangeles@gmail.com) instead of using the issue tracker.
 
 ## Credits
 
