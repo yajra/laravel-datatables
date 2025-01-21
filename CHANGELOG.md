@@ -4,6 +4,11 @@
 
 ### [Unreleased]
 
+### [v11.1.6](https://github.com/yajra/laravel-datatables/compare/v11.1.5...v11.1.6) - 2025-01-21
+
+- fix: static analysis #3213
+- ci: update workflow #3213
+
 ### [v11.1.5](https://github.com/yajra/laravel-datatables/compare/v11.1.4...v11.1.5) - 2024-09-26
 
 - Add skip total records back #3170
