@@ -130,7 +130,7 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Get paginated results.
      *
-     * @return \Illuminate\Support\Collection<int, array>
+     * @return \Illuminate\Support\Collection<int, \stdClass>
      */
     public function results(): Collection
     {
