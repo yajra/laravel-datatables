@@ -6,6 +6,7 @@
 .gitattributes export-ignore
 .gitignore export-ignore
 .scrutinizer.yml export-ignore
-.styleci.yml export-ignore
 phpstan.neon.dist export-ignore
 phpunit.xml.dist export-ignore
+pint.json export-ignore
+rector.php export-ignore
