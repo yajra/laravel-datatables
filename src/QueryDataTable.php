@@ -662,8 +662,6 @@ class QueryDataTable extends DataTableAbstract
                 $column = $this->resolveRelationColumn($orderable['name']);
 
                 if ($this->hasOrderColumn($orderable['name'])) {
-                    $this->applyOrderColumn($orderable['name'], $orderable);
-                } elseif ($this->hasOrderColumn($column)) {
                     $this->applyOrderColumn($column, $orderable);
                 } else {
                     $nullsLastSql = $this->getNullsLastSql($column, $orderable['direction']);
@@ -687,16 +685,16 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function applyOrderColumn(string $column, array $orderable): void
     {
-        $sql = $this->columnDef['order'][$column]['sql'];
+        $sql = $this->columnDef['order'][$orderable['name']]['sql'];
         if ($sql === false) {
             return;
         }
 
         if (is_callable($sql)) {
-            call_user_func($sql, $this->query, $orderable['direction']);
+            call_user_func($sql, $this->query, $orderable['direction'], $column);
         } else {
             $sql = str_replace('$1', $orderable['direction'], (string) $sql);
-            $bindings = $this->columnDef['order'][$column]['bindings'];
+            $bindings = $this->columnDef['order'][$orderable['name']]['bindings'];
             $this->query->orderByRaw($sql, $bindings);
         }
     }
