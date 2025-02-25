@@ -28,7 +28,7 @@
         "laravel/pint": "^1.14",
         "laravel/scout": "^10.8.3",
         "meilisearch/meilisearch-php": "^1.6.1",
-        "orchestra/testbench": "^9",
+        "orchestra/testbench": "^10",
         "rector/rector": "^1.0"
     },
     "suggest": {
