@@ -16,11 +16,11 @@
     ],
     "require": {
         "php": "^8.2",
-        "illuminate/database": "^11 || ^12",
-        "illuminate/filesystem": "^11 || ^12",
-        "illuminate/http": "^11 || ^12",
-        "illuminate/support": "^11 || ^12",
-        "illuminate/view": "^11 || ^12"
+        "illuminate/database": "^12",
+        "illuminate/filesystem": "^12",
+        "illuminate/http": "^12",
+        "illuminate/support": "^12",
+        "illuminate/view": "^12"
     },
     "require-dev": {
         "algolia/algoliasearch-client-php": "^3.4.1",
