@@ -92,13 +92,13 @@ return DataTables::make(User::all())->toJson();
 ### Option 1: Install all DataTables libraries
 
 ```bash
-composer require yajra/laravel-datatables:"^11"
+composer require yajra/laravel-datatables:"^12"
 ```
 
 ### Option 2: Install only this library
 
 ```bash
-composer require yajra/laravel-datatables-oracle:"^11"
+composer require yajra/laravel-datatables-oracle:"^12"
 ```
 
 #### Service Provider & Facade (Optional on Laravel 5.5+)
