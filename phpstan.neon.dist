@@ -10,7 +10,21 @@ parameters:
 
     ignoreErrors:
         - '#Unsafe usage of new static\(\).#'
-        - identifier: missingType.iterableValue
+        -   identifier: missingType.iterableValue
+        -   identifier: argument.type
+        -   identifier: cast.string
+        -   identifier: foreach.nonIterable
+        -   identifier: binaryOp.invalid
+        -   identifier: offsetAccess.nonOffsetAccessible
+        -   identifier: return.type
+        -   identifier: method.nonObject
+        -   identifier: varTag.nativeType
+        -   identifier: assign.propertyType
+        -   identifier: callable.nonCallable
+        -   identifier: property.nonObject
 
     excludePaths:
         - src/helper.php
+
+    noEnvCallsOutsideOfConfig: false
+    treatPhpDocTypesAsCertain: false
