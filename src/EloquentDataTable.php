@@ -164,7 +164,7 @@ class EloquentDataTable extends QueryDataTable
     {
         $parts = explode('.', $column);
         $columnName = array_pop($parts);
-        $relation = implode('.', $parts);
+        $relation = str_replace('[]', '', implode('.', $parts));
 
         if ($this->isNotEagerLoaded($relation)) {
             return $column;
@@ -184,54 +184,56 @@ class EloquentDataTable extends QueryDataTable
      */
     protected function joinEagerLoadedColumn($relation, $relationColumn)
     {
-        $table = '';
+        $tableAlias = '';
         $lastQuery = $this->query;
         foreach (explode('.', $relation) as $eachRelation) {
             $model = $lastQuery->getRelation($eachRelation);
+            $lastAlias = $tableAlias ?: $lastQuery->getModel()->getTable();
+            $tableAlias = $tableAlias.'_'.$eachRelation;
+            $pivotAlias = $tableAlias.'_pivot';
             switch (true) {
                 case $model instanceof BelongsToMany:
-                    $pivot = $model->getTable();
-                    $pivotPK = $model->getExistenceCompareKey();
-                    $pivotFK = $model->getQualifiedParentKeyName();
+                    $pivot = $model->getTable().' as '.$pivotAlias;
+                    $pivotPK = $pivotAlias.'.'.$model->getForeignPivotKeyName();
+                    $pivotFK = $lastAlias.'.'.$model->getParentKeyName();
                     $this->performJoin($pivot, $pivotPK, $pivotFK);
 
                     $related = $model->getRelated();
-                    $table = $related->getTable();
+                    $table = $related->getTable().' as '.$tableAlias;
                     $tablePK = $model->getRelatedPivotKeyName();
-                    $foreign = $pivot.'.'.$tablePK;
-                    $other = $related->getQualifiedKeyName();
+                    $foreign = $pivotAlias.'.'.$tablePK;
+                    $other = $tableAlias.'.'.$related->getKeyName();
 
-                    $lastQuery->addSelect($table.'.'.$relationColumn);
-                    $this->performJoin($table, $foreign, $other);
+                    $lastQuery->addSelect($tableAlias.'.'.$relationColumn);
 
                     break;
 
                 case $model instanceof HasOneThrough:
-                    $pivot = explode('.', $model->getQualifiedParentKeyName())[0]; // extract pivot table from key
-                    $pivotPK = $pivot.'.'.$model->getFirstKeyName();
-                    $pivotFK = $model->getQualifiedLocalKeyName();
+                    $pivot = explode('.', $model->getQualifiedParentKeyName())[0].' as '.$pivotAlias; // extract pivot table from key
+                    $pivotPK = $pivotAlias.'.'.$model->getFirstKeyName();
+                    $pivotFK = $lastAlias.'.'.$model->getLocalKeyName();
                     $this->performJoin($pivot, $pivotPK, $pivotFK);
 
                     $related = $model->getRelated();
-                    $table = $related->getTable();
+                    $table = $related->getTable().' as '.$tableAlias;
                     $tablePK = $model->getSecondLocalKeyName();
-                    $foreign = $pivot.'.'.$tablePK;
-                    $other = $related->getQualifiedKeyName();
+                    $foreign = $pivotAlias.'.'.$tablePK;
+                    $other = $tableAlias.'.'.$related->getKeyName();
 
                     $lastQuery->addSelect($lastQuery->getModel()->getTable().'.*');
 
                     break;
 
                 case $model instanceof HasOneOrMany:
-                    $table = $model->getRelated()->getTable();
-                    $foreign = $model->getQualifiedForeignKeyName();
-                    $other = $model->getQualifiedParentKeyName();
+                    $table = $model->getRelated()->getTable().' as '.$tableAlias;
+                    $foreign = $tableAlias.'.'.$model->getForeignKeyName();
+                    $other = $lastAlias.'.'.$model->getLocalKeyName();
                     break;
 
                 case $model instanceof BelongsTo:
-                    $table = $model->getRelated()->getTable();
-                    $foreign = $model->getQualifiedForeignKeyName();
-                    $other = $model->getQualifiedOwnerKeyName();
+                    $table = $model->getRelated()->getTable().' as '.$tableAlias;
+                    $foreign = $lastAlias.'.'.$model->getForeignKeyName();
+                    $other = $tableAlias.'.'.$model->getOwnerKeyName();
                     break;
 
                 default:
@@ -241,7 +243,7 @@ class EloquentDataTable extends QueryDataTable
             $lastQuery = $model->getQuery();
         }
 
-        return $table.'.'.$relationColumn;
+        return $tableAlias.'.'.$relationColumn;
     }
 
     /**
