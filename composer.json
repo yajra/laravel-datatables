@@ -16,20 +16,20 @@
     ],
     "require": {
         "php": "^8.2",
-        "illuminate/database": "^11",
-        "illuminate/filesystem": "^11",
-        "illuminate/http": "^11",
-        "illuminate/support": "^11",
-        "illuminate/view": "^11"
+        "illuminate/database": "^12",
+        "illuminate/filesystem": "^12",
+        "illuminate/http": "^12",
+        "illuminate/support": "^12",
+        "illuminate/view": "^12"
     },
     "require-dev": {
         "algolia/algoliasearch-client-php": "^3.4.1",
-        "larastan/larastan": "^2.9.1",
+        "larastan/larastan": "^3.1.0",
         "laravel/pint": "^1.14",
         "laravel/scout": "^10.8.3",
         "meilisearch/meilisearch-php": "^1.6.1",
-        "orchestra/testbench": "^9",
-        "rector/rector": "^1.0"
+        "orchestra/testbench": "^10",
+        "rector/rector": "^2.0"
     },
     "suggest": {
         "yajra/laravel-datatables-export": "Plugin for server-side exporting using livewire and queue worker.",
