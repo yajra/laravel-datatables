@@ -2,6 +2,9 @@ name: "Continuous Integration"
 
 on:
   push:
+    branches:
+      - master
+      - 11.x
   pull_request:
   schedule:
     - cron: '0 0 * * *'
