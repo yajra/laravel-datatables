@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - 11.x
 jobs:
   phplint:
     runs-on: ubuntu-latest
