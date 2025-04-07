@@ -4,6 +4,10 @@
 
 ### [Unreleased]
 
+### v12.0.1 - 2025-04-07
+
+- fix: query results improvements #3224
+
 ### v12.0.0 - 2025-02-26
 
 - feat: Laravel v12 Compatibility #3217
