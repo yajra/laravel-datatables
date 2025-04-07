@@ -222,7 +222,7 @@ class QueryDataTableTest extends TestCase
     }
 
     #[Test]
-    public function it_edit_only_the_selected_columns_after_using_editOnlySelectedColumns()
+    public function it_edit_only_the_selected_columns_after_using_edit_only_selected_columns()
     {
         $json = $this->call('GET', '/query/edit-columns', [
             'columns' => [
