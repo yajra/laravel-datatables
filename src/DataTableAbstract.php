@@ -779,7 +779,7 @@ abstract class DataTableAbstract implements DataTable
     /**
      * Count filtered items.
      */
-    protected function filteredCount(): int
+    public function filteredCount(): int
     {
         return $this->filteredRecords ??= $this->count();
     }
