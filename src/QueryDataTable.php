@@ -384,9 +384,9 @@ class QueryDataTable extends DataTableAbstract
     }
 
     /**
-     * Resolve the proper column name be used.
+     * Resolve the proper column name to be used.
      */
-    protected function resolveRelationColumn(string $column): string
+    public function resolveRelationColumn(string $column): string
     {
         return $column;
     }

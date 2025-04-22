@@ -155,12 +155,11 @@ class EloquentDataTable extends QueryDataTable
     }
 
     /**
-     * Resolve the proper column name be used.
-     *
+     * {@inheritDoc}
      *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
-    protected function resolveRelationColumn(string $column): string
+    public function resolveRelationColumn(string $column): string
     {
         $parts = explode('.', $column);
         $columnName = array_pop($parts);
