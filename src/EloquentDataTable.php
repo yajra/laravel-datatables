@@ -155,8 +155,7 @@ class EloquentDataTable extends QueryDataTable
     }
 
     /**
-     * Resolve the proper column name be used.
-     *
+     * {@inheritDoc}
      *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
