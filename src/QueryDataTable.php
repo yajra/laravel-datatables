@@ -388,7 +388,7 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function resolveRelationColumn(string $column): string
     {
-        return $column;
+        return $this->addTablePrefix($this->query, $column);
     }
 
     /**
@@ -451,7 +451,7 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function compileQuerySearch($query, string $column, string $keyword, string $boolean = 'or'): void
     {
-        $column = $this->addTablePrefix($query, $column);
+        $column = $this->wrap($this->addTablePrefix($query, $column));
         $column = $this->castColumn($column);
         $sql = $column.' LIKE ?';
 
@@ -471,19 +471,32 @@ class QueryDataTable extends DataTableAbstract
     protected function addTablePrefix($query, string $column): string
     {
         if (! str_contains($column, '.')) {
-            $q = $this->getBaseQueryBuilder($query);
-            $from = $q->from ?? '';
-
-            if (! $from instanceof Expression) {
-                if (str_contains((string) $from, ' as ')) {
-                    $from = explode(' as ', (string) $from)[1];
-                }
-
-                $column = $from.'.'.$column;
-            }
+            return ltrim($this->getTablePrefix($query).'.'.$column, '.');
         }
 
-        return $this->wrap($column);
+        return $column;
+    }
+
+    /**
+     * Try to get the base table prefix.
+     * To be used to prevent ambiguous field name.
+     *
+     * @param  QueryBuilder|EloquentBuilder  $query
+     */
+    protected function getTablePrefix($query): ?string
+    {
+        $q = $this->getBaseQueryBuilder($query);
+        $from = $q->from ?? '';
+
+        if (! $from instanceof Expression) {
+            if (str_contains((string) $from, ' as ')) {
+                $from = explode(' as ', (string) $from)[1];
+            }
+
+            return $from;
+        }
+
+        return null;
     }
 
     /**
