@@ -350,7 +350,7 @@ class QueryDataTable extends DataTableAbstract
             $builder = $this->query->newQuery();
         }
 
-        $callback($builder, $keyword);
+        $callback($builder, $keyword, fn ($column) => $this->resolveRelationColumn($column));
 
         /** @var \Illuminate\Database\Query\Builder $baseQueryBuilder */
         $baseQueryBuilder = $this->getBaseQueryBuilder($builder);
@@ -384,7 +384,7 @@ class QueryDataTable extends DataTableAbstract
     }
 
     /**
-     * Resolve the proper column name be used.
+     * Resolve the proper column name to be used.
      */
     protected function resolveRelationColumn(string $column): string
     {
@@ -646,7 +646,7 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function resolveCallbackParameter(): array
     {
-        return [$this->query, $this->scoutSearched];
+        return [$this->query, $this->scoutSearched, fn ($column) => $this->resolveRelationColumn($column)];
     }
 
     /**
