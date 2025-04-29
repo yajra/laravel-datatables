@@ -470,11 +470,23 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function addTablePrefix($query, string $column): string
     {
-        if (! str_contains($column, '.')) {
-            return ltrim($this->getTablePrefix($query).'.'.$column, '.');
+        // Column is already prefixed
+        if (str_contains($column, '.')) {
+            return $column;
         }
 
-        return $column;
+        $q = $this->getBaseQueryBuilder($query);
+
+        // Column is an alias, no prefix required
+        foreach ($q->columns ?? [] as $select) {
+            $sql = trim($select instanceof Expression ? $select->getValue($this->getConnection()->getQueryGrammar()) : $select);
+            if (str_ends_with($sql, ' as '.$column) || str_ends_with($sql, ' as '.$this->wrap($column))) {
+                return $column;
+            }
+        }
+
+        // Add table prefix to column
+        return $this->getTablePrefix($query).'.'.$column;
     }
 
     /**
