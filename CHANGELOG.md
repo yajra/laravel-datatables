@@ -4,6 +4,10 @@
 
 ### [Unreleased]
 
+### v12.1.1 - 2025-05-05
+
+- fix: prevent ambiguous column names #3227
+
 ### v12.1.0 - 2025-04-28
 
 - feat: add relation resolver param to filter callbacks #3229
