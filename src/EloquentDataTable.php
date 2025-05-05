@@ -166,7 +166,7 @@ class EloquentDataTable extends QueryDataTable
         $relation = str_replace('[]', '', implode('.', $parts));
 
         if ($this->isNotEagerLoaded($relation)) {
-            return $column;
+            return parent::resolveRelationColumn($column);
         }
 
         return $this->joinEagerLoadedColumn($relation, $columnName);
@@ -187,14 +187,14 @@ class EloquentDataTable extends QueryDataTable
         $lastQuery = $this->query;
         foreach (explode('.', $relation) as $eachRelation) {
             $model = $lastQuery->getRelation($eachRelation);
-            $lastAlias = $tableAlias ?: $lastQuery->getModel()->getTable();
+            $lastAlias = $tableAlias ?: $this->getTablePrefix($lastQuery);
             $tableAlias = $tableAlias.'_'.$eachRelation;
             $pivotAlias = $tableAlias.'_pivot';
             switch (true) {
                 case $model instanceof BelongsToMany:
                     $pivot = $model->getTable().' as '.$pivotAlias;
                     $pivotPK = $pivotAlias.'.'.$model->getForeignPivotKeyName();
-                    $pivotFK = $lastAlias.'.'.$model->getParentKeyName();
+                    $pivotFK = ltrim($lastAlias.'.'.$model->getParentKeyName(), '.');
                     $this->performJoin($pivot, $pivotPK, $pivotFK);
 
                     $related = $model->getRelated();
@@ -210,7 +210,7 @@ class EloquentDataTable extends QueryDataTable
                 case $model instanceof HasOneThrough:
                     $pivot = explode('.', $model->getQualifiedParentKeyName())[0].' as '.$pivotAlias; // extract pivot table from key
                     $pivotPK = $pivotAlias.'.'.$model->getFirstKeyName();
-                    $pivotFK = $lastAlias.'.'.$model->getLocalKeyName();
+                    $pivotFK = ltrim($lastAlias.'.'.$model->getLocalKeyName(), '.');
                     $this->performJoin($pivot, $pivotPK, $pivotFK);
 
                     $related = $model->getRelated();
@@ -226,12 +226,12 @@ class EloquentDataTable extends QueryDataTable
                 case $model instanceof HasOneOrMany:
                     $table = $model->getRelated()->getTable().' as '.$tableAlias;
                     $foreign = $tableAlias.'.'.$model->getForeignKeyName();
-                    $other = $lastAlias.'.'.$model->getLocalKeyName();
+                    $other = ltrim($lastAlias.'.'.$model->getLocalKeyName(), '.');
                     break;
 
                 case $model instanceof BelongsTo:
                     $table = $model->getRelated()->getTable().' as '.$tableAlias;
-                    $foreign = $lastAlias.'.'.$model->getForeignKeyName();
+                    $foreign = ltrim($lastAlias.'.'.$model->getForeignKeyName(), '.');
                     $other = $tableAlias.'.'.$model->getOwnerKeyName();
                     break;
 

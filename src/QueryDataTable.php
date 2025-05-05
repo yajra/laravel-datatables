@@ -388,7 +388,7 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function resolveRelationColumn(string $column): string
     {
-        return $column;
+        return $this->addTablePrefix($this->query, $column);
     }
 
     /**
@@ -451,7 +451,7 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function compileQuerySearch($query, string $column, string $keyword, string $boolean = 'or'): void
     {
-        $column = $this->addTablePrefix($query, $column);
+        $column = $this->wrap($this->addTablePrefix($query, $column));
         $column = $this->castColumn($column);
         $sql = $column.' LIKE ?';
 
@@ -470,20 +470,45 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function addTablePrefix($query, string $column): string
     {
-        if (! str_contains($column, '.')) {
-            $q = $this->getBaseQueryBuilder($query);
-            $from = $q->from ?? '';
+        // Column is already prefixed
+        if (str_contains($column, '.')) {
+            return $column;
+        }
 
-            if (! $from instanceof Expression) {
-                if (str_contains((string) $from, ' as ')) {
-                    $from = explode(' as ', (string) $from)[1];
-                }
+        $q = $this->getBaseQueryBuilder($query);
 
-                $column = $from.'.'.$column;
+        // Column is an alias, no prefix required
+        foreach ($q->columns ?? [] as $select) {
+            $sql = trim($select instanceof Expression ? $select->getValue($this->getConnection()->getQueryGrammar()) : $select);
+            if (str_ends_with($sql, ' as '.$column) || str_ends_with($sql, ' as '.$this->wrap($column))) {
+                return $column;
             }
         }
 
-        return $this->wrap($column);
+        // Add table prefix to column
+        return $this->getTablePrefix($query).'.'.$column;
+    }
+
+    /**
+     * Try to get the base table prefix.
+     * To be used to prevent ambiguous field name.
+     *
+     * @param  QueryBuilder|EloquentBuilder  $query
+     */
+    protected function getTablePrefix($query): ?string
+    {
+        $q = $this->getBaseQueryBuilder($query);
+        $from = $q->from ?? '';
+
+        if (! $from instanceof Expression) {
+            if (str_contains((string) $from, ' as ')) {
+                $from = explode(' as ', (string) $from)[1];
+            }
+
+            return $from;
+        }
+
+        return null;
     }
 
     /**
