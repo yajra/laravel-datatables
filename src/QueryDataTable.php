@@ -691,11 +691,10 @@ class QueryDataTable extends DataTableAbstract
             })
             ->reject(fn ($orderable) => $this->isBlacklisted($orderable['name']) && ! $this->hasOrderColumn($orderable['name']))
             ->each(function ($orderable) {
-                $column = $this->resolveRelationColumn($orderable['name']);
-
                 if ($this->hasOrderColumn($orderable['name'])) {
-                    $this->applyOrderColumn($column, $orderable);
+                    $this->applyOrderColumn($orderable);
                 } else {
+                    $column = $this->resolveRelationColumn($orderable['name']);
                     $nullsLastSql = $this->getNullsLastSql($column, $orderable['direction']);
                     $normalSql = $this->wrap($column).' '.$orderable['direction'];
                     $sql = $this->nullsLast ? $nullsLastSql : $normalSql;
@@ -715,7 +714,7 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Apply orderColumn custom query.
      */
-    protected function applyOrderColumn(string $column, array $orderable): void
+    protected function applyOrderColumn(array $orderable): void
     {
         $sql = $this->columnDef['order'][$orderable['name']]['sql'];
         if ($sql === false) {
@@ -723,7 +722,7 @@ class QueryDataTable extends DataTableAbstract
         }
 
         if (is_callable($sql)) {
-            call_user_func($sql, $this->query, $orderable['direction'], $column);
+            call_user_func($sql, $this->query, $orderable['direction'], fn ($column) => $this->resolveRelationColumn($column));
         } else {
             $sql = str_replace('$1', $orderable['direction'], (string) $sql);
             $bindings = $this->columnDef['order'][$orderable['name']]['bindings'];
