@@ -485,12 +485,10 @@ class QueryDataTable extends DataTableAbstract
             }
         }
 
-        if (! ($prefix = $this->getTablePrefix($query))) {
-            return $column;
-        }
-
-        // Add table prefix to column
-        return $prefix.'.'.$column;
+        return collect([
+            $this->getTablePrefix($query),
+            $column,
+        ])->filter()->implode('.');
     }
 
     /**
