@@ -4,6 +4,10 @@
 
 ### [Unreleased]
 
+### v12.1.2 - 2025-05-07
+
+- fix: prevent prefixing null/empty string #3233
+
 ### v12.1.1 - 2025-05-05
 
 - fix: prevent ambiguous column names #3227
