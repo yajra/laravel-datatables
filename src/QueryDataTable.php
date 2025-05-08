@@ -480,7 +480,8 @@ class QueryDataTable extends DataTableAbstract
         // Column is an alias, no prefix required
         foreach ($q->columns ?? [] as $select) {
             $sql = trim($select instanceof Expression ? $select->getValue($this->getConnection()->getQueryGrammar()) : $select);
-            if (str_ends_with($sql, ' as '.$column) || str_ends_with($sql, ' as '.$this->wrap($column))) {
+            $match = preg_quote($column).'\b|'.preg_quote($this->wrap($column));
+            if (preg_match("/(\s)as(\s+)($match)/i", $sql)) {
                 return $column;
             }
         }
