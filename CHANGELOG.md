@@ -4,6 +4,12 @@
 
 ### [Unreleased]
 
+### v12.2.0 - 2025-05-08
+
+- feat: add relation resolver param to order callback #3232
+- fix: improve column alias detection #3236
+- fix: #3235
+
 ### v12.1.2 - 2025-05-07
 
 - fix: prevent prefixing null/empty string #3233
