@@ -4,6 +4,11 @@
 
 ### [Unreleased]
 
+### v12.2.1 - 2025-05-09
+
+- fix: improve prefix detection #3238
+- fix: #3237
+
 ### v12.2.0 - 2025-05-08
 
 - feat: add relation resolver param to order callback #3232
