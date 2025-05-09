@@ -475,20 +475,26 @@ class QueryDataTable extends DataTableAbstract
             return $column;
         }
 
-        $q = $this->getBaseQueryBuilder($query);
+        // Extract selected columns from the query
+        $selects = $this->getSelectedColumns($query);
 
-        // Column is an alias, no prefix required
-        foreach ($q->columns ?? [] as $select) {
-            $sql = trim($select instanceof Expression ? $select->getValue($this->getConnection()->getQueryGrammar()) : $select);
-            $match = preg_quote($column).'\b|'.preg_quote($this->wrap($column));
-            if (preg_match("/(\s)as(\s+)($match)/i", $sql)) {
-                return $column;
-            }
+        // We have a match
+        if (isset($selects['columns'][$column])) {
+            return $selects['columns'][$column];
         }
 
-        $prefix = $this->getTablePrefix($query);
+        // Multiple wildcards => Unable to determine prefix
+        if (in_array('*', $selects['wildcards']) || count(array_unique($selects['wildcards'])) > 1) {
+            return $column;
+        }
 
-        return $prefix ? $prefix.'.'.$column : $column;
+        // Use the only wildcard available
+        if (! empty($selects['wildcards'])) {
+            return $selects['wildcards'][0].'.'.$column;
+        }
+
+        // Fallback on table prefix
+        return ltrim($this->getTablePrefix($query).'.'.$column, '.');
     }
 
     /**
@@ -511,6 +517,49 @@ class QueryDataTable extends DataTableAbstract
         }
 
         return null;
+    }
+
+    /**
+     * Get declared column names from the query.
+     *
+     * @param  QueryBuilder|EloquentBuilder  $query
+     */
+    protected function getSelectedColumns($query): array
+    {
+        $q = $this->getBaseQueryBuilder($query);
+
+        $selects = [
+            'wildcards' => [],
+            'columns' => [],
+        ];
+
+        foreach ($q->columns ?? [] as $select) {
+            $sql = trim($select instanceof Expression ? $select->getValue($this->getConnection()->getQueryGrammar()) : $select);
+            // Remove expressions
+            $sql = preg_replace('/\s*\w*\((?:[^()]*|(?R))*\)/', '_', $sql);
+            // Remove multiple spaces
+            $sql = preg_replace('/\s+/', ' ', $sql);
+            // Remove wrappers
+            $sql = str_replace(['`', '"', '[', ']'], '', $sql);
+            // Loop on select columns
+            foreach (explode(',', $sql) as $column) {
+                $column = trim($column);
+                if (preg_match('/[\w.]+\s+(?:as\s+)?([a-zA-Z0-9_]+)$/i', $column, $matches)) {
+                    // Column with alias
+                    $selects['columns'][$matches[1]] = $matches[1];
+                } elseif (preg_match('/^([\w.]+)$/i', $column)) {
+                    // Column without alias
+                    [$table, $name] = str_contains($column, '.') ? explode('.', $column) : [null, $column];
+                    if ($name === '*') {
+                        $selects['wildcards'][] = $table ?? '*';
+                    } else {
+                        $selects['columns'][$name] = $column;
+                    }
+                }
+            }
+        }
+
+        return $selects;
     }
 
     /**
