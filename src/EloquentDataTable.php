@@ -18,6 +18,12 @@ use Yajra\DataTables\Exceptions\Exception;
 class EloquentDataTable extends QueryDataTable
 {
     /**
+     * Flag to enable the generation of unique table aliases on eagerly loaded join columns.
+     * You may want to enable it if you encounter a "Not unique table/alias" error when performing a search or applying ordering.
+     */
+    protected bool $enableEagerJoinAliases = false;
+
+    /**
      * EloquentEngine constructor.
      */
     public function __construct(Model|EloquentBuilder $model)
@@ -183,22 +189,34 @@ class EloquentDataTable extends QueryDataTable
      */
     protected function joinEagerLoadedColumn($relation, $relationColumn)
     {
-        $tableAlias = '';
+        $tableAlias = $pivotAlias = '';
         $lastQuery = $this->query;
         foreach (explode('.', $relation) as $eachRelation) {
             $model = $lastQuery->getRelation($eachRelation);
-            $lastAlias = $tableAlias ?: $this->getTablePrefix($lastQuery);
-            $tableAlias = $tableAlias.'_'.$eachRelation;
-            $pivotAlias = $tableAlias.'_pivot';
+            if ($this->enableEagerJoinAliases) {
+                $lastAlias = $tableAlias ?: $this->getTablePrefix($lastQuery);
+                $tableAlias = $tableAlias.'_'.$eachRelation;
+                $pivotAlias = $tableAlias.'_pivot';
+            } else {
+                $lastAlias = $tableAlias ?: $lastQuery->getModel()->getTable();
+            }
             switch (true) {
                 case $model instanceof BelongsToMany:
-                    $pivot = $model->getTable().' as '.$pivotAlias;
+                    if ($this->enableEagerJoinAliases) {
+                        $pivot = $model->getTable().' as '.$pivotAlias;
+                    } else {
+                        $pivot = $pivotAlias = $model->getTable();
+                    }
                     $pivotPK = $pivotAlias.'.'.$model->getForeignPivotKeyName();
                     $pivotFK = ltrim($lastAlias.'.'.$model->getParentKeyName(), '.');
                     $this->performJoin($pivot, $pivotPK, $pivotFK);
 
                     $related = $model->getRelated();
-                    $table = $related->getTable().' as '.$tableAlias;
+                    if ($this->enableEagerJoinAliases) {
+                        $table = $related->getTable().' as '.$tableAlias;
+                    } else {
+                        $table = $tableAlias = $related->getTable();
+                    }
                     $tablePK = $model->getRelatedPivotKeyName();
                     $foreign = $pivotAlias.'.'.$tablePK;
                     $other = $tableAlias.'.'.$related->getKeyName();
@@ -208,13 +226,21 @@ class EloquentDataTable extends QueryDataTable
                     break;
 
                 case $model instanceof HasOneThrough:
-                    $pivot = explode('.', $model->getQualifiedParentKeyName())[0].' as '.$pivotAlias; // extract pivot table from key
+                    if ($this->enableEagerJoinAliases) {
+                        $pivot = explode('.', $model->getQualifiedParentKeyName())[0].' as '.$pivotAlias;
+                    } else {
+                        $pivot = $pivotAlias = explode('.', $model->getQualifiedParentKeyName())[0];
+                    }
                     $pivotPK = $pivotAlias.'.'.$model->getFirstKeyName();
                     $pivotFK = ltrim($lastAlias.'.'.$model->getLocalKeyName(), '.');
                     $this->performJoin($pivot, $pivotPK, $pivotFK);
 
                     $related = $model->getRelated();
-                    $table = $related->getTable().' as '.$tableAlias;
+                    if ($this->enableEagerJoinAliases) {
+                        $table = $related->getTable().' as '.$tableAlias;
+                    } else {
+                        $table = $tableAlias = $related->getTable();
+                    }
                     $tablePK = $model->getSecondLocalKeyName();
                     $foreign = $pivotAlias.'.'.$tablePK;
                     $other = $tableAlias.'.'.$related->getKeyName();
@@ -224,13 +250,21 @@ class EloquentDataTable extends QueryDataTable
                     break;
 
                 case $model instanceof HasOneOrMany:
-                    $table = $model->getRelated()->getTable().' as '.$tableAlias;
+                    if ($this->enableEagerJoinAliases) {
+                        $table = $model->getRelated()->getTable().' as '.$tableAlias;
+                    } else {
+                        $table = $tableAlias = $model->getRelated()->getTable();
+                    }
                     $foreign = $tableAlias.'.'.$model->getForeignKeyName();
                     $other = ltrim($lastAlias.'.'.$model->getLocalKeyName(), '.');
                     break;
 
                 case $model instanceof BelongsTo:
-                    $table = $model->getRelated()->getTable().' as '.$tableAlias;
+                    if ($this->enableEagerJoinAliases) {
+                        $table = $model->getRelated()->getTable().' as '.$tableAlias;
+                    } else {
+                        $table = $tableAlias = $model->getRelated()->getTable();
+                    }
                     $foreign = ltrim($lastAlias.'.'.$model->getForeignKeyName(), '.');
                     $other = $tableAlias.'.'.$model->getOwnerKeyName();
                     break;
@@ -243,6 +277,19 @@ class EloquentDataTable extends QueryDataTable
         }
 
         return $tableAlias.'.'.$relationColumn;
+    }
+
+    /**
+     * Enable the generation of unique table aliases on eagerly loaded join columns.
+     * You may want to enable it if you encounter a "Not unique table/alias" error when performing a search or applying ordering.
+     *
+     * @return $this
+     */
+    public function enableEagerJoinAliases(): static
+    {
+        $this->enableEagerJoinAliases = true;
+
+        return $this;
     }
 
     /**
