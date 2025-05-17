@@ -4,6 +4,12 @@
 
 ### [Unreleased]
 
+### v12.3.0 - 2025-05-17
+
+- feat: add option to enable alias on relation tables #3234
+- tests: Add tests to cover prefix detection #3239
+- fix: https://github.com/yajra/laravel-datatables/pull/1782
+
 ### v12.2.1 - 2025-05-09
 
 - fix: improve prefix detection #3238
