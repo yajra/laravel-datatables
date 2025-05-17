@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestWith;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
 use Yajra\DataTables\QueryDataTable;
@@ -406,6 +407,42 @@ class QueryDataTableTest extends TestCase
         $this->assertEquals($user->name.'_di', $data['name_di']);
     }
 
+    #[Test]
+    #[TestWith(['title', '"posts"."title"'])] // column from base table wildcard posts.*
+    #[TestWith(['email', '"users"."email"'])] // column from join table added to select without alias
+    #[TestWith(['alias_field_with_as', '"alias_field_with_as"'])]
+    #[TestWith(['alias_field_without_as', '"alias_field_without_as"'])]
+    #[TestWith(['alias_expression_with_as', '"alias_expression_with_as"'])]
+    #[TestWith(['alias_expression_without_as', '"alias_expression_without_as"'])]
+    #[TestWith(['alias_case_with_as', '"alias_case_with_as"'])]
+    #[TestWith(['alias_case_without_as', '"alias_case_without_as"'])]
+    #[TestWith(['sub_query', '"sub_query"'])]
+    public function it_can_detect_column_alias(string $column, string $expected)
+    {
+        DB::enableQueryLog();
+
+        $crawler = $this->call('GET', '/query/aliases', [
+            'columns' => [
+                ['data' => $column, 'name' => $column, 'orderable' => 'true'],
+            ],
+            'order' => [['column' => 0, 'dir' => 'asc']],
+        ]);
+
+        $crawler->assertJsonStructure([
+            'draw',
+            'recordsTotal',
+            'recordsFiltered',
+        ]);
+
+        DB::disableQueryLog();
+        $queryLog = DB::getQueryLog();
+
+        $this->assertCount(2, $queryLog);
+
+        $sql = end($queryLog)['query'];
+        $this->assertStringContainsString("order by $expected asc", $sql);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -497,5 +534,23 @@ class QueryDataTableTest extends TestCase
         $router->get('/closure-di', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
             ->addColumn('name_di', fn ($user, User $u) => $u->newQuery()->find($user->id)->name.'_di')
             ->toJson());
+
+        $router->get('/query/aliases', fn (DataTables $dataTable) => $dataTable->query(
+            DB::table('posts')
+                ->join('users', 'users.id', '=', 'posts.user_id')
+                ->select([
+                    'posts.*',
+                    'users.email', // From join table, without alias
+                    'posts.id as alias_field_with_as',
+                    DB::raw('posts.id alias_field_without_as'),
+                    DB::raw('(1 + 1) as alias_expression_with_as'),
+                    DB::raw('(SELECT 1) alias_expression_without_as'),
+                    DB::raw('CASE WHEN 1 THEN 1 ELSE 2 END as alias_case_with_as'),
+                    DB::raw('CASE WHEN 0 THEN 1 ELSE 2 END alias_case_without_as'),
+                    'sub_query' => DB::table('users')
+                        ->whereColumn('posts.user_id', 'users.id')
+                        ->select('name'),
+                ])
+        )->toJson());
     }
 }
