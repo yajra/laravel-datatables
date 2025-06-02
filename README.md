@@ -45,7 +45,7 @@ return DataTables::make(User::all())->toJson();
             <td>
                 <img height="50" src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.png" alt="JetBrains logo.">
             </td>
-            <td>A big thank you to <a href="https://www.jetbrains.com">JetBrains</a> for supporting this project with free open-source licenses of their IDEs.</td>
+            <td>A big thank you to <a href="https://jb.gg/OpenSource">JetBrains</a> for supporting this project with free open-source licenses of their IDEs.</td>
         </tr>
     </body>
 </table>
