@@ -92,7 +92,7 @@ class MinSearchLengthDataTableTest extends TestCase
     {
         parent::setUp();
 
-        Route::get('/eloquent/min-length', fn() => (new EloquentDataTable(User::query()))
+        Route::get('/eloquent/min-length', fn () => (new EloquentDataTable(User::query()))
             ->minSearchLength(5)
             ->toJson());
     }
