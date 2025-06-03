@@ -143,6 +143,8 @@ class CollectionDataTable extends DataTableAbstract
     public function make(bool $mDataSupport = true): JsonResponse
     {
         try {
+            $this->validateMinLengthSearch();
+
             $this->totalRecords = $this->totalCount();
 
             if ($this->totalRecords) {
