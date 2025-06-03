@@ -1013,5 +1013,4 @@ abstract class DataTableAbstract implements DataTable
             );
         }
     }
-
 }
