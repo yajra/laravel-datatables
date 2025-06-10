@@ -122,6 +122,8 @@ abstract class DataTableAbstract implements DataTable
 
     protected bool $editOnlySelectedColumns = false;
 
+    protected int $minSearchLength = 0;
+
     /**
      * Can the DataTable engine be created with these parameters.
      *
@@ -988,5 +990,27 @@ abstract class DataTableAbstract implements DataTable
     protected function getPrimaryKeyName(): string
     {
         return 'id';
+    }
+
+    public function minSearchLength(int $length): static
+    {
+        $this->minSearchLength = $length;
+
+        return $this;
+    }
+
+    protected function validateMinLengthSearch(): void
+    {
+        if ($this->request->isSearchable()
+            && $this->minSearchLength > 0
+            && Str::length($this->request->keyword()) < $this->minSearchLength
+        ) {
+            $this->totalRecords = 0;
+            $this->filteredRecords = 0;
+            throw new \Exception(
+                __('Please enter at least :length characters to search.', ['length' => $this->minSearchLength]),
+                400
+            );
+        }
     }
 }

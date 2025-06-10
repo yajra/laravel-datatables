@@ -124,6 +124,8 @@ class QueryDataTable extends DataTableAbstract
     public function make(bool $mDataSupport = true): JsonResponse
     {
         try {
+            $this->validateMinLengthSearch();
+
             $results = $this->prepareQuery()->results();
             $processed = $this->processResults($results, $mDataSupport);
             $data = $this->transform($results, $processed);
