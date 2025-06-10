@@ -4,6 +4,10 @@
 
 ### [Unreleased]
 
+### v12.3.1 - 2025-06-10
+
+- fix: support for array notation #3243
+
 ### v12.3.0 - 2025-05-17
 
 - feat: add option to enable alias on relation tables #3234
