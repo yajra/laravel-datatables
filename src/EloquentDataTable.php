@@ -169,7 +169,7 @@ class EloquentDataTable extends QueryDataTable
     {
         $parts = explode('.', $column);
         $columnName = array_pop($parts);
-        $relation = str_replace('[]', '', implode('.', $parts));
+        $relation = preg_replace('/\[.*?\]/', '', implode('.', $parts));
 
         if ($this->isNotEagerLoaded($relation)) {
             return parent::resolveRelationColumn($column);
