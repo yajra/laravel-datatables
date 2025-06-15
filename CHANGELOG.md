@@ -4,6 +4,11 @@
 
 ### [Unreleased]
 
+### v12.4.0 - 2025-06-15
+
+- feat: add min search length control #3242
+- fix: #3241
+
 ### v12.3.1 - 2025-06-10
 
 - fix: support for array notation #3243
