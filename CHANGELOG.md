@@ -4,6 +4,10 @@
 
 ### [Unreleased]
 
+### v12.4.1 - 2025-08-29
+
+- fix: request handling with playwright / pest 4 #3247
+
 ### v12.4.0 - 2025-06-15
 
 - feat: add min search length control #3242
