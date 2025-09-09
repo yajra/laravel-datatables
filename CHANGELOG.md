@@ -4,6 +4,10 @@
 
 ### [Unreleased]
 
+### v12.4.2 - 2025-09-09
+
+- fix: remove @internal annotation from orderColumn() method #3248
+
 ### v12.4.1 - 2025-08-29
 
 - fix: request handling with playwright / pest 4 #3247
