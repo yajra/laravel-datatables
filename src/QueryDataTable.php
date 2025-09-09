@@ -625,7 +625,7 @@ class QueryDataTable extends DataTableAbstract
      * @param  array  $bindings
      * @return $this
      *
-     * @internal string $1 Special variable that returns the requested order direction of the column.
+     * string $1 Special variable that returns the requested order direction of the column.
      */
     public function orderColumn($column, $sql, $bindings = []): static
     {
