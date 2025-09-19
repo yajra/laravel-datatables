@@ -319,8 +319,8 @@ class QueryDataTable extends DataTableAbstract
             }
 
             $columnControl = $this->request->columnControlSearch($index);
-            $value = $columnControl['value'];
-            $logic = $columnControl['logic'];
+            $value = $columnControl['value'] ?? '';
+            $logic = $columnControl['logic'] ?? 'equals';
             // $type = $columnControl['type']; -- currently unused
 
             if ($value || str_contains($logic, 'empty')) {
