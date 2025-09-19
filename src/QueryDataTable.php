@@ -347,7 +347,9 @@ class QueryDataTable extends DataTableAbstract
                         break;
                 }
 
-                if (str_contains($logic, 'empty')) {
+                if ($this->hasFilterColumn($columnName)) {
+                    $this->applyFilterColumn($this->getBaseQueryBuilder(), $columnName, $value);
+                } elseif (str_contains($logic, 'empty')) {
                     $this->query->whereNull($columnName, not: str_contains($logic, 'not'));
                 } elseif (str_contains($logic, 'not')) {
                     $this->query->whereNot($columnName, $operator, $value);
