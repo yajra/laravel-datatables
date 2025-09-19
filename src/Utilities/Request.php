@@ -151,6 +151,11 @@ class Request
         return $this->prepareKeyword($keyword);
     }
 
+    public function columnControlSearch(int $index): array
+    {
+        return request()->array("columns.$index.columnControl.search");
+    }
+
     /**
      * Prepare keyword string value.
      */

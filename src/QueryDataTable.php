@@ -258,6 +258,7 @@ class QueryDataTable extends DataTableAbstract
         }
 
         $this->columnSearch();
+        $this->columnControlSearch();
         $this->searchPanesSearch();
 
         // If no modification between the original query and the filtered one has been made
@@ -281,23 +282,78 @@ class QueryDataTable extends DataTableAbstract
         $columns = $this->request->columns();
 
         foreach ($columns as $index => $column) {
-            $column = $this->getColumnName($index);
+            $columnName = $this->getColumnName($index);
 
-            if (is_null($column)) {
+            if (is_null($columnName)) {
                 continue;
             }
 
-            if (! $this->request->isColumnSearchable($index) || $this->isBlacklisted($column) && ! $this->hasFilterColumn($column)) {
+            if (! $this->request->isColumnSearchable($index) || $this->isBlacklisted($columnName) && ! $this->hasFilterColumn($columnName)) {
                 continue;
             }
 
-            if ($this->hasFilterColumn($column)) {
+            if ($this->hasFilterColumn($columnName)) {
                 $keyword = $this->getColumnSearchKeyword($index, true);
-                $this->applyFilterColumn($this->getBaseQueryBuilder(), $column, $keyword);
+                $this->applyFilterColumn($this->getBaseQueryBuilder(), $columnName, $keyword);
             } else {
-                $column = $this->resolveRelationColumn($column);
+                $columnName = $this->resolveRelationColumn($columnName);
                 $keyword = $this->getColumnSearchKeyword($index);
-                $this->compileColumnSearch($index, $column, $keyword);
+                $this->compileColumnSearch($index, $columnName, $keyword);
+            }
+        }
+    }
+
+    public function columnControlSearch(): void
+    {
+        $columns = $this->request->columns();
+
+        foreach ($columns as $index => $column) {
+            $columnName = $this->getColumnName($index);
+
+            if (is_null($columnName) || ! $column['searchable']) {
+                continue;
+            }
+
+            if ($this->isBlacklisted($columnName)) {
+                continue;
+            }
+
+            $columnControl = $this->request->columnControlSearch($index);
+            $value = $columnControl['value'];
+            $logic = $columnControl['logic'];
+            // $type = $columnControl['type']; -- currently unused
+
+            if ($value || str_contains($logic, 'empty')) {
+                $operator = match ($logic) {
+                    'contains', 'notContains', 'starts', 'ends' => 'LIKE',
+                    'greaterThan' => '>',
+                    'lessThan' => '<',
+                    'greaterThanOrEqual' => '>=',
+                    'lessThanOrEqual' => '<=',
+                    'empty', 'notEmpty' => null,
+                    default => '=',
+                };
+
+                switch ($logic) {
+                    case 'contains':
+                    case 'notContains':
+                        $value = '%'.$value.'%';
+                        break;
+                    case 'starts':
+                        $value = $value.'%';
+                        break;
+                    case 'ends':
+                        $value = '%'.$value;
+                        break;
+                }
+
+                if (str_contains($logic, 'empty')) {
+                    $this->query->whereNull($columnName, not: str_contains($logic, 'not'));
+                } elseif (str_contains($logic, 'not')) {
+                    $this->query->whereNot($columnName, $operator, $value);
+                } else {
+                    $this->query->where($columnName, $operator, $value);
+                }
             }
         }
     }
