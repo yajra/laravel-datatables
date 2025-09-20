@@ -772,10 +772,6 @@ class QueryDataTable extends DataTableAbstract
 
     /**
      * Perform search using search pane values.
-     *
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function searchPanesSearch(): void
     {
