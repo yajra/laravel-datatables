@@ -319,13 +319,15 @@ class QueryDataTable extends DataTableAbstract
                 continue;
             }
 
-            $columnControl = $this->request->columnControlSearch($index);
-            $value = $columnControl['value'] ?? '';
-            $logic = $columnControl['logic'] ?? 'equals';
-            $mask = $columnControl['mask'] ?? ''; // for date type
-            $type = $columnControl['type'] ?? 'text'; // text, num, date
+            $columnControl = $this->request->columnControl($index);
+            $list = $columnControl['list'] ?? [];
+            $search = $columnControl['search'] ?? [];
+            $value = $search['value'] ?? '';
+            $logic = $search['logic'] ?? 'equals';
+            $mask = $search['mask'] ?? ''; // for date type
+            $type = $search['type'] ?? 'text'; // text, num, date
 
-            if ($value || str_contains(strtolower($logic), 'empty')) {
+            if ($value || str_contains(strtolower($logic), 'empty') || $list) {
                 $operator = match ($logic) {
                     'contains', 'notContains', 'starts', 'ends' => 'LIKE',
                     'greater' => '>',
@@ -352,6 +354,16 @@ class QueryDataTable extends DataTableAbstract
 
                 if ($this->hasFilterColumn($columnName)) {
                     $this->applyFilterColumn($this->getBaseQueryBuilder(), $columnName, $value);
+
+                    return;
+                }
+
+                if (is_array($list) && count($list) > 0) {
+                    if (str_contains($logic, 'not')) {
+                        $this->query->whereNotIn($columnName, $list);
+                    } else {
+                        $this->query->whereIn($columnName, $list);
+                    }
 
                     return;
                 }

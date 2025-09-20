@@ -151,6 +151,11 @@ class Request
         return $this->prepareKeyword($keyword);
     }
 
+    public function columnControl(int $index): array
+    {
+        return request()->array("columns.$index.columnControl");
+    }
+
     public function columnControlSearch(int $index): array
     {
         return request()->array("columns.$index.columnControl.search");
