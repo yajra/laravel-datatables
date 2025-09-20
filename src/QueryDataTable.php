@@ -326,10 +326,10 @@ class QueryDataTable extends DataTableAbstract
             if ($value || str_contains($logic, 'empty')) {
                 $operator = match ($logic) {
                     'contains', 'notContains', 'starts', 'ends' => 'LIKE',
-                    'greaterThan' => '>',
-                    'lessThan' => '<',
-                    'greaterThanOrEqual' => '>=',
-                    'lessThanOrEqual' => '<=',
+                    'greater' => '>',
+                    'less' => '<',
+                    'greaterOrEqual' => '>=',
+                    'lessOrEqual' => '<=',
                     'empty', 'notEmpty' => null,
                     default => '=',
                 };
