@@ -322,9 +322,10 @@ class QueryDataTable extends DataTableAbstract
             $columnControl = $this->request->columnControlSearch($index);
             $value = $columnControl['value'] ?? '';
             $logic = $columnControl['logic'] ?? 'equals';
-            $type = $columnControl['type'] ?? 'string'; // string, num, date
+            $mask = $columnControl['mask'] ?? ''; // for date type
+            $type = $columnControl['type'] ?? 'text'; // text, num, date
 
-            if ($value || str_contains($logic, 'empty')) {
+            if ($value || str_contains(strtolower($logic), 'empty')) {
                 $operator = match ($logic) {
                     'contains', 'notContains', 'starts', 'ends' => 'LIKE',
                     'greater' => '>',
@@ -356,13 +357,14 @@ class QueryDataTable extends DataTableAbstract
                 }
 
                 if (str_contains(strtolower($logic), 'empty')) {
-                    $this->query->whereNull($columnName, not: str_contains($logic, 'not'));
+                    $this->query->whereNull($columnName, not: $logic === 'notEmpty');
 
                     return;
                 }
 
                 if ($type === 'date') {
-                    $this->query->whereDate($columnName, $operator, Carbon::parse($value));
+                    $value = $mask ? Carbon::createFromFormat($mask, $value) : Carbon::parse($value);
+                    $this->query->whereDate($columnName, $operator, $value);
 
                     return;
                 }
