@@ -327,7 +327,7 @@ class QueryDataTable extends DataTableAbstract
             $mask = $search['mask'] ?? ''; // for date type
             $type = $search['type'] ?? 'text'; // text, num, date
 
-            if ($value || str_contains(strtolower($logic), 'empty') || $list) {
+            if ($value != '' || str_contains(strtolower($logic), 'empty') || $list) {
                 $operator = match ($logic) {
                     'contains', 'notContains', 'starts', 'ends' => 'LIKE',
                     'greater' => '>',
