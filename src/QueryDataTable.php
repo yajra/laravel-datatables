@@ -8,6 +8,7 @@ use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -321,7 +322,7 @@ class QueryDataTable extends DataTableAbstract
             $columnControl = $this->request->columnControlSearch($index);
             $value = $columnControl['value'] ?? '';
             $logic = $columnControl['logic'] ?? 'equals';
-            // $type = $columnControl['type']; -- currently unused
+            $type = $columnControl['type'] ?? 'string'; // string, num, date
 
             if ($value || str_contains($logic, 'empty')) {
                 $operator = match ($logic) {
@@ -331,6 +332,7 @@ class QueryDataTable extends DataTableAbstract
                     'greaterOrEqual' => '>=',
                     'lessOrEqual' => '<=',
                     'empty', 'notEmpty' => null,
+                    'notEqual' => '!=',
                     default => '=',
                 };
 
@@ -349,13 +351,29 @@ class QueryDataTable extends DataTableAbstract
 
                 if ($this->hasFilterColumn($columnName)) {
                     $this->applyFilterColumn($this->getBaseQueryBuilder(), $columnName, $value);
-                } elseif (str_contains($logic, 'empty')) {
-                    $this->query->whereNull($columnName, not: str_contains($logic, 'not'));
-                } elseif (str_contains($logic, 'not')) {
-                    $this->query->whereNot($columnName, $operator, $value);
-                } else {
-                    $this->query->where($columnName, $operator, $value);
+
+                    return;
                 }
+
+                if (str_contains(strtolower($logic), 'empty')) {
+                    $this->query->whereNull($columnName, not: str_contains($logic, 'not'));
+
+                    return;
+                }
+
+                if ($type === 'date') {
+                    $this->query->whereDate($columnName, $operator, Carbon::parse($value));
+
+                    return;
+                }
+
+                if (str_contains($logic, 'not')) {
+                    $this->query->whereNot($columnName, $operator, $value);
+
+                    return;
+                }
+
+                $this->query->where($columnName, $operator, $value);
             }
         }
     }
