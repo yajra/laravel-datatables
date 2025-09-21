@@ -315,7 +315,7 @@ class QueryDataTable extends DataTableAbstract
                 continue;
             }
 
-            if ($this->isBlacklisted($columnName)) {
+            if ($this->isBlacklisted($columnName) && ! $this->hasFilterColumn($columnName)) {
                 continue;
             }
 
