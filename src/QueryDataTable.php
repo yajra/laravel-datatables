@@ -311,7 +311,7 @@ class QueryDataTable extends DataTableAbstract
         foreach ($columns as $index => $column) {
             $columnName = $this->getColumnName($index);
 
-            if (is_null($columnName) || ! $column['searchable']) {
+            if (is_null($columnName) || ! ($column['searchable'] ?? false)) {
                 continue;
             }
 
@@ -374,7 +374,11 @@ class QueryDataTable extends DataTableAbstract
                 }
 
                 if ($type === 'date') {
-                    $value = $mask ? Carbon::createFromFormat($mask, $value) : Carbon::parse($value);
+                    try {
+                        $value = $mask ? Carbon::createFromFormat($mask, $value) : Carbon::parse($value);
+                    } catch (\Exception $e) {
+                        // can't parse date
+                    }
 
                     if ($logic === 'notEqual') {
                         $this->query->where(function ($q) use ($columnName, $value) {
