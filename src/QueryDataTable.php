@@ -355,7 +355,7 @@ class QueryDataTable extends DataTableAbstract
                 if ($this->hasFilterColumn($columnName)) {
                     $this->applyFilterColumn($this->getBaseQueryBuilder(), $columnName, $value);
 
-                    return;
+                    continue;
                 }
 
                 if (is_array($list) && count($list) > 0) {
@@ -365,26 +365,26 @@ class QueryDataTable extends DataTableAbstract
                         $this->query->whereIn($columnName, $list);
                     }
 
-                    return;
+                    continue;
                 }
 
                 if (str_contains(strtolower($logic), 'empty')) {
                     $this->query->whereNull($columnName, not: $logic === 'notEmpty');
 
-                    return;
+                    continue;
                 }
 
                 if ($type === 'date') {
                     $value = $mask ? Carbon::createFromFormat($mask, $value) : Carbon::parse($value);
                     $this->query->whereDate($columnName, $operator, $value);
 
-                    return;
+                    continue;
                 }
 
                 if (str_contains($logic, 'not')) {
                     $this->query->whereNot($columnName, $operator, $value);
 
-                    return;
+                    continue;
                 }
 
                 $this->query->where($columnName, $operator, $value);
