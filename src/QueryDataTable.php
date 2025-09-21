@@ -323,7 +323,7 @@ class QueryDataTable extends DataTableAbstract
             $list = $columnControl['list'] ?? [];
             $search = $columnControl['search'] ?? [];
             $value = $search['value'] ?? '';
-            $logic = $search['logic'] ?? 'equals';
+            $logic = $search['logic'] ?? 'equal';
             $mask = $search['mask'] ?? ''; // for date type
             $type = $search['type'] ?? 'text'; // text, num, date
 
@@ -335,7 +335,6 @@ class QueryDataTable extends DataTableAbstract
                     'greaterOrEqual' => '>=',
                     'lessOrEqual' => '<=',
                     'empty', 'notEmpty' => null,
-                    'notEqual' => '!=',
                     default => '=',
                 };
 
@@ -376,7 +375,14 @@ class QueryDataTable extends DataTableAbstract
 
                 if ($type === 'date') {
                     $value = $mask ? Carbon::createFromFormat($mask, $value) : Carbon::parse($value);
-                    $this->query->whereDate($columnName, $operator, $value);
+
+                    if ($logic === 'notEqual') {
+                        $this->query->where(function ($q) use ($columnName, $value) {
+                            $q->whereDate($columnName, '!=', $value)->orWhereNull($columnName);
+                        });
+                    } else {
+                        $this->query->whereDate($columnName, $operator, $value);
+                    }
 
                     continue;
                 }
