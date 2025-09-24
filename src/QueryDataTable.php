@@ -352,12 +352,13 @@ class QueryDataTable extends DataTableAbstract
                 }
 
                 if ($this->hasFilterColumn($columnName)) {
+                    $value = $list ? implode(', ', $list) : $value;
                     $this->applyFilterColumn($this->getBaseQueryBuilder(), $columnName, $value);
 
                     continue;
                 }
 
-                if (is_array($list) && count($list) > 0) {
+                if ($list) {
                     if (str_contains($logic, 'not')) {
                         $this->query->whereNotIn($columnName, $list);
                     } else {
