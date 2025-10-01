@@ -637,7 +637,7 @@ class QueryDataTable extends DataTableAbstract
         ];
 
         foreach ($q->columns ?? [] as $select) {
-            $sql = trim((string) $select instanceof Expression ? $select->getValue($this->getConnection()->getQueryGrammar()) : $select);
+            $sql = trim($select instanceof Expression ? $select->getValue($this->getConnection()->getQueryGrammar()) : (string) $select);
             // Remove expressions
             $sql = preg_replace('/\s*\w*\((?:[^()]*|(?R))*\)/', '_', $sql);
             // Remove multiple spaces
