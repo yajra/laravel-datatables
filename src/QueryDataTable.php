@@ -377,7 +377,7 @@ class QueryDataTable extends DataTableAbstract
                 if ($type === 'date') {
                     try {
                         $value = $mask ? Carbon::createFromFormat($mask, $value) : Carbon::parse($value);
-                    } catch (\Exception $e) {
+                    } catch (\Exception) {
                         // can't parse date
                     }
 
@@ -637,11 +637,11 @@ class QueryDataTable extends DataTableAbstract
         ];
 
         foreach ($q->columns ?? [] as $select) {
-            $sql = trim($select instanceof Expression ? $select->getValue($this->getConnection()->getQueryGrammar()) : $select);
+            $sql = trim((string) $select instanceof Expression ? $select->getValue($this->getConnection()->getQueryGrammar()) : $select);
             // Remove expressions
             $sql = preg_replace('/\s*\w*\((?:[^()]*|(?R))*\)/', '_', $sql);
             // Remove multiple spaces
-            $sql = preg_replace('/\s+/', ' ', $sql);
+            $sql = preg_replace('/\s+/', ' ', (string) $sql);
             // Remove wrappers
             $sql = str_replace(['`', '"', '[', ']'], '', $sql);
             // Loop on select columns
