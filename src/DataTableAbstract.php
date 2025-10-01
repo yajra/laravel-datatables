@@ -10,7 +10,6 @@ use Illuminate\Support\Traits\Macroable;
 use Psr\Log\LoggerInterface;
 use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\Contracts\Formatter;
-use Yajra\DataTables\Exceptions\Exception;
 use Yajra\DataTables\Processors\DataProcessor;
 use Yajra\DataTables\Utilities\Helper;
 
@@ -736,12 +735,9 @@ abstract class DataTableAbstract implements DataTable
         $this->filteredCount();
     }
 
-    /**
-     * @throws \Yajra\DataTables\Exceptions\Exception
-     */
     public function columnControlSearch(): void
     {
-        throw new Exception('Column control search is not supported by this engine.');
+        // Not implemented in the abstract class.
     }
 
     /**
