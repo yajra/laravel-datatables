@@ -730,8 +730,14 @@ abstract class DataTableAbstract implements DataTable
         }
 
         $this->columnSearch();
+        $this->columnControlSearch();
         $this->searchPanesSearch();
         $this->filteredCount();
+    }
+
+    public function columnControlSearch(): void
+    {
+        // Not implemented in the abstract class.
     }
 
     /**

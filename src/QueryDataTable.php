@@ -8,6 +8,7 @@ use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -258,6 +259,7 @@ class QueryDataTable extends DataTableAbstract
         }
 
         $this->columnSearch();
+        $this->columnControlSearch();
         $this->searchPanesSearch();
 
         // If no modification between the original query and the filtered one has been made
@@ -281,23 +283,122 @@ class QueryDataTable extends DataTableAbstract
         $columns = $this->request->columns();
 
         foreach ($columns as $index => $column) {
-            $column = $this->getColumnName($index);
+            $columnName = $this->getColumnName($index);
 
-            if (is_null($column)) {
+            if (is_null($columnName)) {
                 continue;
             }
 
-            if (! $this->request->isColumnSearchable($index) || $this->isBlacklisted($column) && ! $this->hasFilterColumn($column)) {
+            if (! $this->request->isColumnSearchable($index) || $this->isBlacklisted($columnName) && ! $this->hasFilterColumn($columnName)) {
                 continue;
             }
 
-            if ($this->hasFilterColumn($column)) {
+            if ($this->hasFilterColumn($columnName)) {
                 $keyword = $this->getColumnSearchKeyword($index, true);
-                $this->applyFilterColumn($this->getBaseQueryBuilder(), $column, $keyword);
+                $this->applyFilterColumn($this->getBaseQueryBuilder(), $columnName, $keyword);
             } else {
-                $column = $this->resolveRelationColumn($column);
+                $columnName = $this->resolveRelationColumn($columnName);
                 $keyword = $this->getColumnSearchKeyword($index);
-                $this->compileColumnSearch($index, $column, $keyword);
+                $this->compileColumnSearch($index, $columnName, $keyword);
+            }
+        }
+    }
+
+    public function columnControlSearch(): void
+    {
+        $columns = $this->request->columns();
+
+        foreach ($columns as $index => $column) {
+            $columnName = $this->getColumnName($index);
+
+            if (is_null($columnName) || ! ($column['searchable'] ?? false)) {
+                continue;
+            }
+
+            if ($this->isBlacklisted($columnName) && ! $this->hasFilterColumn($columnName)) {
+                continue;
+            }
+
+            $columnControl = $this->request->columnControl($index);
+            $list = $columnControl['list'] ?? [];
+            $search = $columnControl['search'] ?? [];
+            $value = $search['value'] ?? '';
+            $logic = $search['logic'] ?? 'equal';
+            $mask = $search['mask'] ?? ''; // for date type
+            $type = $search['type'] ?? 'text'; // text, num, date
+
+            if ($value != '' || str_contains(strtolower($logic), 'empty') || $list) {
+                $operator = match ($logic) {
+                    'contains', 'notContains', 'starts', 'ends' => 'LIKE',
+                    'greater' => '>',
+                    'less' => '<',
+                    'greaterOrEqual' => '>=',
+                    'lessOrEqual' => '<=',
+                    'empty', 'notEmpty' => null,
+                    default => '=',
+                };
+
+                switch ($logic) {
+                    case 'contains':
+                    case 'notContains':
+                        $value = '%'.$value.'%';
+                        break;
+                    case 'starts':
+                        $value = $value.'%';
+                        break;
+                    case 'ends':
+                        $value = '%'.$value;
+                        break;
+                }
+
+                if ($this->hasFilterColumn($columnName)) {
+                    $value = $list ? implode(', ', $list) : $value;
+                    $this->applyFilterColumn($this->getBaseQueryBuilder(), $columnName, $value);
+
+                    continue;
+                }
+
+                if ($list) {
+                    if (str_contains($logic, 'not')) {
+                        $this->query->whereNotIn($columnName, $list);
+                    } else {
+                        $this->query->whereIn($columnName, $list);
+                    }
+
+                    continue;
+                }
+
+                if (str_contains(strtolower($logic), 'empty')) {
+                    $this->query->whereNull($columnName, not: $logic === 'notEmpty');
+
+                    continue;
+                }
+
+                if ($type === 'date') {
+                    try {
+                        $value = $mask ? Carbon::createFromFormat($mask, $value) : Carbon::parse($value);
+                    } catch (\Exception) {
+                        // can't parse date
+                    }
+
+                    if ($logic === 'notEqual') {
+                        $this->query->where(function ($q) use ($columnName, $value) {
+                            $q->whereDate($columnName, '!=', $value)->orWhereNull($columnName);
+                        });
+                    } else {
+                        $this->query->whereDate($columnName, $operator, $value);
+                    }
+
+                    continue;
+                }
+
+                if (str_contains($logic, 'not')) {
+                    $this->query->whereNot($columnName, $operator, $value);
+
+                    continue;
+                }
+
+                $this->query->where($columnName, $operator, $value);
             }
         }
     }
@@ -536,11 +637,11 @@ class QueryDataTable extends DataTableAbstract
         ];
 
         foreach ($q->columns ?? [] as $select) {
-            $sql = trim($select instanceof Expression ? $select->getValue($this->getConnection()->getQueryGrammar()) : $select);
+            $sql = trim($select instanceof Expression ? $select->getValue($this->getConnection()->getQueryGrammar()) : (string) $select);
             // Remove expressions
             $sql = preg_replace('/\s*\w*\((?:[^()]*|(?R))*\)/', '_', $sql);
             // Remove multiple spaces
-            $sql = preg_replace('/\s+/', ' ', $sql);
+            $sql = preg_replace('/\s+/', ' ', (string) $sql);
             // Remove wrappers
             $sql = str_replace(['`', '"', '[', ']'], '', $sql);
             // Loop on select columns
@@ -694,10 +795,6 @@ class QueryDataTable extends DataTableAbstract
 
     /**
      * Perform search using search pane values.
-     *
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function searchPanesSearch(): void
     {
