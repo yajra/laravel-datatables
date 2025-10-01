@@ -4,6 +4,11 @@
 
 ### [Unreleased]
 
+### v12.5.0 - 2025-10-01
+
+- feat: server-side column control #3251
+- fix: https://github.com/yajra/laravel-datatables/issues/3250
+
 ### v12.4.2 - 2025-09-09
 
 - fix: remove @internal annotation from orderColumn() method #3248
