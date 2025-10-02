@@ -4,6 +4,10 @@
 
 ### [Unreleased]
 
+### v12.5.1 - 2025-10-02
+
+- fix: ambiguous column in columnControlSearch() method #3252
+
 ### v12.5.0 - 2025-10-01
 
 - feat: server-side column control #3251
