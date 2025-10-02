@@ -358,6 +358,11 @@ class QueryDataTable extends DataTableAbstract
                     continue;
                 }
 
+                // Only resolve relation after checking for a custom filter.
+                // Because the custom filter for a column might not be found, e.g., $this->hasFilterColumn($columnName)
+                // and applyFilterColumn() already resolves relations
+                $columnName = $this->resolveRelationColumn($columnName);
+
                 if ($list) {
                     if (str_contains($logic, 'not')) {
                         $this->query->whereNotIn($columnName, $list);

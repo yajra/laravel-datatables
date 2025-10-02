@@ -4,6 +4,7 @@ namespace Yajra\DataTables\Tests\Unit;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\Test;
 use Yajra\DataTables\Tests\Models\User;
 use Yajra\DataTables\Tests\TestCase;
 
@@ -170,5 +171,43 @@ class QueryDataTableTest extends TestCase
         $sql = $query->select(DB::raw('count(*)'))->toSql();
 
         $this->assertSame($expected, Str::startsWith($sql, 'select count(*) from (select 1 as dt_row_count from'), "'{$sql}' has select");
+    }
+
+    #[Test]
+    public function test_column_name_is_resolved_in_column_control(): void
+    {
+        app('datatables.request')->merge([
+            'columns' => [
+                [
+                    'name' => 'id',
+                    'data' => 'id',
+                    'searchable' => 'true',
+                    'orderable' => 'true',
+                    'search' => ['value' => null, 'regex' => 'false'],
+                    'columnControl' => [
+                        'search' => [
+                            'value' => '123',
+                            'logic' => 'equal',
+                            'type' => 'num',
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        /** @var \Yajra\DataTables\QueryDataTable $dataTable */
+        $dataTable = app('datatables')->of(
+            User::query()
+                ->select('users.*')
+                ->join('role_user', 'users.id', '=', 'role_user.user_id')
+                ->join('roles', 'role_user.role_id', '=', 'roles.id')
+        );
+
+        $dataTable->columnControlSearch();
+
+        $this->assertStringContainsString(
+            '"users"."id" = \'123\'',
+            $dataTable->getQuery()->toRawSql()
+        );
     }
 }
