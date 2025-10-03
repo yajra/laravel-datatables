@@ -6,7 +6,7 @@ if (! function_exists('datatables')) {
      * Or return the factory if source is not set.
      *
      * @param  \Illuminate\Contracts\Database\Query\Builder|\Illuminate\Contracts\Database\Eloquent\Builder|\Illuminate\Support\Collection|array|null  $source
-     * @return \Yajra\DataTables\DataTables|\Yajra\DataTables\DataTableAbstract
+     * @return ($source is null ? \Yajra\DataTables\DataTables : \Yajra\DataTables\DataTableAbstract)
      *
      * @throws \Yajra\DataTables\Exceptions\Exception
      */
