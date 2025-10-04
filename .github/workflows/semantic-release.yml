@@ -1,0 +1,41 @@
+name: Semantic Releases
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  packages: write
+  statuses: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Configuration
+        run: |
+          if [ -n "$GH_TOKEN_SECRET" ]; then
+            echo "GH_TOKEN=$GH_TOKEN_SECRET" >> $GITHUB_ENV
+          else
+            echo "GH_TOKEN=$GITHUB_TOKEN" >> $GITHUB_ENV
+          fi
+        env:
+          GH_TOKEN_SECRET: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@9cc899c47e6841430bbaedb43de1560a568dfd16
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
