@@ -6,6 +6,7 @@ use Closure;
 use DateTime;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Str;
 use ReflectionFunction;
 use ReflectionMethod;
@@ -124,12 +125,7 @@ class Helper
             return view($str, $data)->render();
         }
 
-        ob_start() && extract($data, EXTR_SKIP);
-        eval('?>'.app('blade.compiler')->compileString($str));
-        $str = ob_get_contents();
-        ob_end_clean();
-
-        return $str;
+        return Blade::render($str, $data);
     }
 
     /**
