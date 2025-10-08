@@ -1,3 +1,15 @@
+# [12.6.0](https://github.com/yajra/laravel-datatables/compare/v12.5.1...v12.6.0) (2025-10-08)
+
+
+### Bug Fixes
+
+* replace unsafe eval() with Blade::render() in compileBlade ([7f46d58](https://github.com/yajra/laravel-datatables/commit/7f46d5872b0324493c28ecc8d848c182e88f30e0))
+
+
+### Features
+
+* add __isset() method to Request for attribute existence check ([33f44d4](https://github.com/yajra/laravel-datatables/commit/33f44d42d284d6ea0a054de81ad5a57c3050867d))
+
 # Laravel DataTables 
 
 ## CHANGELOG
