@@ -25,6 +25,16 @@ class Request
     }
 
     /**
+     * Determine if an attribute exists on the base request.
+     *
+     * @param  string  $name
+     */
+    public function __isset($name): bool
+    {
+        return isset(request()->$name);
+    }
+
+    /**
      * Get attributes from request instance.
      *
      * @param  string  $name
