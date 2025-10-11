@@ -1,3 +1,10 @@
+## [12.6.1](https://github.com/yajra/laravel-datatables/compare/v12.6.0...v12.6.1) (2025-10-11)
+
+
+### Bug Fixes
+
+* value when mask uses "/" ([c771900](https://github.com/yajra/laravel-datatables/commit/c77190030c713e5b64c433bd161d9f33a210f22b))
+
 # [12.6.0](https://github.com/yajra/laravel-datatables/compare/v12.5.1...v12.6.0) (2025-10-08)
 
 
