@@ -381,17 +381,22 @@ class QueryDataTable extends DataTableAbstract
 
                 if ($type === 'date') {
                     try {
+                        // column control replaces / with - on date value
+                        if ($mask && str_contains($mask, '/')) {
+                            $value = str_replace('-', '/', $value);
+                        }
+
                         $value = $mask ? Carbon::createFromFormat($mask, $value) : Carbon::parse($value);
+
+                        if ($logic === 'notEqual') {
+                            $this->query->where(function ($q) use ($columnName, $value) {
+                                $q->whereDate($columnName, '!=', $value)->orWhereNull($columnName);
+                            });
+                        } else {
+                            $this->query->whereDate($columnName, $operator, $value);
+                        }
                     } catch (\Exception) {
                         // can't parse date
-                    }
-
-                    if ($logic === 'notEqual') {
-                        $this->query->where(function ($q) use ($columnName, $value) {
-                            $q->whereDate($columnName, '!=', $value)->orWhereNull($columnName);
-                        });
-                    } else {
-                        $this->query->whereDate($columnName, $operator, $value);
                     }
 
                     continue;
