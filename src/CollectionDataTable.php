@@ -10,6 +10,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Yajra\DataTables\Utilities\Helper;
 
 class CollectionDataTable extends DataTableAbstract
 {
@@ -99,12 +100,21 @@ class CollectionDataTable extends DataTableAbstract
             $regex = $this->request->isRegex($i);
             $keyword = $this->request->columnKeyword($i);
 
+            // Normalize keyword for accent-insensitive search if enabled
+            if ($this->config->isIgnoreAccents()) {
+                $keyword = Helper::normalizeAccents($keyword);
+            }
+
             $this->collection = $this->collection->filter(
                 function ($row) use ($column, $keyword, $regex) {
                     $data = $this->serialize($row);
 
                     /** @var string $value */
                     $value = Arr::get($data, $column);
+
+                    if ($this->config->isIgnoreAccents()) {
+                        $value = Helper::normalizeAccents($value);
+                    }
 
                     if ($this->config->isCaseInsensitive()) {
                         if ($regex) {
@@ -215,6 +225,10 @@ class CollectionDataTable extends DataTableAbstract
      */
     protected function globalSearch(string $keyword): void
     {
+        if ($this->config->isIgnoreAccents()) {
+            $keyword = Helper::normalizeAccents($keyword);
+        }
+
         $keyword = $this->config->isCaseInsensitive() ? Str::lower($keyword) : $keyword;
 
         $this->collection = $this->collection->filter(function ($row) use ($keyword) {
@@ -225,6 +239,9 @@ class CollectionDataTable extends DataTableAbstract
                 if (! is_string($value)) {
                     continue;
                 } else {
+                    if ($this->config->isIgnoreAccents()) {
+                        $value = Helper::normalizeAccents($value);
+                    }
                     $value = $this->config->isCaseInsensitive() ? Str::lower($value) : $value;
                 }
 
