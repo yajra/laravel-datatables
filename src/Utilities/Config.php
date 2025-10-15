@@ -82,7 +82,12 @@ class Config
     }
 
     /**
-     * Check if dataTable config ignores accents when searching.
+     * Check if DataTable config ignores accents when searching.
+     *
+     * When enabled, accented characters are normalized to their base letters
+     * during search operations (e.g., 'é' becomes 'e', 'ã' becomes 'a').
+     *
+     * @return bool True if accent-insensitive search is enabled
      */
     public function isIgnoreAccents(): bool
     {

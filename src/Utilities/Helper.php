@@ -12,21 +12,29 @@ use ReflectionFunction;
 use ReflectionMethod;
 
 class Helper
-
+{
     /**
      * Normalize accented characters to their base letter for accent-insensitive search.
      * Only replaces Portuguese Brazilian accents as specified.
+     *
+     * @param  string  $value  The string to normalize
+     * @return string The normalized string with accents removed
      */
     public static function normalizeAccents(string $value): string
     {
+        if (empty($value)) {
+            return $value;
+        }
+
         $map = [
-            'Ã' => 'a', 'ã' => 'a', 'Á' => 'a', 'á' => 'a', 'À' => 'a', 'à' => 'a', 'Â' => 'a', 'â' => 'a',
-            'É' => 'e', 'é' => 'e', 'Ê' => 'e', 'ê' => 'e',
-            'Í' => 'i', 'í' => 'i',
-            'Ó' => 'o', 'ó' => 'o', 'Ô' => 'o', 'ô' => 'o', 'Õ' => 'o', 'õ' => 'o',
-            'Ú' => 'u', 'ú' => 'u',
-            'Ç' => 'c', 'ç' => 'c',
+            'Ã' => 'A', 'ã' => 'a', 'Á' => 'A', 'á' => 'a', 'À' => 'A', 'à' => 'a', 'Â' => 'A', 'â' => 'a',
+            'É' => 'E', 'é' => 'e', 'Ê' => 'E', 'ê' => 'e',
+            'Í' => 'I', 'í' => 'i',
+            'Ó' => 'O', 'ó' => 'o', 'Ô' => 'O', 'ô' => 'o', 'Õ' => 'O', 'õ' => 'o',
+            'Ú' => 'U', 'ú' => 'u',
+            'Ç' => 'C', 'ç' => 'c',
         ];
+        
         return strtr($value, $map);
     }
 {

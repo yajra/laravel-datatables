@@ -100,6 +100,11 @@ class CollectionDataTable extends DataTableAbstract
             $regex = $this->request->isRegex($i);
             $keyword = $this->request->columnKeyword($i);
 
+            // Normalize keyword for accent-insensitive search if enabled
+            if ($this->config->isIgnoreAccents()) {
+                $keyword = Helper::normalizeAccents($keyword);
+            }
+
             $this->collection = $this->collection->filter(
                 function ($row) use ($column, $keyword, $regex) {
                     $data = $this->serialize($row);
@@ -109,7 +114,6 @@ class CollectionDataTable extends DataTableAbstract
 
                     if ($this->config->isIgnoreAccents()) {
                         $value = Helper::normalizeAccents($value);
-                        $keyword = Helper::normalizeAccents($keyword);
                     }
 
                     if ($this->config->isCaseInsensitive()) {
