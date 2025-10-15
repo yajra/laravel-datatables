@@ -12,6 +12,23 @@ use ReflectionFunction;
 use ReflectionMethod;
 
 class Helper
+
+    /**
+     * Normalize accented characters to their base letter for accent-insensitive search.
+     * Only replaces Portuguese Brazilian accents as specified.
+     */
+    public static function normalizeAccents(string $value): string
+    {
+        $map = [
+            'Ã' => 'a', 'ã' => 'a', 'Á' => 'a', 'á' => 'a', 'À' => 'a', 'à' => 'a', 'Â' => 'a', 'â' => 'a',
+            'É' => 'e', 'é' => 'e', 'Ê' => 'e', 'ê' => 'e',
+            'Í' => 'i', 'í' => 'i',
+            'Ó' => 'o', 'ó' => 'o', 'Ô' => 'o', 'ô' => 'o', 'Õ' => 'o', 'õ' => 'o',
+            'Ú' => 'u', 'ú' => 'u',
+            'Ç' => 'c', 'ç' => 'c',
+        ];
+        return strtr($value, $map);
+    }
 {
     /**
      * Places item of extra columns into results by care of their order.

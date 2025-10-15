@@ -81,6 +81,14 @@ class Config
         return (bool) $this->repository->get('datatables.search.starts_with', false);
     }
 
+    /**
+     * Check if dataTable config ignores accents when searching.
+     */
+    public function isIgnoreAccents(): bool
+    {
+        return (bool) $this->repository->get('datatables.search.ignore_accents', false);
+    }
+
     public function jsonOptions(): int
     {
         /** @var int $options */

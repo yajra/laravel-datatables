@@ -568,7 +568,10 @@ class QueryDataTable extends DataTableAbstract
         $column = $this->castColumn($column);
         $sql = $column.' LIKE ?';
 
-        if ($this->config->isCaseInsensitive()) {
+        if ($this->config->isIgnoreAccents()) {
+            // For accent-insensitive search, we normalize both the column and the keyword
+            $sql = $this->getNormalizeAccentsFunction($column).' LIKE ?';
+        } elseif ($this->config->isCaseInsensitive()) {
             $sql = 'LOWER('.$column.') LIKE ?';
         }
 
@@ -680,6 +683,10 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function prepareKeyword(string $keyword): string
     {
+        if ($this->config->isIgnoreAccents()) {
+            $keyword = Helper::normalizeAccents($keyword);
+        }
+
         if ($this->config->isCaseInsensitive()) {
             $keyword = Str::lower($keyword);
         }
@@ -697,6 +704,21 @@ class QueryDataTable extends DataTableAbstract
         }
 
         return $keyword;
+    }
+
+    /**
+     * Get the database function to normalize accents for the given column.
+     */
+    protected function getNormalizeAccentsFunction(string $column): string
+    {
+        $driver = $this->getConnection()->getDriverName();
+        
+        return match ($driver) {
+            'mysql' => "REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(LOWER($column), 'ã', 'a'), 'á', 'a'), 'à', 'a'), 'â', 'a'), 'é', 'e'), 'ê', 'e'), 'í', 'i'), 'ó', 'o'), 'ô', 'o'), 'õ', 'o'), 'ú', 'u'), 'ç', 'c'), 'ã', 'a'), 'á', 'a'), 'à', 'a'), 'â', 'a')",
+            'pgsql' => "LOWER(translate($column, 'ÃãÁáÀàÂâÉéÊêÍíÓóÔôÕõÚúÇç', 'aaaaaaaeeeiioooooucc'))",
+            'sqlite' => "LOWER($column)", // SQLite doesn't have built-in accent normalization, so we'll rely on keyword normalization only
+            default => "LOWER($column)" // Fallback for other databases
+        };
     }
 
     /**
