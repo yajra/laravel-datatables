@@ -721,18 +721,22 @@ class QueryDataTable extends DataTableAbstract
 
         $driver = $this->getConnection()->getDriverName();
         
-        return match ($driver) {
-            'mysql' => $this->getMySqlNormalizeFunction($column),
-            'pgsql' => $this->getPostgreSqlNormalizeFunction($column),
-            'sqlite' => "LOWER($column)", // SQLite doesn't have built-in accent normalization
-            default => "LOWER($column)" // Fallback for other databases
-        };
+        switch ($driver) {
+            case 'mysql':
+                return $this->getMySqlNormalizeFunction($column);
+            case 'pgsql':
+                return $this->getPostgreSqlNormalizeFunction($column);
+            case 'sqlite':
+                return "LOWER($column)"; // SQLite doesn't have built-in accent normalization
+            default:
+                return "LOWER($column)"; // Fallback for other databases
+        }
     }
 
     /**
      * Get MySQL-specific accent normalization function.
      */
-    private function getMySqlNormalizeFunction(string $column): string
+    protected function getMySqlNormalizeFunction(string $column): string
     {
         $replacements = [
             'ã' => 'a', 'á' => 'a', 'à' => 'a', 'â' => 'a',
@@ -757,7 +761,7 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Get PostgreSQL-specific accent normalization function.
      */
-    private function getPostgreSqlNormalizeFunction(string $column): string
+    protected function getPostgreSqlNormalizeFunction(string $column): string
     {
         return "LOWER(translate($column, 'ÃãÁáÀàÂâÉéÊêÍíÓóÔôÕõÚúÇç', 'aaaaaaaeeeiioooooucc'))";
     }
