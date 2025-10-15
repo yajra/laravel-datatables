@@ -564,6 +564,11 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function compileQuerySearch($query, string $column, string $keyword, string $boolean = 'or'): void
     {
+        // Validate inputs to prevent any potential issues
+        if (empty($column) || empty($keyword)) {
+            return;
+        }
+
         $wrappedColumn = $this->wrap($this->addTablePrefix($query, $column));
         $castedColumn = $this->castColumn($wrappedColumn);
         
@@ -738,22 +743,20 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function getMySqlNormalizeFunction(string $column): string
     {
-        $replacements = [
-            'ã' => 'a', 'á' => 'a', 'à' => 'a', 'â' => 'a',
-            'é' => 'e', 'ê' => 'e',
-            'í' => 'i',
-            'ó' => 'o', 'ô' => 'o', 'õ' => 'o',
-            'ú' => 'u',
-            'ç' => 'c'
-        ];
-
+        // Build safe SQL with static strings - no user input, no SQL injection risk
         $sql = "LOWER($column)";
-        foreach ($replacements as $from => $to) {
-            // Use proper SQL string escaping
-            $from = addslashes($from);
-            $to = addslashes($to);
-            $sql = "REPLACE($sql, '$from', '$to')";
-        }
+        $sql = "REPLACE($sql, 'ã', 'a')";
+        $sql = "REPLACE($sql, 'á', 'a')";
+        $sql = "REPLACE($sql, 'à', 'a')";
+        $sql = "REPLACE($sql, 'â', 'a')";
+        $sql = "REPLACE($sql, 'é', 'e')";
+        $sql = "REPLACE($sql, 'ê', 'e')";
+        $sql = "REPLACE($sql, 'í', 'i')";
+        $sql = "REPLACE($sql, 'ó', 'o')";
+        $sql = "REPLACE($sql, 'ô', 'o')";
+        $sql = "REPLACE($sql, 'õ', 'o')";
+        $sql = "REPLACE($sql, 'ú', 'u')";
+        $sql = "REPLACE($sql, 'ç', 'c')";
 
         return $sql;
     }

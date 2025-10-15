@@ -22,7 +22,8 @@ class Helper
      */
     public static function normalizeAccents(string $value): string
     {
-        if (empty($value)) {
+        // Return early for empty strings or strings without accents
+        if (empty($value) || ! preg_match('/[ÃãÁáÀàÂâÉéÊêÍíÓóÔôÕõÚúÇç]/', $value)) {
             return $value;
         }
 
