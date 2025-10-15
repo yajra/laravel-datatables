@@ -27,11 +27,23 @@ class Helper
         }
 
         $map = [
-            'Ã' => 'A', 'ã' => 'a', 'Á' => 'A', 'á' => 'a', 'À' => 'A', 'à' => 'a', 'Â' => 'A', 'â' => 'a',
-            'É' => 'E', 'é' => 'e', 'Ê' => 'E', 'ê' => 'e',
+            // Uppercase A variations
+            'Ã' => 'A', 'Á' => 'A', 'À' => 'A', 'Â' => 'A',
+            // Lowercase a variations  
+            'ã' => 'a', 'á' => 'a', 'à' => 'a', 'â' => 'a',
+            // Uppercase E variations
+            'É' => 'E', 'Ê' => 'E',
+            // Lowercase e variations
+            'é' => 'e', 'ê' => 'e',
+            // I variations
             'Í' => 'I', 'í' => 'i',
-            'Ó' => 'O', 'ó' => 'o', 'Ô' => 'O', 'ô' => 'o', 'Õ' => 'O', 'õ' => 'o',
+            // Uppercase O variations
+            'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O',
+            // Lowercase o variations
+            'ó' => 'o', 'ô' => 'o', 'õ' => 'o',
+            // U variations
             'Ú' => 'U', 'ú' => 'u',
+            // C variations
             'Ç' => 'C', 'ç' => 'c',
         ];
         
