@@ -58,16 +58,16 @@ class HasManyDeepRelationTest extends TestCase
             'search' => ['value' => 'Comment-1'],
         ]);
 
-        // HasManyDeep can return multiple rows per user (one per comment matching the search)
-        // Each user has 3 posts with 2 comments each. Searching for 'Comment-1' matches
-        // one comment per post, so we expect at least 20 users × 3 posts = 60 results
+        // Global search on HasManyDeep relationship returns unique users that have matching comments
+        // Since we're selecting users.*, we get one row per user, not one row per matching comment
+        // All 20 users have comments with 'Comment-1', so we expect 20 results
         $response->assertJson([
             'draw' => 0,
             'recordsTotal' => 20,
+            'recordsFiltered' => 20,
         ]);
 
-        $this->assertGreaterThanOrEqual(60, $response->json()['recordsFiltered']);
-        $this->assertGreaterThanOrEqual(60, count($response->json()['data']));
+        $this->assertCount(20, $response->json()['data']);
     }
 
     #[Test]
