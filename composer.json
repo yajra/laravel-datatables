@@ -20,7 +20,8 @@
         "illuminate/filesystem": "^12",
         "illuminate/http": "^12",
         "illuminate/support": "^12",
-        "illuminate/view": "^12"
+        "illuminate/view": "^12",
+        "staudenmeir/eloquent-has-many-deep": "^1.21"
     },
     "require-dev": {
         "algolia/algoliasearch-client-php": "^3.4.1",
@@ -29,8 +30,7 @@
         "laravel/scout": "^10.8.3",
         "meilisearch/meilisearch-php": "^1.6.1",
         "orchestra/testbench": "^10",
-        "rector/rector": "^2.0",
-        "staudenmeir/eloquent-has-many-deep": "^1.21"
+        "rector/rector": "^2.0"
     },
     "suggest": {
         "yajra/laravel-datatables-export": "Plugin for server-side exporting using livewire and queue worker.",

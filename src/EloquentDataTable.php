@@ -163,7 +163,7 @@ class EloquentDataTable extends QueryDataTable
     /**
      * Check if a relation is a HasManyDeep relationship.
      *
-     * @param  Relation  $model
+     * @param  \Illuminate\Database\Eloquent\Relations\Relation  $model
      */
     protected function isHasManyDeep($model): bool
     {
@@ -175,32 +175,17 @@ class EloquentDataTable extends QueryDataTable
      * Get the foreign key name for a HasManyDeep relationship.
      * This is the foreign key on the final related table that points to the intermediate table.
      *
-     * @param  Relation  $model
+     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep  $model
      */
     protected function getHasManyDeepForeignKey($model): string
     {
         // Try to get from relationship definition using reflection
-        try {
-            $reflection = new \ReflectionClass($model);
-            if ($reflection->hasProperty('foreignKeys')) {
-                $property = $reflection->getProperty('foreignKeys');
-                $property->setAccessible(true);
-                $foreignKeys = $property->getValue($model);
+        $foreignKeys = $this->getForeignKeys($model);
+        if (! empty($foreignKeys)) {
+            // Get the last foreign key (for the final join)
+            $lastFK = end($foreignKeys);
 
-                if (is_array($foreignKeys) && ! empty($foreignKeys)) {
-                    // Get the last foreign key (for the final join)
-                    $lastFK = end($foreignKeys);
-                    if (is_string($lastFK) && str_contains($lastFK, '.')) {
-                        $parts = explode('.', $lastFK);
-
-                        return end($parts);
-                    }
-
-                    return $lastFK;
-                }
-            }
-        } catch (\Exception $e) {
-            // Fallback
+            return $this->extractColumnFromQualified($lastFK);
         }
 
         // Try to get the foreign key using common HasManyDeep methods
@@ -211,16 +196,15 @@ class EloquentDataTable extends QueryDataTable
         // HasManyDeep may use getQualifiedForeignKeyName() and extract the column
         if (method_exists($model, 'getQualifiedForeignKeyName')) {
             $qualified = $model->getQualifiedForeignKeyName();
-            $parts = explode('.', $qualified);
 
-            return end($parts);
+            return $this->extractColumnFromQualified($qualified);
         }
 
         // Fallback: try to infer from intermediate model
         $intermediateTable = $this->getHasManyDeepIntermediateTable($model, '');
         if ($intermediateTable) {
             // Assume the related table has a foreign key named {intermediate_table}_id
-            return $intermediateTable.'_id';
+            return \Illuminate\Support\Str::singular($intermediateTable).'_id';
         }
 
         // Final fallback: use the related model's key name
@@ -231,32 +215,29 @@ class EloquentDataTable extends QueryDataTable
      * Get the local key name for a HasManyDeep relationship.
      * This is the local key on the intermediate table (or parent if no intermediate).
      *
-     * @param  Relation  $model
+     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep  $model
      */
     protected function getHasManyDeepLocalKey($model): string
     {
         // Try to get from relationship definition using reflection
+        $localKeys = [];
         try {
             $reflection = new \ReflectionClass($model);
             if ($reflection->hasProperty('localKeys')) {
                 $property = $reflection->getProperty('localKeys');
                 $property->setAccessible(true);
                 $localKeys = $property->getValue($model);
-
-                if (is_array($localKeys) && ! empty($localKeys)) {
-                    // Get the last local key (for the final join)
-                    $lastLK = end($localKeys);
-                    if (is_string($lastLK) && str_contains($lastLK, '.')) {
-                        $parts = explode('.', $lastLK);
-
-                        return end($parts);
-                    }
-
-                    return $lastLK;
-                }
             }
         } catch (\Exception $e) {
-            // Fallback
+            // Reflection failed - proceed to other methods
+            // This is safe because we have multiple fallback strategies
+        }
+
+        if (is_array($localKeys) && ! empty($localKeys)) {
+            // Get the last local key (for the final join)
+            $lastLK = end($localKeys);
+
+            return $this->extractColumnFromQualified($lastLK);
         }
 
         // Try to get the local key using common HasManyDeep methods
@@ -267,31 +248,21 @@ class EloquentDataTable extends QueryDataTable
         // HasManyDeep may use getQualifiedLocalKeyName() and extract the column
         if (method_exists($model, 'getQualifiedLocalKeyName')) {
             $qualified = $model->getQualifiedLocalKeyName();
-            $parts = explode('.', $qualified);
 
-            return end($parts);
+            return $this->extractColumnFromQualified($qualified);
         }
 
         // Fallback: use the intermediate model's key name, or parent if no intermediate
         $intermediateTable = $this->getHasManyDeepIntermediateTable($model, '');
         if ($intermediateTable) {
-            try {
-                $reflection = new \ReflectionClass($model);
-                if ($reflection->hasProperty('through')) {
-                    $property = $reflection->getProperty('through');
-                    $property->setAccessible(true);
-                    $through = $property->getValue($model);
-                    if (is_array($through) && ! empty($through)) {
-                        $firstThrough = is_string($through[0]) ? $through[0] : get_class($through[0]);
-                        if (class_exists($firstThrough)) {
-                            $throughModel = new $firstThrough;
+            $through = $this->getThroughModels($model);
+            if (! empty($through)) {
+                $firstThrough = is_string($through[0]) ? $through[0] : get_class($through[0]);
+                if (class_exists($firstThrough)) {
+                    $throughModel = app($firstThrough);
 
-                            return $throughModel->getKeyName();
-                        }
-                    }
+                    return $throughModel->getKeyName();
                 }
-            } catch (\Exception $e) {
-                // Fallback
             }
         }
 
@@ -302,32 +273,22 @@ class EloquentDataTable extends QueryDataTable
     /**
      * Get the intermediate table name for a HasManyDeep relationship.
      *
-     * @param  Relation  $model
+     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep  $model
      * @param  string  $lastAlias
      */
     protected function getHasManyDeepIntermediateTable($model, $lastAlias): ?string
     {
         // Try to get intermediate models from the relationship
         // HasManyDeep stores intermediate models in a protected property
-        try {
-            $reflection = new \ReflectionClass($model);
-            if ($reflection->hasProperty('through')) {
-                $property = $reflection->getProperty('through');
-                $property->setAccessible(true);
-                $through = $property->getValue($model);
+        $through = $this->getThroughModels($model);
+        if (! empty($through)) {
+            // Get the first intermediate model
+            $firstThrough = is_string($through[0]) ? $through[0] : get_class($through[0]);
+            if (class_exists($firstThrough)) {
+                $throughModel = app($firstThrough);
 
-                if (is_array($through) && ! empty($through)) {
-                    // Get the first intermediate model
-                    $firstThrough = is_string($through[0]) ? $through[0] : get_class($through[0]);
-                    if (class_exists($firstThrough)) {
-                        $throughModel = new $firstThrough;
-
-                        return $throughModel->getTable();
-                    }
-                }
+                return $throughModel->getTable();
             }
-        } catch (\Exception $e) {
-            // Fallback if reflection fails
         }
 
         return null;
@@ -336,46 +297,30 @@ class EloquentDataTable extends QueryDataTable
     /**
      * Get the foreign key for joining to the intermediate table.
      *
-     * @param  Relation  $model
+     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep  $model
      */
     protected function getHasManyDeepIntermediateForeignKey($model): string
     {
         // The foreign key on the intermediate table that points to the parent
         // For User -> Posts -> Comments, this would be posts.user_id
         $parent = $model->getParent();
-        $parentKey = $parent->getKeyName();
 
         // Try to get from relationship definition
-        try {
-            $reflection = new \ReflectionClass($model);
-            if ($reflection->hasProperty('foreignKeys')) {
-                $property = $reflection->getProperty('foreignKeys');
-                $property->setAccessible(true);
-                $foreignKeys = $property->getValue($model);
+        $foreignKeys = $this->getForeignKeys($model);
+        if (! empty($foreignKeys)) {
+            $firstFK = $foreignKeys[0];
 
-                if (is_array($foreignKeys) && ! empty($foreignKeys)) {
-                    $firstFK = $foreignKeys[0];
-                    if (is_string($firstFK) && str_contains($firstFK, '.')) {
-                        $parts = explode('.', $firstFK);
-
-                        return end($parts);
-                    }
-
-                    return $firstFK;
-                }
-            }
-        } catch (\Exception $e) {
-            // Fallback
+            return $this->extractColumnFromQualified($firstFK);
         }
 
         // Default: assume intermediate table has a foreign key named {parent_table}_id
-        return $parent->getTable().'_id';
+        return \Illuminate\Support\Str::singular($parent->getTable()).'_id';
     }
 
     /**
      * Get the local key for joining from the parent to the intermediate table.
      *
-     * @param  Relation  $model
+     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep  $model
      */
     protected function getHasManyDeepIntermediateLocalKey($model): string
     {
@@ -581,5 +526,74 @@ class EloquentDataTable extends QueryDataTable
         if (! in_array($table, $joins)) {
             $this->getBaseQueryBuilder()->join($table, $foreign, '=', $other, $type);
         }
+    }
+
+    /**
+     * Extract the array of foreign keys from a HasManyDeep relationship using reflection.
+     *
+     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep  $model
+     * @return array
+     */
+    private function getForeignKeys($model): array
+    {
+        try {
+            $reflection = new \ReflectionClass($model);
+            if ($reflection->hasProperty('foreignKeys')) {
+                $property = $reflection->getProperty('foreignKeys');
+                $property->setAccessible(true);
+                $foreignKeys = $property->getValue($model);
+                if (is_array($foreignKeys) && ! empty($foreignKeys)) {
+                    return $foreignKeys;
+                }
+            }
+        } catch (\Exception $e) {
+            // Reflection failed - fall back to empty array
+            // This is safe because callers handle empty arrays appropriately
+        }
+
+        return [];
+    }
+
+    /**
+     * Extract the array of through models from a HasManyDeep relationship using reflection.
+     *
+     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep  $model
+     * @return array
+     */
+    private function getThroughModels($model): array
+    {
+        try {
+            $reflection = new \ReflectionClass($model);
+            if ($reflection->hasProperty('through')) {
+                $property = $reflection->getProperty('through');
+                $property->setAccessible(true);
+                $through = $property->getValue($model);
+                if (is_array($through) && ! empty($through)) {
+                    return $through;
+                }
+            }
+        } catch (\Exception $e) {
+            // Reflection failed - fall back to empty array
+            // This is safe because callers handle empty arrays appropriately
+        }
+
+        return [];
+    }
+
+    /**
+     * Extract the column name from a qualified column name (e.g., 'table.column' -> 'column').
+     *
+     * @param  string  $qualified
+     * @return string
+     */
+    private function extractColumnFromQualified(string $qualified): string
+    {
+        if (str_contains($qualified, '.')) {
+            $parts = explode('.', $qualified);
+
+            return end($parts);
+        }
+
+        return $qualified;
     }
 }
