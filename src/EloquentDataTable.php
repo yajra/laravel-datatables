@@ -164,7 +164,6 @@ class EloquentDataTable extends QueryDataTable
      * Check if a relation is a HasManyDeep relationship.
      *
      * @param  Relation  $model
-     * @return bool
      */
     protected function isHasManyDeep($model): bool
     {
@@ -177,7 +176,6 @@ class EloquentDataTable extends QueryDataTable
      * This is the foreign key on the final related table that points to the intermediate table.
      *
      * @param  Relation  $model
-     * @return string
      */
     protected function getHasManyDeepForeignKey($model): string
     {
@@ -188,14 +186,16 @@ class EloquentDataTable extends QueryDataTable
                 $property = $reflection->getProperty('foreignKeys');
                 $property->setAccessible(true);
                 $foreignKeys = $property->getValue($model);
-                
-                if (is_array($foreignKeys) && !empty($foreignKeys)) {
+
+                if (is_array($foreignKeys) && ! empty($foreignKeys)) {
                     // Get the last foreign key (for the final join)
                     $lastFK = end($foreignKeys);
                     if (is_string($lastFK) && str_contains($lastFK, '.')) {
                         $parts = explode('.', $lastFK);
+
                         return end($parts);
                     }
+
                     return $lastFK;
                 }
             }
@@ -212,6 +212,7 @@ class EloquentDataTable extends QueryDataTable
         if (method_exists($model, 'getQualifiedForeignKeyName')) {
             $qualified = $model->getQualifiedForeignKeyName();
             $parts = explode('.', $qualified);
+
             return end($parts);
         }
 
@@ -231,7 +232,6 @@ class EloquentDataTable extends QueryDataTable
      * This is the local key on the intermediate table (or parent if no intermediate).
      *
      * @param  Relation  $model
-     * @return string
      */
     protected function getHasManyDeepLocalKey($model): string
     {
@@ -242,14 +242,16 @@ class EloquentDataTable extends QueryDataTable
                 $property = $reflection->getProperty('localKeys');
                 $property->setAccessible(true);
                 $localKeys = $property->getValue($model);
-                
-                if (is_array($localKeys) && !empty($localKeys)) {
+
+                if (is_array($localKeys) && ! empty($localKeys)) {
                     // Get the last local key (for the final join)
                     $lastLK = end($localKeys);
                     if (is_string($lastLK) && str_contains($lastLK, '.')) {
                         $parts = explode('.', $lastLK);
+
                         return end($parts);
                     }
+
                     return $lastLK;
                 }
             }
@@ -266,6 +268,7 @@ class EloquentDataTable extends QueryDataTable
         if (method_exists($model, 'getQualifiedLocalKeyName')) {
             $qualified = $model->getQualifiedLocalKeyName();
             $parts = explode('.', $qualified);
+
             return end($parts);
         }
 
@@ -278,10 +281,11 @@ class EloquentDataTable extends QueryDataTable
                     $property = $reflection->getProperty('through');
                     $property->setAccessible(true);
                     $through = $property->getValue($model);
-                    if (is_array($through) && !empty($through)) {
+                    if (is_array($through) && ! empty($through)) {
                         $firstThrough = is_string($through[0]) ? $through[0] : get_class($through[0]);
                         if (class_exists($firstThrough)) {
                             $throughModel = new $firstThrough;
+
                             return $throughModel->getKeyName();
                         }
                     }
@@ -300,7 +304,6 @@ class EloquentDataTable extends QueryDataTable
      *
      * @param  Relation  $model
      * @param  string  $lastAlias
-     * @return string|null
      */
     protected function getHasManyDeepIntermediateTable($model, $lastAlias): ?string
     {
@@ -312,12 +315,13 @@ class EloquentDataTable extends QueryDataTable
                 $property = $reflection->getProperty('through');
                 $property->setAccessible(true);
                 $through = $property->getValue($model);
-                
-                if (is_array($through) && !empty($through)) {
+
+                if (is_array($through) && ! empty($through)) {
                     // Get the first intermediate model
                     $firstThrough = is_string($through[0]) ? $through[0] : get_class($through[0]);
                     if (class_exists($firstThrough)) {
                         $throughModel = new $firstThrough;
+
                         return $throughModel->getTable();
                     }
                 }
@@ -333,7 +337,6 @@ class EloquentDataTable extends QueryDataTable
      * Get the foreign key for joining to the intermediate table.
      *
      * @param  Relation  $model
-     * @return string
      */
     protected function getHasManyDeepIntermediateForeignKey($model): string
     {
@@ -341,7 +344,7 @@ class EloquentDataTable extends QueryDataTable
         // For User -> Posts -> Comments, this would be posts.user_id
         $parent = $model->getParent();
         $parentKey = $parent->getKeyName();
-        
+
         // Try to get from relationship definition
         try {
             $reflection = new \ReflectionClass($model);
@@ -349,13 +352,15 @@ class EloquentDataTable extends QueryDataTable
                 $property = $reflection->getProperty('foreignKeys');
                 $property->setAccessible(true);
                 $foreignKeys = $property->getValue($model);
-                
-                if (is_array($foreignKeys) && !empty($foreignKeys)) {
+
+                if (is_array($foreignKeys) && ! empty($foreignKeys)) {
                     $firstFK = $foreignKeys[0];
                     if (is_string($firstFK) && str_contains($firstFK, '.')) {
                         $parts = explode('.', $firstFK);
+
                         return end($parts);
                     }
+
                     return $firstFK;
                 }
             }
@@ -371,7 +376,6 @@ class EloquentDataTable extends QueryDataTable
      * Get the local key for joining from the parent to the intermediate table.
      *
      * @param  Relation  $model
-     * @return string
      */
     protected function getHasManyDeepIntermediateLocalKey($model): string
     {
@@ -492,16 +496,16 @@ class EloquentDataTable extends QueryDataTable
                     // HasManyDeep relationships can traverse multiple intermediate models
                     // We need to join through all intermediate models to reach the final related table
                     $related = $model->getRelated();
-                    
+
                     // Get the qualified parent key to determine the first intermediate model
                     $qualifiedParentKey = $model->getQualifiedParentKeyName();
                     $parentTable = explode('.', $qualifiedParentKey)[0];
-                    
+
                     // For HasManyDeep, we need to join through intermediate models
                     // The relationship query already knows the structure, so we'll use it
                     // First, join to the first intermediate model (if not already joined)
                     $intermediateTable = $this->getHasManyDeepIntermediateTable($model, $lastAlias);
-                    
+
                     if ($intermediateTable && $intermediateTable !== $lastAlias) {
                         // Join to intermediate table first
                         if ($this->enableEagerJoinAliases) {
@@ -511,27 +515,27 @@ class EloquentDataTable extends QueryDataTable
                             $intermediateAlias = $intermediateTable;
                             $intermediate = $intermediateTable;
                         }
-                        
+
                         $intermediateFK = $this->getHasManyDeepIntermediateForeignKey($model);
                         $intermediateLocal = $this->getHasManyDeepIntermediateLocalKey($model);
                         $this->performJoin($intermediate, $intermediateAlias.'.'.$intermediateFK, ltrim($lastAlias.'.'.$intermediateLocal, '.'));
                         $lastAlias = $intermediateAlias;
                     }
-                    
+
                     // Now join to the final related table
                     if ($this->enableEagerJoinAliases) {
                         $table = $related->getTable().' as '.$tableAlias;
                     } else {
                         $table = $tableAlias = $related->getTable();
                     }
-                    
+
                     // Get the foreign key on the related table (points to intermediate)
                     $foreignKey = $this->getHasManyDeepForeignKey($model);
                     $localKey = $this->getHasManyDeepLocalKey($model);
-                    
+
                     $foreign = $tableAlias.'.'.$foreignKey;
                     $other = ltrim($lastAlias.'.'.$localKey, '.');
-                    
+
                     $lastQuery->addSelect($tableAlias.'.'.$relationColumn);
                     break;
 
