@@ -532,7 +532,6 @@ class EloquentDataTable extends QueryDataTable
      * Extract the array of foreign keys from a HasManyDeep relationship using reflection.
      *
      * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep  $model
-     * @return array
      */
     private function getForeignKeys($model): array
     {
@@ -558,7 +557,6 @@ class EloquentDataTable extends QueryDataTable
      * Extract the array of through models from a HasManyDeep relationship using reflection.
      *
      * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep  $model
-     * @return array
      */
     private function getThroughModels($model): array
     {
@@ -582,9 +580,6 @@ class EloquentDataTable extends QueryDataTable
 
     /**
      * Extract the column name from a qualified column name (e.g., 'table.column' -> 'column').
-     *
-     * @param  string  $qualified
-     * @return string
      */
     private function extractColumnFromQualified(string $qualified): string
     {
