@@ -5,7 +5,6 @@ namespace Yajra\DataTables\Tests;
 use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use Yajra\DataTables\Tests\Models\AnimalUser;
-use Yajra\DataTables\Tests\Models\Comment;
 use Yajra\DataTables\Tests\Models\HumanUser;
 use Yajra\DataTables\Tests\Models\Role;
 use Yajra\DataTables\Tests\Models\User;

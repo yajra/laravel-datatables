@@ -114,4 +114,3 @@ class HasManyDeepRelationTest extends TestCase
         $this->app['router']->get('/relations/hasManyDeepSearchRelation', fn (DataTables $datatables) => $datatables->eloquent(User::with('comments'))->toJson());
     }
 }
-
