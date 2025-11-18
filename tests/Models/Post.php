@@ -22,4 +22,9 @@ class Post extends Model
     {
         return $this->hasOneThrough(Heart::class, User::class, 'id', 'user_id', 'user_id', 'id');
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

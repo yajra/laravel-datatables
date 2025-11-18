@@ -161,6 +161,225 @@ class EloquentDataTable extends QueryDataTable
     }
 
     /**
+     * Check if a relation is a HasManyDeep relationship.
+     *
+     * @param  Relation  $model
+     * @return bool
+     */
+    protected function isHasManyDeep($model): bool
+    {
+        return class_exists('Staudenmeir\EloquentHasManyDeep\HasManyDeep')
+            && $model instanceof \Staudenmeir\EloquentHasManyDeep\HasManyDeep;
+    }
+
+    /**
+     * Get the foreign key name for a HasManyDeep relationship.
+     * This is the foreign key on the final related table that points to the intermediate table.
+     *
+     * @param  Relation  $model
+     * @return string
+     */
+    protected function getHasManyDeepForeignKey($model): string
+    {
+        // Try to get from relationship definition using reflection
+        try {
+            $reflection = new \ReflectionClass($model);
+            if ($reflection->hasProperty('foreignKeys')) {
+                $property = $reflection->getProperty('foreignKeys');
+                $property->setAccessible(true);
+                $foreignKeys = $property->getValue($model);
+                
+                if (is_array($foreignKeys) && !empty($foreignKeys)) {
+                    // Get the last foreign key (for the final join)
+                    $lastFK = end($foreignKeys);
+                    if (is_string($lastFK) && str_contains($lastFK, '.')) {
+                        $parts = explode('.', $lastFK);
+                        return end($parts);
+                    }
+                    return $lastFK;
+                }
+            }
+        } catch (\Exception $e) {
+            // Fallback
+        }
+
+        // Try to get the foreign key using common HasManyDeep methods
+        if (method_exists($model, 'getForeignKeyName')) {
+            return $model->getForeignKeyName();
+        }
+
+        // HasManyDeep may use getQualifiedForeignKeyName() and extract the column
+        if (method_exists($model, 'getQualifiedForeignKeyName')) {
+            $qualified = $model->getQualifiedForeignKeyName();
+            $parts = explode('.', $qualified);
+            return end($parts);
+        }
+
+        // Fallback: try to infer from intermediate model
+        $intermediateTable = $this->getHasManyDeepIntermediateTable($model, '');
+        if ($intermediateTable) {
+            // Assume the related table has a foreign key named {intermediate_table}_id
+            return $intermediateTable.'_id';
+        }
+
+        // Final fallback: use the related model's key name
+        return $model->getRelated()->getKeyName();
+    }
+
+    /**
+     * Get the local key name for a HasManyDeep relationship.
+     * This is the local key on the intermediate table (or parent if no intermediate).
+     *
+     * @param  Relation  $model
+     * @return string
+     */
+    protected function getHasManyDeepLocalKey($model): string
+    {
+        // Try to get from relationship definition using reflection
+        try {
+            $reflection = new \ReflectionClass($model);
+            if ($reflection->hasProperty('localKeys')) {
+                $property = $reflection->getProperty('localKeys');
+                $property->setAccessible(true);
+                $localKeys = $property->getValue($model);
+                
+                if (is_array($localKeys) && !empty($localKeys)) {
+                    // Get the last local key (for the final join)
+                    $lastLK = end($localKeys);
+                    if (is_string($lastLK) && str_contains($lastLK, '.')) {
+                        $parts = explode('.', $lastLK);
+                        return end($parts);
+                    }
+                    return $lastLK;
+                }
+            }
+        } catch (\Exception $e) {
+            // Fallback
+        }
+
+        // Try to get the local key using common HasManyDeep methods
+        if (method_exists($model, 'getLocalKeyName')) {
+            return $model->getLocalKeyName();
+        }
+
+        // HasManyDeep may use getQualifiedLocalKeyName() and extract the column
+        if (method_exists($model, 'getQualifiedLocalKeyName')) {
+            $qualified = $model->getQualifiedLocalKeyName();
+            $parts = explode('.', $qualified);
+            return end($parts);
+        }
+
+        // Fallback: use the intermediate model's key name, or parent if no intermediate
+        $intermediateTable = $this->getHasManyDeepIntermediateTable($model, '');
+        if ($intermediateTable) {
+            try {
+                $reflection = new \ReflectionClass($model);
+                if ($reflection->hasProperty('through')) {
+                    $property = $reflection->getProperty('through');
+                    $property->setAccessible(true);
+                    $through = $property->getValue($model);
+                    if (is_array($through) && !empty($through)) {
+                        $firstThrough = is_string($through[0]) ? $through[0] : get_class($through[0]);
+                        if (class_exists($firstThrough)) {
+                            $throughModel = new $firstThrough;
+                            return $throughModel->getKeyName();
+                        }
+                    }
+                }
+            } catch (\Exception $e) {
+                // Fallback
+            }
+        }
+
+        // Final fallback: use the parent model's key name
+        return $model->getParent()->getKeyName();
+    }
+
+    /**
+     * Get the intermediate table name for a HasManyDeep relationship.
+     *
+     * @param  Relation  $model
+     * @param  string  $lastAlias
+     * @return string|null
+     */
+    protected function getHasManyDeepIntermediateTable($model, $lastAlias): ?string
+    {
+        // Try to get intermediate models from the relationship
+        // HasManyDeep stores intermediate models in a protected property
+        try {
+            $reflection = new \ReflectionClass($model);
+            if ($reflection->hasProperty('through')) {
+                $property = $reflection->getProperty('through');
+                $property->setAccessible(true);
+                $through = $property->getValue($model);
+                
+                if (is_array($through) && !empty($through)) {
+                    // Get the first intermediate model
+                    $firstThrough = is_string($through[0]) ? $through[0] : get_class($through[0]);
+                    if (class_exists($firstThrough)) {
+                        $throughModel = new $firstThrough;
+                        return $throughModel->getTable();
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            // Fallback if reflection fails
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the foreign key for joining to the intermediate table.
+     *
+     * @param  Relation  $model
+     * @return string
+     */
+    protected function getHasManyDeepIntermediateForeignKey($model): string
+    {
+        // The foreign key on the intermediate table that points to the parent
+        // For User -> Posts -> Comments, this would be posts.user_id
+        $parent = $model->getParent();
+        $parentKey = $parent->getKeyName();
+        
+        // Try to get from relationship definition
+        try {
+            $reflection = new \ReflectionClass($model);
+            if ($reflection->hasProperty('foreignKeys')) {
+                $property = $reflection->getProperty('foreignKeys');
+                $property->setAccessible(true);
+                $foreignKeys = $property->getValue($model);
+                
+                if (is_array($foreignKeys) && !empty($foreignKeys)) {
+                    $firstFK = $foreignKeys[0];
+                    if (is_string($firstFK) && str_contains($firstFK, '.')) {
+                        $parts = explode('.', $firstFK);
+                        return end($parts);
+                    }
+                    return $firstFK;
+                }
+            }
+        } catch (\Exception $e) {
+            // Fallback
+        }
+
+        // Default: assume intermediate table has a foreign key named {parent_table}_id
+        return $parent->getTable().'_id';
+    }
+
+    /**
+     * Get the local key for joining from the parent to the intermediate table.
+     *
+     * @param  Relation  $model
+     * @return string
+     */
+    protected function getHasManyDeepIntermediateLocalKey($model): string
+    {
+        // The local key on the parent table
+        return $model->getParent()->getKeyName();
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @throws \Yajra\DataTables\Exceptions\Exception
@@ -267,6 +486,53 @@ class EloquentDataTable extends QueryDataTable
                     }
                     $foreign = ltrim($lastAlias.'.'.$model->getForeignKeyName(), '.');
                     $other = $tableAlias.'.'.$model->getOwnerKeyName();
+                    break;
+
+                case $this->isHasManyDeep($model):
+                    // HasManyDeep relationships can traverse multiple intermediate models
+                    // We need to join through all intermediate models to reach the final related table
+                    $related = $model->getRelated();
+                    
+                    // Get the qualified parent key to determine the first intermediate model
+                    $qualifiedParentKey = $model->getQualifiedParentKeyName();
+                    $parentTable = explode('.', $qualifiedParentKey)[0];
+                    
+                    // For HasManyDeep, we need to join through intermediate models
+                    // The relationship query already knows the structure, so we'll use it
+                    // First, join to the first intermediate model (if not already joined)
+                    $intermediateTable = $this->getHasManyDeepIntermediateTable($model, $lastAlias);
+                    
+                    if ($intermediateTable && $intermediateTable !== $lastAlias) {
+                        // Join to intermediate table first
+                        if ($this->enableEagerJoinAliases) {
+                            $intermediateAlias = $tableAlias.'_intermediate';
+                            $intermediate = $intermediateTable.' as '.$intermediateAlias;
+                        } else {
+                            $intermediateAlias = $intermediateTable;
+                            $intermediate = $intermediateTable;
+                        }
+                        
+                        $intermediateFK = $this->getHasManyDeepIntermediateForeignKey($model);
+                        $intermediateLocal = $this->getHasManyDeepIntermediateLocalKey($model);
+                        $this->performJoin($intermediate, $intermediateAlias.'.'.$intermediateFK, ltrim($lastAlias.'.'.$intermediateLocal, '.'));
+                        $lastAlias = $intermediateAlias;
+                    }
+                    
+                    // Now join to the final related table
+                    if ($this->enableEagerJoinAliases) {
+                        $table = $related->getTable().' as '.$tableAlias;
+                    } else {
+                        $table = $tableAlias = $related->getTable();
+                    }
+                    
+                    // Get the foreign key on the related table (points to intermediate)
+                    $foreignKey = $this->getHasManyDeepForeignKey($model);
+                    $localKey = $this->getHasManyDeepLocalKey($model);
+                    
+                    $foreign = $tableAlias.'.'.$foreignKey;
+                    $other = ltrim($lastAlias.'.'.$localKey, '.');
+                    
+                    $lastQuery->addSelect($tableAlias.'.'.$relationColumn);
                     break;
 
                 default:
