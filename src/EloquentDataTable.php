@@ -191,7 +191,7 @@ class EloquentDataTable extends QueryDataTable
         }
 
         // Fallback: try to infer from intermediate model or use related model's key
-        $intermediateTable = $this->getHasManyDeepIntermediateTable($model, '');
+        $intermediateTable = $this->getHasManyDeepIntermediateTable($model);
         $fallbackKey = $intermediateTable
             ? \Illuminate\Support\Str::singular($intermediateTable).'_id'
             : $model->getRelated()->getKeyName();
@@ -219,7 +219,7 @@ class EloquentDataTable extends QueryDataTable
         }
 
         // Fallback: use the intermediate model's key name, or parent if no intermediate
-        $intermediateTable = $this->getHasManyDeepIntermediateTable($model, '');
+        $intermediateTable = $this->getHasManyDeepIntermediateTable($model);
         $through = $this->getThroughModels($model);
         $fallbackKey = $model->getParent()->getKeyName();
         if ($intermediateTable && ! empty($through)) {
@@ -236,9 +236,8 @@ class EloquentDataTable extends QueryDataTable
      * Get the intermediate table name for a HasManyDeep relationship.
      *
      * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Illuminate\Database\Eloquent\Model, \Illuminate\Database\Eloquent\Model>  $model
-     * @param  string  $lastAlias
      */
-    protected function getHasManyDeepIntermediateTable($model, $lastAlias): ?string
+    protected function getHasManyDeepIntermediateTable($model): ?string
     {
         // Try to get intermediate models from the relationship
         // HasManyDeep stores intermediate models in a protected property
@@ -412,7 +411,7 @@ class EloquentDataTable extends QueryDataTable
                     // For HasManyDeep, we need to join through intermediate models
                     // The relationship query already knows the structure, so we'll use it
                     // First, join to the first intermediate model (if not already joined)
-                    $intermediateTable = $this->getHasManyDeepIntermediateTable($model, $lastAlias);
+                    $intermediateTable = $this->getHasManyDeepIntermediateTable($model);
 
                     if ($intermediateTable && $intermediateTable !== $lastAlias) {
                         // Join to intermediate table first
