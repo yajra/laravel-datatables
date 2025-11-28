@@ -12,10 +12,12 @@ class HasManyDeepRelationTest extends TestCase
 {
     use DatabaseTransactions;
 
+    private const ROUTE_HAS_MANY_DEEP = '/relations/hasManyDeep';
+
     #[Test]
     public function it_returns_all_records_with_the_relation_when_called_without_parameters()
     {
-        $response = $this->call('GET', '/relations/hasManyDeep');
+        $response = $this->call('GET', self::ROUTE_HAS_MANY_DEEP);
         $response->assertJson([
             'draw' => 0,
             'recordsTotal' => 20,
@@ -73,7 +75,7 @@ class HasManyDeepRelationTest extends TestCase
     #[Test]
     public function it_can_order_by_has_many_deep_relation_column()
     {
-        $response = $this->call('GET', '/relations/hasManyDeep', [
+        $response = $this->call('GET', self::ROUTE_HAS_MANY_DEEP, [
             'columns' => [
                 ['data' => 'comments.content', 'name' => 'comments.content', 'searchable' => true, 'orderable' => true],
                 ['data' => 'name', 'name' => 'name', 'searchable' => true, 'orderable' => true],
@@ -105,14 +107,14 @@ class HasManyDeepRelationTest extends TestCase
             ],
         ];
 
-        return $this->call('GET', '/relations/hasManyDeep', array_merge($data, $params));
+        return $this->call('GET', self::ROUTE_HAS_MANY_DEEP, array_merge($data, $params));
     }
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->app['router']->get('/relations/hasManyDeep', fn (DataTables $datatables) => $datatables->eloquent(User::with('comments')->select('users.*'))->toJson());
+        $this->app['router']->get(self::ROUTE_HAS_MANY_DEEP, fn (DataTables $datatables) => $datatables->eloquent(User::with('comments')->select('users.*'))->toJson());
 
         $this->app['router']->get('/relations/hasManyDeepSearchRelation', fn (DataTables $datatables) => $datatables->eloquent(User::with('comments'))->toJson());
     }
