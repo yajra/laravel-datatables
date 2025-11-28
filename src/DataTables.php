@@ -4,9 +4,10 @@ namespace Yajra\DataTables;
 
 use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Traits\Macroable;
 use Yajra\DataTables\Exceptions\Exception;
-use Yajra\DataTables\Utilities\Config;
+use Yajra\DataTables\Utilities\Config as DataTablesConfig;
 use Yajra\DataTables\Utilities\Request;
 
 class DataTables
@@ -42,123 +43,40 @@ class DataTables
      */
     public static function make($source)
     {
-        $args = func_get_args();
-        $engines = (array) config('datatables.engines');
-        $builders = (array) config('datatables.builders');
+        $engines = Config::array('datatables.engines', []);
+        $builders = Config::array('datatables.builders', []);
 
-        $instance = self::tryCreateFromBuilders($source, $builders, $engines, $args);
-        if ($instance !== null) {
-            return $instance;
+        $args = func_get_args();
+        foreach ($builders as $class => $engine) {
+            if (is_string($class) && $source instanceof $class) {
+                /** @var int|string $engineKey */
+                $engineKey = is_int($engine) || is_string($engine) ? $engine : (string) $engine;
+                $callback = [$engines[$engineKey], 'create'];
+
+                if (is_callable($callback)) {
+                    /** @var \Yajra\DataTables\DataTableAbstract $instance */
+                    $instance = call_user_func_array($callback, $args);
+
+                    return $instance;
+                }
+            }
         }
 
-        $instance = self::tryCreateFromEngines($source, $engines, $args);
-        if ($instance !== null) {
-            return $instance;
+        foreach ($engines as $engine) {
+            $canCreate = [$engine, 'canCreate'];
+            if (is_callable($canCreate) && call_user_func_array($canCreate, $args)) {
+                $create = [$engine, 'create'];
+
+                if (is_callable($create)) {
+                    /** @var \Yajra\DataTables\DataTableAbstract $instance */
+                    $instance = call_user_func_array($create, $args);
+
+                    return $instance;
+                }
+            }
         }
 
         throw new Exception('No available engine for '.$source::class);
-    }
-
-    /**
-     * Try to create a DataTable instance from builders configuration.
-     *
-     * @param  object  $source
-     */
-    private static function tryCreateFromBuilders($source, array $builders, array $engines, array $args): ?DataTableAbstract
-    {
-        foreach ($builders as $class => $engine) {
-            if (! self::isValidBuilderClass($source, $class)) {
-                continue;
-            }
-
-            $engineClass = self::getEngineClass($engine, $engines);
-            if ($engineClass === null) {
-                continue;
-            }
-
-            $instance = self::createInstance($engineClass, $args);
-            if ($instance !== null) {
-                return $instance;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Try to create a DataTable instance from engines configuration.
-     *
-     * @param  object  $source
-     */
-    private static function tryCreateFromEngines($source, array $engines, array $args): ?DataTableAbstract
-    {
-        foreach ($engines as $engine) {
-            if (! self::canCreateInstance($engine, $args)) {
-                continue;
-            }
-
-            $instance = self::createInstance($engine, $args);
-            if ($instance !== null) {
-                return $instance;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Check if the source is a valid instance of the builder class.
-     *
-     * @param  object  $source
-     * @param  string  $class
-     */
-    private static function isValidBuilderClass($source, $class): bool
-    {
-        return is_string($class) && class_exists($class) && $source instanceof $class;
-    }
-
-    /**
-     * Get the engine class from the engine name.
-     *
-     * @param  mixed  $engine
-     */
-    private static function getEngineClass($engine, array $engines): ?string
-    {
-        if (! is_string($engine) || ! isset($engines[$engine])) {
-            return null;
-        }
-
-        return $engines[$engine];
-    }
-
-    /**
-     * Check if an engine can create an instance with the given arguments.
-     *
-     * @param  string  $engine
-     */
-    private static function canCreateInstance($engine, array $args): bool
-    {
-        $canCreate = [$engine, 'canCreate'];
-
-        return is_callable($canCreate) && call_user_func_array($canCreate, $args);
-    }
-
-    /**
-     * Create a DataTable instance from the engine class.
-     *
-     * @param  string  $engineClass
-     */
-    private static function createInstance($engineClass, array $args): ?DataTableAbstract
-    {
-        $callback = [$engineClass, 'create'];
-        if (! is_callable($callback)) {
-            return null;
-        }
-
-        /** @var \Yajra\DataTables\DataTableAbstract $instance */
-        $instance = call_user_func_array($callback, $args);
-
-        return $instance;
     }
 
     /**
@@ -172,7 +90,7 @@ class DataTables
     /**
      * Get config instance.
      */
-    public function getConfig(): Config
+    public function getConfig(): DataTablesConfig
     {
         return app('datatables.config');
     }
@@ -184,8 +102,7 @@ class DataTables
      */
     public function query(QueryBuilder $builder): QueryDataTable
     {
-        /** @var string $dataTable */
-        $dataTable = config('datatables.engines.query');
+        $dataTable = Config::string('datatables.engines.query');
 
         $this->validateDataTable($dataTable, QueryDataTable::class);
 
@@ -199,8 +116,7 @@ class DataTables
      */
     public function eloquent(EloquentBuilder $builder): EloquentDataTable
     {
-        /** @var string $dataTable */
-        $dataTable = config('datatables.engines.eloquent');
+        $dataTable = Config::string('datatables.engines.eloquent');
 
         $this->validateDataTable($dataTable, EloquentDataTable::class);
 
@@ -216,8 +132,7 @@ class DataTables
      */
     public function collection($collection): CollectionDataTable
     {
-        /** @var string $dataTable */
-        $dataTable = config('datatables.engines.collection');
+        $dataTable = Config::string('datatables.engines.collection');
 
         $this->validateDataTable($dataTable, CollectionDataTable::class);
 

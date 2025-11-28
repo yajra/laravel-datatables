@@ -79,8 +79,7 @@ class DataProcessor
             $value = $this->removeExcessColumns($value);
 
             if ($this->includeIndex) {
-                $indexKey = is_string($indexColumn) ? $indexColumn : 'DT_RowIndex';
-                $value[$indexKey] = ++$this->start;
+                $value[$indexColumn] = ++$this->start;
             }
 
             $this->output[] = $object ? $value : $this->flatten($value);
