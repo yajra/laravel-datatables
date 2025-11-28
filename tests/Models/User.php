@@ -3,9 +3,12 @@
 namespace Yajra\DataTables\Tests\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class User extends Model
 {
+    use HasRelationships;
+
     protected $guarded = [];
 
     public function posts()
@@ -26,6 +29,11 @@ class User extends Model
     public function user()
     {
         return $this->morphTo();
+    }
+
+    public function comments()
+    {
+        return $this->hasManyDeep(Comment::class, [Post::class]);
     }
 
     public function getColorAttribute()
