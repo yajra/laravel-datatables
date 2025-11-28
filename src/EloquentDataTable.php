@@ -402,10 +402,6 @@ class EloquentDataTable extends QueryDataTable
                     /** @var \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Illuminate\Database\Eloquent\Model, \Illuminate\Database\Eloquent\Model> $model */
                     $related = $model->getRelated();
 
-                    // Get the qualified parent key to determine the first intermediate model
-                    $qualifiedParentKey = $model->getQualifiedParentKeyName();
-                    $parentTable = explode('.', $qualifiedParentKey)[0];
-
                     // For HasManyDeep, we need to join through intermediate models
                     // The relationship query already knows the structure, so we'll use it
                     // First, join to the first intermediate model (if not already joined)
