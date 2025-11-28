@@ -63,10 +63,6 @@ class DataTables
      * Try to create a DataTable instance from builders configuration.
      *
      * @param  object  $source
-     * @param  array  $builders
-     * @param  array  $engines
-     * @param  array  $args
-     * @return DataTableAbstract|null
      */
     private static function tryCreateFromBuilders($source, array $builders, array $engines, array $args): ?DataTableAbstract
     {
@@ -93,9 +89,6 @@ class DataTables
      * Try to create a DataTable instance from engines configuration.
      *
      * @param  object  $source
-     * @param  array  $engines
-     * @param  array  $args
-     * @return DataTableAbstract|null
      */
     private static function tryCreateFromEngines($source, array $engines, array $args): ?DataTableAbstract
     {
@@ -118,7 +111,6 @@ class DataTables
      *
      * @param  object  $source
      * @param  string  $class
-     * @return bool
      */
     private static function isValidBuilderClass($source, $class): bool
     {
@@ -129,8 +121,6 @@ class DataTables
      * Get the engine class from the engine name.
      *
      * @param  mixed  $engine
-     * @param  array  $engines
-     * @return string|null
      */
     private static function getEngineClass($engine, array $engines): ?string
     {
@@ -145,8 +135,6 @@ class DataTables
      * Check if an engine can create an instance with the given arguments.
      *
      * @param  string  $engine
-     * @param  array  $args
-     * @return bool
      */
     private static function canCreateInstance($engine, array $args): bool
     {
@@ -159,8 +147,6 @@ class DataTables
      * Create a DataTable instance from the engine class.
      *
      * @param  string  $engineClass
-     * @param  array  $args
-     * @return DataTableAbstract|null
      */
     private static function createInstance($engineClass, array $args): ?DataTableAbstract
     {
