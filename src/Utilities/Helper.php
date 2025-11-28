@@ -20,7 +20,7 @@ class Helper
     {
         $itemName = isset($item['name']) && is_string($item['name']) ? $item['name'] : '';
         $itemContent = $item['content'] ?? null;
-        
+
         if (self::isItemOrderInvalid($item, $array)) {
             return array_merge($array, [$itemName => $itemContent]);
         }
