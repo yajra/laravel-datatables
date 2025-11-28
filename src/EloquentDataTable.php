@@ -192,11 +192,10 @@ class EloquentDataTable extends QueryDataTable
 
         // Fallback: try to infer from intermediate model or use related model's key
         $intermediateTable = $this->getHasManyDeepIntermediateTable($model);
-        $fallbackKey = $intermediateTable
+
+        return $intermediateTable
             ? \Illuminate\Support\Str::singular($intermediateTable).'_id'
             : $model->getRelated()->getKeyName();
-
-        return $fallbackKey;
     }
 
     /**
@@ -221,15 +220,14 @@ class EloquentDataTable extends QueryDataTable
         // Fallback: use the intermediate model's key name, or parent if no intermediate
         $intermediateTable = $this->getHasManyDeepIntermediateTable($model);
         $through = $this->getThroughModels($model);
-        $fallbackKey = $model->getParent()->getKeyName();
         if ($intermediateTable && ! empty($through)) {
             $firstThrough = is_string($through[0]) ? $through[0] : get_class($through[0]);
             if (class_exists($firstThrough)) {
-                $fallbackKey = app($firstThrough)->getKeyName();
+                return app($firstThrough)->getKeyName();
             }
         }
 
-        return $fallbackKey;
+        return $model->getParent()->getKeyName();
     }
 
     /**
