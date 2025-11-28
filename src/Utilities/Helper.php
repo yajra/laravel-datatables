@@ -7,7 +7,6 @@ use DateTime;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use ReflectionFunction;
 use ReflectionMethod;
@@ -19,11 +18,11 @@ class Helper
      */
     public static function includeInArray(array $item, array $array): array
     {
-        /** @var int|string $itemName */
-        $itemName = is_int($item['name']) || is_string($item['name']) ? $item['name'] : (string) $item['name'];
-
+        $itemName = isset($item['name']) && is_string($item['name']) ? $item['name'] : '';
+        $itemContent = $item['content'] ?? null;
+        
         if (self::isItemOrderInvalid($item, $array)) {
-            return array_merge($array, [$itemName => $item['content']]);
+            return array_merge($array, [$itemName => $itemContent]);
         }
 
         $count = 0;
@@ -40,7 +39,7 @@ class Helper
             $count++;
         }
 
-        return array_merge($first, [$itemName => $item['content']], $last);
+        return array_merge($first, [$itemName => $itemContent], $last);
     }
 
     /**
@@ -358,7 +357,8 @@ class Helper
             return false;
         }
 
-        $callbacks = Config::array('datatables.callback', ['$', '$.', 'function']);
+        /** @var array $callbacks */
+        $callbacks = config('datatables.callback', ['$', '$.', 'function']);
 
         if (Str::startsWith($key, 'language.')) {
             return false;

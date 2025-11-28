@@ -191,7 +191,8 @@ class CollectionDataTable extends DataTableAbstract
             $start = $this->request->start();
 
             $this->collection->transform(function ($data) use ($index, &$start) {
-                $data[$index] = ++$start;
+                $indexKey = is_string($index) || is_int($index) ? $index : 0;
+                $data[$indexKey] = ++$start;
 
                 return $data;
             });

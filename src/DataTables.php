@@ -4,10 +4,9 @@ namespace Yajra\DataTables;
 
 use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Traits\Macroable;
 use Yajra\DataTables\Exceptions\Exception;
-use Yajra\DataTables\Utilities\Config as DataTablesConfig;
+use Yajra\DataTables\Utilities\Config;
 use Yajra\DataTables\Utilities\Request;
 
 class DataTables
@@ -43,15 +42,17 @@ class DataTables
      */
     public static function make($source)
     {
-        $engines = Config::array('datatables.engines', []);
-        $builders = Config::array('datatables.builders', []);
+        $engines = (array) config('datatables.engines');
+        $builders = (array) config('datatables.builders');
 
         $args = func_get_args();
         foreach ($builders as $class => $engine) {
-            if (is_string($class) && $source instanceof $class) {
-                /** @var int|string $engineKey */
-                $engineKey = is_int($engine) || is_string($engine) ? $engine : (string) $engine;
-                $callback = [$engines[$engineKey], 'create'];
+            if (is_string($class) && class_exists($class) && $source instanceof $class) {
+                $engineClass = is_string($engine) && isset($engines[$engine]) ? $engines[$engine] : null;
+                if ($engineClass === null) {
+                    continue;
+                }
+                $callback = [$engineClass, 'create'];
 
                 if (is_callable($callback)) {
                     /** @var \Yajra\DataTables\DataTableAbstract $instance */
@@ -90,7 +91,7 @@ class DataTables
     /**
      * Get config instance.
      */
-    public function getConfig(): DataTablesConfig
+    public function getConfig(): Config
     {
         return app('datatables.config');
     }
@@ -102,7 +103,8 @@ class DataTables
      */
     public function query(QueryBuilder $builder): QueryDataTable
     {
-        $dataTable = Config::string('datatables.engines.query');
+        /** @var string $dataTable */
+        $dataTable = config('datatables.engines.query');
 
         $this->validateDataTable($dataTable, QueryDataTable::class);
 
@@ -116,7 +118,8 @@ class DataTables
      */
     public function eloquent(EloquentBuilder $builder): EloquentDataTable
     {
-        $dataTable = Config::string('datatables.engines.eloquent');
+        /** @var string $dataTable */
+        $dataTable = config('datatables.engines.eloquent');
 
         $this->validateDataTable($dataTable, EloquentDataTable::class);
 
@@ -132,7 +135,8 @@ class DataTables
      */
     public function collection($collection): CollectionDataTable
     {
-        $dataTable = Config::string('datatables.engines.collection');
+        /** @var string $dataTable */
+        $dataTable = config('datatables.engines.collection');
 
         $this->validateDataTable($dataTable, CollectionDataTable::class);
 
