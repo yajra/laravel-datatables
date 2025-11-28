@@ -42,42 +42,137 @@ class DataTables
      */
     public static function make($source)
     {
+        $args = func_get_args();
         $engines = (array) config('datatables.engines');
         $builders = (array) config('datatables.builders');
 
-        $args = func_get_args();
-        foreach ($builders as $class => $engine) {
-            if (is_string($class) && class_exists($class) && $source instanceof $class) {
-                $engineClass = is_string($engine) && isset($engines[$engine]) ? $engines[$engine] : null;
-                if ($engineClass === null) {
-                    continue;
-                }
-                $callback = [$engineClass, 'create'];
-
-                if (is_callable($callback)) {
-                    /** @var \Yajra\DataTables\DataTableAbstract $instance */
-                    $instance = call_user_func_array($callback, $args);
-
-                    return $instance;
-                }
-            }
+        $instance = self::tryCreateFromBuilders($source, $builders, $engines, $args);
+        if ($instance !== null) {
+            return $instance;
         }
 
-        foreach ($engines as $engine) {
-            $canCreate = [$engine, 'canCreate'];
-            if (is_callable($canCreate) && call_user_func_array($canCreate, $args)) {
-                $create = [$engine, 'create'];
-
-                if (is_callable($create)) {
-                    /** @var \Yajra\DataTables\DataTableAbstract $instance */
-                    $instance = call_user_func_array($create, $args);
-
-                    return $instance;
-                }
-            }
+        $instance = self::tryCreateFromEngines($source, $engines, $args);
+        if ($instance !== null) {
+            return $instance;
         }
 
         throw new Exception('No available engine for '.$source::class);
+    }
+
+    /**
+     * Try to create a DataTable instance from builders configuration.
+     *
+     * @param  object  $source
+     * @param  array  $builders
+     * @param  array  $engines
+     * @param  array  $args
+     * @return DataTableAbstract|null
+     */
+    private static function tryCreateFromBuilders($source, array $builders, array $engines, array $args): ?DataTableAbstract
+    {
+        foreach ($builders as $class => $engine) {
+            if (! self::isValidBuilderClass($source, $class)) {
+                continue;
+            }
+
+            $engineClass = self::getEngineClass($engine, $engines);
+            if ($engineClass === null) {
+                continue;
+            }
+
+            $instance = self::createInstance($engineClass, $args);
+            if ($instance !== null) {
+                return $instance;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Try to create a DataTable instance from engines configuration.
+     *
+     * @param  object  $source
+     * @param  array  $engines
+     * @param  array  $args
+     * @return DataTableAbstract|null
+     */
+    private static function tryCreateFromEngines($source, array $engines, array $args): ?DataTableAbstract
+    {
+        foreach ($engines as $engine) {
+            if (! self::canCreateInstance($engine, $args)) {
+                continue;
+            }
+
+            $instance = self::createInstance($engine, $args);
+            if ($instance !== null) {
+                return $instance;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Check if the source is a valid instance of the builder class.
+     *
+     * @param  object  $source
+     * @param  string  $class
+     * @return bool
+     */
+    private static function isValidBuilderClass($source, $class): bool
+    {
+        return is_string($class) && class_exists($class) && $source instanceof $class;
+    }
+
+    /**
+     * Get the engine class from the engine name.
+     *
+     * @param  mixed  $engine
+     * @param  array  $engines
+     * @return string|null
+     */
+    private static function getEngineClass($engine, array $engines): ?string
+    {
+        if (! is_string($engine) || ! isset($engines[$engine])) {
+            return null;
+        }
+
+        return $engines[$engine];
+    }
+
+    /**
+     * Check if an engine can create an instance with the given arguments.
+     *
+     * @param  string  $engine
+     * @param  array  $args
+     * @return bool
+     */
+    private static function canCreateInstance($engine, array $args): bool
+    {
+        $canCreate = [$engine, 'canCreate'];
+
+        return is_callable($canCreate) && call_user_func_array($canCreate, $args);
+    }
+
+    /**
+     * Create a DataTable instance from the engine class.
+     *
+     * @param  string  $engineClass
+     * @param  array  $args
+     * @return DataTableAbstract|null
+     */
+    private static function createInstance($engineClass, array $args): ?DataTableAbstract
+    {
+        $callback = [$engineClass, 'create'];
+        if (! is_callable($callback)) {
+            return null;
+        }
+
+        /** @var \Yajra\DataTables\DataTableAbstract $instance */
+        $instance = call_user_func_array($callback, $args);
+
+        return $instance;
     }
 
     /**
