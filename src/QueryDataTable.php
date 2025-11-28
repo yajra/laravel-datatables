@@ -382,7 +382,7 @@ class QueryDataTable extends DataTableAbstract
                 if ($type === 'date') {
                     try {
                         // column control replaces / with - on date value
-                        if ($mask && str_contains($mask, '/')) {
+                        if ($mask && str_contains((string) $mask, '/')) {
                             $value = str_replace('-', '/', $value);
                         }
 

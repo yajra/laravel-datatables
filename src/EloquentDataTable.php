@@ -163,7 +163,7 @@ class EloquentDataTable extends QueryDataTable
     /**
      * Check if a relation is a HasManyDeep relationship.
      *
-     * @param  \Illuminate\Database\Eloquent\Relations\Relation  $model
+     * @param  \Illuminate\Database\Eloquent\Relations\Relation<\Illuminate\Database\Eloquent\Model, \Illuminate\Database\Eloquent\Model, mixed>  $model
      */
     protected function isHasManyDeep($model): bool
     {
@@ -175,7 +175,7 @@ class EloquentDataTable extends QueryDataTable
      * Get the foreign key name for a HasManyDeep relationship.
      * This is the foreign key on the final related table that points to the intermediate table.
      *
-     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep  $model
+     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Illuminate\Database\Eloquent\Model, \Illuminate\Database\Eloquent\Model>  $model
      */
     protected function getHasManyDeepForeignKey($model): string
     {
@@ -203,7 +203,7 @@ class EloquentDataTable extends QueryDataTable
      * Get the local key name for a HasManyDeep relationship.
      * This is the local key on the intermediate table (or parent if no intermediate).
      *
-     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep  $model
+     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Illuminate\Database\Eloquent\Model, \Illuminate\Database\Eloquent\Model>  $model
      */
     protected function getHasManyDeepLocalKey($model): string
     {
@@ -223,7 +223,7 @@ class EloquentDataTable extends QueryDataTable
         $through = $this->getThroughModels($model);
         $fallbackKey = $model->getParent()->getKeyName();
         if ($intermediateTable && ! empty($through)) {
-            $firstThrough = is_string($through[0]) ? $through[0] : $through[0]::class;
+            $firstThrough = is_string($through[0]) ? $through[0] : get_class($through[0]);
             if (class_exists($firstThrough)) {
                 $fallbackKey = app($firstThrough)->getKeyName();
             }
@@ -235,7 +235,7 @@ class EloquentDataTable extends QueryDataTable
     /**
      * Get the intermediate table name for a HasManyDeep relationship.
      *
-     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep  $model
+     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Illuminate\Database\Eloquent\Model, \Illuminate\Database\Eloquent\Model>  $model
      * @param  string  $lastAlias
      */
     protected function getHasManyDeepIntermediateTable($model, $lastAlias): ?string
@@ -245,7 +245,7 @@ class EloquentDataTable extends QueryDataTable
         $through = $this->getThroughModels($model);
         if (! empty($through)) {
             // Get the first intermediate model
-            $firstThrough = is_string($through[0]) ? $through[0] : $through[0]::class;
+            $firstThrough = is_string($through[0]) ? $through[0] : get_class($through[0]);
             if (class_exists($firstThrough)) {
                 $throughModel = app($firstThrough);
 
@@ -259,7 +259,7 @@ class EloquentDataTable extends QueryDataTable
     /**
      * Get the foreign key for joining to the intermediate table.
      *
-     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep  $model
+     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Illuminate\Database\Eloquent\Model, \Illuminate\Database\Eloquent\Model>  $model
      */
     protected function getHasManyDeepIntermediateForeignKey($model): string
     {
@@ -282,7 +282,7 @@ class EloquentDataTable extends QueryDataTable
     /**
      * Get the local key for joining from the parent to the intermediate table.
      *
-     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep  $model
+     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Illuminate\Database\Eloquent\Model, \Illuminate\Database\Eloquent\Model>  $model
      */
     protected function getHasManyDeepIntermediateLocalKey($model): string
     {
@@ -402,6 +402,7 @@ class EloquentDataTable extends QueryDataTable
                 case $this->isHasManyDeep($model):
                     // HasManyDeep relationships can traverse multiple intermediate models
                     // We need to join through all intermediate models to reach the final related table
+                    /** @var \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Illuminate\Database\Eloquent\Model, \Illuminate\Database\Eloquent\Model> $model */
                     $related = $model->getRelated();
 
                     // Get the qualified parent key to determine the first intermediate model
@@ -493,7 +494,7 @@ class EloquentDataTable extends QueryDataTable
     /**
      * Extract the array of foreign keys from a HasManyDeep relationship using reflection.
      *
-     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep  $model
+     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Illuminate\Database\Eloquent\Model, \Illuminate\Database\Eloquent\Model>  $model
      */
     private function getForeignKeys($model): array
     {
@@ -518,7 +519,7 @@ class EloquentDataTable extends QueryDataTable
     /**
      * Extract the array of local keys from a HasManyDeep relationship using reflection.
      *
-     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep  $model
+     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Illuminate\Database\Eloquent\Model, \Illuminate\Database\Eloquent\Model>  $model
      */
     private function getLocalKeys($model): array
     {
@@ -543,7 +544,7 @@ class EloquentDataTable extends QueryDataTable
     /**
      * Extract the array of through models from a HasManyDeep relationship using reflection.
      *
-     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep  $model
+     * @param  \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Illuminate\Database\Eloquent\Model, \Illuminate\Database\Eloquent\Model>  $model
      */
     private function getThroughModels($model): array
     {
