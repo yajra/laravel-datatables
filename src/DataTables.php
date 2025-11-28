@@ -47,8 +47,10 @@ class DataTables
 
         $args = func_get_args();
         foreach ($builders as $class => $engine) {
-            if ($source instanceof $class) {
-                $callback = [$engines[$engine], 'create'];
+            if (is_string($class) && $source instanceof $class) {
+                /** @var int|string $engineKey */
+                $engineKey = is_int($engine) || is_string($engine) ? $engine : (string) $engine;
+                $callback = [$engines[$engineKey], 'create'];
 
                 if (is_callable($callback)) {
                     /** @var \Yajra\DataTables\DataTableAbstract $instance */

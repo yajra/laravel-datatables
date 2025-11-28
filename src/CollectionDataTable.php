@@ -185,7 +185,8 @@ class CollectionDataTable extends DataTableAbstract
     {
         if ($this->columnDef['index']) {
             $indexColumn = config('datatables.index_column', 'DT_RowIndex');
-            $index = $mDataSupport ? $indexColumn : 0;
+            /** @var int|string $index */
+            $index = $mDataSupport ? (is_int($indexColumn) || is_string($indexColumn) ? $indexColumn : 'DT_RowIndex') : 0;
             $start = $this->request->start();
 
             $this->collection->transform(function ($data) use ($index, &$start) {

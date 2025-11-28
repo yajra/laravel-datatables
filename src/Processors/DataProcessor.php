@@ -68,6 +68,8 @@ class DataProcessor
     {
         $this->output = [];
         $indexColumn = config('datatables.index_column', 'DT_RowIndex');
+        /** @var int|string $indexKey */
+        $indexKey = is_int($indexColumn) || is_string($indexColumn) ? $indexColumn : 'DT_RowIndex';
 
         foreach ($this->results as $row) {
             $data = Helper::convertToArray($row, ['hidden' => $this->makeHidden, 'visible' => $this->makeVisible, 'ignore_getters' => $this->ignoreGetters]);
@@ -78,7 +80,7 @@ class DataProcessor
             $value = $this->removeExcessColumns($value);
 
             if ($this->includeIndex) {
-                $value[$indexColumn] = ++$this->start;
+                $value[$indexKey] = ++$this->start;
             }
 
             $this->output[] = $object ? $value : $this->flatten($value);
