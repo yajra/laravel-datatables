@@ -4,6 +4,7 @@ namespace Yajra\DataTables\Processors;
 
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Config;
 use Yajra\DataTables\Contracts\Formatter;
 use Yajra\DataTables\Utilities\Helper;
 
@@ -67,7 +68,7 @@ class DataProcessor
     public function process($object = false): array
     {
         $this->output = [];
-        $indexColumn = config('datatables.index_column', 'DT_RowIndex');
+        $indexColumn = Config::string('datatables.index_column', 'DT_RowIndex');
 
         foreach ($this->results as $row) {
             $data = Helper::convertToArray($row, ['hidden' => $this->makeHidden, 'visible' => $this->makeVisible, 'ignore_getters' => $this->ignoreGetters]);
