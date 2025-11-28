@@ -20,7 +20,7 @@ class Helper
     {
         /** @var int|string $itemName */
         $itemName = is_int($item['name']) || is_string($item['name']) ? $item['name'] : (string) $item['name'];
-        
+
         if (self::isItemOrderInvalid($item, $array)) {
             return array_merge($array, [$itemName => $item['content']]);
         }
