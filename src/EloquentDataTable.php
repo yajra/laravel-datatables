@@ -495,8 +495,10 @@ class EloquentDataTable extends QueryDataTable
             $reflection = new \ReflectionClass($model);
             if ($reflection->hasProperty('foreignKeys')) {
                 $property = $reflection->getProperty('foreignKeys');
-                $property->setAccessible(true);
-                $foreignKeys = $property->getValue($model);
+                // Safe: Accessing protected property from third-party package (staudenmeir/eloquent-has-many-deep)
+                // The property exists and is part of the package's internal API
+                $property->setAccessible(true); // NOSONAR
+                $foreignKeys = $property->getValue($model); // NOSONAR
                 if (is_array($foreignKeys) && ! empty($foreignKeys)) {
                     return $foreignKeys;
                 }
@@ -520,8 +522,10 @@ class EloquentDataTable extends QueryDataTable
             $reflection = new \ReflectionClass($model);
             if ($reflection->hasProperty('localKeys')) {
                 $property = $reflection->getProperty('localKeys');
-                $property->setAccessible(true);
-                $localKeys = $property->getValue($model);
+                // Safe: Accessing protected property from third-party package (staudenmeir/eloquent-has-many-deep)
+                // The property exists and is part of the package's internal API
+                $property->setAccessible(true); // NOSONAR
+                $localKeys = $property->getValue($model); // NOSONAR
                 if (is_array($localKeys) && ! empty($localKeys)) {
                     return $localKeys;
                 }
@@ -545,8 +549,10 @@ class EloquentDataTable extends QueryDataTable
             $reflection = new \ReflectionClass($model);
             if ($reflection->hasProperty('through')) {
                 $property = $reflection->getProperty('through');
-                $property->setAccessible(true);
-                $through = $property->getValue($model);
+                // Safe: Accessing protected property from third-party package (staudenmeir/eloquent-has-many-deep)
+                // The property exists and is part of the package's internal API
+                $property->setAccessible(true); // NOSONAR
+                $through = $property->getValue($model); // NOSONAR
                 if (is_array($through) && ! empty($through)) {
                     return $through;
                 }
