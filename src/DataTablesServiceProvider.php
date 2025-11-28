@@ -2,9 +2,10 @@
 
 namespace Yajra\DataTables;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
-use Yajra\DataTables\Utilities\Config;
+use Yajra\DataTables\Utilities\Config as DataTablesConfig;
 use Yajra\DataTables\Utilities\Request;
 
 class DataTablesServiceProvider extends ServiceProvider
@@ -27,7 +28,7 @@ class DataTablesServiceProvider extends ServiceProvider
 
         $this->app->singleton('datatables.request', fn () => new Request);
 
-        $this->app->singleton('datatables.config', Config::class);
+        $this->app->singleton('datatables.config', DataTablesConfig::class);
     }
 
     /**
@@ -37,7 +38,7 @@ class DataTablesServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $engines = (array) config('datatables.engines');
+        $engines = Config::array('datatables.engines', []);
         foreach ($engines as $engine => $class) {
             $engine = Str::camel($engine);
 

@@ -7,6 +7,7 @@ use DateTime;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use ReflectionFunction;
 use ReflectionMethod;
@@ -357,8 +358,7 @@ class Helper
             return false;
         }
 
-        /** @var array $callbacks */
-        $callbacks = config('datatables.callback', ['$', '$.', 'function']);
+        $callbacks = Config::array('datatables.callback', ['$', '$.', 'function']);
 
         if (Str::startsWith($key, 'language.')) {
             return false;

@@ -7,6 +7,12 @@ on:
       - '*.x'
 
   pull_request:
+    paths:
+      - .github/workflows/static-analysis.yml
+      - composer.*
+      - phpstan.neon.dist
+      - src/**
+      - tests/**
 
   schedule:
     - cron: '0 0 * * *'
@@ -14,7 +20,7 @@ on:
 jobs:
   static-analysis-phpstan:
 
-    name: Source Code
+    name: "Static Analysis with PHPStan"
     runs-on: ubuntu-latest
 
     steps:
@@ -36,4 +42,4 @@ jobs:
           command: composer update --prefer-stable --prefer-dist --no-interaction --no-progress
 
       - name: Run Static Analysis
-        run: vendor/bin/phpunit
+        run: "vendor/bin/phpstan --error-format=table"
