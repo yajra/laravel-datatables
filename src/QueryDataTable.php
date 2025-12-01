@@ -809,7 +809,7 @@ class QueryDataTable extends DataTableAbstract
     protected function searchPanesSearch(): void
     {
         /** @var string[] $columns */
-        $columns = (array)$this->request->searchPanes;
+        $columns = (array) $this->request->searchPanes;
 
         foreach ($columns as $column => $values) {
             if ($this->isBlacklisted($column)) {
