@@ -1,3 +1,11 @@
+## [12.6.2](https://github.com/yajra/laravel-datatables/compare/v12.6.1...v12.6.2) (2025-12-02)
+
+
+### Bug Fixes
+
+* pint :robot: ([41a22c7](https://github.com/yajra/laravel-datatables/commit/41a22c7b52f4d154e6ee8b9c0834c51d20001c00))
+* resolve PHPStan array key type errors ([3b5e668](https://github.com/yajra/laravel-datatables/commit/3b5e66832fd4c708c2fc6c4afffc12815c43b248))
+
 ## [12.6.1](https://github.com/yajra/laravel-datatables/compare/v12.6.0...v12.6.1) (2025-10-11)
 
 
