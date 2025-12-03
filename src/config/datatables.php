@@ -33,6 +33,13 @@ return [
          * SQL: column LIKE "keyword%"
          */
         'starts_with' => false,
+
+        /*
+         * Ignore accents when filtering/searching (accent-insensitive search).
+         * If true, accented characters will be normalized to their base letter.
+         * Example: 'Simões' will match 'simoes'.
+         */
+        'ignore_accents' => false,
     ],
 
     /*

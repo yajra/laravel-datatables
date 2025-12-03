@@ -564,12 +564,21 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function compileQuerySearch($query, string $column, string $keyword, string $boolean = 'or'): void
     {
-        $column = $this->wrap($this->addTablePrefix($query, $column));
-        $column = $this->castColumn($column);
-        $sql = $column.' LIKE ?';
+        // Validate inputs to prevent any potential issues
+        if (empty($column) || empty($keyword)) {
+            return;
+        }
 
-        if ($this->config->isCaseInsensitive()) {
-            $sql = 'LOWER('.$column.') LIKE ?';
+        $wrappedColumn = $this->wrap($this->addTablePrefix($query, $column));
+        $castedColumn = $this->castColumn($wrappedColumn);
+        
+        if ($this->config->isIgnoreAccents()) {
+            // For accent-insensitive search, we normalize both the column and the keyword
+            $sql = $this->getNormalizeAccentsFunction($castedColumn).' LIKE ?';
+        } elseif ($this->config->isCaseInsensitive()) {
+            $sql = 'LOWER('.$castedColumn.') LIKE ?';
+        } else {
+            $sql = $castedColumn.' LIKE ?';
         }
 
         $query->{$boolean.'WhereRaw'}($sql, [$this->prepareKeyword($keyword)]);
@@ -680,6 +689,10 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function prepareKeyword(string $keyword): string
     {
+        if ($this->config->isIgnoreAccents()) {
+            $keyword = Helper::normalizeAccents($keyword);
+        }
+
         if ($this->config->isCaseInsensitive()) {
             $keyword = Str::lower($keyword);
         }
@@ -697,6 +710,63 @@ class QueryDataTable extends DataTableAbstract
         }
 
         return $keyword;
+    }
+
+    /**
+     * Get the database function to normalize accents for the given column.
+     *
+     * @param  string  $column  The column name (should be already wrapped/escaped)
+     * @return string SQL function to normalize accents
+     */
+    protected function getNormalizeAccentsFunction(string $column): string
+    {
+        if (empty($column)) {
+            return "LOWER('')";
+        }
+
+        $driver = $this->getConnection()->getDriverName();
+        
+        switch ($driver) {
+            case 'mysql':
+                return $this->getMySqlNormalizeFunction($column);
+            case 'pgsql':
+                return $this->getPostgreSqlNormalizeFunction($column);
+            case 'sqlite':
+                return "LOWER($column)"; // SQLite doesn't have built-in accent normalization
+            default:
+                return "LOWER($column)"; // Fallback for other databases
+        }
+    }
+
+    /**
+     * Get MySQL-specific accent normalization function.
+     */
+    protected function getMySqlNormalizeFunction(string $column): string
+    {
+        // Build safe SQL with static strings - no user input, no SQL injection risk
+        $sql = "LOWER($column)";
+        $sql = "REPLACE($sql, 'ã', 'a')";
+        $sql = "REPLACE($sql, 'á', 'a')";
+        $sql = "REPLACE($sql, 'à', 'a')";
+        $sql = "REPLACE($sql, 'â', 'a')";
+        $sql = "REPLACE($sql, 'é', 'e')";
+        $sql = "REPLACE($sql, 'ê', 'e')";
+        $sql = "REPLACE($sql, 'í', 'i')";
+        $sql = "REPLACE($sql, 'ó', 'o')";
+        $sql = "REPLACE($sql, 'ô', 'o')";
+        $sql = "REPLACE($sql, 'õ', 'o')";
+        $sql = "REPLACE($sql, 'ú', 'u')";
+        $sql = "REPLACE($sql, 'ç', 'c')";
+
+        return $sql;
+    }
+
+    /**
+     * Get PostgreSQL-specific accent normalization function.
+     */
+    protected function getPostgreSqlNormalizeFunction(string $column): string
+    {
+        return "LOWER(translate($column, 'ÃãÁáÀàÂâÉéÊêÍíÓóÔôÕõÚúÇç', 'aaaaaaaeeeiioooooucc'))";
     }
 
     /**

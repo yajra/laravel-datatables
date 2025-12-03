@@ -281,4 +281,40 @@ class HelperTest extends TestCase
 
         $this->assertEquals('.*k.*e.*y.*w.*o.*r.*d.*', $keyword);
     }
+
+    public function test_normalize_accents()
+    {
+        // Test Portuguese Brazilian accents
+        $testCases = [
+            'Tatiane Simões' => 'Tatiane Simoes',
+            'João' => 'Joao',
+            'São Paulo' => 'Sao Paulo',
+            'José' => 'Jose', 
+            'Ação' => 'Acao',
+            'Coração' => 'Coracao',
+            'Não' => 'Nao',
+            'Canção' => 'Cancao',
+            // Test all accent mappings individually
+            'ãáàâ' => 'aaaa',
+            'ÃÁÀÂ' => 'AAAA',
+            'éê' => 'ee',
+            'ÉÊ' => 'EE',
+            'í' => 'i',
+            'Í' => 'I',
+            'óôõ' => 'ooo',
+            'ÓÔÕ' => 'OOO',
+            'ú' => 'u',
+            'Ú' => 'U',
+            'ç' => 'c',
+            'Ç' => 'C',
+            // Test mixed content
+            'Não há ação' => 'Nao ha acao',
+            'Coração de São João' => 'Coracao de Sao Joao',
+        ];
+
+        foreach ($testCases as $input => $expected) {
+            $result = Helper::normalizeAccents($input);
+            $this->assertEquals($expected, $result, "Failed to normalize '$input'");
+        }
+    }
 }

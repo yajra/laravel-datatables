@@ -81,6 +81,19 @@ class Config
         return (bool) $this->repository->get('datatables.search.starts_with', false);
     }
 
+    /**
+     * Check if DataTable config ignores accents when searching.
+     *
+     * When enabled, accented characters are normalized to their base letters
+     * during search operations (e.g., 'é' becomes 'e', 'ã' becomes 'a').
+     *
+     * @return bool True if accent-insensitive search is enabled
+     */
+    public function isIgnoreAccents(): bool
+    {
+        return (bool) $this->repository->get('datatables.search.ignore_accents', false);
+    }
+
     public function jsonOptions(): int
     {
         /** @var int $options */
