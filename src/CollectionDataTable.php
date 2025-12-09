@@ -185,7 +185,7 @@ class CollectionDataTable extends DataTableAbstract
     private function revertIndexColumn($mDataSupport): void
     {
         if ($this->columnDef['index']) {
-            $indexColumn = Config::string('datatables.index_column', 'DT_RowIndex');
+            $indexColumn = Config::get('datatables.index_column', 'DT_RowIndex');
             /** @var int|string $index */
             $index = $mDataSupport ? $indexColumn : 0;
             $start = $this->request->start();

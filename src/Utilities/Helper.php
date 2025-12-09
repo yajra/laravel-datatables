@@ -358,7 +358,7 @@ class Helper
             return false;
         }
 
-        $callbacks = Config::array('datatables.callback', ['$', '$.', 'function']);
+        $callbacks = Config::get('datatables.callback', ['$', '$.', 'function']);
 
         if (Str::startsWith($key, 'language.')) {
             return false;

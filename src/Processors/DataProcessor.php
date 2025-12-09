@@ -68,7 +68,7 @@ class DataProcessor
     public function process($object = false): array
     {
         $this->output = [];
-        $indexColumn = Config::string('datatables.index_column', 'DT_RowIndex');
+        $indexColumn = (string) Config::get('datatables.index_column', 'DT_RowIndex');
 
         foreach ($this->results as $row) {
             $data = Helper::convertToArray($row, ['hidden' => $this->makeHidden, 'visible' => $this->makeVisible, 'ignore_getters' => $this->ignoreGetters]);

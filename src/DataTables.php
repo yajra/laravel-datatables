@@ -43,8 +43,8 @@ class DataTables
      */
     public static function make($source)
     {
-        $engines = Config::array('datatables.engines', []);
-        $builders = Config::array('datatables.builders', []);
+        $engines = Config::get('datatables.engines', []);
+        $builders = Config::get('datatables.builders', []);
 
         $args = func_get_args();
         foreach ($builders as $class => $engine) {
@@ -102,7 +102,7 @@ class DataTables
      */
     public function query(QueryBuilder $builder): QueryDataTable
     {
-        $dataTable = Config::string('datatables.engines.query');
+        $dataTable = (string) Config::get('datatables.engines.query');
 
         $this->validateDataTable($dataTable, QueryDataTable::class);
 
@@ -116,8 +116,8 @@ class DataTables
      */
     public function eloquent(EloquentBuilder $builder): EloquentDataTable
     {
-        $dataTable = Config::string('datatables.engines.eloquent');
-
+        $dataTable = (string) Config::get('datatables.engines.eloquent');
+        
         $this->validateDataTable($dataTable, EloquentDataTable::class);
 
         return $dataTable::create($builder);
@@ -132,7 +132,7 @@ class DataTables
      */
     public function collection($collection): CollectionDataTable
     {
-        $dataTable = Config::string('datatables.engines.collection');
+        $dataTable = (string) Config::get('datatables.engines.collection');
 
         $this->validateDataTable($dataTable, CollectionDataTable::class);
 
