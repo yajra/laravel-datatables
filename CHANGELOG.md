@@ -1,3 +1,11 @@
+## [12.6.3](https://github.com/yajra/laravel-datatables/compare/v12.6.2...v12.6.3) (2025-12-09)
+
+
+### Bug Fixes
+
+* [#3266](https://github.com/yajra/laravel-datatables/issues/3266), replace ConfigRepository's type helper methods with get() ([#3267](https://github.com/yajra/laravel-datatables/issues/3267)) ([b9e5f78](https://github.com/yajra/laravel-datatables/commit/b9e5f785851a21779b0c88c2b0eb5c02e9714a76))
+* pint :robot: ([e74e6ce](https://github.com/yajra/laravel-datatables/commit/e74e6cea55d552dd4ac66483c73cc0029050f52e))
+
 ## [12.6.2](https://github.com/yajra/laravel-datatables/compare/v12.6.1...v12.6.2) (2025-12-02)
 
 
