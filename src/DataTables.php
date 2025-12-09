@@ -117,7 +117,7 @@ class DataTables
     public function eloquent(EloquentBuilder $builder): EloquentDataTable
     {
         $dataTable = (string) Config::get('datatables.engines.eloquent');
-        
+
         $this->validateDataTable($dataTable, EloquentDataTable::class);
 
         return $dataTable::create($builder);
