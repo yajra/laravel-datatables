@@ -15,6 +15,44 @@ use ReflectionMethod;
 class Helper
 {
     /**
+     * Normalize accented characters to their base letter for accent-insensitive search.
+     * Only replaces Portuguese Brazilian accents as specified.
+     *
+     * @param  string  $value  The string to normalize
+     * @return string The normalized string with accents removed
+     */
+    public static function normalizeAccents(string $value): string
+    {
+        // Return early for empty strings or strings without accents
+        if (empty($value) || ! preg_match('/[ÃãÁáÀàÂâÉéÊêÍíÓóÔôÕõÚúÇç]/', $value)) {
+            return $value;
+        }
+
+        $map = [
+            // Uppercase A variations
+            'Ã' => 'A', 'Á' => 'A', 'À' => 'A', 'Â' => 'A',
+            // Lowercase a variations  
+            'ã' => 'a', 'á' => 'a', 'à' => 'a', 'â' => 'a',
+            // Uppercase E variations
+            'É' => 'E', 'Ê' => 'E',
+            // Lowercase e variations
+            'é' => 'e', 'ê' => 'e',
+            // I variations
+            'Í' => 'I', 'í' => 'i',
+            // Uppercase O variations
+            'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O',
+            // Lowercase o variations
+            'ó' => 'o', 'ô' => 'o', 'õ' => 'o',
+            // U variations
+            'Ú' => 'U', 'ú' => 'u',
+            // C variations
+            'Ç' => 'C', 'ç' => 'c',
+        ];
+        
+        return strtr($value, $map);
+    }
+{
+    /**
      * Places item of extra columns into results by care of their order.
      */
     public static function includeInArray(array $item, array $array): array
