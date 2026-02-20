@@ -237,6 +237,41 @@ class CollectionDataTableTest extends TestCase
     }
 
     #[Test]
+    public function it_can_edit_auto_index_column()
+    {
+        config()->set('app.debug', false);
+        request()->merge([
+            'columns' => [
+                ['data' => 'DT_RowIndex', 'name' => 'index', 'searchable' => 'false', 'orderable' => 'false'],
+                ['data' => 'id', 'name' => 'id', 'searchable' => 'false', 'orderable' => 'false'],
+                ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
+            ],
+            'order' => [['column' => 2, 'dir' => 'desc']],
+            'start' => 0,
+            'length' => 10,
+            'draw' => 1,
+        ]);
+
+        $collection = collect([
+            ['id' => 1, 'name' => 'Alpha'],
+            ['id' => 2, 'name' => 'Beta'],
+        ]);
+
+        $dataTable = app('datatables')->collection($collection);
+        /** @var JsonResponse $response */
+        $response = $dataTable
+            ->addIndexColumn()
+            ->editColumn('DT_RowIndex', 'Row {{$DT_RowIndex}}')
+            ->toJson();
+
+        $json = $response->getData(true);
+
+        $this->assertSame('Beta', $json['data'][0]['name']);
+        $this->assertSame('Row 1', $json['data'][0]['DT_RowIndex']);
+        $this->assertSame('Row 2', $json['data'][1]['DT_RowIndex']);
+    }
+
+    #[Test]
     public function it_accepts_array_data_source()
     {
         $source = [
