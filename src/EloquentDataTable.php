@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Yajra\DataTables\Concerns\HasManyDeepSupport;
 use Yajra\DataTables\Exceptions\Exception;
 
 /**
@@ -17,6 +18,8 @@ use Yajra\DataTables\Exceptions\Exception;
  */
 class EloquentDataTable extends QueryDataTable
 {
+    use HasManyDeepSupport;
+
     /**
      * Flag to enable the generation of unique table aliases on eagerly loaded join columns.
      * You may want to enable it if you encounter a "Not unique table/alias" error when performing a search or applying ordering.
@@ -267,6 +270,50 @@ class EloquentDataTable extends QueryDataTable
                     }
                     $foreign = ltrim($lastAlias.'.'.$model->getForeignKeyName(), '.');
                     $other = $tableAlias.'.'.$model->getOwnerKeyName();
+                    break;
+
+                case $this->isHasManyDeep($model):
+                    // HasManyDeep relationships can traverse multiple intermediate models
+                    // We need to join through all intermediate models to reach the final related table
+                    /** @var \Staudenmeir\EloquentHasManyDeep\HasManyDeep<\Illuminate\Database\Eloquent\Model, \Illuminate\Database\Eloquent\Model> $model */
+                    $related = $model->getRelated();
+
+                    // For HasManyDeep, we need to join through intermediate models
+                    // The relationship query already knows the structure, so we'll use it
+                    // First, join to the first intermediate model (if not already joined)
+                    $intermediateTable = $this->getHasManyDeepIntermediateTable($model);
+
+                    if ($intermediateTable && $intermediateTable !== $lastAlias) {
+                        // Join to intermediate table first
+                        if ($this->enableEagerJoinAliases) {
+                            $intermediateAlias = $tableAlias.'_intermediate';
+                            $intermediate = $intermediateTable.' as '.$intermediateAlias;
+                        } else {
+                            $intermediateAlias = $intermediateTable;
+                            $intermediate = $intermediateTable;
+                        }
+
+                        $intermediateFK = $this->getHasManyDeepIntermediateForeignKey($model);
+                        $intermediateLocal = $this->getHasManyDeepIntermediateLocalKey($model);
+                        $this->performJoin($intermediate, $intermediateAlias.'.'.$intermediateFK, ltrim($lastAlias.'.'.$intermediateLocal, '.'));
+                        $lastAlias = $intermediateAlias;
+                    }
+
+                    // Now join to the final related table
+                    if ($this->enableEagerJoinAliases) {
+                        $table = $related->getTable().' as '.$tableAlias;
+                    } else {
+                        $table = $tableAlias = $related->getTable();
+                    }
+
+                    // Get the foreign key on the related table (points to intermediate)
+                    $foreignKey = $this->getHasManyDeepForeignKey($model);
+                    $localKey = $this->getHasManyDeepLocalKey($model);
+
+                    $foreign = $tableAlias.'.'.$foreignKey;
+                    $other = ltrim($lastAlias.'.'.$localKey, '.');
+
+                    $lastQuery->addSelect($tableAlias.'.'.$relationColumn);
                     break;
 
                 default:

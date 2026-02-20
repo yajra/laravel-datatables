@@ -29,7 +29,8 @@
         "laravel/scout": "^10.8.3",
         "meilisearch/meilisearch-php": "^1.6.1",
         "orchestra/testbench": "^10",
-        "rector/rector": "^2.0"
+        "rector/rector": "^2.0",
+        "staudenmeir/eloquent-has-many-deep": "^1.21"
     },
     "suggest": {
         "yajra/laravel-datatables-export": "Plugin for server-side exporting using livewire and queue worker.",

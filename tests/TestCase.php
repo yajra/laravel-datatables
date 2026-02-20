@@ -83,6 +83,14 @@ abstract class TestCase extends BaseTestCase
                 $table->softDeletes();
             });
         }
+        if (! $schemaBuilder->hasTable('comments')) {
+            $schemaBuilder->create('comments', function (Blueprint $table) {
+                $table->increments('id');
+                $table->unsignedInteger('post_id');
+                $table->string('content');
+                $table->timestamps();
+            });
+        }
     }
 
     protected function seedDatabase()
@@ -100,9 +108,16 @@ abstract class TestCase extends BaseTestCase
             ]);
 
             collect(range(1, 3))->each(function ($i) use ($user) {
-                $user->posts()->create([
+                $post = $user->posts()->create([
                     'title' => "User-{$user->id} Post-{$i}",
                 ]);
+
+                // Create comments for each post
+                collect(range(1, 2))->each(function ($j) use ($post) {
+                    $post->comments()->create([
+                        'content' => "Comment-{$j} for Post-{$post->id}",
+                    ]);
+                });
             });
 
             $user->heart()->create([
