@@ -48,6 +48,7 @@ return [
         'eloquent' => Yajra\DataTables\EloquentDataTable::class,
         'query' => Yajra\DataTables\QueryDataTable::class,
         'collection' => Yajra\DataTables\CollectionDataTable::class,
+        'paginator' => Yajra\DataTables\PaginatorDataTable::class,
         'resource' => Yajra\DataTables\ApiResourceDataTable::class,
     ],
 
@@ -61,6 +62,7 @@ return [
         // Illuminate\Database\Eloquent\Builder::class            => 'eloquent',
         // Illuminate\Database\Query\Builder::class               => 'query',
         // Illuminate\Support\Collection::class                   => 'collection',
+        // Illuminate\Pagination\LengthAwarePaginator::class      => 'paginator',
     ],
 
     /*
