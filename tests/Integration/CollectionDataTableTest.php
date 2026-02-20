@@ -58,6 +58,40 @@ class CollectionDataTableTest extends TestCase
     }
 
     #[Test]
+    public function it_can_perform_global_search_on_non_string_values()
+    {
+        config()->set('app.debug', false);
+        request()->merge([
+            'columns' => [
+                ['data' => 'id', 'name' => 'id', 'searchable' => 'true', 'orderable' => 'true'],
+            ],
+            'search' => ['value' => '19'],
+            'start' => 0,
+            'length' => 10,
+            'draw' => 1,
+        ]);
+
+        $collection = collect([
+            ['id' => 1],
+            ['id' => 19],
+            ['id' => 200],
+        ]);
+
+        $dataTable = app('datatables')->collection($collection);
+        /** @var JsonResponse $response */
+        $response = $dataTable->toJson();
+
+        $this->assertEquals([
+            'draw' => 1,
+            'recordsTotal' => 3,
+            'recordsFiltered' => 1,
+            'data' => [
+                ['id' => 19],
+            ],
+        ], $response->getData(true));
+    }
+
+    #[Test]
     public function it_accepts_a_model_collection_using_of_factory()
     {
         $dataTable = DataTables::of(User::all());

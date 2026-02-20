@@ -247,11 +247,14 @@ class CollectionDataTable extends DataTableAbstract
             foreach ($this->request->searchableColumnIndex() as $index) {
                 $column = $this->getColumnName($index);
                 $value = Arr::get($data, $column);
-                if (! is_string($value)) {
+                if (is_bool($value)) {
+                    $value = $value ? '1' : '0';
+                } elseif (! is_scalar($value) && ! $value instanceof \Stringable) {
                     continue;
-                } else {
-                    $value = $this->config->isCaseInsensitive() ? Str::lower($value) : $value;
                 }
+
+                $value = (string) $value;
+                $value = $this->config->isCaseInsensitive() ? Str::lower($value) : $value;
 
                 if (Str::contains($value, $keyword)) {
                     return true;
