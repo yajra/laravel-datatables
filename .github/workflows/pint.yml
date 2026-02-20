@@ -13,10 +13,11 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Checkout pull request head
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ github.head_ref || github.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "laravel-pint"
         uses: aglipanci/laravel-pint-action@latest
