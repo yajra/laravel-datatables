@@ -14,9 +14,16 @@ jobs:
       pull-requests: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout pull request head
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Checkout branch
+        if: github.event_name != 'pull_request'
+        uses: actions/checkout@v4
 
       - name: "laravel-pint"
         uses: aglipanci/laravel-pint-action@latest
@@ -25,5 +32,6 @@ jobs:
           verboseMode: true
 
       - uses: stefanzweifel/git-auto-commit-action@v5
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
         with:
           commit_message: "fix: pint :robot:"

@@ -6,6 +6,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class PaginatorDataTable extends CollectionDataTable
 {
+    /**
+     * @param  LengthAwarePaginator<int, mixed>  $paginator
+     */
     public function __construct(protected LengthAwarePaginator $paginator)
     {
         parent::__construct(collect($paginator->items()));
