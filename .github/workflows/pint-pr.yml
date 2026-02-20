@@ -1,4 +1,4 @@
-name: PHP Linting
+name: PHP Linting (PR)
 on:
   pull_request:
 
