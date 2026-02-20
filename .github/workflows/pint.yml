@@ -14,7 +14,6 @@ jobs:
 
     steps:
       - name: Checkout pull request head
-        if: github.event_name == 'pull_request'
         uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
