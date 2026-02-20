@@ -283,6 +283,27 @@ class QueryDataTableTest extends TestCase
     }
 
     #[Test]
+    public function it_can_edit_auto_index_column()
+    {
+        $crawler = $this->call('GET', '/query/indexColumn/edit', [
+            'columns' => [
+                ['data' => 'DT_RowIndex', 'name' => 'index', 'searchable' => 'false', 'orderable' => 'false'],
+                ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
+            ],
+            'search' => ['value' => 'Record-19'],
+        ]);
+
+        $crawler->assertJson([
+            'draw' => 0,
+            'recordsTotal' => 20,
+            'recordsFiltered' => 1,
+        ]);
+
+        $this->assertSame('<a href="/users/19">1</a>', $crawler->json()['data'][0]['DT_RowIndex']);
+    }
+
+    #[Test]
     public function it_allows_search_on_added_column_with_custom_filter_handler()
     {
         $crawler = $this->call('GET', '/query/filterColumn', [
@@ -461,6 +482,12 @@ class QueryDataTableTest extends TestCase
 
         $router->get('/query/indexColumn', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
             ->addIndexColumn()
+            ->toJson());
+
+        $router->get('/query/indexColumn/edit', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
+            ->addIndexColumn()
+            ->editColumn('DT_RowIndex', '<a href="/users/{{$id}}">{{$DT_RowIndex}}</a>')
+            ->rawColumns(['DT_RowIndex'])
             ->toJson());
 
         $router->get('/query/filterColumn', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
