@@ -46,6 +46,8 @@ class DataProcessor
 
     protected bool $ignoreGetters = false;
 
+    protected string $indexColumn;
+
     public function __construct(protected iterable $results, array $columnDef, protected array $templates, protected int $start = 0)
     {
         $this->appendColumns = $columnDef['append'] ?? [];
@@ -58,6 +60,7 @@ class DataProcessor
         $this->makeHidden = $columnDef['hidden'] ?? [];
         $this->makeVisible = $columnDef['visible'] ?? [];
         $this->ignoreGetters = $columnDef['ignore_getters'] ?? false;
+        $this->indexColumn = (string) Config::get('datatables.index_column', 'DT_RowIndex');
     }
 
     /**
@@ -68,7 +71,6 @@ class DataProcessor
     public function process($object = false): array
     {
         $this->output = [];
-        $indexColumn = (string) Config::get('datatables.index_column', 'DT_RowIndex');
 
         foreach ($this->results as $row) {
             $data = Helper::convertToArray($row, ['hidden' => $this->makeHidden, 'visible' => $this->makeVisible, 'ignore_getters' => $this->ignoreGetters]);
@@ -79,7 +81,8 @@ class DataProcessor
             $value = $this->removeExcessColumns($value);
 
             if ($this->includeIndex) {
-                $value[$indexColumn] = ++$this->start;
+                $value[$this->indexColumn] = ++$this->start;
+                $value = $this->editIndexColumn($value, $row);
             }
 
             $this->output[] = $object ? $value : $this->flatten($value);
@@ -120,8 +123,33 @@ class DataProcessor
     protected function editColumns(array $data, object|array $row): array
     {
         foreach ($this->editColumns as $value) {
+            if ($this->includeIndex && $value['name'] === $this->indexColumn) {
+                continue;
+            }
+
             $value['content'] = Helper::compileContent($value['content'], $data, $row);
             Arr::set($data, $value['name'], $value['content']);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Edit index column after it has been added to the row.
+     */
+    protected function editIndexColumn(array $data, object|array $row): array
+    {
+        if (! $this->includeIndex) {
+            return $data;
+        }
+
+        foreach ($this->editColumns as $value) {
+            if ($value['name'] !== $this->indexColumn) {
+                continue;
+            }
+
+            $value['content'] = Helper::compileContent($value['content'], $data, $row);
+            Arr::set($data, $this->indexColumn, $value['content']);
         }
 
         return $data;
