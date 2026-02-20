@@ -126,4 +126,10 @@ return [
      * Callbacks needs to start by those terms, or they will be cast to string.
      */
     'callback' => ['$', '$.', 'function'],
+
+    /*
+     * Maximum record limit per-page. To prevent user from arbitrarily request large record set.
+     * If 'limit' query parameter in the request exceed this limit, it will be automatically set to this value.
+     */
+    'max_limit' => 100,
 ];
