@@ -15,12 +15,12 @@
         }
     ],
     "require": {
-        "php": "^8.2",
-        "illuminate/database": "^12",
-        "illuminate/filesystem": "^12",
-        "illuminate/http": "^12",
-        "illuminate/support": "^12",
-        "illuminate/view": "^12"
+        "php": "^8.3",
+        "illuminate/database": "^13",
+        "illuminate/filesystem": "^13",
+        "illuminate/http": "^13",
+        "illuminate/support": "^13",
+        "illuminate/view": "^13"
     },
     "require-dev": {
         "algolia/algoliasearch-client-php": "^3.4.1",
@@ -28,7 +28,7 @@
         "laravel/pint": "^1.14",
         "laravel/scout": "^10.8.3",
         "meilisearch/meilisearch-php": "^1.6.1",
-        "orchestra/testbench": "^10",
+        "orchestra/testbench": "^11",
         "rector/rector": "^2.0"
     },
     "suggest": {
@@ -53,7 +53,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "12.x-dev"
+            "dev-master": "13.x-dev"
         },
         "laravel": {
             "providers": [

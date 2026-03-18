@@ -3,7 +3,8 @@ on:
   push:
     branches:
       - master
-      - 11.x
+      - '*.x'
+
 jobs:
   phplint:
     runs-on: ubuntu-latest
