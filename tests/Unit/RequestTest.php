@@ -17,7 +17,7 @@ class RequestTest extends TestCase
     }
 
     /**
-     * @return \Yajra\DataTables\Utilities\Request
+     * @return Request
      */
     protected function getRequest()
     {
