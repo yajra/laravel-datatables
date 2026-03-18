@@ -3,6 +3,7 @@
 namespace Yajra\DataTables;
 
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Collection;
 
 class ApiResourceDataTable extends CollectionDataTable
 {
@@ -20,7 +21,7 @@ class ApiResourceDataTable extends CollectionDataTable
     /**
      * Factory method, create and return an instance for the DataTable engine.
      *
-     * @param  \Illuminate\Http\Resources\Json\AnonymousResourceCollection<array-key, array>|array  $source
+     * @param  AnonymousResourceCollection<array-key, array>|array  $source
      * @return ApiResourceDataTable|DataTableAbstract
      */
     public static function create($source)
@@ -31,11 +32,11 @@ class ApiResourceDataTable extends CollectionDataTable
     /**
      * CollectionEngine constructor.
      *
-     * @param  \Illuminate\Http\Resources\Json\AnonymousResourceCollection<array-key, array>  $resourceCollection
+     * @param  AnonymousResourceCollection<array-key, array>  $resourceCollection
      */
     public function __construct(AnonymousResourceCollection $resourceCollection)
     {
-        /** @var \Illuminate\Support\Collection<(int|string), array> $collection */
+        /** @var Collection<(int|string), array> $collection */
         $collection = collect($resourceCollection)->pluck('resource');
         $this->request = app('datatables.request');
         $this->config = app('datatables.config');

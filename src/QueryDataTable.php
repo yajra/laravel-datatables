@@ -2,16 +2,24 @@
 
 namespace Yajra\DataTables;
 
+use Algolia\AlgoliaSearch\SearchClient;
 use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Laravel\Scout\EngineManager;
+use Laravel\Scout\Engines\AlgoliaEngine;
+use Laravel\Scout\Engines\MeilisearchEngine;
+use Meilisearch\Client;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Yajra\DataTables\Utilities\Helper;
 
 class QueryDataTable extends DataTableAbstract
@@ -465,7 +473,7 @@ class QueryDataTable extends DataTableAbstract
 
         $callback($builder, $keyword, fn ($column) => $this->resolveRelationColumn($column));
 
-        /** @var \Illuminate\Database\Query\Builder $baseQueryBuilder */
+        /** @var Builder $baseQueryBuilder */
         $baseQueryBuilder = $this->getBaseQueryBuilder($builder);
         $query->addNestedWhereQuery($baseQueryBuilder, $boolean);
     }
@@ -838,8 +846,8 @@ class QueryDataTable extends DataTableAbstract
      * Perform default query orderBy clause.
      *
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function defaultOrdering(): void
     {
@@ -896,8 +904,8 @@ class QueryDataTable extends DataTableAbstract
      * @param  string  $column
      * @param  string  $direction
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function getNullsLastSql($column, $direction): string
     {
@@ -1166,13 +1174,13 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function performScoutSearch(string $searchKeyword, mixed $searchFilters = []): array
     {
-        if (! class_exists(\Laravel\Scout\EngineManager::class)) {
+        if (! class_exists(EngineManager::class)) {
             throw new \Exception('Laravel Scout is not installed.');
         }
-        $engine = app(\Laravel\Scout\EngineManager::class)->engine();
+        $engine = app(EngineManager::class)->engine();
 
-        if ($engine instanceof \Laravel\Scout\Engines\MeilisearchEngine) {
-            /** @var \Meilisearch\Client $engine */
+        if ($engine instanceof MeilisearchEngine) {
+            /** @var Client $engine */
             $search_results = $engine
                 ->index($this->scoutIndex)
                 ->rawSearch($searchKeyword, [
@@ -1187,8 +1195,8 @@ class QueryDataTable extends DataTableAbstract
             return collect($hits)
                 ->pluck($this->scoutKey)
                 ->all();
-        } elseif ($engine instanceof \Laravel\Scout\Engines\AlgoliaEngine) {
-            /** @var \Algolia\AlgoliaSearch\SearchClient $engine */
+        } elseif ($engine instanceof AlgoliaEngine) {
+            /** @var SearchClient $engine */
             $algolia = $engine->initIndex($this->scoutIndex);
 
             $search_results = $algolia->search($searchKeyword, [
