@@ -3,7 +3,11 @@
 namespace Yajra\DataTables\Tests;
 
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Schema\Builder;
+use Illuminate\Foundation\Application;
 use Orchestra\Testbench\TestCase as BaseTestCase;
+use Yajra\DataTables\DataTablesServiceProvider;
+use Yajra\DataTables\Facades\DataTables;
 use Yajra\DataTables\Tests\Models\AnimalUser;
 use Yajra\DataTables\Tests\Models\HumanUser;
 use Yajra\DataTables\Tests\Models\Role;
@@ -22,7 +26,7 @@ abstract class TestCase extends BaseTestCase
 
     protected function migrateDatabase()
     {
-        /** @var \Illuminate\Database\Schema\Builder $schemaBuilder */
+        /** @var Builder $schemaBuilder */
         $schemaBuilder = $this->app['db']->connection()->getSchemaBuilder();
         if (! $schemaBuilder->hasTable('users')) {
             $schemaBuilder->create('users', function (Blueprint $table) {
@@ -122,7 +126,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Set up the environment.
      *
-     * @param  \Illuminate\Foundation\Application  $app
+     * @param  Application  $app
      */
     protected function getEnvironmentSetUp($app)
     {
@@ -138,14 +142,14 @@ abstract class TestCase extends BaseTestCase
     protected function getPackageProviders($app)
     {
         return [
-            \Yajra\DataTables\DataTablesServiceProvider::class,
+            DataTablesServiceProvider::class,
         ];
     }
 
     protected function getPackageAliases($app)
     {
         return [
-            'DataTables' => \Yajra\DataTables\Facades\DataTables::class,
+            'DataTables' => DataTables::class,
         ];
     }
 }

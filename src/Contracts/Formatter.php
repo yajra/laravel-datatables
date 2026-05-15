@@ -2,10 +2,12 @@
 
 namespace Yajra\DataTables\Contracts;
 
+use Illuminate\Database\Eloquent\Model;
+
 interface Formatter
 {
     /**
-     * @param  array|\Illuminate\Database\Eloquent\Model|object  $row
+     * @param  array|Model|object  $row
      * @return string
      */
     public function format(mixed $value, $row);
