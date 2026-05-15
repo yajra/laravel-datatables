@@ -1,3 +1,10 @@
+## [12.7.1](https://github.com/yajra/laravel-datatables/compare/v12.7.0...v12.7.1) (2026-05-15)
+
+
+### Bug Fixes
+
+* pint :robot: ([f6edab3](https://github.com/yajra/laravel-datatables/commit/f6edab3de693d20c5c9cce6d5283d3a1a7019614))
+
 # [12.7.0](https://github.com/yajra/laravel-datatables/compare/v12.6.3...v12.7.0) (2026-02-20)
 
 
