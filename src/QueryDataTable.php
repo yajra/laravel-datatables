@@ -671,6 +671,7 @@ class QueryDataTable extends DataTableAbstract
                 } elseif (preg_match('/^([\w.]+)$/i', $column)) {
                     // Column without alias
                     [$table, $name] = str_contains($column, '.') ? explode('.', $column) : [null, $column];
+                    $name ??= '';
                     if ($name === '*') {
                         $selects['wildcards'][] = $table ?? '*';
                     } else {
