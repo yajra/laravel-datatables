@@ -146,7 +146,7 @@ abstract class DataTableAbstract implements DataTable
 
     /**
      * @param  string|array  $columns
-     * @param  string|callable|\Yajra\DataTables\Contracts\Formatter  $formatter
+     * @param  string|callable|Formatter  $formatter
      * @return $this
      */
     public function formatColumn($columns, $formatter): static
@@ -664,7 +664,7 @@ abstract class DataTableAbstract implements DataTable
      * Convert the object to its JSON representation.
      *
      * @param  int  $options
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function toJson($options = 0)
     {
@@ -892,7 +892,7 @@ abstract class DataTableAbstract implements DataTable
     /**
      * Return an error json response.
      *
-     * @throws \Yajra\DataTables\Exceptions\Exception|\Exception
+     * @throws Exceptions\Exception|\Exception
      */
     protected function errorResponse(\Exception $exception): JsonResponse
     {
@@ -918,7 +918,7 @@ abstract class DataTableAbstract implements DataTable
     /**
      * Get monolog/logger instance.
      *
-     * @return \Psr\Log\LoggerInterface
+     * @return LoggerInterface
      */
     public function getLogger()
     {
@@ -967,6 +967,10 @@ abstract class DataTableAbstract implements DataTable
         if (is_null($column)) {
             return null;
         }
+
+        // Strip SQL injection characters that have no legitimate use in column identifiers.
+        // This is a defense-in-depth measure to prevent SQL injection via columns[N][data] or columns[N][name].
+        $column = str_replace(["'", '"', '`', ';', "\0", "\n", "\r", "\x1a"], '', $column);
 
         // DataTables is using make(false)
         if (is_numeric($column)) {

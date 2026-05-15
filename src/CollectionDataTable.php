@@ -18,7 +18,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Collection object.
      *
-     * @var \Illuminate\Support\Collection<array-key, array>
+     * @var Collection<array-key, array>
      */
     public Collection $original;
 
@@ -30,7 +30,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * CollectionEngine constructor.
      *
-     * @param  \Illuminate\Support\Collection<array-key, array>  $collection
+     * @param  Collection<array-key, array>  $collection
      */
     public function __construct(public Collection $collection)
     {
@@ -62,7 +62,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Factory method, create and return an instance for the DataTable engine.
      *
-     * @param  AnonymousResourceCollection|array|\Illuminate\Support\Collection<array-key, array>  $source
+     * @param  AnonymousResourceCollection|array|Collection<array-key, array>  $source
      * @return static
      */
     public static function create($source)
@@ -140,7 +140,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Organizes works.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function make(bool $mDataSupport = true): JsonResponse
     {
@@ -171,7 +171,7 @@ class CollectionDataTable extends DataTableAbstract
     /**
      * Get results.
      *
-     * @return \Illuminate\Support\Collection<array-key, array>
+     * @return Collection<array-key, array>
      */
     public function results(): Collection
     {

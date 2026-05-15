@@ -215,7 +215,7 @@ class Helper
 
     public static function transform(array $data): array
     {
-        return array_map(fn ($row) => self::transformRow($row), $data);
+        return array_map(self::transformRow(...), $data);
     }
 
     /**

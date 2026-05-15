@@ -5,7 +5,7 @@ namespace Yajra\DataTables\Utilities;
 use Illuminate\Http\Request as BaseRequest;
 
 /**
- * @mixin \Illuminate\Http\Request
+ * @mixin BaseRequest
  */
 class Request
 {
