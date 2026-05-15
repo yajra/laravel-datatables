@@ -968,6 +968,10 @@ abstract class DataTableAbstract implements DataTable
             return null;
         }
 
+        // Strip SQL injection characters that have no legitimate use in column identifiers.
+        // This is a defense-in-depth measure to prevent SQL injection via columns[N][data] or columns[N][name].
+        $column = str_replace(["'", '"', '`', ';', "\0", "\n", "\r", "\x1a"], '', $column);
+
         // DataTables is using make(false)
         if (is_numeric($column)) {
             $column = $this->getColumnNameByIndex($index);

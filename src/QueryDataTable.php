@@ -382,7 +382,7 @@ class QueryDataTable extends DataTableAbstract
                 if ($type === 'date') {
                     try {
                         // column control replaces / with - on date value
-                        if ($mask && str_contains($mask, '/')) {
+                        if ($mask && str_contains((string) $mask, '/')) {
                             $value = str_replace('-', '/', $value);
                         }
 
@@ -663,6 +663,7 @@ class QueryDataTable extends DataTableAbstract
                 } elseif (preg_match('/^([\w.]+)$/i', $column)) {
                     // Column without alias
                     [$table, $name] = str_contains($column, '.') ? explode('.', $column) : [null, $column];
+                    $name ??= '';
                     if ($name === '*') {
                         $selects['wildcards'][] = $table ?? '*';
                     } else {
@@ -831,7 +832,7 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function resolveCallbackParameter(): array
     {
-        return [$this->query, $this->scoutSearched, fn ($column) => $this->resolveRelationColumn($column)];
+        return [$this->query, $this->scoutSearched, $this->resolveRelationColumn(...)];
     }
 
     /**
@@ -903,6 +904,9 @@ class QueryDataTable extends DataTableAbstract
     {
         /** @var string $sql */
         $sql = $this->config->get('datatables.nulls_last_sql', '%s %s NULLS LAST');
+
+        // Wrap column to prevent SQL injection when used in raw SQL.
+        $column = $this->wrap($column);
 
         return str_replace(
             [':column', ':direction'],

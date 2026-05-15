@@ -10,6 +10,176 @@ use Yajra\DataTables\Tests\TestCase;
 
 class QueryDataTableTest extends TestCase
 {
+    #[Test]
+    public function it_sanitizes_sql_injection_chars_in_column_name_data()
+    {
+        app('datatables.request')->merge([
+            'columns' => [
+                [
+                    'name' => '',
+                    'data' => "id%P'",
+                    'searchable' => 'true',
+                    'orderable' => 'true',
+                    'search' => ['value' => null, 'regex' => 'false'],
+                ],
+            ],
+            'order' => [
+                ['column' => 0, 'dir' => 'desc'],
+            ],
+        ]);
+
+        /** @var QueryDataTable $dataTable */
+        $dataTable = app('datatables')->of(
+            DB::table('users')->select('users.*')
+        );
+
+        $dataTable->ordering();
+
+        $sql = $dataTable->getQuery()->toSql();
+        $this->assertStringNotContainsString("'", $sql);
+    }
+
+    #[Test]
+    public function it_sanitizes_sql_injection_chars_in_column_name_name()
+    {
+        app('datatables.request')->merge([
+            'columns' => [
+                [
+                    'name' => "id'; DROP TABLE users; --",
+                    'data' => 'id',
+                    'searchable' => 'true',
+                    'orderable' => 'true',
+                    'search' => ['value' => null, 'regex' => 'false'],
+                ],
+            ],
+            'order' => [
+                ['column' => 0, 'dir' => 'asc'],
+            ],
+        ]);
+
+        /** @var QueryDataTable $dataTable */
+        $dataTable = app('datatables')->of(
+            DB::table('users')->select('users.*')
+        );
+
+        $dataTable->ordering();
+
+        $sql = $dataTable->getQuery()->toSql();
+        $this->assertStringNotContainsString("'", $sql);
+        $this->assertStringNotContainsString(';', $sql);
+        $this->assertStringContainsString('asc', strtolower($sql));
+    }
+
+    #[Test]
+    public function it_sanitizes_sql_injection_chars_in_column_search()
+    {
+        app('datatables.request')->merge([
+            'columns' => [
+                [
+                    'name' => '',
+                    'data' => "id'",
+                    'searchable' => 'true',
+                    'orderable' => 'false',
+                    'search' => ['value' => 'foo', 'regex' => 'false'],
+                ],
+            ],
+        ]);
+
+        /** @var QueryDataTable $dataTable */
+        $dataTable = app('datatables')->of(
+            DB::table('users')->select('users.*')
+        );
+
+        $dataTable->columnSearch();
+
+        $sql = $dataTable->getQuery()->toSql();
+        $this->assertStringNotContainsString("'", $sql);
+    }
+
+    #[Test]
+    public function it_handles_normal_column_name_ordering()
+    {
+        app('datatables.request')->merge([
+            'columns' => [
+                [
+                    'name' => '',
+                    'data' => 'id',
+                    'searchable' => 'true',
+                    'orderable' => 'true',
+                    'search' => ['value' => null, 'regex' => 'false'],
+                ],
+            ],
+            'order' => [
+                ['column' => 0, 'dir' => 'desc'],
+            ],
+        ]);
+
+        /** @var QueryDataTable $dataTable */
+        $dataTable = app('datatables')->of(
+            DB::table('users')->select('users.*')
+        );
+
+        $dataTable->ordering();
+
+        $sql = $dataTable->getQuery()->toSql();
+        $this->assertStringContainsString('desc', strtolower($sql));
+    }
+
+    #[Test]
+    public function it_handles_normal_column_name_search()
+    {
+        app('datatables.request')->merge([
+            'columns' => [
+                [
+                    'name' => '',
+                    'data' => 'name',
+                    'searchable' => 'true',
+                    'orderable' => 'false',
+                    'search' => ['value' => 'john', 'regex' => 'false'],
+                ],
+            ],
+        ]);
+
+        /** @var QueryDataTable $dataTable */
+        $dataTable = app('datatables')->of(
+            DB::table('users')->select('users.*')
+        );
+
+        $dataTable->columnSearch();
+
+        $sql = $dataTable->getQuery()->toSql();
+        $this->assertStringContainsString('name', strtolower($sql));
+    }
+
+    #[Test]
+    public function it_sanitizes_injection_in_column_name_with_nulls_last()
+    {
+        app('datatables.request')->merge([
+            'columns' => [
+                [
+                    'name' => '',
+                    'data' => "id'",
+                    'searchable' => 'true',
+                    'orderable' => 'true',
+                    'search' => ['value' => null, 'regex' => 'false'],
+                ],
+            ],
+            'order' => [
+                ['column' => 0, 'dir' => 'desc'],
+            ],
+        ]);
+
+        /** @var QueryDataTable $dataTable */
+        $dataTable = app('datatables')->of(
+            DB::table('users')->select('users.*')
+        );
+        $dataTable->orderByNullsLast();
+        $dataTable->ordering();
+
+        $sql = $dataTable->getQuery()->toSql();
+        $this->assertStringNotContainsString("'", $sql);
+    }
+
     public function test_complex_query_are_wrapped_and_countable()
     {
         /** @var \Yajra\DataTables\QueryDataTable $dataTable */
