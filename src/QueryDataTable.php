@@ -913,6 +913,9 @@ class QueryDataTable extends DataTableAbstract
         /** @var string $sql */
         $sql = $this->config->get('datatables.nulls_last_sql', '%s %s NULLS LAST');
 
+        // Wrap column to prevent SQL injection when used in raw SQL.
+        $column = $this->wrap($column);
+
         return str_replace(
             [':column', ':direction'],
             [$column, $direction],
