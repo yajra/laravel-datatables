@@ -1,3 +1,10 @@
+## [13.1.1](https://github.com/yajra/laravel-datatables/compare/v13.1.0...v13.1.1) (2026-05-16)
+
+
+### Bug Fixes
+
+* replace fragile denylist with allowlist for column name validation ([ce833c2](https://github.com/yajra/laravel-datatables/commit/ce833c2a5034fcf5609c8c059b90aab1ef38e4b2))
+
 # [13.1.0](https://github.com/yajra/laravel-datatables/compare/v13.0.0...v13.1.0) (2026-05-15)
 
 
