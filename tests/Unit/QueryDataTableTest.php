@@ -4,6 +4,7 @@ namespace Yajra\DataTables\Tests\Unit;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 use Yajra\DataTables\QueryDataTable;
 use Yajra\DataTables\Tests\Models\User;
@@ -12,7 +13,7 @@ use Yajra\DataTables\Tests\TestCase;
 class QueryDataTableTest extends TestCase
 {
     #[Test]
-    public function it_sanitizes_sql_injection_chars_in_column_name_data()
+    public function it_rejects_column_data_with_invalid_characters_when_ordering()
     {
         app('datatables.request')->merge([
             'columns' => [
@@ -29,19 +30,18 @@ class QueryDataTableTest extends TestCase
             ],
         ]);
 
+        $this->expectException(InvalidArgumentException::class);
+
         /** @var QueryDataTable $dataTable */
         $dataTable = app('datatables')->of(
             DB::table('users')->select('users.*')
         );
 
         $dataTable->ordering();
-
-        $sql = $dataTable->getQuery()->toSql();
-        $this->assertStringNotContainsString("'", $sql);
     }
 
     #[Test]
-    public function it_sanitizes_sql_injection_chars_in_column_name_name()
+    public function it_rejects_column_name_with_invalid_characters_when_ordering()
     {
         app('datatables.request')->merge([
             'columns' => [
@@ -58,21 +58,18 @@ class QueryDataTableTest extends TestCase
             ],
         ]);
 
+        $this->expectException(InvalidArgumentException::class);
+
         /** @var QueryDataTable $dataTable */
         $dataTable = app('datatables')->of(
             DB::table('users')->select('users.*')
         );
 
         $dataTable->ordering();
-
-        $sql = $dataTable->getQuery()->toSql();
-        $this->assertStringNotContainsString("'", $sql);
-        $this->assertStringNotContainsString(';', $sql);
-        $this->assertStringContainsString('asc', strtolower($sql));
     }
 
     #[Test]
-    public function it_sanitizes_sql_injection_chars_in_column_search()
+    public function it_rejects_column_data_with_invalid_characters_when_searching()
     {
         app('datatables.request')->merge([
             'columns' => [
@@ -86,15 +83,14 @@ class QueryDataTableTest extends TestCase
             ],
         ]);
 
+        $this->expectException(InvalidArgumentException::class);
+
         /** @var QueryDataTable $dataTable */
         $dataTable = app('datatables')->of(
             DB::table('users')->select('users.*')
         );
 
         $dataTable->columnSearch();
-
-        $sql = $dataTable->getQuery()->toSql();
-        $this->assertStringNotContainsString("'", $sql);
     }
 
     #[Test]
@@ -127,6 +123,63 @@ class QueryDataTableTest extends TestCase
     }
 
     #[Test]
+    public function it_rejects_column_data_with_percent_character()
+    {
+        app('datatables.request')->merge([
+            'columns' => [
+                [
+                    'name' => '',
+                    'data' => 'connections.id%P',
+                    'searchable' => 'true',
+                    'orderable' => 'true',
+                    'search' => ['value' => null, 'regex' => 'false'],
+                ],
+            ],
+            'order' => [
+                ['column' => 0, 'dir' => 'asc'],
+            ],
+        ]);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid column name: "connections.id%P".');
+
+        /** @var QueryDataTable $dataTable */
+        $dataTable = app('datatables')->of(
+            DB::table('users')->select('users.*')
+        );
+
+        $dataTable->ordering();
+    }
+
+    #[Test]
+    public function it_accepts_json_column_path_with_arrow_operator()
+    {
+        app('datatables.request')->merge([
+            'columns' => [
+                [
+                    'name' => '',
+                    'data' => 'address->city',
+                    'searchable' => 'true',
+                    'orderable' => 'true',
+                    'search' => ['value' => null, 'regex' => 'false'],
+                ],
+            ],
+            'order' => [
+                ['column' => 0, 'dir' => 'asc'],
+            ],
+        ]);
+
+        /** @var QueryDataTable $dataTable */
+        $dataTable = app('datatables')->of(
+            DB::table('users')->select('users.*')
+        );
+
+        $dataTable->ordering();
+
+        $this->assertTrue(true);
+    }
+
+    #[Test]
     public function it_handles_normal_column_name_search()
     {
         app('datatables.request')->merge([
@@ -153,7 +206,7 @@ class QueryDataTableTest extends TestCase
     }
 
     #[Test]
-    public function it_sanitizes_injection_in_column_name_with_nulls_last()
+    public function it_rejects_column_data_with_invalid_characters_when_null_last_ordering()
     {
         app('datatables.request')->merge([
             'columns' => [
@@ -170,15 +223,14 @@ class QueryDataTableTest extends TestCase
             ],
         ]);
 
+        $this->expectException(InvalidArgumentException::class);
+
         /** @var QueryDataTable $dataTable */
         $dataTable = app('datatables')->of(
             DB::table('users')->select('users.*')
         );
         $dataTable->orderByNullsLast();
         $dataTable->ordering();
-
-        $sql = $dataTable->getQuery()->toSql();
-        $this->assertStringNotContainsString("'", $sql);
     }
 
     public function test_complex_query_are_wrapped_and_countable()

@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
+use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\Contracts\Formatter;
@@ -968,9 +969,13 @@ abstract class DataTableAbstract implements DataTable
             return null;
         }
 
-        // Strip SQL injection characters that have no legitimate use in column identifiers.
+        // Validate column name using an allowlist to prevent SQL injection.
+        // Only allow characters valid in unquoted SQL identifiers: alphanumeric, underscore, dot, dash, and space.
+        // Also allows `>` for JSON path operators (e.g. column->path) which are handled by the query grammar.
         // This is a defense-in-depth measure to prevent SQL injection via columns[N][data] or columns[N][name].
-        $column = str_replace(["'", '"', '`', ';', "\0", "\n", "\r", "\x1a"], '', $column);
+        if (! preg_match('/^[a-zA-Z0-9_.\-> ]+$/', $column)) {
+            throw new InvalidArgumentException("Invalid column name: \"$column\".");
+        }
 
         // DataTables is using make(false)
         if (is_numeric($column)) {
