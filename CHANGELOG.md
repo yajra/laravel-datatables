@@ -1,3 +1,10 @@
+## [13.1.2](https://github.com/yajra/laravel-datatables/compare/v13.1.1...v13.1.2) (2026-05-19)
+
+
+### Bug Fixes
+
+* column array notation [#3282](https://github.com/yajra/laravel-datatables/issues/3282) ([edfcb7e](https://github.com/yajra/laravel-datatables/commit/edfcb7e73f59c2e837a329093772065349cecb59))
+
 ## [13.1.1](https://github.com/yajra/laravel-datatables/compare/v13.1.0...v13.1.1) (2026-05-16)
 
 
