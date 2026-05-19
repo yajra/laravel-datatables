@@ -969,11 +969,13 @@ abstract class DataTableAbstract implements DataTable
             return null;
         }
 
+        $validated = preg_replace('/\[.*?\]/', '', $column);
+
         // Validate column name using an allowlist to prevent SQL injection.
         // Only allow characters valid in unquoted SQL identifiers: alphanumeric, underscore, dot, dash, and space.
-        // Also allows `>` for JSON path operators (e.g. column->path) which are handled by the query grammar.
+        // Allows `>` for JSON path operators (e.g. column->path) handled by the query grammar.
         // This is a defense-in-depth measure to prevent SQL injection via columns[N][data] or columns[N][name].
-        if (! preg_match('/^[a-zA-Z0-9_.\-> ]+$/', $column)) {
+        if (! preg_match('/^[a-zA-Z0-9_.\-> ]+$/', (string) $validated)) {
             throw new InvalidArgumentException("Invalid column name: \"$column\".");
         }
 

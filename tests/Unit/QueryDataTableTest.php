@@ -180,6 +180,34 @@ class QueryDataTableTest extends TestCase
     }
 
     #[Test]
+    public function it_accepts_array_notation_column_name_with_brackets()
+    {
+        app('datatables.request')->merge([
+            'columns' => [
+                [
+                    'name' => '',
+                    'data' => 'categories[, ].name',
+                    'searchable' => 'true',
+                    'orderable' => 'true',
+                    'search' => ['value' => null, 'regex' => 'false'],
+                ],
+            ],
+            'order' => [
+                ['column' => 0, 'dir' => 'asc'],
+            ],
+        ]);
+
+        /** @var QueryDataTable $dataTable */
+        $dataTable = app('datatables')->of(
+            DB::table('users')->select('users.*')
+        );
+
+        $dataTable->ordering();
+
+        $this->assertTrue(true);
+    }
+
+    #[Test]
     public function it_handles_normal_column_name_search()
     {
         app('datatables.request')->merge([
