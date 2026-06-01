@@ -33,7 +33,7 @@ return DataTables::make(User::all())->toJson();
     <body>
         <tr>
             <td>
-                <img src="https://www.npmjs.com/npm-avatar/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdmF0YXJVUkwiOiJodHRwczovL3MuZ3JhdmF0YXIuY29tL2F2YXRhci9lZDQwMmM1NjY2YjJlNjUxMTIyOWE4ZjM0NDdkNWMzYT9zaXplPTEwMCZkZWZhdWx0PXJldHJvIn0.aWU-snChAWu9abJV3dtBo-iy-2v_7JAxXUN1UHL_pDQ" height="50" alt="DataTables Logo">
+                <img src="https://datatables.net/media/images/nav-dt.png" height="50" alt="DataTables Logo">
             </td>
             <td>A big thank you to <a href="https://editor.datatables.net">DataTables</a> for supporting this project with a free DataTables Editor license.</td>
         </tr>
