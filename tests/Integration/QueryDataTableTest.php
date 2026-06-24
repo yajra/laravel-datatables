@@ -360,6 +360,37 @@ class QueryDataTableTest extends TestCase
     }
 
     #[Test]
+    public function it_applies_column_control_list_for_custom_filter_handler()
+    {
+        $crawler = $this->call('GET', '/query/filterColumn', [
+            'columns' => [
+                [
+                    'data' => 'foo',
+                    'name' => 'foo',
+                    'searchable' => 'true',
+                    'orderable' => 'true',
+                    'columnControl' => [
+                        'list' => ['Record-19'],
+                        'search' => [
+                            'value' => ['ignored'],
+                            'logic' => 'equal',
+                            'type' => 'text',
+                        ],
+                    ],
+                ],
+                ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
+            ],
+        ]);
+
+        $crawler->assertOk();
+
+        $queries = $crawler->json()['queries'];
+        $this->assertStringContainsString('"1" = ?', $queries[1]['query']);
+        $this->assertSame(['Record-19'], $queries[1]['bindings']);
+    }
+
+    #[Test]
     public function it_returns_search_panes_options()
     {
         $crawler = $this->call('GET', '/query/search-panes');

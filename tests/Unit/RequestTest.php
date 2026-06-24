@@ -70,6 +70,7 @@ class RequestTest extends TestCase
         $_GET['columns'] = [];
         $_GET['columns'][] = [
             'columnControl' => [
+                'list' => ['baz'],
                 'search' => [
                     'value' => ['foo', 'bar'],
                     'logic' => 'equal',
@@ -82,6 +83,7 @@ class RequestTest extends TestCase
         $request = $this->getRequest();
 
         $this->assertSame('', $request->columnControl(0)['search']['value']);
+        $this->assertSame(['baz'], $request->columnControl(0)['list']);
         $this->assertSame('', $request->columnControlSearch(0)['value']);
     }
 
