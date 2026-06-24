@@ -163,12 +163,27 @@ class Request
 
     public function columnControl(int $index): array
     {
-        return request()->array("columns.$index.columnControl");
+        $columnControl = request()->array("columns.$index.columnControl");
+
+        if (isset($columnControl['search']) && is_array($columnControl['search'])) {
+            $columnControl['search'] = $this->prepareColumnControlSearch($columnControl['search']);
+        }
+
+        return $columnControl;
     }
 
     public function columnControlSearch(int $index): array
     {
-        return request()->array("columns.$index.columnControl.search");
+        return $this->prepareColumnControlSearch(request()->array("columns.$index.columnControl.search"));
+    }
+
+    protected function prepareColumnControlSearch(array $search): array
+    {
+        if (array_key_exists('value', $search)) {
+            $search['value'] = $this->prepareKeyword($search['value']);
+        }
+
+        return $search;
     }
 
     /**
