@@ -352,11 +352,12 @@ class QueryDataTableTest extends TestCase
         $crawler->assertJson([
             'draw' => 0,
             'recordsTotal' => 20,
-            'recordsFiltered' => 1,
+            'recordsFiltered' => 0,
         ]);
 
         $queries = $crawler->json()['queries'];
         $this->assertStringContainsString('"1" = ?', $queries[1]['query']);
+        $this->assertSame(['Record-19'], $queries[1]['bindings']);
     }
 
     #[Test]
