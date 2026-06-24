@@ -65,6 +65,27 @@ class RequestTest extends TestCase
     }
 
     #[Test]
+    public function it_prepares_column_control_search_value_arrays()
+    {
+        $_GET['columns'] = [];
+        $_GET['columns'][] = [
+            'columnControl' => [
+                'search' => [
+                    'value' => ['foo', 'bar'],
+                    'logic' => 'equal',
+                    'type' => 'text',
+                ],
+            ],
+        ];
+
+        request()->merge($_GET);
+        $request = $this->getRequest();
+
+        $this->assertSame('foo bar', $request->columnControl(0)['search']['value']);
+        $this->assertSame('foo bar', $request->columnControlSearch(0)['value']);
+    }
+
+    #[Test]
     public function it_has_orderable_columns()
     {
         $_GET['columns'] = [];
