@@ -180,7 +180,7 @@ class Request
     protected function prepareColumnControlSearch(array $search): array
     {
         if (array_key_exists('value', $search)) {
-            $search['value'] = $this->prepareKeyword($search['value']);
+            $search['value'] = is_scalar($search['value']) ? (string) $search['value'] : '';
         }
 
         return $search;

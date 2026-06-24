@@ -326,7 +326,7 @@ class QueryDataTableTest extends TestCase
     }
 
     #[Test]
-    public function it_normalizes_column_control_search_arrays_for_custom_filter_handler()
+    public function it_ignores_column_control_search_arrays_for_custom_filter_handler()
     {
         $crawler = $this->call('GET', '/query/filterColumn', [
             'columns' => [
@@ -352,12 +352,11 @@ class QueryDataTableTest extends TestCase
         $crawler->assertJson([
             'draw' => 0,
             'recordsTotal' => 20,
-            'recordsFiltered' => 0,
+            'recordsFiltered' => 20,
         ]);
 
         $queries = $crawler->json()['queries'];
-        $this->assertStringContainsString('"1" = ?', $queries[1]['query']);
-        $this->assertSame(['Record-19'], $queries[1]['bindings']);
+        $this->assertStringNotContainsString('"1" = ?', $queries[1]['query']);
     }
 
     #[Test]
