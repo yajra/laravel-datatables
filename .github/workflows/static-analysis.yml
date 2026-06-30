@@ -25,17 +25,20 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        # actions/checkout v4.3.0
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        # shivammathur/setup-php 2.35.5
+        uses: shivammathur/setup-php@bf6b4fbd49ca58e4608c9c89fba0b8d90bd2a39f
         with:
           php-version: 8.3
           tools: composer:v2
           coverage: none
 
       - name: Install dependencies
-        uses: nick-fields/retry@v3
+        # nick-fields/retry v3.0.2
+        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08
         with:
           timeout_minutes: 5
           max_attempts: 5
