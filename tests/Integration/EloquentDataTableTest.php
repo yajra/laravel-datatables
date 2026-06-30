@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
 use PHPUnit\Framework\Attributes\Test;
+use Yajra\DataTables\Contracts\Formatter;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
@@ -120,6 +121,59 @@ class EloquentDataTableTest extends TestCase
         $this->assertTrue(isset($data['created_at_formatted']));
 
         $this->assertEquals(Carbon::parse($user->created_at)->format('Y-m-d'), $data['created_at_formatted']);
+    }
+
+    #[Test]
+    public function it_formats_formatter_columns_once_and_passes_null_for_missing_source_columns()
+    {
+        $formatter = new class implements Formatter
+        {
+            public array $values = [];
+
+            public function format(mixed $value, $row): string
+            {
+                $this->values[] = $value;
+
+                return $value === null ? 'missing-source' : 'formatted-'.$value;
+            }
+        };
+        $warnings = [];
+
+        set_error_handler(function (int $severity, string $message) use (&$warnings): bool {
+            if ($severity === E_WARNING) {
+                $warnings[] = $message;
+
+                return true;
+            }
+
+            return false;
+        });
+
+        try {
+            $response = app('datatables')->eloquent(User::query()->whereKey(1))
+                ->formatColumn(['name', 'missing_source'], $formatter)
+                ->toJson();
+        } finally {
+            restore_error_handler();
+        }
+
+        $data = $response->getData(true)['data'][0];
+
+        $this->assertSame([
+            'values' => ['Record-1', null],
+            'warnings' => [],
+            'formatted' => [
+                'name' => 'formatted-Record-1',
+                'missing_source' => 'missing-source',
+            ],
+        ], [
+            'values' => $formatter->values,
+            'warnings' => $warnings,
+            'formatted' => [
+                'name' => $data['name_formatted'],
+                'missing_source' => $data['missing_source_formatted'],
+            ],
+        ]);
     }
 
     #[Test]
