@@ -1,3 +1,11 @@
+## [13.1.3](https://github.com/yajra/laravel-datatables/compare/v13.1.2...v13.1.3) (2026-06-30)
+
+
+### Bug Fixes
+
+* **processor:** prevent duplicate format() call and pass null for missing columns ([365137c](https://github.com/yajra/laravel-datatables/commit/365137c8badfe1e0ef68258fe51c6e0980176bd1))
+* **query:** honor searchable flag in ColumnControl search ([4c92c10](https://github.com/yajra/laravel-datatables/commit/4c92c1029c4462b60aec490e34e5e4a24f937d7d))
+
 ## [13.1.2](https://github.com/yajra/laravel-datatables/compare/v13.1.1...v13.1.2) (2026-05-19)
 
 
