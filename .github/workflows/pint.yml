@@ -27,8 +27,14 @@ jobs:
           preset: laravel
           verboseMode: true
 
+      - name: Restore Git credentials for auto-commit
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GITHUB_TOKEN" | base64 -w0)"
+
       - uses: stefanzweifel/git-auto-commit-action@v5
         if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
         with:
           commit_message: "fix: pint :robot:"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
