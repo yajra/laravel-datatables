@@ -319,7 +319,7 @@ class QueryDataTable extends DataTableAbstract
         foreach ($columns as $index => $column) {
             $columnName = $this->getColumnName($index);
 
-            if (is_null($columnName) || ! ($column['searchable'] ?? false)) {
+            if (is_null($columnName) || ! $this->request->isColumnSearchable($index, false)) {
                 continue;
             }
 
