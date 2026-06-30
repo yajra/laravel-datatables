@@ -39,7 +39,7 @@ class ApiResourceDataTable extends CollectionDataTable
         $this->request = app('datatables.request');
         $this->config = app('datatables.config');
         /** @var Collection<(int|string), array> $collection */
-        $collection = collect($resourceCollection->toArray($this->request));
+        $collection = collect($resourceCollection->toArray(request()));
         $this->collection = $collection;
         $this->original = $collection;
         $this->columns = $collection->isEmpty() ? [] : array_keys($this->serialize($collection->first()));
