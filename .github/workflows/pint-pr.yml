@@ -8,23 +8,25 @@ jobs:
 
     permissions:
       contents: write
-      pull-requests: write
 
     steps:
+      # actions/checkout v4.3.0
       - name: Checkout pull request head
         if: github.event_name == 'pull_request'
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
+      # aglipanci/laravel-pint-action v2.0.0
       - name: "laravel-pint"
-        uses: aglipanci/laravel-pint-action@latest
+        uses: aglipanci/laravel-pint-action@07f4f96d0e75037d5c9ff4f40963a9d086147747
         with:
           preset: laravel
           verboseMode: true
 
-      - uses: stefanzweifel/git-auto-commit-action@v5
+      # stefanzweifel/git-auto-commit-action v5.2.0
+      - uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403
         if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
         with:
           commit_message: "fix: pint :robot:"

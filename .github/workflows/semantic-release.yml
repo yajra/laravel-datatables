@@ -15,7 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        # actions/checkout v4.3.0
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
         with:
           persist-credentials: false
 
@@ -31,11 +32,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        # actions/setup-node v4.4.0
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: 'lts/*'
 
       - name: Semantic Release
+        # cycjimmy/semantic-release-action pinned SHA
         uses: cycjimmy/semantic-release-action@9cc899c47e6841430bbaedb43de1560a568dfd16
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}

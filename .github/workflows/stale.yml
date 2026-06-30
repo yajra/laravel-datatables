@@ -10,7 +10,8 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - uses: actions/stale@v5
+      # actions/stale v5.2.0
+      - uses: actions/stale@99b6c709598e2b0d0841cd037aaf1ba07a4410bd
         with:
           exempt-issue-labels: "bug,security,enhancement,pinned"
           days-before-issue-stale: 30

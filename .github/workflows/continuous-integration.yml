@@ -24,20 +24,24 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        # actions/checkout v2.7.0
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        # shivammathur/setup-php 2.35.5
+        uses: shivammathur/setup-php@bf6b4fbd49ca58e4608c9c89fba0b8d90bd2a39f
         with:
           php-version: ${{ matrix.php }}
           tools: composer:v2
           coverage: none
 
       - name: Setup Memcached
-        uses: niden/actions-memcached@v8
+        # niden/actions-memcached v8
+        uses: niden/actions-memcached@9ff2b102979272958682d09bf262563039bea69c
 
       - name: Install dependencies
-        uses: nick-invision/retry@v1
+        # nick-invision/retry v1.0.4
+        uses: nick-invision/retry@39da88d5f7d15a96aed861dbabbe8b7443e3182a
         with:
           timeout_minutes: 5
           max_attempts: 5
