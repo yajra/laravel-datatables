@@ -40,6 +40,27 @@ class CollectionDataTableTest extends TestCase
     }
 
     #[Test]
+    public function it_can_skip_total_records_count_with_filter_and_pagination_applied()
+    {
+        $crawler = $this->call('GET', '/collection/skip-total-records', [
+            'columns' => [
+                ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
+            ],
+            'search' => ['value' => 'Record 1'],
+            'start' => 0,
+            'length' => 3,
+        ]);
+
+        $crawler->assertJson([
+            'draw' => 0,
+            'recordsTotal' => 11,
+            'recordsFiltered' => 11,
+        ]);
+        $crawler->assertJsonCount(3, 'data');
+    }
+
+    #[Test]
     public function it_can_perform_global_search()
     {
         $crawler = $this->call('GET', '/collection/users', [
@@ -325,5 +346,7 @@ class CollectionDataTableTest extends TestCase
         $this->app['router']->get('/collection/users', fn (DataTables $datatables) => $datatables->collection(User::all())->toJson());
 
         $this->app['router']->get('/collection/empty', fn (DataTables $datatables) => $datatables->collection([])->toJson());
+
+        $this->app['router']->get('/collection/skip-total-records', fn (DataTables $datatables) => $datatables->collection(User::all())->skipTotalRecords()->toJson());
     }
 }

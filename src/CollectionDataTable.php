@@ -149,18 +149,21 @@ class CollectionDataTable extends DataTableAbstract
 
             $this->totalRecords = $this->totalCount();
 
-            if ($this->totalRecords) {
-                $results = $this->results();
-                $processed = $this->processResults($results, $mDataSupport);
-                $output = $this->transform($results, $processed);
+            $results = $this->results();
+            $processed = $this->processResults($results, $mDataSupport);
+            $output = $this->transform($results, $processed);
 
-                $this->collection = collect($output);
-                $this->ordering();
-                $this->filterRecords();
-                $this->paginate();
+            $this->collection = collect($output);
+            $this->ordering();
+            $this->filterRecords();
 
-                $this->revertIndexColumn($mDataSupport);
+            if ($this->skipTotalRecords) {
+                $this->totalRecords = $this->filteredRecords;
             }
+
+            $this->paginate();
+
+            $this->revertIndexColumn($mDataSupport);
 
             return $this->render($this->collection->values()->all());
         } catch (Exception $exception) {
