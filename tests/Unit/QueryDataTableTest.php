@@ -5,6 +5,7 @@ namespace Yajra\DataTables\Tests\Unit;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Yajra\DataTables\QueryDataTable;
 use Yajra\DataTables\Tests\Models\User;
@@ -460,5 +461,49 @@ class QueryDataTableTest extends TestCase
             '"users"."id" = \'123\'',
             $dataTable->getQuery()->toRawSql()
         );
+    }
+
+    #[Test]
+    #[DataProvider('unsearchableColumnValues')]
+    public function it_skips_column_control_search_for_unsearchable_columns(bool|string $searchable): void
+    {
+        app('datatables.request')->merge([
+            'columns' => [
+                [
+                    'name' => 'id',
+                    'data' => 'id',
+                    'searchable' => $searchable,
+                    'orderable' => 'true',
+                    'search' => ['value' => null, 'regex' => 'false'],
+                    'columnControl' => [
+                        'search' => [
+                            'value' => '123',
+                            'logic' => 'equal',
+                            'type' => 'num',
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        /** @var QueryDataTable $dataTable */
+        $dataTable = app('datatables')->of(
+            User::query()->select('users.*')
+        );
+
+        $dataTable->columnControlSearch();
+
+        $this->assertSame(
+            'select "users".* from "users"',
+            $dataTable->getQuery()->toSql()
+        );
+    }
+
+    public static function unsearchableColumnValues(): array
+    {
+        return [
+            'string false' => ['false'],
+            'boolean false' => [false],
+        ];
     }
 }
