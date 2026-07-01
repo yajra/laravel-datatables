@@ -5,9 +5,11 @@ namespace Yajra\DataTables\Tests\Integration;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\JsonResponse;
 use PHPUnit\Framework\Attributes\Test;
+use Yajra\DataTables\ApiResourceDataTable;
 use Yajra\DataTables\CollectionDataTable;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Facades\DataTables as DatatablesFacade;
+use Yajra\DataTables\Tests\Http\Resources\UserResource;
 use Yajra\DataTables\Tests\Models\User;
 use Yajra\DataTables\Tests\TestCase;
 
@@ -89,6 +91,35 @@ class CollectionDataTableTest extends TestCase
                 ['id' => 19],
             ],
         ], $response->getData(true));
+    }
+
+    #[Test]
+    public function it_resolves_api_resources_before_processing_rows()
+    {
+        config()->set('app.debug', false);
+        request()->merge([
+            'columns' => [
+                ['data' => 'email', 'name' => 'email', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
+            ],
+            'start' => 0,
+            'length' => 1,
+            'draw' => 1,
+        ]);
+
+        $resourceCollection = UserResource::collection(User::query()->orderBy('id')->limit(1)->get());
+
+        $dataTable = app('datatables')->resource($resourceCollection);
+        /** @var JsonResponse $response */
+        $response = $dataTable->toJson();
+        $json = $response->getData(true);
+
+        $this->assertInstanceOf(ApiResourceDataTable::class, $dataTable);
+        $this->assertSame([
+            'email' => 'Email-1@example.com',
+            'name' => 'Record-1',
+        ], $json['data'][0]);
+        $this->assertArrayNotHasKey('id', $json['data'][0]);
     }
 
     #[Test]
