@@ -204,7 +204,7 @@ class Helper
 
         $data = $row instanceof Arrayable ? $row->toArray() : (array) $row;
         if ($row instanceof Model) {
-            return self::normalizeModelData($row, $data);
+            return self::normalizeModelArrayValues($row, $data);
         }
 
         foreach ($data as &$value) {
@@ -218,7 +218,11 @@ class Helper
         return $data;
     }
 
-    protected static function normalizeModelData(Model $model, array $data): array
+    /**
+     * Model::toArray() can keep object-cast attributes as stdClass values.
+     * Normalize those post-toArray values without re-walking every scalar relation field.
+     */
+    protected static function normalizeModelArrayValues(Model $model, array $data): array
     {
         foreach (array_keys($model->getAttributes()) as $attribute) {
             if (array_key_exists($attribute, $data) && self::shouldNormalizeValue($data[$attribute])) {
@@ -236,17 +240,17 @@ class Helper
             $key = $model::$snakeAttributes ? Str::snake($relationName) : $relationName;
 
             if (array_key_exists($key, $data)) {
-                $data[$key] = self::normalizeRelationData($relation, $data[$key]);
+                $data[$key] = self::normalizeRelationArrayValues($relation, $data[$key]);
             }
         }
 
         return $data;
     }
 
-    protected static function normalizeRelationData(mixed $relation, mixed $data): mixed
+    protected static function normalizeRelationArrayValues(mixed $relation, mixed $data): mixed
     {
         if ($relation instanceof Model && is_array($data)) {
-            return self::normalizeModelData($relation, $data);
+            return self::normalizeModelArrayValues($relation, $data);
         }
 
         if (is_iterable($relation) && is_array($data)) {
@@ -256,7 +260,7 @@ class Helper
                 }
 
                 if ($model instanceof Model && array_key_exists($key, $data) && is_array($data[$key])) {
-                    $data[$key] = self::normalizeModelData($model, $data[$key]);
+                    $data[$key] = self::normalizeModelArrayValues($model, $data[$key]);
                 }
             }
         }
