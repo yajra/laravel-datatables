@@ -49,6 +49,24 @@ class EloquentDataTableTest extends TestCase
     }
 
     #[Test]
+    public function it_escapes_object_cast_model_attributes()
+    {
+        User::find(1)->update([
+            'user_type' => json_encode([
+                'label' => '<a href="#">Allowed</a>',
+                'nested' => [
+                    'value' => '<script>alert("x")</script>',
+                ],
+            ]),
+        ]);
+
+        $response = $this->call('GET', '/eloquent/object-cast');
+
+        $this->assertSame(e('<a href="#">Allowed</a>'), $response->json('data.0.user_type.label'));
+        $this->assertSame(e('<script>alert("x")</script>'), $response->json('data.0.user_type.nested.value'));
+    }
+
+    #[Test]
     public function it_can_perform_column_search_on_model_with_schema_qualified_table()
     {
         $crawler = $this->call('GET', '/eloquent/schema-users', [
@@ -263,6 +281,19 @@ class EloquentDataTableTest extends TestCase
             };
 
             return $datatables->eloquent($model->newQuery())->toJson();
+        });
+
+        $router->get('/eloquent/object-cast', function (DataTables $datatables) {
+            $model = new class extends User
+            {
+                protected $table = 'users';
+
+                protected $casts = [
+                    'user_type' => 'object',
+                ];
+            };
+
+            return $datatables->eloquent($model->newQuery()->where('id', 1))->toJson();
         });
 
         $router->get('/eloquent/only', fn (DataTables $datatables) => $datatables->eloquent(Post::with('user'))
