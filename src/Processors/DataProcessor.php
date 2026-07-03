@@ -263,6 +263,12 @@ class DataProcessor
                 continue;
             }
 
+            if ($value instanceof \stdClass) {
+                $row[$key] = $this->escapeRow((array) $value, $column);
+
+                continue;
+            }
+
             if (isset($this->rawColumnsLookup[$column])) {
                 continue;
             }

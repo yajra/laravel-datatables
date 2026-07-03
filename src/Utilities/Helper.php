@@ -204,7 +204,7 @@ class Helper
 
         $data = $row instanceof Arrayable ? $row->toArray() : (array) $row;
         if ($row instanceof Model) {
-            return self::normalizeModelArrayValues($row, $data);
+            return $data;
         }
 
         foreach ($data as &$value) {
@@ -216,86 +216,6 @@ class Helper
         }
 
         return $data;
-    }
-
-    /**
-     * Model::toArray() can keep object-cast attributes as stdClass values.
-     * Normalize those post-toArray values without re-walking every scalar relation field.
-     */
-    protected static function normalizeModelArrayValues(Model $model, array $data): array
-    {
-        foreach (array_keys($model->getAttributes()) as $attribute) {
-            if (array_key_exists($attribute, $data) && self::shouldNormalizeValue($data[$attribute])) {
-                $data[$attribute] = self::normalizeValue($data[$attribute]);
-            }
-        }
-
-        foreach ($model->getAppends() as $append) {
-            if (array_key_exists($append, $data) && self::shouldNormalizeValue($data[$append])) {
-                $data[$append] = self::normalizeValue($data[$append]);
-            }
-        }
-
-        foreach ($model->getRelations() as $relationName => $relation) {
-            $key = $model::$snakeAttributes ? Str::snake($relationName) : $relationName;
-
-            if (array_key_exists($key, $data)) {
-                $data[$key] = self::normalizeRelationArrayValues($relation, $data[$key]);
-            }
-        }
-
-        return $data;
-    }
-
-    protected static function normalizeRelationArrayValues(mixed $relation, mixed $data): mixed
-    {
-        if ($relation instanceof Model && is_array($data)) {
-            return self::normalizeModelArrayValues($relation, $data);
-        }
-
-        if (is_iterable($relation) && is_array($data)) {
-            foreach ($relation as $key => $model) {
-                if (! is_int($key) && ! is_string($key)) {
-                    continue;
-                }
-
-                if ($model instanceof Model && array_key_exists($key, $data) && is_array($data[$key])) {
-                    $data[$key] = self::normalizeModelArrayValues($model, $data[$key]);
-                }
-            }
-        }
-
-        return $data;
-    }
-
-    protected static function normalizeValue(mixed $value): mixed
-    {
-        if ($value instanceof DateTime) {
-            return $value;
-        }
-
-        if ($value instanceof Arrayable) {
-            $value = $value->toArray();
-        } elseif (is_object($value)) {
-            $value = (array) $value;
-        }
-
-        if (is_array($value)) {
-            foreach ($value as &$item) {
-                if (self::shouldNormalizeValue($item)) {
-                    $item = self::normalizeValue($item);
-                }
-            }
-
-            unset($item);
-        }
-
-        return $value;
-    }
-
-    protected static function shouldNormalizeValue(mixed $value): bool
-    {
-        return is_array($value) || (is_object($value) && ! $value instanceof DateTime);
     }
 
     public static function transform(array $data): array
