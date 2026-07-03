@@ -20,6 +20,10 @@ class QueryDataTableTest extends TestCase
 {
     use DatabaseTransactions;
 
+    private const FILTER_COLUMN_ROUTE = '/query/filterColumn';
+
+    private const FILTER_COLUMN_QUERY_CONSTRAINT = '"1" = ?';
+
     #[Test]
     public function it_can_set_total_records()
     {
@@ -306,7 +310,7 @@ class QueryDataTableTest extends TestCase
     #[Test]
     public function it_allows_search_on_added_column_with_custom_filter_handler()
     {
-        $crawler = $this->call('GET', '/query/filterColumn', [
+        $crawler = $this->call('GET', self::FILTER_COLUMN_ROUTE, [
             'columns' => [
                 ['data' => 'foo', 'name' => 'foo', 'searchable' => 'true', 'orderable' => 'true'],
                 ['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
@@ -322,13 +326,13 @@ class QueryDataTableTest extends TestCase
         ]);
 
         $queries = $crawler->json()['queries'];
-        $this->assertStringContainsString('"1" = ?', $queries[1]['query']);
+        $this->assertStringContainsString(self::FILTER_COLUMN_QUERY_CONSTRAINT, $queries[1]['query']);
     }
 
     #[Test]
     public function it_prepares_column_control_search_arrays_for_custom_filter_handler()
     {
-        $crawler = $this->call('GET', '/query/filterColumn', [
+        $crawler = $this->call('GET', self::FILTER_COLUMN_ROUTE, [
             'columns' => [
                 [
                     'data' => 'foo',
@@ -356,14 +360,14 @@ class QueryDataTableTest extends TestCase
         ]);
 
         $queries = $crawler->json()['queries'];
-        $this->assertStringContainsString('"1" = ?', $queries[1]['query']);
+        $this->assertStringContainsString(self::FILTER_COLUMN_QUERY_CONSTRAINT, $queries[1]['query']);
         $this->assertSame(['Record-19'], $queries[1]['bindings']);
     }
 
     #[Test]
     public function it_applies_column_control_list_for_custom_filter_handler()
     {
-        $crawler = $this->call('GET', '/query/filterColumn', [
+        $crawler = $this->call('GET', self::FILTER_COLUMN_ROUTE, [
             'columns' => [
                 [
                     'data' => 'foo',
@@ -387,7 +391,7 @@ class QueryDataTableTest extends TestCase
         $crawler->assertOk();
 
         $queries = $crawler->json()['queries'];
-        $this->assertStringContainsString('"1" = ?', $queries[1]['query']);
+        $this->assertStringContainsString(self::FILTER_COLUMN_QUERY_CONSTRAINT, $queries[1]['query']);
         $this->assertSame(['Record-19'], $queries[1]['bindings']);
     }
 
@@ -556,7 +560,7 @@ class QueryDataTableTest extends TestCase
             ->rawColumns(['DT_RowIndex'])
             ->toJson());
 
-        $router->get('/query/filterColumn', fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
+        $router->get(self::FILTER_COLUMN_ROUTE, fn (DataTables $dataTable) => $dataTable->query(DB::table('users'))
             ->addColumn('foo', 'bar')
             ->filterColumn('foo', function (Builder $builder, $keyword) {
                 $builder->where('1', $keyword);
