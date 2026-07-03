@@ -25,6 +25,8 @@ class DataProcessor
 
     protected array $rawColumns = [];
 
+    protected array $rawColumnsLookup = [];
+
     /**
      * @var array|string[]
      */
@@ -58,6 +60,11 @@ class DataProcessor
         $this->escapeColumns = $columnDef['escape'] ?? [];
         $this->includeIndex = $columnDef['index'] ?? false;
         $this->rawColumns = $columnDef['raw'] ?? [];
+        foreach ($this->rawColumns as $rawColumn) {
+            if (is_int($rawColumn) || is_string($rawColumn)) {
+                $this->rawColumnsLookup[(string) $rawColumn] = true;
+            }
+        }
         $this->makeHidden = $columnDef['hidden'] ?? [];
         $this->makeVisible = $columnDef['visible'] ?? [];
         $this->ignoreGetters = $columnDef['ignore_getters'] ?? false;
@@ -224,7 +231,7 @@ class DataProcessor
      */
     protected function escapeColumns(array $output): array
     {
-        return array_map(function ($row) {
+        foreach ($output as $index => $row) {
             if ($this->escapeColumns == '*') {
                 $row = $this->escapeRow($row);
             } elseif (is_array($this->escapeColumns)) {
@@ -236,24 +243,33 @@ class DataProcessor
                 }
             }
 
-            return $row;
-        }, $output);
+            $output[$index] = $row;
+        }
+
+        return $output;
     }
 
     /**
      * Escape all string or Htmlable values of row.
      */
-    protected function escapeRow(array $row): array
+    protected function escapeRow(array $row, string $path = ''): array
     {
-        $arrayDot = array_filter(Arr::dot($row));
-        foreach ($arrayDot as $key => $value) {
-            if (! in_array($key, $this->rawColumns)) {
-                $arrayDot[$key] = (is_string($value) || $value instanceof Htmlable) ? e($value) : $value;
-            }
-        }
+        foreach ($row as $key => $value) {
+            $column = $path === '' ? (string) $key : $path.'.'.$key;
 
-        foreach ($arrayDot as $key => $value) {
-            Arr::set($row, $key, $value);
+            if (is_array($value)) {
+                $row[$key] = $this->escapeRow($value, $column);
+
+                continue;
+            }
+
+            if (isset($this->rawColumnsLookup[$column])) {
+                continue;
+            }
+
+            if (is_string($value) || $value instanceof Htmlable) {
+                $row[$key] = e($value);
+            }
         }
 
         return $row;
