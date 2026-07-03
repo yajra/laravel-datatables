@@ -65,7 +65,7 @@ class RequestTest extends TestCase
     }
 
     #[Test]
-    public function it_ignores_column_control_search_value_arrays()
+    public function it_prepares_column_control_search_value_arrays()
     {
         $_GET['columns'] = [];
         $_GET['columns'][] = [
@@ -82,9 +82,9 @@ class RequestTest extends TestCase
         request()->merge($_GET);
         $request = $this->getRequest();
 
-        $this->assertSame('', $request->columnControl(0)['search']['value']);
+        $this->assertSame('foo bar', $request->columnControl(0)['search']['value']);
         $this->assertSame(['baz'], $request->columnControl(0)['list']);
-        $this->assertSame('', $request->columnControlSearch(0)['value']);
+        $this->assertSame('foo bar', $request->columnControlSearch(0)['value']);
     }
 
     #[Test]
