@@ -1,3 +1,17 @@
+# [13.3.0](https://github.com/yajra/laravel-datatables/compare/v13.2.0...v13.3.0) (2026-08-26)
+
+
+### Bug Fixes
+
+* scope the datatables request so its state does not outlive a request ([4eae92f](https://github.com/yajra/laravel-datatables/commit/4eae92f87bef25839a26a71bb7b756f44dbb937d))
+* share the datatables request instance under its class name ([99e5db2](https://github.com/yajra/laravel-datatables/commit/99e5db2a91e99f06d153bca3b190a61085e67a93))
+
+
+### Features
+
+* add a max_length config to cap the records per request ([b0dc99a](https://github.com/yajra/laravel-datatables/commit/b0dc99a842826b8966a1e0d334c913e2f14fb65f)), closes [#2493](https://github.com/yajra/laravel-datatables/issues/2493) [#1597](https://github.com/yajra/laravel-datatables/issues/1597)
+* allow ignoring the max_length cap ([a7cff68](https://github.com/yajra/laravel-datatables/commit/a7cff68a7ccda242c233c27b5c1a6db871174dc3))
+
 # [13.2.0](https://github.com/yajra/laravel-datatables/compare/v13.1.6...v13.2.0) (2026-08-14)
 
 
