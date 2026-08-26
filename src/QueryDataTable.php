@@ -929,18 +929,38 @@ class QueryDataTable extends DataTableAbstract
         }
 
         $this->query->where(function ($query) use ($keyword) {
-            collect($this->request->searchableColumnIndex())
+            $columns = collect($this->request->searchableColumnIndex())
                 ->map(fn ($index) => $this->getColumnName($index))
                 ->filter()
-                ->reject(fn ($column) => $this->isBlacklisted($column) && ! $this->hasFilterColumn($column))
-                ->each(function ($column) use ($keyword, $query) {
-                    if ($this->hasFilterColumn($column)) {
-                        $this->applyFilterColumn($query, $column, $keyword, 'or');
-                    } else {
-                        $this->compileQuerySearch($query, $column, $keyword);
-                    }
-                });
+                ->reject(fn ($column) => $this->isBlacklisted($column) && ! $this->hasFilterColumn($column));
+
+            $this->compileGlobalSearch($query, $columns, $keyword);
         });
+    }
+
+    /**
+     * Compile the global search query for the given searchable columns.
+     *
+     * @param  QueryBuilder|EloquentBuilder  $query
+     * @param  Collection<array-key, string>  $columns
+     */
+    protected function compileGlobalSearch($query, Collection $columns, string $keyword): void
+    {
+        $columns->each(fn ($column) => $this->compileGlobalSearchColumn($query, $column, $keyword));
+    }
+
+    /**
+     * Compile the global search query for a single searchable column.
+     *
+     * @param  QueryBuilder|EloquentBuilder  $query
+     */
+    protected function compileGlobalSearchColumn($query, string $column, string $keyword): void
+    {
+        if ($this->hasFilterColumn($column)) {
+            $this->applyFilterColumn($query, $column, $keyword, 'or');
+        } else {
+            $this->compileQuerySearch($query, $column, $keyword);
+        }
     }
 
     /**

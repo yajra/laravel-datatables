@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder as BaseQueryBuilder;
 use Illuminate\Database\Query\JoinClause;
+use Illuminate\Support\Collection;
 use Yajra\DataTables\Exceptions\Exception;
 
 /**
@@ -84,56 +85,127 @@ class EloquentDataTable extends QueryDataTable
      */
     protected function compileQuerySearch($query, string $column, string $keyword, string $boolean = 'or', bool $nested = false): void
     {
-        if (substr_count($column, '.') > 1) {
-            if ($this->isTableQualifiedColumn($query, $column)) {
-                parent::compileQuerySearch($query, $column, $keyword, $boolean);
+        $relation = $this->resolveSearchableRelation($query, $column, $nested);
 
-                return;
-            }
-
-            $parts = explode('.', $column);
-            $firstRelation = array_shift($parts);
-            $column = implode('.', $parts);
-
-            if ($this->isMorphRelation($firstRelation)) {
-                $query->{$boolean.'WhereHasMorph'}(
-                    $firstRelation,
-                    '*',
-                    function (EloquentBuilder $query) use ($column, $keyword) {
-                        parent::compileQuerySearch($query, $column, $keyword, '');
-                    }
-                );
-            } else {
-                $query->{$boolean.'WhereHas'}($firstRelation, function (EloquentBuilder $query) use ($column, $keyword) {
-                    self::compileQuerySearch($query, $column, $keyword, '', true);
-                });
-            }
-
-            return;
-        }
-
-        $parts = explode('.', $column);
-        $newColumn = array_pop($parts);
-        $relation = implode('.', $parts);
-
-        if (! $nested && $this->isNotEagerLoaded($relation)) {
+        if (! $relation) {
             parent::compileQuerySearch($query, $column, $keyword, $boolean);
 
             return;
         }
 
-        if ($this->isMorphRelation($relation)) {
-            $query->{$boolean.'WhereHasMorph'}(
-                $relation,
-                '*',
-                function (EloquentBuilder $query) use ($newColumn, $keyword) {
-                    parent::compileQuerySearch($query, $newColumn, $keyword, '');
+        $this->compileRelationSearch($query, $relation['relation'], [$relation['column']], $keyword, $boolean);
+    }
+
+    /**
+     * Resolve the relation that should be searched for the given column.
+     *
+     * Returns null when the column can be searched on the query itself,
+     * e.g. when its relation is not eager loaded and is therefore joined.
+     *
+     * @param  QueryBuilder|EloquentBuilder  $query
+     * @return array{relation: string, column: string}|null
+     */
+    protected function resolveSearchableRelation($query, string $column, bool $nested = false): ?array
+    {
+        $parts = explode('.', $column);
+
+        if (count($parts) > 2) {
+            if ($this->isTableQualifiedColumn($query, $column)) {
+                return null;
+            }
+
+            $relation = array_shift($parts);
+
+            return ['relation' => $relation, 'column' => implode('.', $parts)];
+        }
+
+        $columnName = array_pop($parts);
+        $relation = implode('.', $parts);
+
+        if (! $relation || (! $nested && $this->isNotEagerLoaded($relation))) {
+            return null;
+        }
+
+        return ['relation' => $relation, 'column' => $columnName];
+    }
+
+    /**
+     * Compile a single relation search query for the given related columns.
+     *
+     * All columns of the same relation are compiled into one where has query
+     * so a single sub-query is used instead of one per column.
+     *
+     * @param  QueryBuilder|EloquentBuilder  $query
+     * @param  array<int, string>  $columns
+     */
+    protected function compileRelationSearch($query, string $relation, array $columns, string $keyword, string $boolean = 'or'): void
+    {
+        $isMorph = $this->isMorphRelation($relation);
+
+        $search = function (EloquentBuilder $query) use ($columns, $keyword, $isMorph) {
+            foreach (array_values($columns) as $index => $column) {
+                $boolean = $index === 0 ? '' : 'or';
+
+                if (! $isMorph && str_contains($column, '.')) {
+                    self::compileQuerySearch($query, $column, $keyword, $boolean, true);
+                } else {
+                    parent::compileQuerySearch($query, $column, $keyword, $boolean);
                 }
-            );
+            }
+        };
+
+        // A single column does not need to be grouped as it cannot be
+        // mixed up with the relation constraint of the where has query.
+        $callback = count($columns) > 1
+            ? fn (EloquentBuilder $query) => $query->where($search)
+            : $search;
+
+        if ($isMorph) {
+            $query->{$boolean.'WhereHasMorph'}($relation, '*', $callback);
         } else {
-            $query->{$boolean.'WhereHas'}($relation, function (EloquentBuilder $query) use ($newColumn, $keyword) {
-                parent::compileQuerySearch($query, $newColumn, $keyword, '');
-            });
+            $query->{$boolean.'WhereHas'}($relation, $callback);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function compileGlobalSearch($query, Collection $columns, string $keyword): void
+    {
+        /** @var array<int, string|null> $relations */
+        $relations = [];
+
+        /** @var array<int, array<int, string>> $groups */
+        $groups = [];
+
+        foreach ($columns as $column) {
+            $relation = $this->hasFilterColumn($column)
+                ? null
+                : $this->resolveSearchableRelation($query, $column);
+
+            if (! $relation) {
+                $relations[] = null;
+                $groups[] = [$column];
+
+                continue;
+            }
+
+            $index = array_search($relation['relation'], $relations, true);
+
+            if ($index === false) {
+                $relations[] = $relation['relation'];
+                $groups[] = [$relation['column']];
+            } else {
+                $groups[$index][] = $relation['column'];
+            }
+        }
+
+        foreach ($relations as $index => $relation) {
+            if ($relation === null) {
+                $this->compileGlobalSearchColumn($query, $groups[$index][0], $keyword);
+            } else {
+                $this->compileRelationSearch($query, $relation, $groups[$index], $keyword);
+            }
         }
     }
 
