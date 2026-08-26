@@ -1044,6 +1044,21 @@ abstract class DataTableAbstract implements DataTable
         return $this;
     }
 
+    /**
+     * Ignore the maximum length configured via datatables.max_length.
+     *
+     * Use it when all the records are needed no matter the configured
+     * maximum, e.g. when exporting every filtered record.
+     *
+     * @return $this
+     */
+    public function ignoreMaxLength(): static
+    {
+        $this->request->ignoreMaxLength();
+
+        return $this;
+    }
+
     protected function validateMinLengthSearch(): void
     {
         if ($this->request->isSearchable()

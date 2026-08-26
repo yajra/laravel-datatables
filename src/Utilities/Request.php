@@ -3,12 +3,18 @@
 namespace Yajra\DataTables\Utilities;
 
 use Illuminate\Http\Request as BaseRequest;
+use Illuminate\Support\Facades\Config;
 
 /**
  * @mixin BaseRequest
  */
 class Request
 {
+    /**
+     * Flag to ignore the configured maximum length.
+     */
+    protected bool $ignoreMaxLength = false;
+
     /**
      * Proxy non-existing method calls to base request class.
      *
@@ -210,6 +216,12 @@ class Request
      */
     public function isPaginationable(): bool
     {
+        // A maximum length is enforced on every request, including the ones
+        // asking for all the records by not sending any length at all.
+        if ($this->maxLength() > 0) {
+            return true;
+        }
+
         return ! is_null(request()->input('start')) &&
             ! is_null(request()->input('length')) &&
             request()->input('length') != -1;
@@ -236,8 +248,44 @@ class Request
     public function length(): int
     {
         $length = request()->input('length', 10);
+        $length = is_numeric($length) ? intval($length) : 10;
 
-        return is_numeric($length) ? intval($length) : 10;
+        $maxLength = $this->maxLength();
+
+        if ($maxLength > 0 && ($length < 1 || $length > $maxLength)) {
+            return $maxLength;
+        }
+
+        return $length;
+    }
+
+    /**
+     * Get the maximum number of records that can be requested per page.
+     */
+    public function maxLength(): int
+    {
+        if ($this->ignoreMaxLength) {
+            return 0;
+        }
+
+        $maxLength = Config::get('datatables.max_length');
+
+        return is_numeric($maxLength) ? intval($maxLength) : 0;
+    }
+
+    /**
+     * Ignore the configured maximum length.
+     *
+     * Needed when all the records are wanted no matter the configured maximum,
+     * e.g. when exporting every filtered record.
+     *
+     * @return $this
+     */
+    public function ignoreMaxLength(): static
+    {
+        $this->ignoreMaxLength = true;
+
+        return $this;
     }
 
     /**

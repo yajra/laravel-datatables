@@ -26,7 +26,11 @@ class DataTablesServiceProvider extends ServiceProvider
         $this->app->alias('datatables', DataTables::class);
         $this->app->singleton('datatables', fn () => new DataTables);
 
-        $this->app->singleton('datatables.request', fn () => new Request);
+        // Scoped and not shared, so that the request state, e.g. the flag set
+        // by ignoreMaxLength(), does not leak into the next request of a long
+        // running worker such as Octane.
+        $this->app->alias('datatables.request', Request::class);
+        $this->app->scoped('datatables.request', fn () => new Request);
 
         $this->app->singleton('datatables.config', DataTablesConfig::class);
     }
