@@ -1,3 +1,12 @@
+## [13.3.1](https://github.com/yajra/laravel-datatables/compare/v13.3.0...v13.3.1) (2026-09-15)
+
+
+### Bug Fixes
+
+* match a relation against the eager loads segment by segment ([788b5d7](https://github.com/yajra/laravel-datatables/commit/788b5d73b3dae58a133f480d6545f4ee6c15b74e))
+* resolve eager loaded relations written in snake case ([6c4a785](https://github.com/yajra/laravel-datatables/commit/6c4a785ee00f9d2ebd2c219e6dc869677f661696)), closes [#2324](https://github.com/yajra/laravel-datatables/issues/2324)
+* resolve nested relations written in snake case ([5632486](https://github.com/yajra/laravel-datatables/commit/56324869df166ecd4f767aacca1f250da2c9e080))
+
 # [13.3.0](https://github.com/yajra/laravel-datatables/compare/v13.2.0...v13.3.0) (2026-08-26)
 
 
