@@ -4,6 +4,7 @@ namespace Yajra\DataTables;
 
 use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Eloquent\Builder as BaseEloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder as BaseQueryBuilder;
 use Illuminate\Database\Query\JoinClause;
+use Illuminate\Support\Str;
 use Yajra\DataTables\Exceptions\Exception;
 
 /**
@@ -92,7 +94,7 @@ class EloquentDataTable extends QueryDataTable
             }
 
             $parts = explode('.', $column);
-            $firstRelation = array_shift($parts);
+            $firstRelation = $this->resolveRelationName(array_shift($parts), $nested ? $query : null);
             $column = implode('.', $parts);
 
             if ($this->isMorphRelation($firstRelation)) {
@@ -114,7 +116,7 @@ class EloquentDataTable extends QueryDataTable
 
         $parts = explode('.', $column);
         $newColumn = array_pop($parts);
-        $relation = implode('.', $parts);
+        $relation = $this->resolveRelationName(implode('.', $parts), $nested ? $query : null);
 
         if (! $nested && $this->isNotEagerLoaded($relation)) {
             parent::compileQuerySearch($query, $column, $keyword, $boolean);
@@ -135,6 +137,96 @@ class EloquentDataTable extends QueryDataTable
                 parent::compileQuerySearch($query, $newColumn, $keyword, '');
             });
         }
+    }
+
+    /**
+     * Resolve the name of an eager loaded relation.
+     *
+     * Column names are usually written in snake case, e.g. "child_table.name",
+     * while the relation itself is defined in camel case. The camel case
+     * relation is therefore used when it is the eager loaded one.
+     *
+     * Pass the query of a where has callback to resolve a nested relation. The
+     * eager loads of the root query are keyed by their full path, e.g.
+     * "user.childTable", so a nested name is resolved against the related
+     * model it belongs to instead.
+     *
+     * @param  QueryBuilder|EloquentBuilder|null  $query
+     */
+    protected function resolveRelationName(string $relation, $query = null): string
+    {
+        if (! $relation) {
+            return $relation;
+        }
+
+        if ($query instanceof BaseEloquentBuilder) {
+            return $this->resolveRelationNameOf($query->getModel(), $relation);
+        }
+
+        if (array_key_exists($relation, $this->query->getEagerLoads())) {
+            return $relation;
+        }
+
+        $resolved = null;
+        $resolvedScore = -1;
+
+        foreach (array_keys($this->query->getEagerLoads()) as $eagerRelation) {
+            $score = $this->relationNameMatchScore($relation, (string) $eagerRelation);
+
+            if ($score !== null && $score > $resolvedScore) {
+                $resolved = (string) $eagerRelation;
+                $resolvedScore = $score;
+            }
+        }
+
+        return $resolved ?? $relation;
+    }
+
+    /**
+     * Score how well a relation matches an eager loaded one, segment by segment.
+     *
+     * Null means the two cannot be the same relation, otherwise the score is the
+     * number of segments that matched literally, so that an eager load spelled
+     * exactly like the column wins over one that only matches in camel case.
+     */
+    protected function relationNameMatchScore(string $relation, string $eagerRelation): ?int
+    {
+        $parts = explode('.', $relation);
+        $eagerParts = explode('.', $eagerRelation);
+
+        if (count($parts) !== count($eagerParts)) {
+            return null;
+        }
+
+        $score = 0;
+
+        foreach ($parts as $index => $part) {
+            if ($part === $eagerParts[$index]) {
+                $score++;
+
+                continue;
+            }
+
+            if (Str::camel($part) !== $eagerParts[$index]) {
+                return null;
+            }
+        }
+
+        return $score;
+    }
+
+    /**
+     * Resolve the name of a relation against the model that declares it.
+     */
+    protected function resolveRelationNameOf(Model $model, string $relation): string
+    {
+        if ($model->isRelation($relation)) {
+            return $relation;
+        }
+
+        $camel = Str::camel($relation);
+
+        return $model->isRelation($camel) ? $camel : $relation;
     }
 
     /**
@@ -190,7 +282,9 @@ class EloquentDataTable extends QueryDataTable
     {
         $parts = explode('.', $column);
         $columnName = array_pop($parts);
-        $relation = preg_replace('/\[.*?\]/', '', implode('.', $parts));
+        $relation = $this->resolveRelationName(
+            (string) preg_replace('/\[.*?\]/', '', implode('.', $parts))
+        );
 
         if ($this->isNotEagerLoaded($relation)) {
             return parent::resolveRelationColumn($column);
