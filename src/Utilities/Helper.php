@@ -5,6 +5,7 @@ namespace Yajra\DataTables\Utilities;
 use Closure;
 use DateTime;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Config;
@@ -202,6 +203,10 @@ class Helper
             [])) : $row;
 
         $data = $row instanceof Arrayable ? $row->toArray() : (array) $row;
+        if ($row instanceof Model) {
+            return $data;
+        }
+
         foreach ($data as &$value) {
             if ((is_object($value) && ! $value instanceof DateTime) || is_array($value)) {
                 $value = self::convertToArray($value);
