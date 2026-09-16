@@ -86,6 +86,10 @@ class EloquentDataTable extends QueryDataTable
      */
     protected function compileQuerySearch($query, string $column, string $keyword, string $boolean = 'or', bool $nested = false): void
     {
+        // Inside a where has callback the relations belong to the related
+        // model, and no longer to the one the data table was built from.
+        $context = $nested ? $query : null;
+
         if (substr_count($column, '.') > 1) {
             if ($this->isTableQualifiedColumn($query, $column)) {
                 parent::compileQuerySearch($query, $column, $keyword, $boolean);
@@ -94,10 +98,10 @@ class EloquentDataTable extends QueryDataTable
             }
 
             $parts = explode('.', $column);
-            $firstRelation = $this->resolveRelationName(array_shift($parts), $nested ? $query : null);
+            $firstRelation = $this->resolveRelationName(array_shift($parts), $context);
             $column = implode('.', $parts);
 
-            if ($this->isMorphRelation($firstRelation)) {
+            if ($this->isMorphRelationOf($this->modelOf($context), $firstRelation)) {
                 $query->{$boolean.'WhereHasMorph'}(
                     $firstRelation,
                     '*',
@@ -116,7 +120,7 @@ class EloquentDataTable extends QueryDataTable
 
         $parts = explode('.', $column);
         $newColumn = array_pop($parts);
-        $relation = $this->resolveRelationName(implode('.', $parts), $nested ? $query : null);
+        $relation = $this->resolveRelationName(implode('.', $parts), $context);
 
         if (! $nested && $this->isNotEagerLoaded($relation)) {
             parent::compileQuerySearch($query, $column, $keyword, $boolean);
@@ -124,7 +128,7 @@ class EloquentDataTable extends QueryDataTable
             return;
         }
 
-        if ($this->isMorphRelation($relation)) {
+        if ($this->isMorphRelationOf($this->modelOf($context), $relation)) {
             $query->{$boolean.'WhereHasMorph'}(
                 $relation,
                 '*',
@@ -250,15 +254,32 @@ class EloquentDataTable extends QueryDataTable
      */
     protected function isMorphRelation($relation)
     {
-        $isMorph = false;
-        if ($relation !== null && $relation !== '') {
-            $relationParts = explode('.', $relation);
-            $firstRelation = array_shift($relationParts);
-            $model = $this->query->getModel();
-            $isMorph = method_exists($model, $firstRelation) && $model->$firstRelation() instanceof MorphTo;
+        return $this->isMorphRelationOf($this->query->getModel(), (string) $relation);
+    }
+
+    /**
+     * Check if a relation of the given model is a morphed one or not.
+     */
+    protected function isMorphRelationOf(Model $model, string $relation): bool
+    {
+        if ($relation === '') {
+            return false;
         }
 
-        return $isMorph;
+        $parts = explode('.', $relation);
+        $firstRelation = array_shift($parts);
+
+        return $model->isRelation($firstRelation) && $model->$firstRelation() instanceof MorphTo;
+    }
+
+    /**
+     * Get the model the given query belongs to, defaulting to the root one.
+     *
+     * @param  QueryBuilder|EloquentBuilder|null  $query
+     */
+    protected function modelOf($query = null): Model
+    {
+        return $query instanceof BaseEloquentBuilder ? $query->getModel() : $this->query->getModel();
     }
 
     /**
