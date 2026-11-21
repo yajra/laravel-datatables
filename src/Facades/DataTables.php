@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static \Yajra\DataTables\EloquentDataTable eloquent($builder)
  * @method static \Yajra\DataTables\QueryDataTable query($builder)
  * @method static \Yajra\DataTables\CollectionDataTable collection($collection)
+ * @method static void flushCache(string|array $tags)
  *
  * @see \Yajra\DataTables\DataTables
  */

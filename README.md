@@ -127,6 +127,43 @@ To enable debugging mode, just set `APP_DEBUG=true` and the package will include
 > [!IMPORTANT]
 > Please ensure that the `APP_DEBUG` config is set to false when your app is in production.
 
+## Caching Query Results
+
+The counts and the rows read by the query and Eloquent engines can be cached with the Laravel cache, until the tags the result depends on are flushed. Nothing is cached unless `cache()` is called:
+
+```php
+use Yajra\DataTables\Facades\DataTables;
+
+return DataTables::eloquent(Order::query()->where('team_id', $team->id)->with('customer'))
+    ->cache(['orders', "team:{$team->id}"], ttl: 120)
+    ->toJson();
+```
+
+Flush the tags when their data changes. Inside a transaction, the flush runs once it is committed and is discarded on rollback:
+
+```php
+// Flush the previous and the new team when an order moves.
+Order::saved(fn (Order $order) => DataTables::flushCache(array_unique([
+    "team:{$order->getOriginal('team_id')}",
+    "team:{$order->team_id}",
+])));
+
+// Mass updates and raw SQL do not fire model events.
+Order::query()->where('status', 'pending')->update(['status' => 'late']);
+DataTables::flushCache('orders');
+```
+
+Any cache store works, even without tag support. Keep in mind that:
+
+- An entry is reused by the requests sending the same SQL and bindings to the same connection with the same tags. Keep authorization in the query, or after it, e.g. in `editColumn()`.
+- Every table read by the query must be tagged and flushed: a change that is not flushed, e.g. a mass update or a write from another system, is served from the cache until the TTL expires.
+- When the database itself returns different rows for the same SQL, e.g. with row level security or a per tenant `search_path`, segment the cache with `by: ['schema' => $schema]`. Do not cache queries using `NOW()`, `RAND()` or `CURRENT_USER`: pass such values as bindings.
+- Eager loads, the queries of your callbacks, the reads inside a transaction, the locking reads and the queries with `afterQuery()` callbacks are never cached.
+- Only cache the expensive reads: for a fast query, reading the cache can be slower than reading the database. Reads returning more than `datatables.cache.max_rows` rows (1000 by default), e.g. exports, are not stored.
+- Rows cached before a migration are served without its new columns: flush the tags of the changed tables in the migration, or add the release to `datatables.cache.prefix`. Using the model class as tag, e.g. `cache(User::class)`, avoids typos between `cache()` and `flushCache()`.
+
+The store, the default TTL, the write and row limits and a switch to bypass every cache are set in the `cache` section of `config/datatables.php`. When `APP_DEBUG` is enabled, the response includes the status of every cached read.
+
 ## PHP ARTISAN SERVE BUG
 
 Please avoid using `php artisan serve` when developing the package.

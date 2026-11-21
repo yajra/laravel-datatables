@@ -14,7 +14,10 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder as BaseQueryBuilder;
 use Illuminate\Database\Query\JoinClause;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use ReflectionMethod;
+use Yajra\DataTables\Cache\CacheOptions;
 use Yajra\DataTables\Exceptions\Exception;
 
 /**
@@ -52,6 +55,76 @@ class EloquentDataTable extends QueryDataTable
     public static function canCreate($source): bool
     {
         return $source instanceof EloquentBuilder;
+    }
+
+    /**
+     * Get the paginated models through the cache.
+     *
+     * Only the rows of the main query are cached. The models are hydrated from
+     * them and the relations are eager loaded the same way Builder::get() does,
+     * so the eager loads, their constraints included, always reach the database.
+     *
+     * @return Collection<int, Model>
+     */
+    protected function cachedResults(CacheOptions $options): Collection
+    {
+        $query = $this->query;
+
+        if (! $query instanceof BaseEloquentBuilder || $this->overridesRetrieval($query, ['get', 'getModels', 'hydrate', 'eagerLoadRelations', 'applyScopes'])) {
+            return $this->bypassCache('rows', 'unsupported_builder', fn () => $query->get());
+        }
+
+        $builder = $query->applyScopes();
+        $base = $builder->getQuery();
+        $cache = $this->resultCache();
+
+        $rows = $this->rememberRead(
+            $options,
+            'rows',
+            $base,
+            fn (): array => $base->get()->all(),
+            fn (array $rows): ?array => $cache->exportRows($rows),
+            fn (mixed $data): ?array => $cache->importRows($data),
+        );
+
+        $models = $builder->getModel()->hydrate($rows)->all();
+
+        if (count($models) > 0) {
+            $models = $builder->eagerLoadRelations($models);
+        }
+
+        return $query->applyAfterQueryCallbacks($builder->getModel()->newCollection($models));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function cachedCount($builder, CacheOptions $options): int
+    {
+        if ($builder instanceof BaseEloquentBuilder && $this->overridesRetrieval($builder, ['count', 'toBase', 'applyScopes'])) {
+            return $this->bypassCache('count', 'unsupported_builder', fn () => $builder->count());
+        }
+
+        return parent::cachedCount($builder, $options);
+    }
+
+    /**
+     * Check if a custom Eloquent builder changes how the records are retrieved.
+     *
+     * @param  BaseEloquentBuilder<Model>  $builder
+     * @param  list<string>  $methods
+     */
+    protected function overridesRetrieval(BaseEloquentBuilder $builder, array $methods): bool
+    {
+        foreach ($methods as $method) {
+            if (method_exists($builder, $method)
+                && (new ReflectionMethod($builder, $method))->getDeclaringClass()->getName() !== BaseEloquentBuilder::class
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -5,6 +5,7 @@ namespace Yajra\DataTables;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Yajra\DataTables\Cache\ResultCache;
 use Yajra\DataTables\Utilities\Config as DataTablesConfig;
 use Yajra\DataTables\Utilities\Request;
 
@@ -33,6 +34,14 @@ class DataTablesServiceProvider extends ServiceProvider
         $this->app->scoped('datatables.request', fn () => new Request);
 
         $this->app->singleton('datatables.config', DataTablesConfig::class);
+
+        $this->app->alias('datatables.cache', ResultCache::class);
+        $this->app->singleton('datatables.cache', fn ($app) => new ResultCache(
+            $app['cache'],
+            $app['config'],
+            $app['db'],
+            fn () => $app->bound('db.transactions') ? $app['db.transactions'] : null,
+        ));
     }
 
     /**
