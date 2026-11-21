@@ -22,6 +22,17 @@ jobs:
 
     name: PHP ${{ matrix.php }} - STABILITY ${{ matrix.stability }}
 
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+
     steps:
       - name: Checkout code
         # actions/checkout v2.7.0
@@ -32,6 +43,7 @@ jobs:
         uses: shivammathur/setup-php@bf6b4fbd49ca58e4608c9c89fba0b8d90bd2a39f
         with:
           php-version: ${{ matrix.php }}
+          extensions: redis
           tools: composer:v2
           coverage: none
 
@@ -49,3 +61,5 @@ jobs:
 
       - name: Execute tests
         run: vendor/bin/phpunit
+        env:
+          DATATABLES_TEST_REDIS_HOST: 127.0.0.1
