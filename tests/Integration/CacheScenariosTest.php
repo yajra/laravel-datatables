@@ -16,6 +16,22 @@ use Yajra\DataTables\Tests\TestCase;
  */
 class CacheScenariosTest extends TestCase
 {
+    private const string FILTER_COLUMN_URI = '/scenarios/filter-column';
+
+    private const string ORDER_COLUMN_URI = '/scenarios/order-column';
+
+    private const string PER_VIEWER_URI = '/scenarios/per-viewer';
+
+    private const string RELATION_URI = '/scenarios/relation';
+
+    private const string SEARCH_MODE_URI = '/scenarios/search-mode';
+
+    private const string SKIP_TOTAL_URI = '/scenarios/skip-total';
+
+    private const string TOTAL_RECORDS_URI = '/scenarios/total-records';
+
+    private const string WITH_QUERY_URI = '/scenarios/with-query';
+
     /**
      * @var list<string>
      */
@@ -24,8 +40,8 @@ class CacheScenariosTest extends TestCase
     #[Test]
     public function it_caches_a_datatable_built_from_a_relation()
     {
-        [$miss] = $this->fetch('/scenarios/relation');
-        [$hit, $queries] = $this->fetch('/scenarios/relation');
+        [$miss] = $this->fetch(self::RELATION_URI);
+        [$hit, $queries] = $this->fetch(self::RELATION_URI);
 
         $this->assertSame(['count:hit', 'rows:hit'], $this->statuses($hit));
         // Only the query loading the parent model runs, before DataTables is called.
@@ -38,8 +54,8 @@ class CacheScenariosTest extends TestCase
     #[Test]
     public function it_runs_the_column_callbacks_of_the_current_request_on_a_hit()
     {
-        [$admin] = $this->fetch('/scenarios/per-viewer', ['viewer' => 'admin']);
-        [$guest] = $this->fetch('/scenarios/per-viewer', ['viewer' => 'guest']);
+        [$admin] = $this->fetch(self::PER_VIEWER_URI, ['viewer' => 'admin']);
+        [$guest] = $this->fetch(self::PER_VIEWER_URI, ['viewer' => 'guest']);
 
         $this->assertSame(['count:hit', 'rows:hit'], $this->statuses($guest));
         $this->assertSame('Email-1@example.com', $admin['data'][0]['email']);
@@ -49,9 +65,9 @@ class CacheScenariosTest extends TestCase
     #[Test]
     public function it_does_not_cache_the_with_query_callbacks()
     {
-        [$first] = $this->fetch('/scenarios/with-query');
+        [$first] = $this->fetch(self::WITH_QUERY_URI);
         DB::table('users')->where('id', 1)->update(['name' => 'Renamed']);
-        [$second] = $this->fetch('/scenarios/with-query');
+        [$second] = $this->fetch(self::WITH_QUERY_URI);
 
         $this->assertSame(['count:hit', 'rows:hit'], $this->statuses($second));
         $this->assertSame('Record-1', $first['first_name']);
@@ -62,9 +78,9 @@ class CacheScenariosTest extends TestCase
     #[Test]
     public function it_only_caches_the_reads_that_are_performed()
     {
-        [$total] = $this->fetch('/scenarios/total-records');
-        [$skip] = $this->fetch('/scenarios/skip-total');
-        [$skipHit] = $this->fetch('/scenarios/skip-total');
+        [$total] = $this->fetch(self::TOTAL_RECORDS_URI);
+        [$skip] = $this->fetch(self::SKIP_TOTAL_URI);
+        [$skipHit] = $this->fetch(self::SKIP_TOTAL_URI);
 
         $this->assertSame(['rows:miss'], $this->statuses($total));
         $this->assertSame(99, $total['recordsTotal']);
@@ -77,9 +93,9 @@ class CacheScenariosTest extends TestCase
     #[Test]
     public function it_keeps_apart_the_keywords_of_a_custom_column_filter()
     {
-        [$first] = $this->fetch('/scenarios/filter-column', $this->columnSearch('Record-19'));
-        [$second] = $this->fetch('/scenarios/filter-column', $this->columnSearch('Record-2'));
-        [$firstAgain] = $this->fetch('/scenarios/filter-column', $this->columnSearch('Record-19'));
+        [$first] = $this->fetch(self::FILTER_COLUMN_URI, $this->columnSearch('Record-19'));
+        [$second] = $this->fetch(self::FILTER_COLUMN_URI, $this->columnSearch('Record-2'));
+        [$firstAgain] = $this->fetch(self::FILTER_COLUMN_URI, $this->columnSearch('Record-19'));
 
         $this->assertSame(1, $first['recordsFiltered']);
         $this->assertSame(['count:hit', 'count:miss', 'rows:miss'], $this->statuses($second));
@@ -98,10 +114,10 @@ class CacheScenariosTest extends TestCase
             'length' => 5,
         ];
 
-        [$ascending] = $this->fetch('/scenarios/order-column', $page('asc', 0));
-        [$descending] = $this->fetch('/scenarios/order-column', $page('desc', 0));
-        [$secondPage] = $this->fetch('/scenarios/order-column', $page('asc', 5));
-        [$ascendingAgain] = $this->fetch('/scenarios/order-column', $page('asc', 0));
+        [$ascending] = $this->fetch(self::ORDER_COLUMN_URI, $page('asc', 0));
+        [$descending] = $this->fetch(self::ORDER_COLUMN_URI, $page('desc', 0));
+        [$secondPage] = $this->fetch(self::ORDER_COLUMN_URI, $page('asc', 5));
+        [$ascendingAgain] = $this->fetch(self::ORDER_COLUMN_URI, $page('asc', 0));
 
         $this->assertSame([1, 2, 3, 4, 5], array_column($ascending['data'], 'id'));
         $this->assertSame([20, 19, 18, 17, 16], array_column($descending['data'], 'id'));
@@ -115,8 +131,8 @@ class CacheScenariosTest extends TestCase
     {
         $search = ['columns' => [['data' => 'name', 'name' => 'name', 'searchable' => 'true', 'orderable' => 'true']], 'search' => ['value' => 'ecord-1']];
 
-        [$smart] = $this->fetch('/scenarios/search-mode', $search + ['smart' => 1]);
-        [$strict] = $this->fetch('/scenarios/search-mode', $search + ['smart' => 0]);
+        [$smart] = $this->fetch(self::SEARCH_MODE_URI, $search + ['smart' => 1]);
+        [$strict] = $this->fetch(self::SEARCH_MODE_URI, $search + ['smart' => 0]);
 
         $this->assertSame(11, $smart['recordsFiltered']);
         $this->assertSame(0, $strict['recordsFiltered']);
@@ -143,48 +159,48 @@ class CacheScenariosTest extends TestCase
 
         $router = $this->app['router'];
 
-        $router->get('/scenarios/relation', fn (DataTables $dataTables) => $dataTables
+        $router->get(self::RELATION_URI, fn (DataTables $dataTables) => $dataTables
             ->eloquent(User::query()->findOrFail(1)->posts())
             ->cache('posts:user:1')
             ->toJson());
 
-        $router->get('/scenarios/per-viewer', fn (DataTables $dataTables) => $dataTables
+        $router->get(self::PER_VIEWER_URI, fn (DataTables $dataTables) => $dataTables
             ->eloquent(User::query())
             ->editColumn('email', fn (User $user) => request('viewer') === 'admin' ? $user->email : 'hidden')
             ->cache('users')
             ->toJson());
 
-        $router->get('/scenarios/with-query', fn (DataTables $dataTables) => $dataTables
+        $router->get(self::WITH_QUERY_URI, fn (DataTables $dataTables) => $dataTables
             ->query(DB::table('users'))
             ->withQuery('first_name', fn ($query) => $query->getConnection()->table('users')->where('id', 1)->value('name'))
             ->cache('users')
             ->toJson());
 
-        $router->get('/scenarios/total-records', fn (DataTables $dataTables) => $dataTables
+        $router->get(self::TOTAL_RECORDS_URI, fn (DataTables $dataTables) => $dataTables
             ->query(DB::table('users'))
             ->setTotalRecords(99)
             ->cache('users')
             ->toJson());
 
-        $router->get('/scenarios/skip-total', fn (DataTables $dataTables) => $dataTables
+        $router->get(self::SKIP_TOTAL_URI, fn (DataTables $dataTables) => $dataTables
             ->query(DB::table('users'))
             ->skipTotalRecords()
             ->cache('users')
             ->toJson());
 
-        $router->get('/scenarios/filter-column', fn (DataTables $dataTables) => $dataTables
+        $router->get(self::FILTER_COLUMN_URI, fn (DataTables $dataTables) => $dataTables
             ->eloquent(User::query())
             ->filterColumn('name', fn ($query, $keyword) => $query->where('name', 'like', $keyword.'%'))
             ->cache('users')
             ->toJson());
 
-        $router->get('/scenarios/order-column', fn (DataTables $dataTables) => $dataTables
+        $router->get(self::ORDER_COLUMN_URI, fn (DataTables $dataTables) => $dataTables
             ->eloquent(User::query())
             ->orderColumn('name', 'id $1')
             ->cache('users')
             ->toJson());
 
-        $router->get('/scenarios/search-mode', fn (DataTables $dataTables) => $dataTables
+        $router->get(self::SEARCH_MODE_URI, fn (DataTables $dataTables) => $dataTables
             ->query(DB::table('users'))
             ->smart((bool) request('smart'))
             ->cache('users')

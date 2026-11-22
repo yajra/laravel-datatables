@@ -21,6 +21,16 @@ use Yajra\DataTables\Tests\TestCase;
 
 class QueryDataTableCacheTest extends TestCase
 {
+    private const string AFTER_QUERY_URI = '/cache/after-query';
+
+    private const string GROUPED_URI = '/cache/grouped';
+
+    private const string LOCKING_URI = '/cache/locking';
+
+    private const string PLAIN_URI = '/cache/plain';
+
+    private const string USERS_URI = '/cache/users';
+
     /**
      * SQL statements executed during the last request.
      *
@@ -38,8 +48,8 @@ class QueryDataTableCacheTest extends TestCase
     #[Test]
     public function it_does_not_touch_the_cache_when_caching_is_not_enabled()
     {
-        [$first, $firstQueries] = $this->fetch('/cache/plain');
-        [$second, $secondQueries] = $this->fetch('/cache/plain');
+        [$first, $firstQueries] = $this->fetch(self::PLAIN_URI);
+        [$second, $secondQueries] = $this->fetch(self::PLAIN_URI);
 
         $this->assertSame([], $this->cacheEvents);
         $this->assertArrayNotHasKey('cache', $first);
@@ -48,9 +58,9 @@ class QueryDataTableCacheTest extends TestCase
         $this->assertCount(2, $firstQueries);
 
         // A cached DataTable does not change the behavior of another one.
-        $this->fetch('/cache/users');
+        $this->fetch(self::USERS_URI);
         $this->cacheEvents = [];
-        [$third, $thirdQueries] = $this->fetch('/cache/plain');
+        [$third, $thirdQueries] = $this->fetch(self::PLAIN_URI);
 
         $this->assertSame([], $this->cacheEvents);
         $this->assertSame($this->withoutDebug($first), $this->withoutDebug($third));
@@ -60,9 +70,9 @@ class QueryDataTableCacheTest extends TestCase
     #[Test]
     public function it_serves_the_counts_and_the_rows_from_the_cache()
     {
-        [$plain] = $this->fetch('/cache/plain');
-        [$miss, $missQueries] = $this->fetch('/cache/users');
-        [$hit, $hitQueries] = $this->fetch('/cache/users');
+        [$plain] = $this->fetch(self::PLAIN_URI);
+        [$miss, $missQueries] = $this->fetch(self::USERS_URI);
+        [$hit, $hitQueries] = $this->fetch(self::USERS_URI);
 
         $this->assertSame(['count:miss', 'rows:miss'], $this->statuses($miss));
         $this->assertSame(['count:hit', 'rows:hit'], $this->statuses($hit));
@@ -78,9 +88,9 @@ class QueryDataTableCacheTest extends TestCase
     {
         $search = $this->searchParameters('Record-19');
 
-        [$miss, $missQueries] = $this->fetch('/cache/users', $search);
-        [$hit, $hitQueries] = $this->fetch('/cache/users', $search);
-        [$unfiltered] = $this->fetch('/cache/users');
+        [$miss, $missQueries] = $this->fetch(self::USERS_URI, $search);
+        [$hit, $hitQueries] = $this->fetch(self::USERS_URI, $search);
+        [$unfiltered] = $this->fetch(self::USERS_URI);
 
         $this->assertCount(3, $missQueries);
         $this->assertSame([], $hitQueries);
@@ -93,8 +103,8 @@ class QueryDataTableCacheTest extends TestCase
     #[Test]
     public function it_caches_complex_count_queries()
     {
-        [$miss] = $this->fetch('/cache/grouped');
-        [$hit, $hitQueries] = $this->fetch('/cache/grouped');
+        [$miss] = $this->fetch(self::GROUPED_URI);
+        [$hit, $hitQueries] = $this->fetch(self::GROUPED_URI);
 
         $this->assertSame([], $hitQueries);
         $this->assertSame($this->withoutDebug($miss), $this->withoutDebug($hit));
@@ -106,9 +116,9 @@ class QueryDataTableCacheTest extends TestCase
     {
         DB::table('users')->where('id', '<=', 5)->update(['color' => 'red']);
 
-        [$red] = $this->fetch('/cache/users', ['color' => 'red']);
-        [$blue] = $this->fetch('/cache/users', ['color' => 'blue']);
-        [$redAgain] = $this->fetch('/cache/users', ['color' => 'red']);
+        [$red] = $this->fetch(self::USERS_URI, ['color' => 'red']);
+        [$blue] = $this->fetch(self::USERS_URI, ['color' => 'blue']);
+        [$redAgain] = $this->fetch(self::USERS_URI, ['color' => 'red']);
 
         $this->assertSame(5, $red['recordsTotal']);
         $this->assertSame(0, $blue['recordsTotal']);
@@ -120,8 +130,8 @@ class QueryDataTableCacheTest extends TestCase
     #[Test]
     public function it_does_not_share_entries_between_connections_running_the_same_sql()
     {
-        [$default] = $this->fetch('/cache/users');
-        [$tenant] = $this->fetch('/cache/users', ['connection' => 'tenant']);
+        [$default] = $this->fetch(self::USERS_URI);
+        [$tenant] = $this->fetch(self::USERS_URI, ['connection' => 'tenant']);
 
         $this->assertSame(['count:miss', 'rows:miss'], $this->statuses($tenant));
         $this->assertSame(20, $default['recordsTotal']);
@@ -154,9 +164,9 @@ class QueryDataTableCacheTest extends TestCase
     #[Test]
     public function it_does_not_share_entries_between_by_values()
     {
-        [$first] = $this->fetch('/cache/users', ['by' => ['schema' => 'tenant_a']]);
-        [$second] = $this->fetch('/cache/users', ['by' => ['schema' => 'tenant_b']]);
-        [$firstAgain] = $this->fetch('/cache/users', ['by' => ['schema' => 'tenant_a']]);
+        [$first] = $this->fetch(self::USERS_URI, ['by' => ['schema' => 'tenant_a']]);
+        [$second] = $this->fetch(self::USERS_URI, ['by' => ['schema' => 'tenant_b']]);
+        [$firstAgain] = $this->fetch(self::USERS_URI, ['by' => ['schema' => 'tenant_a']]);
 
         $this->assertSame(['count:miss', 'rows:miss'], $this->statuses($first));
         $this->assertSame(['count:miss', 'rows:miss'], $this->statuses($second));
@@ -166,14 +176,14 @@ class QueryDataTableCacheTest extends TestCase
     #[Test]
     public function it_reads_the_database_again_once_the_ttl_is_over()
     {
-        $this->fetch('/cache/users', ['ttl' => 60]);
+        $this->fetch(self::USERS_URI, ['ttl' => 60]);
         DB::table('users')->where('id', 1)->update(['name' => 'Renamed']);
 
         $this->travel(59)->seconds();
-        [$hit] = $this->fetch('/cache/users', ['ttl' => 60]);
+        [$hit] = $this->fetch(self::USERS_URI, ['ttl' => 60]);
 
         $this->travel(2)->seconds();
-        [$expired, $queries] = $this->fetch('/cache/users', ['ttl' => 60]);
+        [$expired, $queries] = $this->fetch(self::USERS_URI, ['ttl' => 60]);
 
         $this->assertSame('Record-1', $hit['data'][0]['name']);
         $this->assertSame(['count:miss', 'rows:miss'], $this->statuses($expired));
@@ -184,14 +194,14 @@ class QueryDataTableCacheTest extends TestCase
     #[Test]
     public function it_reads_the_database_again_once_a_tag_is_flushed()
     {
-        $this->fetch('/cache/users', ['tags' => ['users', 'team:1']]);
+        $this->fetch(self::USERS_URI, ['tags' => ['users', 'team:1']]);
         DB::table('users')->where('id', 1)->update(['name' => 'Renamed']);
 
         DataTablesFacade::flushCache('posts');
-        [$unrelated] = $this->fetch('/cache/users', ['tags' => ['users', 'team:1']]);
+        [$unrelated] = $this->fetch(self::USERS_URI, ['tags' => ['users', 'team:1']]);
 
         DataTablesFacade::flushCache('team:1');
-        [$flushed] = $this->fetch('/cache/users', ['tags' => ['users', 'team:1']]);
+        [$flushed] = $this->fetch(self::USERS_URI, ['tags' => ['users', 'team:1']]);
 
         $this->assertSame(['count:hit', 'rows:hit'], $this->statuses($unrelated));
         $this->assertSame('Record-1', $unrelated['data'][0]['name']);
@@ -203,14 +213,14 @@ class QueryDataTableCacheTest extends TestCase
     public function it_only_flushes_the_entries_of_the_given_tag()
     {
         Cache::put('application-key', 'application-value', 600);
-        $this->fetch('/cache/users', ['tags' => 'users:a']);
-        $this->fetch('/cache/users', ['tags' => 'users:b', 'color' => 'red']);
+        $this->fetch(self::USERS_URI, ['tags' => 'users:a']);
+        $this->fetch(self::USERS_URI, ['tags' => 'users:b', 'color' => 'red']);
 
         DataTablesFacade::flushCache('users:a');
         DataTablesFacade::flushCache('never-declared');
 
-        [$a] = $this->fetch('/cache/users', ['tags' => 'users:a']);
-        [$b] = $this->fetch('/cache/users', ['tags' => 'users:b', 'color' => 'red']);
+        [$a] = $this->fetch(self::USERS_URI, ['tags' => 'users:a']);
+        [$b] = $this->fetch(self::USERS_URI, ['tags' => 'users:b', 'color' => 'red']);
 
         $this->assertSame(['count:miss', 'rows:miss'], $this->statuses($a));
         $this->assertSame(['count:hit', 'rows:hit'], $this->statuses($b));
@@ -230,8 +240,8 @@ class QueryDataTableCacheTest extends TestCase
             }
         });
 
-        [$slow] = $this->fetch('/cache/users');
-        [$next] = $this->fetch('/cache/users');
+        [$slow] = $this->fetch(self::USERS_URI);
+        [$next] = $this->fetch(self::USERS_URI);
 
         $this->assertTrue($flushed);
         $this->assertSame('Record-1', $slow['data'][0]['name']);
@@ -244,10 +254,10 @@ class QueryDataTableCacheTest extends TestCase
     {
         DB::beginTransaction();
         DB::table('users')->where('id', 1)->update(['name' => 'Uncommitted']);
-        [$inside, $queries] = $this->fetch('/cache/users');
+        [$inside, $queries] = $this->fetch(self::USERS_URI);
         DB::rollBack();
 
-        [$after] = $this->fetch('/cache/users');
+        [$after] = $this->fetch(self::USERS_URI);
 
         $this->assertSame(['count:bypass', 'rows:bypass'], $this->statuses($inside));
         $this->assertSame('transaction', $inside['cache'][0]['reason']);
@@ -259,7 +269,7 @@ class QueryDataTableCacheTest extends TestCase
     #[Test]
     public function it_runs_the_flush_once_the_transaction_is_committed()
     {
-        $this->fetch('/cache/users');
+        $this->fetch(self::USERS_URI);
         $tagKey = 'datatables:tag:'.hash('sha256', 'users');
 
         DB::transaction(function () use ($tagKey) {
@@ -270,21 +280,21 @@ class QueryDataTableCacheTest extends TestCase
         });
 
         $this->assertNull(Cache::get($tagKey));
-        [$committed] = $this->fetch('/cache/users');
+        [$committed] = $this->fetch(self::USERS_URI);
         $this->assertSame('Renamed', $committed['data'][0]['name']);
     }
 
     #[Test]
     public function it_discards_the_flush_when_the_transaction_is_rolled_back()
     {
-        $this->fetch('/cache/users');
+        $this->fetch(self::USERS_URI);
 
         DB::beginTransaction();
         DB::table('users')->where('id', 1)->update(['name' => 'Rolled back']);
         DataTablesFacade::flushCache('users');
         DB::rollBack();
 
-        [$after] = $this->fetch('/cache/users');
+        [$after] = $this->fetch(self::USERS_URI);
 
         $this->assertNotNull(Cache::get('datatables:tag:'.hash('sha256', 'users')));
         $this->assertSame(['count:hit', 'rows:hit'], $this->statuses($after));
@@ -317,8 +327,8 @@ class QueryDataTableCacheTest extends TestCase
     {
         config()->set('datatables.cache.enabled', false);
 
-        [$first, $queries] = $this->fetch('/cache/users');
-        [$second] = $this->fetch('/cache/users');
+        [$first, $queries] = $this->fetch(self::USERS_URI);
+        [$second] = $this->fetch(self::USERS_URI);
 
         $this->assertSame(['count:bypass', 'rows:bypass'], $this->statuses($second));
         $this->assertSame('disabled', $second['cache'][0]['reason']);
@@ -335,8 +345,8 @@ class QueryDataTableCacheTest extends TestCase
         config()->set('datatables.cache.store', 'failing');
         Log::spy();
 
-        [$plain] = $this->fetch('/cache/plain');
-        [$response, $queries] = $this->fetch('/cache/users');
+        [$plain] = $this->fetch(self::PLAIN_URI);
+        [$response, $queries] = $this->fetch(self::USERS_URI);
 
         $this->assertSame(['count:bypass', 'rows:bypass'], $this->statuses($response));
         $this->assertSame('store_error', $response['cache'][0]['reason']);
@@ -349,11 +359,11 @@ class QueryDataTableCacheTest extends TestCase
     public function it_bypasses_a_store_that_is_not_defined_or_cannot_keep_a_tag()
     {
         config()->set('datatables.cache.store', 'undefined');
-        [$undefined] = $this->fetch('/cache/users');
+        [$undefined] = $this->fetch(self::USERS_URI);
 
         config()->set('cache.stores.null', ['driver' => 'null']);
         config()->set('datatables.cache.store', 'null');
-        [$null] = $this->fetch('/cache/users');
+        [$null] = $this->fetch(self::USERS_URI);
 
         $this->assertSame(['count:bypass', 'rows:bypass'], $this->statuses($undefined));
         $this->assertSame('store_error', $undefined['cache'][0]['reason']);
@@ -365,11 +375,11 @@ class QueryDataTableCacheTest extends TestCase
     #[Test]
     public function it_reads_the_database_again_when_an_entry_is_invalid()
     {
-        [$first] = $this->fetch('/cache/users');
+        [$first] = $this->fetch(self::USERS_URI);
         Cache::put($first['cache'][1]['key'], ['format' => 1, 'read' => 'rows', 'data' => 'corrupted'], 60);
 
-        [$second, $queries] = $this->fetch('/cache/users');
-        [$third] = $this->fetch('/cache/users');
+        [$second, $queries] = $this->fetch(self::USERS_URI);
+        [$third] = $this->fetch(self::USERS_URI);
 
         $this->assertSame(['count:hit', 'rows:miss'], $this->statuses($second));
         $this->assertSame('invalid_entry', $second['cache'][1]['reason']);
@@ -400,8 +410,8 @@ class QueryDataTableCacheTest extends TestCase
     public function it_bypasses_queries_transforming_their_rows_after_the_database()
     {
         // e.g. a callback hiding a column depending on the authenticated user
-        [$first] = $this->fetch('/cache/after-query', ['redact' => 1]);
-        [$second] = $this->fetch('/cache/after-query', ['redact' => 0]);
+        [$first] = $this->fetch(self::AFTER_QUERY_URI, ['redact' => 1]);
+        [$second] = $this->fetch(self::AFTER_QUERY_URI, ['redact' => 0]);
 
         $this->assertSame(['count:bypass', 'rows:bypass'], $this->statuses($first));
         $this->assertSame('after_query_callbacks', $first['cache'][1]['reason']);
@@ -412,7 +422,7 @@ class QueryDataTableCacheTest extends TestCase
     #[Test]
     public function it_bypasses_the_cache_for_locking_reads()
     {
-        [$response] = $this->fetch('/cache/locking');
+        [$response] = $this->fetch(self::LOCKING_URI);
 
         $this->assertSame(['count:bypass', 'rows:bypass'], $this->statuses($response));
         $this->assertSame('locking_read', $response['cache'][0]['reason']);
@@ -423,7 +433,7 @@ class QueryDataTableCacheTest extends TestCase
     {
         config()->set('app.debug', false);
 
-        [$response] = $this->fetch('/cache/users');
+        [$response] = $this->fetch(self::USERS_URI);
 
         $this->assertArrayNotHasKey('cache', $response);
         $this->assertArrayNotHasKey('queries', $response);
@@ -432,7 +442,7 @@ class QueryDataTableCacheTest extends TestCase
     #[Test]
     public function it_does_not_reveal_the_sql_the_bindings_or_the_tags_in_the_keys()
     {
-        $this->fetch('/cache/users', $this->searchParameters('Record-19') + ['tags' => 'tenant:secret']);
+        $this->fetch(self::USERS_URI, $this->searchParameters('Record-19') + ['tags' => 'tenant:secret']);
 
         $keys = array_keys($this->arrayStorage());
 
@@ -447,9 +457,9 @@ class QueryDataTableCacheTest extends TestCase
     {
         config()->set('datatables.cache.max_writes_per_minute', 3);
 
-        [$first] = $this->fetch('/cache/users');
-        [$search] = $this->fetch('/cache/users', $this->searchParameters('Record-1'));
-        [$searchAgain, $queries] = $this->fetch('/cache/users', $this->searchParameters('Record-1'));
+        [$first] = $this->fetch(self::USERS_URI);
+        [$search] = $this->fetch(self::USERS_URI, $this->searchParameters('Record-1'));
+        [$searchAgain, $queries] = $this->fetch(self::USERS_URI, $this->searchParameters('Record-1'));
 
         $this->assertSame(['count:miss', 'rows:miss'], $this->statuses($first));
         $this->assertSame(['count:hit', 'count:miss', 'rows:miss'], $this->statuses($search));
@@ -459,8 +469,8 @@ class QueryDataTableCacheTest extends TestCase
         $this->assertSame($this->withoutDebug($search), $this->withoutDebug($searchAgain));
 
         $this->travel(61)->seconds();
-        $this->fetch('/cache/users', $this->searchParameters('Record-1'));
-        [$afterWindow] = $this->fetch('/cache/users', $this->searchParameters('Record-1'));
+        $this->fetch(self::USERS_URI, $this->searchParameters('Record-1'));
+        [$afterWindow] = $this->fetch(self::USERS_URI, $this->searchParameters('Record-1'));
 
         $this->assertSame('rows:hit', $this->statuses($afterWindow)[2]);
     }
@@ -472,10 +482,10 @@ class QueryDataTableCacheTest extends TestCase
         $page = ['start' => 0, 'length' => 5];
 
         // Without paging, e.g. for an export, the read returns every row.
-        [$all] = $this->fetch('/cache/users');
-        [$allAgain] = $this->fetch('/cache/users');
-        $this->fetch('/cache/users', $page);
-        [$pageAgain] = $this->fetch('/cache/users', $page);
+        [$all] = $this->fetch(self::USERS_URI);
+        [$allAgain] = $this->fetch(self::USERS_URI);
+        $this->fetch(self::USERS_URI, $page);
+        [$pageAgain] = $this->fetch(self::USERS_URI, $page);
 
         $this->assertSame(['count:miss', 'rows:miss'], $this->statuses($all));
         $this->assertSame('too_many_rows', $all['cache'][1]['reason']);
@@ -485,8 +495,8 @@ class QueryDataTableCacheTest extends TestCase
         $this->assertCount(5, $pageAgain['data']);
 
         config()->set('datatables.cache.max_rows', null);
-        $this->fetch('/cache/users');
-        [$unlimited] = $this->fetch('/cache/users');
+        $this->fetch(self::USERS_URI);
+        [$unlimited] = $this->fetch(self::USERS_URI);
 
         $this->assertSame(['count:hit', 'rows:hit'], $this->statuses($unlimited));
     }
@@ -515,9 +525,9 @@ class QueryDataTableCacheTest extends TestCase
 
         $router = $this->app['router'];
 
-        $router->get('/cache/plain', fn (DataTables $dataTables) => $dataTables->query(DB::table('users'))->toJson());
+        $router->get(self::PLAIN_URI, fn (DataTables $dataTables) => $dataTables->query(DB::table('users'))->toJson());
 
-        $router->get('/cache/users', function (DataTables $dataTables) {
+        $router->get(self::USERS_URI, function (DataTables $dataTables) {
             $query = DB::connection(request('connection'))->table('users');
 
             if (request()->has('color')) {
@@ -529,17 +539,17 @@ class QueryDataTableCacheTest extends TestCase
                 ->toJson();
         });
 
-        $router->get('/cache/grouped', fn (DataTables $dataTables) => $dataTables
+        $router->get(self::GROUPED_URI, fn (DataTables $dataTables) => $dataTables
             ->query(DB::table('posts')->select('user_id', DB::raw('count(*) as total'))->groupBy('user_id'))
             ->cache('posts')
             ->toJson());
 
-        $router->get('/cache/after-query', fn (DataTables $dataTables) => $dataTables
+        $router->get(self::AFTER_QUERY_URI, fn (DataTables $dataTables) => $dataTables
             ->query(DB::table('users')->afterQuery(fn ($rows) => request('redact') ? $rows->each(fn ($row) => $row->email = 'hidden') : $rows))
             ->cache('users')
             ->toJson());
 
-        $router->get('/cache/locking', fn (DataTables $dataTables) => $dataTables
+        $router->get(self::LOCKING_URI, fn (DataTables $dataTables) => $dataTables
             ->query(DB::table('users')->lockForUpdate())
             ->cache('users')
             ->toJson());
@@ -608,56 +618,61 @@ class QueryDataTableCacheTest extends TestCase
     }
 }
 
+class StoreUnavailableException extends RuntimeException
+{
+    protected $message = 'Connection refused';
+}
+
 class FailingStore implements Store
 {
     public function get($key)
     {
-        throw new RuntimeException('Connection refused');
+        throw new StoreUnavailableException;
     }
 
     public function many(array $keys)
     {
-        throw new RuntimeException('Connection refused');
+        throw new StoreUnavailableException;
     }
 
     public function put($key, $value, $seconds)
     {
-        throw new RuntimeException('Connection refused');
+        throw new StoreUnavailableException;
     }
 
     public function putMany(array $values, $seconds)
     {
-        throw new RuntimeException('Connection refused');
+        throw new StoreUnavailableException;
     }
 
     public function increment($key, $value = 1)
     {
-        throw new RuntimeException('Connection refused');
+        throw new StoreUnavailableException;
     }
 
     public function decrement($key, $value = 1)
     {
-        throw new RuntimeException('Connection refused');
+        throw new StoreUnavailableException;
     }
 
     public function forever($key, $value)
     {
-        throw new RuntimeException('Connection refused');
+        throw new StoreUnavailableException;
     }
 
     public function touch($key, $seconds)
     {
-        throw new RuntimeException('Connection refused');
+        throw new StoreUnavailableException;
     }
 
     public function forget($key)
     {
-        throw new RuntimeException('Connection refused');
+        throw new StoreUnavailableException;
     }
 
     public function flush()
     {
-        throw new RuntimeException('Connection refused');
+        throw new StoreUnavailableException;
     }
 
     public function getPrefix()
