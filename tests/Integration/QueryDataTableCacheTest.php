@@ -2,6 +2,7 @@
 
 namespace Yajra\DataTables\Tests\Integration;
 
+use DateInterval;
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Contracts\Cache\Store;
 use Illuminate\Database\Events\QueryExecuted;
@@ -10,9 +11,11 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;
+use Yajra\DataTables\Cache\CacheLookup;
 use Yajra\DataTables\Cache\CacheOptions;
 use Yajra\DataTables\Cache\ResultCache;
 use Yajra\DataTables\DataTables;
@@ -473,6 +476,12 @@ class QueryDataTableCacheTest extends TestCase
         [$afterWindow] = $this->fetch(self::USERS_URI, $this->searchParameters('Record-1'));
 
         $this->assertSame('rows:hit', $this->statuses($afterWindow)[2]);
+
+        config()->set('datatables.cache.max_writes_per_minute', null);
+        $this->fetch(self::USERS_URI, $this->searchParameters('Record-2'));
+        [$unlimited] = $this->fetch(self::USERS_URI, $this->searchParameters('Record-2'));
+
+        $this->assertSame(['count:hit', 'count:hit', 'rows:hit'], $this->statuses($unlimited));
     }
 
     #[Test]
@@ -499,6 +508,104 @@ class QueryDataTableCacheTest extends TestCase
         [$unlimited] = $this->fetch(self::USERS_URI);
 
         $this->assertSame(['count:hit', 'rows:hit'], $this->statuses($unlimited));
+    }
+
+    #[Test]
+    public function it_reads_the_database_again_when_an_entry_has_another_format()
+    {
+        [$first] = $this->fetch(self::USERS_URI);
+
+        foreach (['corrupted', ['format' => 0, 'read' => 'rows', 'data' => []], ['format' => 1, 'read' => 'count', 'data' => 3]] as $entry) {
+            Cache::put($first['cache'][1]['key'], $entry, 60);
+
+            [$response] = $this->fetch(self::USERS_URI);
+
+            $this->assertSame(['count:hit', 'rows:miss'], $this->statuses($response));
+            $this->assertSame('invalid_entry', $response['cache'][1]['reason']);
+            $this->assertSame($this->withoutDebug($first), $this->withoutDebug($response));
+        }
+    }
+
+    #[Test]
+    public function it_returns_the_database_rows_when_the_cache_store_cannot_be_written()
+    {
+        Cache::extend('read-only', fn () => Cache::repository(new ReadOnlyStore));
+        config()->set('cache.stores.read-only', ['driver' => 'read-only']);
+        config()->set('datatables.cache.store', 'read-only');
+        Log::spy();
+
+        [$plain] = $this->fetch(self::PLAIN_URI);
+        [$response, $queries] = $this->fetch(self::USERS_URI);
+
+        $this->assertSame(['count:miss', 'rows:miss'], $this->statuses($response));
+        $this->assertSame('store_error', $response['cache'][0]['reason']);
+        $this->assertSame('store_error', $response['cache'][1]['reason']);
+        $this->assertCount(2, $queries);
+        $this->assertSame($this->withoutDebug($plain), $this->withoutDebug($response));
+        Log::shouldHaveReceived('warning')->twice();
+    }
+
+    #[Test]
+    public function it_bypasses_a_connection_that_cannot_be_identified()
+    {
+        config()->set('database.connections.unidentifiable', [
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+            'prefix' => '',
+            'resolver' => fn () => null,
+        ]);
+
+        $lookup = app(ResultCache::class)->lookup(CacheOptions::make('users', 60), 'rows', DB::connection('unidentifiable')->table('users'));
+
+        $this->assertSame('bypass', $lookup->status);
+        $this->assertSame('unsupported_connection', $lookup->reason);
+    }
+
+    #[Test]
+    public function it_accepts_intervals_and_nested_segments()
+    {
+        $options = CacheOptions::make(['users', 'posts', 'users'], new DateInterval('PT2M'), ['tenant' => ['id' => 1, 'schema' => null]]);
+
+        $this->assertSame(['posts', 'users'], $options->tags);
+        $this->assertSame(120, $options->ttl);
+        $this->assertSame(['tenant' => ['id' => 1, 'schema' => null]], $options->by);
+
+        $this->expectException(InvalidArgumentException::class);
+        CacheOptions::make('users', 60, ['tenant' => ['id' => new \stdClass]]);
+    }
+
+    #[Test]
+    public function it_bypasses_queries_bound_to_values_that_are_not_scalar()
+    {
+        $cache = app(ResultCache::class);
+        $options = CacheOptions::make('users', 60);
+
+        $stringable = $cache->lookup($options, 'rows', DB::table('users')->whereRaw('name = ?', [Str::of('Record-1')]));
+        $date = $cache->lookup($options, 'rows', DB::table('users')->where('created_at', '<', now()));
+
+        $this->assertSame('unsupported_binding', $stringable->reason);
+        $this->assertSame('miss', $date->status);
+    }
+
+    #[Test]
+    public function it_only_stores_the_reads_missing_from_the_cache()
+    {
+        $cache = app(ResultCache::class);
+        $options = CacheOptions::make('users', 60);
+        $bypass = CacheLookup::bypass('rows', 'transaction');
+
+        $this->assertSame($bypass, $cache->put($bypass, $options, ['objects' => true, 'rows' => []]));
+        $this->assertSame([], $this->arrayStorage());
+    }
+
+    #[Test]
+    public function it_bypasses_every_open_transaction_without_a_transactions_manager()
+    {
+        $cache = new ResultCache(app('cache'), app('config'), app('db'));
+
+        $lookup = DB::transaction(fn () => $cache->lookup(CacheOptions::make('users', 60), 'rows', DB::table('users')));
+
+        $this->assertSame('transaction', $lookup->reason);
     }
 
     protected function setUp(): void
@@ -621,6 +728,18 @@ class QueryDataTableCacheTest extends TestCase
 class StoreUnavailableException extends RuntimeException
 {
     protected $message = 'Connection refused';
+}
+
+class ReadOnlyStore extends ArrayStore
+{
+    public function put($key, $value, $seconds)
+    {
+        if (str_contains($key, ':entry:')) {
+            throw new StoreUnavailableException;
+        }
+
+        return parent::put($key, $value, $seconds);
+    }
 }
 
 class FailingStore implements Store

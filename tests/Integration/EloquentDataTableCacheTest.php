@@ -24,6 +24,8 @@ class EloquentDataTableCacheTest extends TestCase
 
     private const string AUTHORS_URI = '/cache/eloquent/authors';
 
+    private const string COUNTING_BUILDER_URI = '/cache/eloquent/counting-builder';
+
     private const string COLORED_URI = '/cache/eloquent/colored';
 
     private const string CONSTRAINED_URI = '/cache/eloquent/constrained';
@@ -276,6 +278,18 @@ class EloquentDataTableCacheTest extends TestCase
         $this->assertSame($this->withoutDebug($overriding), $this->withoutDebug($scopes));
     }
 
+    #[Test]
+    public function it_bypasses_the_count_cache_of_a_builder_overriding_the_count()
+    {
+        [$first] = $this->fetch(self::COUNTING_BUILDER_URI);
+        [$second] = $this->fetch(self::COUNTING_BUILDER_URI);
+
+        $this->assertSame(['count:bypass', 'rows:miss'], $this->statuses($first));
+        $this->assertSame('unsupported_builder', $first['cache'][0]['reason']);
+        $this->assertSame(['count:bypass', 'rows:hit'], $this->statuses($second));
+        $this->assertSame($this->withoutDebug($first), $this->withoutDebug($second));
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -328,6 +342,11 @@ class EloquentDataTableCacheTest extends TestCase
 
         $router->get(self::OVERRIDING_BUILDER_URI, fn (DataTables $dataTables) => $dataTables
             ->eloquent(OverridingBuilderUser::query())
+            ->cache('users')
+            ->toJson());
+
+        $router->get(self::COUNTING_BUILDER_URI, fn (DataTables $dataTables) => $dataTables
+            ->eloquent(CountingBuilderUser::query())
             ->cache('users')
             ->toJson());
 
@@ -390,6 +409,24 @@ class OverridingBuilder extends Builder
     public function get($columns = ['*'])
     {
         return parent::get($columns);
+    }
+}
+
+class CountingBuilder extends Builder
+{
+    public function count($columns = '*')
+    {
+        return parent::count($columns);
+    }
+}
+
+class CountingBuilderUser extends Model
+{
+    protected $table = 'users';
+
+    public function newEloquentBuilder($query)
+    {
+        return new CountingBuilder($query);
     }
 }
 

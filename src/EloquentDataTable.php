@@ -16,7 +16,6 @@ use Illuminate\Database\Query\Builder as BaseQueryBuilder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use ReflectionMethod;
 use Yajra\DataTables\Cache\CacheOptions;
 use Yajra\DataTables\Exceptions\Exception;
 
@@ -69,14 +68,14 @@ class EloquentDataTable extends QueryDataTable
     protected function cachedResults(CacheOptions $options): Collection
     {
         $query = $this->query;
+        $cache = $this->resultCache();
 
-        if (! $query instanceof BaseEloquentBuilder || $this->overridesRetrieval($query, ['get', 'getModels', 'hydrate', 'eagerLoadRelations', 'applyScopes'])) {
+        if (! $query instanceof BaseEloquentBuilder || $cache->overridesRetrieval($query, ['get', 'getModels', 'hydrate', 'eagerLoadRelations', 'applyScopes'])) {
             return $this->bypassCache('rows', 'unsupported_builder', fn () => $query->get());
         }
 
         $builder = $query->applyScopes();
         $base = $builder->getQuery();
-        $cache = $this->resultCache();
 
         $rows = $this->rememberRead(
             $options,
@@ -94,37 +93,6 @@ class EloquentDataTable extends QueryDataTable
         }
 
         return $query->applyAfterQueryCallbacks($builder->getModel()->newCollection($models));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function cachedCount($builder, CacheOptions $options): int
-    {
-        if ($builder instanceof BaseEloquentBuilder && $this->overridesRetrieval($builder, ['count', 'toBase', 'applyScopes'])) {
-            return $this->bypassCache('count', 'unsupported_builder', fn () => $builder->count());
-        }
-
-        return parent::cachedCount($builder, $options);
-    }
-
-    /**
-     * Check if a custom Eloquent builder changes how the records are retrieved.
-     *
-     * @param  BaseEloquentBuilder<Model>  $builder
-     * @param  list<string>  $methods
-     */
-    protected function overridesRetrieval(BaseEloquentBuilder $builder, array $methods): bool
-    {
-        foreach ($methods as $method) {
-            if (method_exists($builder, $method)
-                && (new ReflectionMethod($builder, $method))->getDeclaringClass()->getName() !== BaseEloquentBuilder::class
-            ) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**

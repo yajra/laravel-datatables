@@ -238,8 +238,13 @@ class QueryDataTable extends DataTableAbstract
      */
     protected function cachedCount($builder, CacheOptions $options): int
     {
-        // Global scopes are only applied to the base query of an Eloquent builder.
-        $query = $builder instanceof BaseEloquentBuilder ? $builder->toBase() : $builder;
+        // Global scopes are only applied to the base query of an Eloquent builder,
+        // which cannot be cached when a custom builder changes how it counts.
+        $query = match (true) {
+            ! $builder instanceof BaseEloquentBuilder => $builder,
+            $this->resultCache()->overridesRetrieval($builder, ['count', 'toBase', 'applyScopes']) => null,
+            default => $builder->toBase(),
+        };
 
         if (! $query instanceof Builder) {
             return $this->bypassCache('count', 'unsupported_builder', fn () => $builder->count());

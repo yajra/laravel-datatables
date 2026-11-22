@@ -8,11 +8,15 @@ use Illuminate\Contracts\Cache\Factory as CacheFactory;
 use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Database\Connection;
+use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\DatabaseTransactionRecord;
 use Illuminate\Database\DatabaseTransactionsManager;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Arr;
+use ReflectionMethod;
 use stdClass;
 use Throwable;
 
@@ -91,63 +95,77 @@ class ResultCache
      */
     public function lookup(CacheOptions $options, string $read, Builder $query): CacheLookup
     {
-        if (! $this->isEnabled()) {
-            return CacheLookup::bypass($read, 'disabled');
-        }
-
-        $connection = $query->getConnection();
-
-        if (! $connection instanceof Connection) {
-            return CacheLookup::bypass($read, 'unsupported_connection');
-        }
-
-        if ($this->inTransaction($connection)) {
-            return CacheLookup::bypass($read, 'transaction');
-        }
-
         // Compiling the query first applies its "before query" callbacks,
-        // which may still add constraints and bindings.
+        // which may still add constraints, bindings or a lock.
         $sql = $query->toSql();
+        $connection = $query->getConnection();
+        $reason = $this->bypassReason($query, $connection);
+        $fingerprint = is_null($reason) && $connection instanceof Connection ? $this->connectionFingerprint($connection) : null;
 
-        if (! is_null($query->lock)) {
-            return CacheLookup::bypass($read, 'locking_read');
+        if (is_null($fingerprint)) {
+            return CacheLookup::bypass($read, $reason ?? 'unsupported_connection');
         }
 
-        // The "after query" callbacks transform the rows after the database
-        // returned them, e.g. according to the authenticated user: their
-        // output does not depend on the query alone.
-        if ((fn () => $this->afterQueryCallbacks !== [])->call($query)) {
-            return CacheLookup::bypass($read, 'after_query_callbacks');
-        }
+        return $this->find($options, $read, [$fingerprint, $sql, $this->bindings($connection, $query)]);
+    }
 
-        $bindings = array_values($connection->prepareBindings($query->getBindings()));
+    /**
+     * Get the reason why the given read cannot be cached, if any.
+     */
+    protected function bypassReason(Builder $query, ConnectionInterface $connection): ?string
+    {
+        return match (true) {
+            ! $this->isEnabled() => 'disabled',
+            ! $connection instanceof Connection => 'unsupported_connection',
+            $this->inTransaction($connection) => 'transaction',
+            ! is_null($query->lock) => 'locking_read',
+            // The "after query" callbacks transform the rows after the database
+            // returned them, e.g. according to the authenticated user: their
+            // output does not depend on the query alone.
+            (fn () => $this->afterQueryCallbacks !== [])->call($query) => 'after_query_callbacks',
+            ! $this->isScalarArray($this->bindings($connection, $query)) => 'unsupported_binding',
+            default => null,
+        };
+    }
 
-        foreach ($bindings as $binding) {
-            if (! is_null($binding) && ! is_scalar($binding)) {
-                return CacheLookup::bypass($read, 'unsupported_binding');
-            }
-        }
+    /**
+     * Get the bindings of a query, as sent to the database.
+     *
+     * @return list<mixed>
+     */
+    protected function bindings(ConnectionInterface $connection, Builder $query): array
+    {
+        return array_values($connection->prepareBindings($query->getBindings()));
+    }
 
-        try {
-            $connectionId = $this->connectionFingerprint($connection);
-        } catch (Throwable) {
-            return CacheLookup::bypass($read, 'unsupported_connection');
-        }
-
+    /**
+     * Find the entry of a read in the cache store.
+     *
+     * @param  array<int, mixed>  $query  The fingerprint of the connection, the SQL and the bindings of the read.
+     */
+    protected function find(CacheOptions $options, string $read, array $query): CacheLookup
+    {
         try {
             $store = $this->store();
             $generations = $this->generations($store, $options);
-
-            if (is_null($generations)) {
-                return CacheLookup::bypass($read, 'tags_unavailable');
-            }
-
-            $key = $this->entryKey([$read, $connectionId, $sql, $bindings, $options->by, $generations]);
-            $entry = $store->get($key);
+            $key = is_null($generations) ? null : $this->entryKey([$read, ...$query, $options->by, $generations]);
+            $entry = is_null($key) ? null : $store->get($key);
         } catch (Throwable $exception) {
             return CacheLookup::bypass($read, 'store_error', $exception);
         }
 
+        if (is_null($key)) {
+            return CacheLookup::bypass($read, 'tags_unavailable');
+        }
+
+        return $this->resolve($read, $key, $entry);
+    }
+
+    /**
+     * Turn the value read from the cache store into the result of the lookup.
+     */
+    protected function resolve(string $read, string $key, mixed $entry): CacheLookup
+    {
         if (is_null($entry)) {
             return CacheLookup::miss($read, $key);
         }
@@ -172,27 +190,37 @@ class ResultCache
             return $lookup;
         }
 
-        if ($this->exceedsMaxRows($data)) {
-            return $lookup->withReason('too_many_rows');
-        }
-
         try {
-            $store = $this->store();
-
-            if ($this->exceedsWriteLimit($store, $options)) {
-                return $lookup->withReason('write_limit');
-            }
-
-            $store->put((string) $lookup->key, [
-                'format' => self::FORMAT,
-                'read' => $lookup->read,
-                'data' => $data,
-            ], $options->ttl);
+            $reason = $this->write($lookup, $options, $data);
         } catch (Throwable $exception) {
             return $lookup->withReason('store_error', $exception);
         }
 
-        return $lookup;
+        return is_null($reason) ? $lookup : $lookup->withReason($reason);
+    }
+
+    /**
+     * Store the entry of a read, or get the reason why it is not stored.
+     */
+    protected function write(CacheLookup $lookup, CacheOptions $options, mixed $data): ?string
+    {
+        if ($this->exceedsMaxRows($data)) {
+            return 'too_many_rows';
+        }
+
+        $store = $this->store();
+
+        if ($this->exceedsWriteLimit($store, $options)) {
+            return 'write_limit';
+        }
+
+        $store->put((string) $lookup->key, [
+            'format' => self::FORMAT,
+            'read' => $lookup->read,
+            'data' => $data,
+        ], $options->ttl);
+
+        return null;
     }
 
     /**
@@ -212,6 +240,28 @@ class ResultCache
     }
 
     /**
+     * Check if a custom Eloquent builder changes how the records are retrieved.
+     *
+     * Such a builder may not build its records from the rows of its query
+     * alone, so they could not be restored from the cached rows.
+     *
+     * @param  EloquentBuilder<Model>  $builder
+     * @param  list<string>  $methods
+     */
+    public function overridesRetrieval(EloquentBuilder $builder, array $methods): bool
+    {
+        foreach ($methods as $method) {
+            if (method_exists($builder, $method)
+                && (new ReflectionMethod($builder, $method))->getDeclaringClass()->getName() !== EloquentBuilder::class
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Convert the rows of a query into a cacheable payload.
      *
      * Returns null when a row holds anything else than scalar values, e.g. a
@@ -227,22 +277,14 @@ class ResultCache
 
         foreach ($rows as $row) {
             $isObject = is_object($row) && $row::class === stdClass::class;
+            $values = $isObject || is_array($row) ? (array) $row : null;
 
-            if (! $isObject && ! is_array($row)) {
-                return null;
-            }
-
-            if (! is_null($objects) && $objects !== $isObject) {
+            // The rows must all be plain objects or all be arrays, holding scalar values only.
+            if (is_null($values) || ($objects ?? $isObject) !== $isObject || ! $this->isScalarArray($values)) {
                 return null;
             }
 
             $objects = $isObject;
-            $values = (array) $row;
-
-            if (! $this->isScalarRow($values)) {
-                return null;
-            }
-
             $export[] = $values;
         }
 
@@ -267,7 +309,7 @@ class ResultCache
         $rows = [];
 
         foreach ($data['rows'] as $row) {
-            if (! is_array($row) || ! $this->isScalarRow($row)) {
+            if (! is_array($row) || ! $this->isScalarArray($row)) {
                 return null;
             }
 
@@ -403,18 +445,25 @@ class ResultCache
 
     /**
      * Identify the database a connection reads from, without its credentials.
+     *
+     * Returns null when the connection cannot be identified.
      */
-    protected function connectionFingerprint(Connection $connection): string
+    protected function connectionFingerprint(Connection $connection): ?string
     {
         $config = Arr::except((array) $connection->getConfig(), ['password', 'read.password', 'write.password']);
 
-        return hash('sha256', serialize([
-            $connection->getName(),
-            $connection->getDriverName(),
-            $connection->getDatabaseName(),
-            $connection->getTablePrefix(),
-            $config,
-        ]));
+        try {
+            return hash('sha256', serialize([
+                $connection->getName(),
+                $connection->getDriverName(),
+                $connection->getDatabaseName(),
+                $connection->getTablePrefix(),
+                $config,
+            ]));
+        } catch (Throwable) {
+            // The configuration holds values that cannot be serialized, e.g. closures.
+            return null;
+        }
     }
 
     /**
@@ -440,7 +489,7 @@ class ResultCache
     /**
      * @param  array<array-key, mixed>  $values
      */
-    protected function isScalarRow(array $values): bool
+    protected function isScalarArray(array $values): bool
     {
         foreach ($values as $value) {
             if (! is_null($value) && ! is_scalar($value)) {
