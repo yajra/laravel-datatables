@@ -12,12 +12,8 @@ use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\DatabaseTransactionRecord;
 use Illuminate\Database\DatabaseTransactionsManager;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Arr;
-use ReflectionMethod;
-use stdClass;
 use Throwable;
 
 /**
@@ -123,7 +119,7 @@ class ResultCache
             // returned them, e.g. according to the authenticated user: their
             // output does not depend on the query alone.
             (fn () => $this->afterQueryCallbacks !== [])->call($query) => 'after_query_callbacks',
-            ! $this->isScalarArray($this->bindings($connection, $query)) => 'unsupported_binding',
+            ! Payload::isScalar($this->bindings($connection, $query)) => 'unsupported_binding',
             default => null,
         };
     }
@@ -204,7 +200,11 @@ class ResultCache
      */
     protected function write(CacheLookup $lookup, CacheOptions $options, mixed $data): ?string
     {
-        if ($this->exceedsMaxRows($data)) {
+        // Without paging, e.g. for an export, a read returns every row of the
+        // table: storing it would put the whole table in a single entry.
+        $maxRows = $this->config->get('datatables.cache.max_rows', 1000);
+
+        if (is_numeric($maxRows) && Payload::rowCount($data) > (int) $maxRows) {
             return 'too_many_rows';
         }
 
@@ -237,110 +237,6 @@ class ResultCache
         $keys = array_map($this->tagKey(...), CacheOptions::tags($tags));
 
         $this->db->connection()->afterCommit(fn () => $this->store()->deleteMultiple($keys));
-    }
-
-    /**
-     * Check if a custom Eloquent builder changes how the records are retrieved.
-     *
-     * Such a builder may not build its records from the rows of its query
-     * alone, so they could not be restored from the cached rows.
-     *
-     * @param  EloquentBuilder<Model>  $builder
-     * @param  list<string>  $methods
-     */
-    public function overridesRetrieval(EloquentBuilder $builder, array $methods): bool
-    {
-        foreach ($methods as $method) {
-            if (method_exists($builder, $method)
-                && (new ReflectionMethod($builder, $method))->getDeclaringClass()->getName() !== EloquentBuilder::class
-            ) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Convert the rows of a query into a cacheable payload.
-     *
-     * Returns null when a row holds anything else than scalar values, e.g. a
-     * stream or an object built by an "after query" callback.
-     *
-     * @param  iterable<array-key, mixed>  $rows
-     * @return array{objects: bool, rows: list<array<array-key, scalar|null>>}|null
-     */
-    public function exportRows(iterable $rows): ?array
-    {
-        $objects = null;
-        $export = [];
-
-        foreach ($rows as $row) {
-            $isObject = is_object($row) && $row::class === stdClass::class;
-            $values = $isObject || is_array($row) ? (array) $row : null;
-
-            // The rows must all be plain objects or all be arrays, holding scalar values only.
-            if (is_null($values) || ($objects ?? $isObject) !== $isObject || ! $this->isScalarArray($values)) {
-                return null;
-            }
-
-            $objects = $isObject;
-            $export[] = $values;
-        }
-
-        return ['objects' => $objects ?? true, 'rows' => $export];
-    }
-
-    /**
-     * Restore the rows of a cached payload, or null if the payload is invalid.
-     *
-     * @return list<stdClass|array<array-key, scalar|null>>|null
-     */
-    public function importRows(mixed $data): ?array
-    {
-        if (! is_array($data)
-            || ! is_bool($data['objects'] ?? null)
-            || ! is_array($data['rows'] ?? null)
-            || ! array_is_list($data['rows'])
-        ) {
-            return null;
-        }
-
-        $rows = [];
-
-        foreach ($data['rows'] as $row) {
-            if (! is_array($row) || ! $this->isScalarArray($row)) {
-                return null;
-            }
-
-            $rows[] = $data['objects'] ? (object) $row : $row;
-        }
-
-        return $rows;
-    }
-
-    /**
-     * Restore a cached count, or null if the payload is invalid.
-     */
-    public function importCount(mixed $data): ?int
-    {
-        return is_int($data) && $data >= 0 ? $data : null;
-    }
-
-    /**
-     * Check if the payload holds more rows than a single entry may store.
-     *
-     * Without paging, e.g. for an export, a read returns every row of the
-     * table: storing it would put the whole table in a single entry.
-     */
-    protected function exceedsMaxRows(mixed $data): bool
-    {
-        $limit = $this->config->get('datatables.cache.max_rows', 1000);
-
-        return is_numeric($limit)
-            && is_array($data)
-            && is_array($data['rows'] ?? null)
-            && count($data['rows']) > (int) $limit;
     }
 
     /**
@@ -484,19 +380,5 @@ class ResultCache
         $prefix = $this->config->get('datatables.cache.prefix', 'datatables');
 
         return is_string($prefix) && $prefix !== '' ? $prefix : 'datatables';
-    }
-
-    /**
-     * @param  array<array-key, mixed>  $values
-     */
-    protected function isScalarArray(array $values): bool
-    {
-        foreach ($values as $value) {
-            if (! is_null($value) && ! is_scalar($value)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }

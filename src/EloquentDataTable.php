@@ -17,6 +17,7 @@ use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Cache\CacheOptions;
+use Yajra\DataTables\Cache\Payload;
 use Yajra\DataTables\Exceptions\Exception;
 
 /**
@@ -68,9 +69,8 @@ class EloquentDataTable extends QueryDataTable
     protected function cachedResults(CacheOptions $options): Collection
     {
         $query = $this->query;
-        $cache = $this->resultCache();
 
-        if (! $query instanceof BaseEloquentBuilder || $cache->overridesRetrieval($query, ['get', 'getModels', 'hydrate', 'eagerLoadRelations', 'applyScopes'])) {
+        if (! $query instanceof BaseEloquentBuilder || Payload::overridesRetrieval($query, ['get', 'getModels', 'hydrate', 'eagerLoadRelations', 'applyScopes'])) {
             return $this->bypassCache('rows', 'unsupported_builder', fn () => $query->get());
         }
 
@@ -82,8 +82,8 @@ class EloquentDataTable extends QueryDataTable
             'rows',
             $base,
             fn (): array => $base->get()->all(),
-            fn (array $rows): ?array => $cache->exportRows($rows),
-            fn (mixed $data): ?array => $cache->importRows($data),
+            fn (array $rows): ?array => Payload::exportRows($rows),
+            fn (mixed $data): ?array => Payload::importRows($data),
         );
 
         $models = $builder->getModel()->hydrate($rows)->all();

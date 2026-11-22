@@ -26,6 +26,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Yajra\DataTables\Cache\CacheLookup;
 use Yajra\DataTables\Cache\CacheOptions;
+use Yajra\DataTables\Cache\Payload;
 use Yajra\DataTables\Cache\ResultCache;
 use Yajra\DataTables\Utilities\Helper;
 
@@ -242,7 +243,7 @@ class QueryDataTable extends DataTableAbstract
         // which cannot be cached when a custom builder changes how it counts.
         $query = match (true) {
             ! $builder instanceof BaseEloquentBuilder => $builder,
-            $this->resultCache()->overridesRetrieval($builder, ['count', 'toBase', 'applyScopes']) => null,
+            Payload::overridesRetrieval($builder, ['count', 'toBase', 'applyScopes']) => null,
             default => $builder->toBase(),
         };
 
@@ -256,7 +257,7 @@ class QueryDataTable extends DataTableAbstract
             $query,
             fn (): int => $builder->count(),
             fn (int $count): int => $count,
-            fn (mixed $data): ?int => $this->resultCache()->importCount($data),
+            fn (mixed $data): ?int => Payload::importCount($data),
         );
     }
 
@@ -278,9 +279,9 @@ class QueryDataTable extends DataTableAbstract
             'rows',
             $query,
             fn (): Collection => $query->get(),
-            fn (Collection $rows): ?array => $this->resultCache()->exportRows($rows),
+            fn (Collection $rows): ?array => Payload::exportRows($rows),
             function (mixed $data): ?Collection {
-                $rows = $this->resultCache()->importRows($data);
+                $rows = Payload::importRows($data);
 
                 return is_null($rows) ? null : new Collection($rows);
             },

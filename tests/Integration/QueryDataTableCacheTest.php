@@ -17,6 +17,7 @@ use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;
 use Yajra\DataTables\Cache\CacheLookup;
 use Yajra\DataTables\Cache\CacheOptions;
+use Yajra\DataTables\Cache\Payload;
 use Yajra\DataTables\Cache\ResultCache;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Facades\DataTables as DataTablesFacade;
@@ -394,16 +395,15 @@ class QueryDataTableCacheTest extends TestCase
     #[Test]
     public function it_does_not_cache_rows_holding_values_that_are_not_scalar()
     {
-        $cache = app(ResultCache::class);
         $stream = fopen('php://memory', 'r');
 
-        $this->assertNull($cache->exportRows([(object) ['id' => 1, 'meta' => new \ArrayObject]]));
-        $this->assertNull($cache->exportRows([(object) ['id' => 1, 'blob' => $stream]]));
-        $this->assertNull($cache->exportRows([(object) ['id' => 1], ['id' => 2]]));
-        $this->assertNull($cache->importRows(['objects' => true, 'rows' => [['meta' => ['nested']]]]));
+        $this->assertNull(Payload::exportRows([(object) ['id' => 1, 'meta' => new \ArrayObject]]));
+        $this->assertNull(Payload::exportRows([(object) ['id' => 1, 'blob' => $stream]]));
+        $this->assertNull(Payload::exportRows([(object) ['id' => 1], ['id' => 2]]));
+        $this->assertNull(Payload::importRows(['objects' => true, 'rows' => [['meta' => ['nested']]]]));
         $this->assertEquals(
             [(object) ['id' => 1, 'name' => 'a', 'score' => 1.5, 'deleted_at' => null]],
-            $cache->importRows($cache->exportRows([(object) ['id' => 1, 'name' => 'a', 'score' => 1.5, 'deleted_at' => null]]))
+            Payload::importRows(Payload::exportRows([(object) ['id' => 1, 'name' => 'a', 'score' => 1.5, 'deleted_at' => null]]))
         );
 
         fclose($stream);
