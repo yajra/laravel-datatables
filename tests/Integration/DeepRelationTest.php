@@ -135,14 +135,16 @@ class DeepRelationTest extends TestCase
     }
 
     #[Test]
-    public function it_searches_only_the_related_type_matching_the_table_qualifier(): void
+    #[TestWith(['user.human_users.id'])]
+    #[TestWith(['user.HUMAN_USERS.id'])]
+    public function it_searches_only_the_related_type_matching_the_table_qualifier(string $column): void
     {
         $this->app['router']->get('/relations/qualified', fn (DataTables $datatables) => $datatables
             ->eloquent(User::with('user'))
             ->toJson());
 
         $response = $this->call('GET', '/relations/qualified', [
-            'columns' => [['data' => 'user.human_users.id', 'searchable' => 'true']],
+            'columns' => [['data' => $column, 'searchable' => 'true']],
             'search' => ['value' => '1'],
         ]);
 
