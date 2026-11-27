@@ -3,9 +3,12 @@
 namespace Yajra\DataTables\Tests\Integration;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use LogicException;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestWith;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Tests\Models\Post;
+use Yajra\DataTables\Tests\Models\User;
 use Yajra\DataTables\Tests\TestCase;
 
 class DeepRelationTest extends TestCase
@@ -39,6 +42,55 @@ class DeepRelationTest extends TestCase
         ]);
 
         $this->assertCount(3, $response->json()['data']);
+    }
+
+    #[Test]
+    #[TestWith([Post::class, 'unlistedRelation.user.id', true])]
+    #[TestWith([Post::class, 'unlistedRelation.user.id', false])]
+    #[TestWith([User::class, 'user.unlistedRelation.size', true])]
+    #[TestWith([User::class, 'user.unlistedRelation.size', false])]
+    public function it_only_resolves_configured_relations(string $modelClass, string $column, bool $global): void
+    {
+        $calls = 0;
+        $modelClass::resolveRelationUsing('unlistedRelation', static function (Post|User $model) use (&$calls) {
+            $calls++;
+
+            return $model->heart();
+        });
+
+        $this->getJsonResponse([
+            'columns' => [[
+                'data' => $column,
+                'searchable' => 'true',
+                'search' => ['value' => $global ? '' : 'heart-20'],
+            ]],
+            'search' => ['value' => $global ? 'heart-20' : ''],
+        ]);
+
+        $this->assertSame(0, $calls);
+    }
+
+    #[Test]
+    public function it_resolves_an_allowed_nested_relation_on_its_own_model(): void
+    {
+        $this->app['router']->get('/relations/nested-heart', function (DataTables $datatables) {
+            $post = new class extends Post
+            {
+                protected $table = 'posts';
+
+                public function heart(): never
+                {
+                    throw new LogicException('Only the related user should resolve heart.');
+                }
+            };
+
+            return $datatables->eloquent($post->newQuery()->with('user.heart'))->toJson();
+        });
+
+        $this->call('GET', '/relations/nested-heart', [
+            'columns' => [['data' => 'user.heart.size', 'searchable' => 'true']],
+            'search' => ['value' => 'heart-20'],
+        ])->assertJson(['recordsTotal' => 60, 'recordsFiltered' => 3]);
     }
 
     protected function setUp(): void

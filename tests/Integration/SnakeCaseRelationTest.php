@@ -166,10 +166,13 @@ class SnakeCaseRelationTest extends TestCase
     }
 
     #[Test]
-    public function it_can_search_a_nested_snake_case_relation_that_is_not_eager_loaded()
+    public function it_can_search_an_unloaded_nested_relation_with_an_explicit_column_filter()
     {
         $this->app['router']->get('/relations/nestedNotEagerLoaded', fn (DataTables $datatables) => $datatables
             ->eloquent(Post::with('user')->select('posts.*'))
+            ->filterColumn('user.nested_filtered_heart.size', function ($query, $keyword) {
+                $query->whereHas('user.nestedFilteredHeart', fn ($heart) => $heart->where('size', $keyword));
+            })
             ->toJson());
 
         $response = $this->call('GET', '/relations/nestedNotEagerLoaded', [
