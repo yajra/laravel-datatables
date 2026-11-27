@@ -100,11 +100,11 @@ class CacheStoresTest extends TestCase
 
         $this->assertNotEmpty($keys);
         foreach ($keys as $key) {
-            $this->assertMatchesRegularExpression('/^'.preg_quote($this->prefix, '/').'datatables:(entry|tag|writes):[0-9a-f]{64}(:timer)?$/', $key);
+            $this->assertMatchesRegularExpression('/^'.preg_quote($this->prefix, '/').'datatables:(entry|tag|writes):[0-9a-f]{64}(:timer)?$/', (string) $key);
             $ttl = $redis->ttl($key);
             match (true) {
-                str_contains($key, ':entry:') => $this->assertTrue($ttl > 0 && $ttl <= 120, "entry TTL is $ttl"),
-                str_contains($key, ':writes:') => $this->assertTrue($ttl > 0 && $ttl <= 60, "write counter TTL is $ttl"),
+                str_contains((string) $key, ':entry:') => $this->assertTrue($ttl > 0 && $ttl <= 120, "entry TTL is $ttl"),
+                str_contains((string) $key, ':writes:') => $this->assertTrue($ttl > 0 && $ttl <= 60, "write counter TTL is $ttl"),
                 default => $this->assertTrue($ttl > 120 && $ttl <= 86400, "tag TTL is $ttl"),
             };
         }
