@@ -3,6 +3,7 @@
 namespace Yajra\DataTables\Processors;
 
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Yajra\DataTables\Contracts\Formatter;
 use Yajra\DataTables\Utilities\Helper;
@@ -90,7 +91,7 @@ class DataProcessor
     /**
      * Process add columns.
      *
-     * @param  array|object|\Illuminate\Database\Eloquent\Model  $row
+     * @param  array|object|Model  $row
      */
     protected function addColumns(array $data, $row): array
     {

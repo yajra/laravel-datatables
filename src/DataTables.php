@@ -4,6 +4,8 @@ namespace Yajra\DataTables;
 
 use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\Macroable;
 use Yajra\DataTables\Exceptions\Exception;
 use Yajra\DataTables\Utilities\Config;
@@ -16,7 +18,7 @@ class DataTables
     /**
      * DataTables request object.
      */
-    protected Utilities\Request $request;
+    protected Request $request;
 
     /**
      * Make a DataTable instance from source.
@@ -38,7 +40,7 @@ class DataTables
      * @param  object  $source
      * @return DataTableAbstract
      *
-     * @throws \Yajra\DataTables\Exceptions\Exception
+     * @throws Exception
      */
     public static function make($source)
     {
@@ -51,7 +53,7 @@ class DataTables
                 $callback = [$engines[$engine], 'create'];
 
                 if (is_callable($callback)) {
-                    /** @var \Yajra\DataTables\DataTableAbstract $instance */
+                    /** @var DataTableAbstract $instance */
                     $instance = call_user_func_array($callback, $args);
 
                     return $instance;
@@ -65,7 +67,7 @@ class DataTables
                 $create = [$engine, 'create'];
 
                 if (is_callable($create)) {
-                    /** @var \Yajra\DataTables\DataTableAbstract $instance */
+                    /** @var DataTableAbstract $instance */
                     $instance = call_user_func_array($create, $args);
 
                     return $instance;
@@ -95,7 +97,7 @@ class DataTables
     /**
      * DataTables using query builder.
      *
-     * @throws \Yajra\DataTables\Exceptions\Exception
+     * @throws Exception
      */
     public function query(QueryBuilder $builder): QueryDataTable
     {
@@ -110,7 +112,7 @@ class DataTables
     /**
      * DataTables using Eloquent Builder.
      *
-     * @throws \Yajra\DataTables\Exceptions\Exception
+     * @throws Exception
      */
     public function eloquent(EloquentBuilder $builder): EloquentDataTable
     {
@@ -125,9 +127,9 @@ class DataTables
     /**
      * DataTables using Collection.
      *
-     * @param  \Illuminate\Support\Collection<array-key, array>|array  $collection
+     * @param  Collection<array-key, array>|array  $collection
      *
-     * @throws \Yajra\DataTables\Exceptions\Exception
+     * @throws Exception
      */
     public function collection($collection): CollectionDataTable
     {
@@ -142,7 +144,7 @@ class DataTables
     /**
      * DataTables using Collection.
      *
-     * @param  \Illuminate\Http\Resources\Json\AnonymousResourceCollection<array-key, array>|array  $resource
+     * @param  AnonymousResourceCollection<array-key, array>|array  $resource
      * @return ApiResourceDataTable|DataTableAbstract
      */
     public function resource($resource)
@@ -151,7 +153,7 @@ class DataTables
     }
 
     /**
-     * @throws \Yajra\DataTables\Exceptions\Exception
+     * @throws Exception
      */
     public function validateDataTable(string $engine, string $parent): void
     {

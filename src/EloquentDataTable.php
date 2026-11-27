@@ -107,7 +107,7 @@ class EloquentDataTable extends QueryDataTable
      * Resolve the proper column name be used.
      *
      *
-     * @throws \Yajra\DataTables\Exceptions\Exception
+     * @throws Exception
      */
     protected function resolveRelationColumn(string $column): string
     {
@@ -129,7 +129,7 @@ class EloquentDataTable extends QueryDataTable
      * @param  string  $relationColumn
      * @return string
      *
-     * @throws \Yajra\DataTables\Exceptions\Exception
+     * @throws Exception
      */
     protected function joinEagerLoadedColumn($relation, $relationColumn)
     {
