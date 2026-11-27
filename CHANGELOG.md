@@ -1,3 +1,13 @@
+## [12.7.3](https://github.com/yajra/laravel-datatables/compare/v12.7.2...v12.7.3) (2026-11-27)
+
+
+### Bug Fixes
+
+* match SQLite table qualifiers case-insensitively ([2c7dd7f](https://github.com/yajra/laravel-datatables/commit/2c7dd7fddf5fbda729b0ee8746e60f739d71c854))
+* preserve nested search across polymorphic types ([e6c13d6](https://github.com/yajra/laravel-datatables/commit/e6c13d65d4c17d6150038c7217381ccd62a1aa76))
+* preserve table-qualified Eloquent relation searches ([0776ee5](https://github.com/yajra/laravel-datatables/commit/0776ee532ff17af794b1055c1801fcbff696d1f4))
+* validate eager-loaded relation paths during search ([0eb5d8e](https://github.com/yajra/laravel-datatables/commit/0eb5d8ee8fc3726a6bd0b242960f3d1a5612891e))
+
 ## [12.7.2](https://github.com/yajra/laravel-datatables/compare/v12.7.1...v12.7.2) (2026-05-16)
 
 
