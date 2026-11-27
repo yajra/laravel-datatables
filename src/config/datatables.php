@@ -135,6 +135,50 @@ return [
     ],
 
     /*
+     * Cache of the counts and rows read by the DataTables that call cache().
+     * Nothing is cached unless cache() is called on a DataTable.
+     */
+    'cache' => [
+        /*
+         * Set to false to bypass the cache of every DataTable, e.g. during an incident.
+         * Flushes keep running so that no stale entry is served once it is enabled again.
+         */
+        'enabled' => env('DATATABLES_CACHE_ENABLED', true),
+
+        /*
+         * Cache store from config/cache.php, null to use the default store.
+         * With an eventually consistent store, e.g. DynamoDB, a read right after
+         * a flush may still see the flushed tags and serve the previous results.
+         */
+        'store' => env('DATATABLES_CACHE_STORE'),
+
+        /*
+         * Default time to live of the cached reads, in seconds.
+         */
+        'ttl' => env('DATATABLES_CACHE_TTL', 60),
+
+        /*
+         * Maximum number of entries a DataTable may write per minute, null for no limit.
+         * Searches, orders and pages come from the request: the limit prevents a client
+         * sending random values from filling the cache store. Use a dedicated store
+         * so that the entries never evict the sessions or other data of the application.
+         */
+        'max_writes_per_minute' => env('DATATABLES_CACHE_MAX_WRITES_PER_MINUTE', 1000),
+
+        /*
+         * Maximum number of rows a cached read may store, null for no limit. Reads
+         * without paging, e.g. exports, may return the whole table: beyond the
+         * limit, the rows are read from the database and not stored.
+         */
+        'max_rows' => env('DATATABLES_CACHE_MAX_ROWS', 1000),
+
+        /*
+         * Prefix of the cache keys. Changing it discards every cached read at once.
+         */
+        'prefix' => env('DATATABLES_CACHE_PREFIX', 'datatables'),
+    ],
+
+    /*
      * Default condition to determine if a parameter is a callback or not.
      * Callbacks needs to start by those terms, or they will be cast to string.
      */

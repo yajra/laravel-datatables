@@ -8,6 +8,8 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Traits\Macroable;
+use Yajra\DataTables\Cache\ResultCache;
+use Yajra\DataTables\Exceptions\CacheFlushException;
 use Yajra\DataTables\Exceptions\Exception;
 use Yajra\DataTables\Utilities\Config as DataTablesConfig;
 use Yajra\DataTables\Utilities\Request;
@@ -150,6 +152,24 @@ class DataTables
     public function resource($resource)
     {
         return ApiResourceDataTable::create($resource);
+    }
+
+    /**
+     * Flush the cached reads of every DataTable that declared one of the given tags.
+     *
+     * When called inside a transaction of the given connection, the flush runs
+     * once the transaction is committed and is discarded if it is rolled back.
+     * Without a connection, the transaction of the default connection is used,
+     * or else the last transaction opened on any connection. Pass the
+     * connection that wrote the data when several transactions are open.
+     *
+     * @param  string|array<array-key, string>  $tags
+     *
+     * @throws CacheFlushException
+     */
+    public function flushCache(string|array $tags, ?string $connection = null): void
+    {
+        app(ResultCache::class)->flush($tags, $connection);
     }
 
     /**

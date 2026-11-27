@@ -3,9 +3,13 @@
 namespace Yajra\DataTables;
 
 use Algolia\AlgoliaSearch\SearchClient;
+use Closure;
+use DateInterval;
+use DateTimeInterface;
 use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Connection;
+use Illuminate\Database\Eloquent\Builder as BaseEloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Expression;
@@ -20,6 +24,10 @@ use Laravel\Scout\Engines\MeilisearchEngine;
 use Meilisearch\Client;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Yajra\DataTables\Cache\CacheLookup;
+use Yajra\DataTables\Cache\CacheOptions;
+use Yajra\DataTables\Cache\Payload;
+use Yajra\DataTables\Cache\ResultCache;
 use Yajra\DataTables\Utilities\Helper;
 
 class QueryDataTable extends DataTableAbstract
@@ -96,6 +104,18 @@ class QueryDataTable extends DataTableAbstract
      */
     protected Collection $results;
 
+    /**
+     * Cache settings, null while caching is not enabled for this DataTable.
+     */
+    protected ?CacheOptions $cacheOptions = null;
+
+    /**
+     * Outcome of every cached read, exposed by the debugger.
+     *
+     * @var list<array{read: string, status: string, reason: string|null, key: string|null}>
+     */
+    protected array $cacheReport = [];
+
     public function __construct(protected QueryBuilder $query)
     {
         $this->request = app('datatables.request');
@@ -152,7 +172,9 @@ class QueryDataTable extends DataTableAbstract
      */
     public function results(): Collection
     {
-        return $this->results ??= $this->query->get();
+        return $this->results ??= is_null($this->cacheOptions) || ! $this->cacheOptions->rows
+            ? $this->query->get()
+            : $this->cachedResults($this->cacheOptions);
     }
 
     /**
@@ -180,7 +202,166 @@ class QueryDataTable extends DataTableAbstract
      */
     public function count(): int
     {
-        return $this->prepareCountQuery()->count();
+        $builder = $this->prepareCountQuery();
+
+        if (is_null($this->cacheOptions)) {
+            return $builder->count();
+        }
+
+        return $this->cachedCount($builder, $this->cacheOptions);
+    }
+
+    /**
+     * Cache the counts and the rows read by the DataTable with the Laravel cache.
+     *
+     * Every source of data the result depends on must be declared as a tag
+     * and flushed with DataTables::flushCache() when it changes. The entries
+     * also expire after the given TTL, in seconds.
+     *
+     * Use $by to segment the cache by any value that changes the result of the
+     * database without changing the query, e.g. a row level security role.
+     * Set $rows to false to only cache the counts, and read the rows of every
+     * page from the database.
+     *
+     * @param  string|array<array-key, string>  $tags
+     * @param  array<array-key, mixed>  $by
+     * @return $this
+     */
+    public function cache(string|array $tags, DateTimeInterface|DateInterval|int|null $ttl = null, array $by = [], bool $rows = true): static
+    {
+        $this->cacheOptions = CacheOptions::make($tags, $ttl ?? $this->resultCache()->defaultTtl(), $by, $rows);
+
+        return $this;
+    }
+
+    /**
+     * Count the records of the given query through the cache.
+     *
+     * @param  QueryBuilder|EloquentBuilder  $builder
+     */
+    protected function cachedCount($builder, CacheOptions $options): int
+    {
+        // Global scopes are only applied to the base query of an Eloquent builder,
+        // which cannot be cached when a custom builder changes how it counts.
+        $query = match (true) {
+            ! $builder instanceof BaseEloquentBuilder => $builder,
+            Payload::overridesRetrieval($builder, ['count', 'toBase', 'applyScopes']) => null,
+            default => $builder->toBase(),
+        };
+
+        if (! $query instanceof Builder) {
+            return $this->bypassCache('count', 'unsupported_builder', fn () => $builder->count());
+        }
+
+        return $this->rememberRead(
+            $options,
+            'count',
+            $query,
+            fn (): int => $builder->count(),
+            fn (int $count): int => $count,
+            fn (mixed $data): ?int => Payload::importCount($data),
+        );
+    }
+
+    /**
+     * Get the paginated results through the cache.
+     *
+     * @return Collection<int, mixed>
+     */
+    protected function cachedResults(CacheOptions $options): Collection
+    {
+        $query = $this->query;
+
+        if (! $query instanceof Builder) {
+            return $this->bypassCache('rows', 'unsupported_builder', fn () => $query->get());
+        }
+
+        return $this->rememberRead(
+            $options,
+            'rows',
+            $query,
+            fn (): Collection => $query->get(),
+            fn (Collection $rows): ?array => Payload::exportRows($rows),
+            function (mixed $data): ?Collection {
+                $rows = Payload::importRows($data);
+
+                return is_null($rows) ? null : new Collection($rows);
+            },
+        );
+    }
+
+    /**
+     * Perform a read through the cache.
+     *
+     * @template TResult
+     *
+     * @param  Closure(): TResult  $execute  Performs the read against the database.
+     * @param  Closure(TResult): mixed  $export  Cacheable payload of the result, null if it cannot be cached.
+     * @param  Closure(mixed): (TResult|null)  $import  Result restored from the payload, null if the payload is invalid.
+     * @return TResult
+     */
+    protected function rememberRead(CacheOptions $options, string $read, Builder $query, Closure $execute, Closure $export, Closure $import): mixed
+    {
+        $cache = $this->resultCache();
+        $lookup = $cache->lookup($options, $read, $query);
+
+        if ($lookup->status === CacheLookup::HIT) {
+            $result = $import($lookup->data);
+
+            if (! is_null($result)) {
+                $this->reportCacheRead($lookup);
+
+                return $result;
+            }
+
+            $lookup = $lookup->asInvalidEntry();
+        }
+
+        $result = $execute();
+
+        if ($lookup->isStorable()) {
+            $data = $export($result);
+
+            $lookup = is_null($data)
+                ? $lookup->withReason('not_cacheable')
+                : $cache->put($lookup, $options, $data);
+        }
+
+        $this->reportCacheRead($lookup);
+
+        return $result;
+    }
+
+    /**
+     * Perform a read against the database without using the cache.
+     *
+     * @template TResult
+     *
+     * @param  Closure(): TResult  $execute
+     * @return TResult
+     */
+    protected function bypassCache(string $read, string $reason, Closure $execute): mixed
+    {
+        $this->reportCacheRead(CacheLookup::bypass($read, $reason));
+
+        return $execute();
+    }
+
+    protected function reportCacheRead(CacheLookup $lookup): void
+    {
+        $this->cacheReport[] = $lookup->toArray();
+
+        if ($lookup->exception) {
+            $this->getLogger()->warning('DataTables cache bypassed because the cache store failed.', [
+                'read' => $lookup->read,
+                'exception' => $lookup->exception,
+            ]);
+        }
+    }
+
+    protected function resultCache(): ResultCache
+    {
+        return app(ResultCache::class);
     }
 
     /**
@@ -736,7 +917,7 @@ class QueryDataTable extends DataTableAbstract
      * Override default column ordering.
      *
      * @param  string  $column
-     * @param  string|\Closure  $sql
+     * @param  string|Closure  $sql
      * @param  array  $bindings
      * @return $this
      *
@@ -973,6 +1154,10 @@ class QueryDataTable extends DataTableAbstract
 
         $output['queries'] = $query_log;
         $output['input'] = $this->request->all();
+
+        if (! is_null($this->cacheOptions)) {
+            $output['cache'] = $this->cacheReport;
+        }
 
         return $output;
     }

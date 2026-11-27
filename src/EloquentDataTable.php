@@ -5,6 +5,7 @@ namespace Yajra\DataTables;
 use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Connection;
+use Illuminate\Database\Eloquent\Builder as BaseEloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -13,7 +14,10 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder as BaseQueryBuilder;
 use Illuminate\Database\Query\JoinClause;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Yajra\DataTables\Cache\CacheOptions;
+use Yajra\DataTables\Cache\Payload;
 use Yajra\DataTables\Exceptions\Exception;
 
 /**
@@ -51,6 +55,44 @@ class EloquentDataTable extends QueryDataTable
     public static function canCreate($source): bool
     {
         return $source instanceof EloquentBuilder;
+    }
+
+    /**
+     * Get the paginated models through the cache.
+     *
+     * Only the rows of the main query are cached. The models are hydrated from
+     * them and the relations are eager loaded the same way Builder::get() does,
+     * so the eager loads, their constraints included, always reach the database.
+     *
+     * @return Collection<int, Model>
+     */
+    protected function cachedResults(CacheOptions $options): Collection
+    {
+        $query = $this->query;
+
+        if (! $query instanceof BaseEloquentBuilder || Payload::overridesRetrieval($query, ['get', 'getModels', 'hydrate', 'eagerLoadRelations', 'applyScopes'])) {
+            return $this->bypassCache('rows', 'unsupported_builder', fn () => $query->get());
+        }
+
+        $builder = $query->applyScopes();
+        $base = $builder->getQuery();
+
+        $rows = $this->rememberRead(
+            $options,
+            'rows',
+            $base,
+            fn (): array => $base->get()->all(),
+            fn (array $rows): ?array => Payload::exportRows($rows),
+            fn (mixed $data): ?array => Payload::importRows($data),
+        );
+
+        $models = $builder->getModel()->hydrate($rows)->all();
+
+        if (count($models) > 0) {
+            $models = $builder->eagerLoadRelations($models);
+        }
+
+        return $query->applyAfterQueryCallbacks($builder->getModel()->newCollection($models));
     }
 
     /**
