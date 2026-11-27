@@ -73,6 +73,42 @@ class HasManyRelationTest extends TestCase
         $this->assertCount(1, $response->json()['data']);
     }
 
+    #[Test]
+    public function it_escapes_relation_values()
+    {
+        Post::find(1)->update(['title' => '<a href="#">Allowed</a>']);
+
+        $response = $this->call('GET', '/relations/hasMany');
+
+        $titles = collect($response->json('data'))
+            ->pluck('posts')
+            ->flatten(1)
+            ->pluck('title');
+
+        $this->assertContains(e('<a href="#">Allowed</a>'), $titles);
+        $this->assertNotContains('<a href="#">Allowed</a>', $titles);
+    }
+
+    #[Test]
+    public function it_allows_raw_relation_values_on_exact_nested_paths()
+    {
+        Post::find(1)->update(['title' => '<a href="#">Allowed</a>']);
+
+        $response = $this->call('GET', '/relations/hasManyRawFirstPostTitle');
+
+        $this->assertSame('<a href="#">Allowed</a>', $response->json('data.0.posts.0.title'));
+    }
+
+    #[Test]
+    public function it_does_not_allow_raw_relation_values_from_parent_relation_paths()
+    {
+        Post::find(1)->update(['title' => '<a href="#">Allowed</a>']);
+
+        $response = $this->call('GET', '/relations/hasManyRawPostsRelation');
+
+        $this->assertSame(e('<a href="#">Allowed</a>'), $response->json('data.0.posts.0.title'));
+    }
+
     protected function getJsonResponse(array $params = [])
     {
         $data = [
@@ -91,6 +127,14 @@ class HasManyRelationTest extends TestCase
         parent::setUp();
 
         $this->app['router']->get('/relations/hasMany', fn (DataTables $datatables) => $datatables->eloquent(User::with('posts')->select('users.*'))->toJson());
+
+        $this->app['router']->get('/relations/hasManyRawFirstPostTitle', fn (DataTables $datatables) => $datatables->eloquent(User::with('posts')->select('users.*'))
+            ->rawColumns(['posts.0.title'])
+            ->toJson());
+
+        $this->app['router']->get('/relations/hasManyRawPostsRelation', fn (DataTables $datatables) => $datatables->eloquent(User::with('posts')->select('users.*'))
+            ->rawColumns(['posts'])
+            ->toJson());
 
         $this->app['router']->get('/relations/hasManyWithTrashed', fn (DataTables $datatables) => $datatables->eloquent(User::with(['posts' => function ($query) {
             $query->withTrashed();
