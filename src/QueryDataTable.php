@@ -937,7 +937,8 @@ class QueryDataTable extends DataTableAbstract
                     if ($this->hasFilterColumn($column)) {
                         $this->applyFilterColumn($query, $column, $keyword, 'or');
                     } else {
-                        $this->compileQuerySearch($query, $column, $keyword);
+                        // Resolve against the original query since the nested builder has no columns/joins.
+                        $this->compileQuerySearch($query, $this->addTablePrefix($this->query, $column), $keyword);
                     }
                 });
         });
