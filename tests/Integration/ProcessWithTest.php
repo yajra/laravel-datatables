@@ -57,7 +57,7 @@ class ProcessWithTest extends TestCase
 
         $this->assertCount(60, $response->json()['data']);
         $this->assertEquals($user->name, $response->json()['data'][0]['user_name']);
-        $this->assertEmpty(array_filter($queries, fn ($sql) => str_contains($sql, '"users"')));
+        $this->assertEmpty(array_filter($queries, fn ($sql) => str_contains((string) $sql, '"users"')));
     }
 
     #[Test]
@@ -65,7 +65,7 @@ class ProcessWithTest extends TestCase
     {
         $this->app['router']->get('/process-with-query', fn (DataTables $datatables) => $datatables->query(DB::table('users'))
             ->processWith(function (\stdClass $user) {
-                $user->name = strtoupper($user->name);
+                $user->name = strtoupper((string) $user->name);
             })
             ->toJson());
 
@@ -74,7 +74,7 @@ class ProcessWithTest extends TestCase
         $this->assertCount(20, $response->json()['data']);
 
         foreach ($response->json()['data'] as $row) {
-            $this->assertEquals(strtoupper($row['name']), $row['name']);
+            $this->assertEquals(strtoupper((string) $row['name']), $row['name']);
             $this->assertStringStartsWith('RECORD-', $row['name']);
         }
     }

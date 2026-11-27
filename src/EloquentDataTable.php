@@ -4,13 +4,12 @@ namespace Yajra\DataTables;
 
 use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
-use Illuminate\Database\Eloquent\Builder as BaseEloquentBuilder;
+use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder as BaseQueryBuilder;
 use Illuminate\Database\Query\JoinClause;
@@ -84,83 +83,118 @@ class EloquentDataTable extends QueryDataTable
     /**
      * {@inheritDoc}
      */
-    protected function compileQuerySearch($query, string $column, string $keyword, string $boolean = 'or', bool $nested = false): void
+    protected function compileQuerySearch($query, string $column, string $keyword, string $boolean = 'or'): void
     {
-        if (substr_count($column, '.') > 1) {
-            if ($this->isTableQualifiedColumn($query, $column)) {
-                parent::compileQuerySearch($query, $column, $keyword, $boolean);
+        $parts = explode('.', $column);
+        $attribute = array_pop($parts);
+        if (count($parts) > 1) {
+            $rootTable = $this->matchingTableName($this->query->getQuery(), implode('.', $parts));
+            if ($rootTable !== null) {
+                parent::compileQuerySearch($query, $rootTable.'.'.$attribute, $keyword, $boolean);
 
                 return;
             }
-
-            $parts = explode('.', $column);
-            $firstRelation = $this->resolveRelationName(array_shift($parts), $nested ? $query : null);
-            $column = implode('.', $parts);
-
-            if ($this->isMorphRelation($firstRelation)) {
-                $query->{$boolean.'WhereHasMorph'}(
-                    $firstRelation,
-                    '*',
-                    function (EloquentBuilder $query) use ($column, $keyword) {
-                        parent::compileQuerySearch($query, $column, $keyword, '');
-                    }
-                );
-            } else {
-                $query->{$boolean.'WhereHas'}($firstRelation, function (EloquentBuilder $query) use ($column, $keyword) {
-                    self::compileQuerySearch($query, $column, $keyword, '', true);
-                });
-            }
-
-            return;
         }
 
-        $parts = explode('.', $column);
-        $newColumn = array_pop($parts);
-        $relation = $this->resolveRelationName(implode('.', $parts), $nested ? $query : null);
+        [$relation, $qualifier] = $this->splitSearchRelation($parts);
 
-        if (! $nested && $this->isNotEagerLoaded($relation)) {
+        if ($relation === null || $this->isTableQualifiedColumn($query, $column)) {
             parent::compileQuerySearch($query, $column, $keyword, $boolean);
 
             return;
         }
 
-        if ($this->isMorphRelation($relation)) {
-            $query->{$boolean.'WhereHasMorph'}(
-                $relation,
-                '*',
-                function (EloquentBuilder $query) use ($newColumn, $keyword) {
-                    parent::compileQuerySearch($query, $newColumn, $keyword, '');
+        $parts = explode('.', $relation);
+        $filter = function (EloquentBuilder $query) use ($qualifier, $attribute, $keyword) {
+            if ($qualifier !== null) {
+                $table = $this->matchingTableName($query->getQuery(), $qualifier);
+                if ($table === null) {
+                    // A different polymorphic type cannot match this table's column.
+                    $query->whereRaw('1 = 0');
+
+                    return;
                 }
-            );
-        } else {
-            $query->{$boolean.'WhereHas'}($relation, function (EloquentBuilder $query) use ($newColumn, $keyword) {
-                parent::compileQuerySearch($query, $newColumn, $keyword, '');
-            });
+
+                $attribute = $table.'.'.$attribute;
+            }
+
+            parent::compileQuerySearch($query, $attribute, $keyword, '');
+        };
+
+        // Each morph type must traverse the same remaining relations independently.
+        while (count($parts) > 1) {
+            $nestedRelation = array_pop($parts);
+            $filter = static fn (EloquentBuilder $query) => $query->whereHas($nestedRelation, $filter);
         }
+
+        $query->{$boolean.'WhereHas'}($parts[0], $filter);
     }
 
     /**
-     * Resolve the name of an eager loaded relation.
-     *
-     * Column names are usually written in snake case, e.g. "child_table.name",
-     * while the relation itself is defined in camel case. The camel case
-     * relation is therefore used when it is the eager loaded one.
-     *
-     * Pass the query of a where has callback to resolve a nested relation. The
-     * eager loads of the root query are keyed by their full path, e.g.
-     * "user.childTable", so a nested name is resolved against the related
-     * model it belongs to instead.
-     *
-     * @param  QueryBuilder|EloquentBuilder|null  $query
+     * Match the qualifier to the FROM table and return the name used in SQL.
      */
-    protected function resolveRelationName(string $relation, $query = null): string
+    private function matchingTableName(BaseQueryBuilder $query, string $qualifier): ?string
+    {
+        $from = $query->from;
+        if (! is_string($from) || $qualifier === '') {
+            return null;
+        }
+
+        $names = preg_split('/\s+as\s+/i', $from, 2) ?: [$from];
+        $table = $names[0];
+        $alias = $names[1] ?? $table;
+        $sqlName = $alias;
+
+        $connection = $query->getConnection();
+        if ($connection instanceof Connection && $connection->getDriverName() === 'sqlite') {
+            $qualifier = strtolower($qualifier);
+            $table = strtolower($table);
+            $alias = strtolower($alias);
+        }
+
+        return $qualifier === $alias || $qualifier === $table || str_ends_with($table, '.'.$qualifier) ? $sqlName : null;
+    }
+
+    /**
+     * Prefer the longest configured relationship. Any remaining segments are a SQL table qualifier.
+     *
+     * @param  list<string>  $parts
+     * @return array{?string, ?string}
+     */
+    private function splitSearchRelation(array $parts): array
+    {
+        if ($parts === []) {
+            return [null, null];
+        }
+
+        $length = count($parts);
+        $depths = [$length => true];
+        foreach (array_keys($this->query->getEagerLoads()) as $path) {
+            $depth = substr_count((string) $path, '.') + 1;
+            if ($depth < $length) {
+                $depths[$depth] = true;
+            }
+        }
+
+        krsort($depths);
+        foreach (array_keys($depths) as $depth) {
+            $relation = $this->resolveRelationName(implode('.', array_slice($parts, 0, $depth)));
+            if (! $this->isNotEagerLoaded($relation)) {
+                return [$relation, $depth === $length ? null : implode('.', array_slice($parts, $depth))];
+            }
+        }
+
+        return [null, null];
+    }
+
+    /**
+     * Resolve a dotted relation path against the query's eager loads, allowing
+     * snake case column names to match camel case relation methods.
+     */
+    protected function resolveRelationName(string $relation): string
     {
         if (! $relation) {
             return $relation;
-        }
-
-        if ($query instanceof BaseEloquentBuilder) {
-            return $this->resolveRelationNameOf($query->getModel(), $relation);
         }
 
         if (array_key_exists($relation, $this->query->getEagerLoads())) {
@@ -216,20 +250,6 @@ class EloquentDataTable extends QueryDataTable
     }
 
     /**
-     * Resolve the name of a relation against the model that declares it.
-     */
-    protected function resolveRelationNameOf(Model $model, string $relation): string
-    {
-        if ($model->isRelation($relation)) {
-            return $relation;
-        }
-
-        $camel = Str::camel($relation);
-
-        return $model->isRelation($camel) ? $camel : $relation;
-    }
-
-    /**
      * Check if a relation was not used on eager loading.
      *
      * @param  string  $relation
@@ -240,25 +260,6 @@ class EloquentDataTable extends QueryDataTable
         return ! $relation
             || ! array_key_exists($relation, $this->query->getEagerLoads())
             || $relation === $this->query->getModel()->getTable();
-    }
-
-    /**
-     * Check if a relation is a morphed one or not.
-     *
-     * @param  string  $relation
-     * @return bool
-     */
-    protected function isMorphRelation($relation)
-    {
-        $isMorph = false;
-        if ($relation !== null && $relation !== '') {
-            $relationParts = explode('.', $relation);
-            $firstRelation = array_shift($relationParts);
-            $model = $this->query->getModel();
-            $isMorph = method_exists($model, $firstRelation) && $model->$firstRelation() instanceof MorphTo;
-        }
-
-        return $isMorph;
     }
 
     /**
