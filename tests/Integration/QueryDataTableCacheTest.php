@@ -31,6 +31,8 @@ class QueryDataTableCacheTest extends TestCase
 
     private const string GROUPED_URI = '/cache/grouped';
 
+    private const string RENAMED_TENANT = 'Renamed tenant';
+
     private const string LOCKING_URI = '/cache/locking';
 
     private const string PLAIN_URI = '/cache/plain';
@@ -601,7 +603,7 @@ class QueryDataTableCacheTest extends TestCase
 
         DB::connection('tenant')->beginTransaction();
         DB::beginTransaction();
-        DB::connection('tenant')->table('users')->where('id', 1)->update(['name' => 'Renamed tenant']);
+        DB::connection('tenant')->table('users')->where('id', 1)->update(['name' => self::RENAMED_TENANT]);
         DataTablesFacade::flushCache('users', connection: 'tenant');
         DB::rollBack();
 
@@ -612,7 +614,7 @@ class QueryDataTableCacheTest extends TestCase
         [$after] = $this->fetch(self::USERS_URI, ['connection' => 'tenant']);
 
         $this->assertSame(['count:miss', 'rows:miss'], $this->statuses($after));
-        $this->assertSame('Renamed tenant', $after['data'][0]['name']);
+        $this->assertSame(self::RENAMED_TENANT, $after['data'][0]['name']);
     }
 
     #[Test]
@@ -622,7 +624,7 @@ class QueryDataTableCacheTest extends TestCase
         $tagKey = 'datatables:tag:'.hash('sha256', 'users');
 
         DB::connection('tenant')->transaction(function () use ($tagKey) {
-            DB::connection('tenant')->table('users')->where('id', 1)->update(['name' => 'Renamed tenant']);
+            DB::connection('tenant')->table('users')->where('id', 1)->update(['name' => self::RENAMED_TENANT]);
             DataTablesFacade::flushCache('users');
 
             $this->assertNotNull(Cache::get($tagKey));
@@ -630,7 +632,7 @@ class QueryDataTableCacheTest extends TestCase
 
         $this->assertNull(Cache::get($tagKey));
         [$after] = $this->fetch(self::USERS_URI, ['connection' => 'tenant']);
-        $this->assertSame('Renamed tenant', $after['data'][0]['name']);
+        $this->assertSame(self::RENAMED_TENANT, $after['data'][0]['name']);
     }
 
     #[Test]
