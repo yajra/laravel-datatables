@@ -46,6 +46,7 @@ return datatables(User::all())->toJson();
 
 ## Documentations
 
+- [Upgrade guide for nested relationship search](UPGRADE.md#searching-nested-eloquent-relationships)
 - [Github Docs](https://github.com/yajra/laravel-datatables-docs)
 - [Laravel DataTables Quick Starter](https://yajrabox.com/docs/laravel-datatables/master/quick-starter)
 - [Laravel DataTables Documentation](https://yajrabox.com/docs/laravel-datatables)
