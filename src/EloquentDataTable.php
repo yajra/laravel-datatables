@@ -76,16 +76,37 @@ class EloquentDataTable extends QueryDataTable
     {
         $parts = explode('.', $column);
         $attribute = array_pop($parts);
-        $relation = implode('.', $parts);
+        if (count($parts) > 1) {
+            $rootTable = $this->matchingTableName($this->query->getQuery()->from, implode('.', $parts));
+            if ($rootTable !== null) {
+                parent::compileQuerySearch($query, $rootTable.'.'.$attribute, $keyword, $boolean);
 
-        // Eloquent invokes model methods for each segment, so require the full eager-load path.
-        if ($this->isNotEagerLoaded($relation)) {
+                return;
+            }
+        }
+
+        [$relation, $qualifier] = $this->splitSearchRelation($parts);
+
+        if ($relation === null) {
             parent::compileQuerySearch($query, $column, $keyword, $boolean);
 
             return;
         }
 
-        $filter = function (EloquentBuilder $query) use ($attribute, $keyword) {
+        $parts = explode('.', $relation);
+        $filter = function (EloquentBuilder $query) use ($qualifier, $attribute, $keyword) {
+            if ($qualifier !== null) {
+                $table = $this->matchingTableName($query->getQuery()->from, $qualifier);
+                if ($table === null) {
+                    // A different polymorphic type cannot match this table's column.
+                    $query->whereRaw('1 = 0');
+
+                    return;
+                }
+
+                $attribute = $table.'.'.$attribute;
+            }
+
             parent::compileQuerySearch($query, $attribute, $keyword, '');
         };
 
@@ -96,6 +117,54 @@ class EloquentDataTable extends QueryDataTable
         }
 
         $query->{$boolean.'WhereHas'}($parts[0], $filter);
+    }
+
+    /**
+     * Match the qualifier to the FROM table and return the name used in SQL.
+     */
+    private function matchingTableName(mixed $from, string $qualifier): ?string
+    {
+        if (! is_string($from) || $qualifier === '') {
+            return null;
+        }
+
+        $names = preg_split('/\s+as\s+/i', $from, 2) ?: [$from];
+        $table = $names[0];
+        $alias = $names[1] ?? $table;
+
+        return $qualifier === $alias || $qualifier === $table || str_ends_with($table, '.'.$qualifier) ? $alias : null;
+    }
+
+    /**
+     * Prefer the longest configured relationship. Any remaining segments are a SQL table qualifier.
+     *
+     * @param  list<string>  $parts
+     * @return array{?string, ?string}
+     */
+    private function splitSearchRelation(array $parts): array
+    {
+        if ($parts === []) {
+            return [null, null];
+        }
+
+        $length = count($parts);
+        $depths = [$length => true];
+        foreach (array_keys($this->query->getEagerLoads()) as $path) {
+            $depth = substr_count((string) $path, '.') + 1;
+            if ($depth < $length) {
+                $depths[$depth] = true;
+            }
+        }
+
+        krsort($depths);
+        foreach (array_keys($depths) as $depth) {
+            $relation = implode('.', array_slice($parts, 0, $depth));
+            if (! $this->isNotEagerLoaded($relation)) {
+                return [$relation, $depth === $length ? null : implode('.', array_slice($parts, $depth))];
+            }
+        }
+
+        return [null, null];
     }
 
     /**
