@@ -93,4 +93,14 @@ class Config
     {
         return (array) $this->repository->get('datatables.json.header', []);
     }
+
+    /**
+     * Get the maximum record limit for one page.
+     *
+     * @return int The maximum limit value.
+     */
+    public function maxLimit(): int
+    {
+        return (int) $this->repository->get('datatables.max_limit', 100);
+    }
 }
