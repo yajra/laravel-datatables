@@ -91,9 +91,17 @@ class EloquentDataTable extends QueryDataTable
             return;
         }
 
-        $query->{$boolean.'WhereHas'}($relation, function (EloquentBuilder $query) use ($attribute, $keyword) {
+        $filter = function (EloquentBuilder $query) use ($attribute, $keyword) {
             parent::compileQuerySearch($query, $attribute, $keyword, '');
-        });
+        };
+
+        // Each morph type must traverse the same remaining relations independently.
+        while (count($parts) > 1) {
+            $nestedRelation = array_pop($parts);
+            $filter = static fn (EloquentBuilder $query) => $query->whereHas($nestedRelation, $filter);
+        }
+
+        $query->{$boolean.'WhereHas'}($parts[0], $filter);
     }
 
     /**

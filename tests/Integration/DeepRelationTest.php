@@ -7,6 +7,8 @@ use LogicException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestWith;
 use Yajra\DataTables\DataTables;
+use Yajra\DataTables\Tests\Models\AnimalUser;
+use Yajra\DataTables\Tests\Models\HumanUser;
 use Yajra\DataTables\Tests\Models\Post;
 use Yajra\DataTables\Tests\Models\User;
 use Yajra\DataTables\Tests\TestCase;
@@ -91,6 +93,45 @@ class DeepRelationTest extends TestCase
             'columns' => [['data' => 'user.heart.size', 'searchable' => 'true']],
             'search' => ['value' => 'heart-20'],
         ])->assertJson(['recordsTotal' => 60, 'recordsFiltered' => 3]);
+    }
+
+    #[Test]
+    #[TestWith([HumanUser::class, 'email-19@example.com'])]
+    #[TestWith([AnimalUser::class, 'email-20@example.com'])]
+    public function it_searches_nested_relations_for_each_polymorphic_type(string $type, string $email): void
+    {
+        $this->app['router']->get('/relations/nested-morph', fn (DataTables $datatables) => $datatables
+            ->eloquent(Post::with('user.user.users'))
+            ->toJson());
+
+        $response = $this->call('GET', '/relations/nested-morph', [
+            'columns' => [['data' => 'user.user.users.email', 'searchable' => 'true']],
+            'search' => ['value' => $email],
+        ]);
+
+        $response->assertJson(['recordsTotal' => 60, 'recordsFiltered' => 30]);
+        $types = collect($response->json('data'))->pluck('user.user_type')->unique()->values()->all();
+        $this->assertSame([$type], $types);
+    }
+
+    #[Test]
+    public function it_searches_a_callback_loaded_relation_with_a_custom_filter(): void
+    {
+        $this->app['router']->get('/relations/custom-role-filter', function (DataTables $datatables) {
+            $query = Post::with(['user' => fn ($user) => $user->with('roles')]);
+
+            return $datatables->eloquent($query)
+                ->filterColumn('user.roles.role', function ($posts, string $keyword) {
+                    $posts->whereHas('user.roles', fn ($roles) => $roles->where('role', 'like', "%{$keyword}%"));
+                })
+                ->toJson();
+        });
+
+        $response = $this->call('GET', '/relations/custom-role-filter', [
+            'columns' => [['data' => 'user.roles.role', 'searchable' => 'true']],
+            'search' => ['value' => 'Administrator'],
+        ]);
+        $response->assertJson(['recordsTotal' => 60, 'recordsFiltered' => 30]);
     }
 
     protected function setUp(): void
