@@ -4,12 +4,55 @@ namespace Yajra\DataTables\Tests\Unit;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use Yajra\DataTables\QueryDataTable;
 use Yajra\DataTables\Tests\Models\User;
 use Yajra\DataTables\Tests\TestCase;
 
 class QueryDataTableTest extends TestCase
 {
+    public function test_nulls_last_wraps_the_order_column_in_both_template_formats(): void
+    {
+        request()->merge([
+            'columns' => [['data' => 'color', 'name' => 'users.color']],
+            'order' => [['column' => 0, 'dir' => 'asc']],
+        ]);
+        DB::table('users')->where('id', 2)->update(['color' => 'blue']);
+
+        foreach ([':column :direction NULLS LAST', '%s %s NULLS LAST'] as $template) {
+            config(['datatables.nulls_last_sql' => $template]);
+            $query = DB::table('users');
+            $table = app('datatables')->query($query)->orderByNullsLast();
+            $table->ordering();
+
+            $column = $query->getGrammar()->wrap('users.color');
+            $this->assertStringContainsString($column.' asc NULLS LAST', $query->toSql());
+            $this->assertEquals(2, $query->value('id'));
+        }
+    }
+
+    public function test_ordering_rejects_invalid_column_data(): void
+    {
+        request()->merge([
+            'columns' => [['data' => 'color!']],
+            'order' => [['column' => 0, 'dir' => 'asc']],
+        ]);
+
+        $this->expectException(InvalidArgumentException::class);
+        app('datatables')->query(DB::table('users'))->orderByNullsLast()->ordering();
+    }
+
+    public function test_ordering_rejects_a_trailing_line_break_in_the_column_name(): void
+    {
+        request()->merge([
+            'columns' => [['data' => 'color', 'name' => "color\n"]],
+            'order' => [['column' => 0, 'dir' => 'asc']],
+        ]);
+
+        $this->expectException(InvalidArgumentException::class);
+        app('datatables')->query(DB::table('users'))->orderByNullsLast()->ordering();
+    }
+
     public function test_complex_query_are_wrapped_and_countable()
     {
         /** @var QueryDataTable $dataTable */

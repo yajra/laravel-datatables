@@ -722,6 +722,7 @@ class QueryDataTable extends DataTableAbstract
     {
         /** @var string $sql */
         $sql = $this->config->get('datatables.nulls_last_sql', '%s %s NULLS LAST');
+        $column = $this->wrap($column);
 
         return str_replace(
             [':column', ':direction'],
