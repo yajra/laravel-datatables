@@ -8,10 +8,12 @@ For automatic search on a column such as `user.roles.role`, declare the full rel
 use App\Models\Post;
 use Yajra\DataTables\Facades\DataTables;
 
-return DataTables::eloquent(Post::with('user.roles'))->toJson();
+return DataTables::eloquent(Post::with('user.roles')->select('posts.*'))->toJson();
 ```
 
-Loading `roles` only inside the `user` eager-load callback still works for display. Automatic search checks the paths declared on the root query and can produce an unknown-column error for the callback-only path.
+Selecting `posts.*` preserves the post's ID when per-column filtering joins a table that also has an `id` column.
+
+Loading `roles` only inside the `user` eager-load callback still works for display. Automatic search only traverses relationships declared on the root query. In this example, a role search returns no matching posts until you declare `user.roles` on the root or register a custom filter.
 
 To keep the callback-based eager load, register a server-side filter for the exact searchable column name:
 
@@ -24,6 +26,12 @@ return DataTables::eloquent($query)
     })
     ->toJson();
 ```
+
+## Migrating custom Eloquent engines
+
+If your engine extends `EloquentDataTable` and overrides `compileQuerySearch()`, delegate with `parent::compileQuerySearch($query, $column, $keyword, $boolean)`. Pass the full client column name and remove the former `nested:` argument. The parent validates the relationship path against eager loads on the root query before traversing it.
+
+Replace calls to the removed `isMorphRelation()` helper with the parent search implementation. For type-specific filtering, use Eloquent’s `whereHasMorph()` with a server-defined relationship name and model classes inside a `filterColumn()` callback.
 
 ## Upgrading from v11.x to v12.x
 
