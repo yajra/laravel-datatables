@@ -115,6 +115,7 @@ class QueryDataTable extends DataTableAbstract
         $this->query = $builder;
         $this->request = app('datatables.request');
         $this->config = app('datatables.config');
+        /** @var \Illuminate\Database\Query\Builder $builder */
         $this->columns = $builder->columns;
 
         if ($this->config->isDebugging()) {
@@ -168,7 +169,7 @@ class QueryDataTable extends DataTableAbstract
     /**
      * Get paginated results.
      *
-     * @return \Illuminate\Support\Collection<int, array>
+     * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, Model>
      */
     public function results(): Collection
     {
@@ -406,7 +407,7 @@ class QueryDataTable extends DataTableAbstract
      * Get the base query builder instance.
      *
      * @param  QueryBuilder|EloquentBuilder|null  $instance
-     * @return QueryBuilder
+     * @return \Illuminate\Database\Query\Builder
      */
     protected function getBaseQueryBuilder($instance = null)
     {
@@ -418,6 +419,7 @@ class QueryDataTable extends DataTableAbstract
             return $instance->getQuery();
         }
 
+        /** @var \Illuminate\Database\Query\Builder $instance */
         return $instance;
     }
 
@@ -546,7 +548,6 @@ class QueryDataTable extends DataTableAbstract
             $q = $this->getBaseQueryBuilder($query);
             $from = $q->from;
 
-            /** @phpstan-ignore-next-line */
             if (! $from instanceof Expression) {
                 if (str_contains($from, ' as ')) {
                     $from = explode(' as ', $from)[1];
