@@ -57,7 +57,7 @@ class ProcessWithTest extends TestCase
 
         $this->assertCount(60, $response->json()['data']);
         $this->assertEquals($user->name, $response->json()['data'][0]['user_name']);
-        $this->assertEmpty(array_filter($queries, fn ($sql) => str_contains($sql, '"users"')));
+        $this->assertEmpty(array_filter($queries, fn ($sql) => str_contains((string) $sql, '"users"')));
     }
 
     #[Test]
