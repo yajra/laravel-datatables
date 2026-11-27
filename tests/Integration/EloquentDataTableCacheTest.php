@@ -279,6 +279,18 @@ class EloquentDataTableCacheTest extends TestCase
     }
 
     #[Test]
+    public function it_can_cache_the_counts_only()
+    {
+        $this->fetch(self::USERS_URI, ['counts_only' => 1]);
+        User::query()->whereKey(1)->update(['name' => 'Renamed']);
+        [$second] = $this->fetch(self::USERS_URI, ['counts_only' => 1]);
+
+        $this->assertSame(['count:hit'], $this->statuses($second));
+        $this->assertSame(20, $second['recordsTotal']);
+        $this->assertSame('Renamed', $second['data'][0]['name']);
+    }
+
+    #[Test]
     public function it_bypasses_the_count_cache_of_a_builder_overriding_the_count()
     {
         [$first] = $this->fetch(self::COUNTING_BUILDER_URI);
@@ -307,7 +319,7 @@ class EloquentDataTableCacheTest extends TestCase
 
         $router->get(self::PLAIN_URI, fn (DataTables $dataTables) => $users($dataTables)->toJson());
 
-        $router->get(self::USERS_URI, fn (DataTables $dataTables) => $users($dataTables)->cache('users')->toJson());
+        $router->get(self::USERS_URI, fn (DataTables $dataTables) => $users($dataTables)->cache('users', rows: ! request()->boolean('counts_only'))->toJson());
 
         $router->get(self::SCOPED_URI, fn (DataTables $dataTables) => $dataTables
             ->eloquent(ScopedUser::query())

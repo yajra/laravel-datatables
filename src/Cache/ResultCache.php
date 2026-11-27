@@ -10,11 +10,10 @@ use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Database\Connection;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\DatabaseManager;
-use Illuminate\Database\DatabaseTransactionRecord;
-use Illuminate\Database\DatabaseTransactionsManager;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Arr;
 use Throwable;
+use Yajra\DataTables\Exceptions\CacheFlushException;
 
 /**
  * Caches the reads DataTables performs, using the Laravel cache store.
@@ -113,8 +112,14 @@ class ResultCache
         return match (true) {
             ! $this->isEnabled() => 'disabled',
             ! $connection instanceof Connection => 'unsupported_connection',
-            $this->inTransaction($connection) => 'transaction',
+            (new Transactions($this->transactions))->isOpen($connection) => 'transaction',
             ! is_null($query->lock) => 'locking_read',
+            // A read routed to the primary, e.g. with useWritePdo() or after a
+            // write on a sticky connection, expects data a replica may lack.
+            $query->useWritePdo || (fn () => $this->readOnWriteConnection || ($this->recordsModified && $this->getConfig('sticky')))->call($connection) => 'primary_read',
+            // A custom fetch mode changes the shape of the rows, which the
+            // cached values do not keep.
+            $query->fetchUsing !== [] => 'custom_fetch_mode',
             // The "after query" callbacks transform the rows after the database
             // returned them, e.g. according to the authenticated user: their
             // output does not depend on the query alone.
@@ -226,17 +231,53 @@ class ResultCache
     /**
      * Flush every cached read that declared one of the given tags.
      *
-     * When a database transaction is open, the flush runs once it is committed
-     * and is discarded if it is rolled back. A failure of the cache store is
-     * not swallowed, since the freshness could not be guaranteed.
+     * When a transaction of the given connection is open, the flush runs once
+     * it is committed and is discarded if it is rolled back. Without a given
+     * connection, the transaction of the default connection is used, or else
+     * the last transaction opened on any connection. A failure of the cache store is not swallowed, since the
+     * freshness could not be guaranteed.
      *
      * @param  string|array<array-key, string>  $tags
+     *
+     * @throws CacheFlushException
      */
-    public function flush(string|array $tags): void
+    public function flush(string|array $tags, ?string $connection = null): void
     {
         $keys = array_map($this->tagKey(...), CacheOptions::tags($tags));
+        $writer = $this->db->connection($connection);
 
-        $this->db->connection()->afterCommit(fn () => $this->store()->deleteMultiple($keys));
+        if (! $writer instanceof Connection) {
+            $this->deleteGenerations($keys);
+
+            return;
+        }
+
+        (new Transactions($this->transactions))->afterCommit($writer, fn () => $this->deleteGenerations($keys), anyConnection: is_null($connection));
+    }
+
+    /**
+     * Delete the generations of the given tags, and check that none survived.
+     *
+     * A generation that is still stored after the deletion keeps the entries
+     * computed with it reachable. A generation that was already missing, or
+     * that was created again by a concurrent read, is not a failure.
+     *
+     * @param  list<string>  $keys
+     *
+     * @throws CacheFlushException
+     */
+    protected function deleteGenerations(array $keys): void
+    {
+        $store = $this->store();
+        $before = collect($store->getMultiple($keys))->all();
+        $store->deleteMultiple($keys);
+        $after = collect($store->getMultiple($keys))->all();
+
+        foreach ($keys as $key) {
+            if (! is_null($before[$key] ?? null) && ($after[$key] ?? null) === $before[$key]) {
+                throw new CacheFlushException('The DataTables cache could not be flushed: the results cached before may still be served.');
+            }
+        }
     }
 
     /**
@@ -314,29 +355,6 @@ class ResultCache
         $generation = $store->get($key);
 
         return is_string($generation) && $generation !== '' ? $generation : null;
-    }
-
-    /**
-     * Check if a transaction is open on the connection, so its reads may be rolled back.
-     *
-     * The transactions considered are the ones that defer the "after commit"
-     * callbacks, the same ones that defer a flush: the transaction
-     * wrapping a test that uses RefreshDatabase is therefore ignored.
-     */
-    protected function inTransaction(Connection $connection): bool
-    {
-        if ($connection->transactionLevel() === 0) {
-            return false;
-        }
-
-        $manager = is_null($this->transactions) ? null : ($this->transactions)();
-
-        if (! $manager instanceof DatabaseTransactionsManager) {
-            return true;
-        }
-
-        return $manager->callbackApplicableTransactions()
-            ->contains(fn (DatabaseTransactionRecord $transaction) => $transaction->connection === $connection->getName());
     }
 
     /**

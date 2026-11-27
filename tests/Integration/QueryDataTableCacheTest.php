@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use PDO;
 use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;
 use Yajra\DataTables\Cache\CacheLookup;
@@ -20,6 +21,7 @@ use Yajra\DataTables\Cache\CacheOptions;
 use Yajra\DataTables\Cache\Payload;
 use Yajra\DataTables\Cache\ResultCache;
 use Yajra\DataTables\DataTables;
+use Yajra\DataTables\Exceptions\CacheFlushException;
 use Yajra\DataTables\Facades\DataTables as DataTablesFacade;
 use Yajra\DataTables\Tests\TestCase;
 
@@ -575,6 +577,197 @@ class QueryDataTableCacheTest extends TestCase
     }
 
     #[Test]
+    public function it_keeps_the_flush_of_a_transaction_when_another_connection_rolls_back()
+    {
+        $this->fetch(self::USERS_URI);
+
+        DB::beginTransaction();
+        DB::connection('tenant')->beginTransaction();
+        DB::table('users')->where('id', 1)->update(['name' => 'Renamed']);
+        DataTablesFacade::flushCache('users');
+        DB::connection('tenant')->rollBack();
+        DB::commit();
+
+        [$after] = $this->fetch(self::USERS_URI);
+
+        $this->assertSame(['count:miss', 'rows:miss'], $this->statuses($after));
+        $this->assertSame('Renamed', $after['data'][0]['name']);
+    }
+
+    #[Test]
+    public function it_runs_the_flush_after_the_commit_of_the_given_connection()
+    {
+        $this->fetch(self::USERS_URI, ['connection' => 'tenant']);
+
+        DB::connection('tenant')->beginTransaction();
+        DB::beginTransaction();
+        DB::connection('tenant')->table('users')->where('id', 1)->update(['name' => 'Renamed tenant']);
+        DataTablesFacade::flushCache('users', connection: 'tenant');
+        DB::rollBack();
+
+        $this->assertNotNull(Cache::get('datatables:tag:'.hash('sha256', 'users')));
+
+        DB::connection('tenant')->commit();
+
+        [$after] = $this->fetch(self::USERS_URI, ['connection' => 'tenant']);
+
+        $this->assertSame(['count:miss', 'rows:miss'], $this->statuses($after));
+        $this->assertSame('Renamed tenant', $after['data'][0]['name']);
+    }
+
+    #[Test]
+    public function it_defers_the_flush_to_the_last_transaction_when_no_connection_is_given()
+    {
+        $this->fetch(self::USERS_URI, ['connection' => 'tenant']);
+        $tagKey = 'datatables:tag:'.hash('sha256', 'users');
+
+        DB::connection('tenant')->transaction(function () use ($tagKey) {
+            DB::connection('tenant')->table('users')->where('id', 1)->update(['name' => 'Renamed tenant']);
+            DataTablesFacade::flushCache('users');
+
+            $this->assertNotNull(Cache::get($tagKey));
+        });
+
+        $this->assertNull(Cache::get($tagKey));
+        [$after] = $this->fetch(self::USERS_URI, ['connection' => 'tenant']);
+        $this->assertSame('Renamed tenant', $after['data'][0]['name']);
+    }
+
+    #[Test]
+    public function it_flushes_immediately_outside_a_transaction_of_the_given_connection()
+    {
+        $this->fetch(self::USERS_URI);
+        $tagKey = 'datatables:tag:'.hash('sha256', 'users');
+
+        DB::transaction(fn () => DataTablesFacade::flushCache('users', connection: 'tenant'));
+
+        $this->assertNull(Cache::get($tagKey));
+    }
+
+    #[Test]
+    public function it_defers_the_flush_without_a_transactions_manager()
+    {
+        $cache = new ResultCache(app('cache'), app('config'), app('db'));
+        $this->fetch(self::USERS_URI);
+        $tagKey = 'datatables:tag:'.hash('sha256', 'users');
+
+        DB::transaction(function () use ($cache, $tagKey) {
+            $cache->flush('users');
+
+            $this->assertNotNull(Cache::get($tagKey));
+        });
+
+        $this->assertNull(Cache::get($tagKey));
+    }
+
+    #[Test]
+    public function it_throws_when_a_flush_leaves_a_generation_in_the_store()
+    {
+        Cache::extend('undeletable', fn () => Cache::repository(new UndeletableStore));
+        config()->set('cache.stores.undeletable', ['driver' => 'undeletable']);
+        config()->set('datatables.cache.store', 'undeletable');
+
+        // A tag that was never read has no generation: flushing it is safe.
+        DataTablesFacade::flushCache('users');
+
+        $this->fetch(self::USERS_URI);
+        DB::table('users')->where('id', 1)->update(['name' => 'Renamed']);
+
+        try {
+            DataTablesFacade::flushCache('users');
+            $this->fail('A flush that left the generation of its tag was reported as a success.');
+        } catch (CacheFlushException) {
+            [$after] = $this->fetch(self::USERS_URI);
+
+            $this->assertSame('Record-1', $after['data'][0]['name']);
+        }
+    }
+
+    #[Test]
+    public function it_bypasses_the_cache_for_reads_routed_to_the_primary()
+    {
+        $replica = tempnam(sys_get_temp_dir(), 'replica');
+        $primary = tempnam(sys_get_temp_dir(), 'primary');
+
+        foreach (['replica' => [$replica, 'Replica'], 'primary' => [$primary, 'Record-1']] as $name => [$file, $value]) {
+            config()->set("database.connections.{$name}", ['driver' => 'sqlite', 'database' => $file, 'prefix' => '']);
+            DB::connection($name)->getSchemaBuilder()->create('users', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name');
+                $table->string('email');
+                $table->string('color')->nullable();
+                $table->timestamps();
+            });
+            DB::connection($name)->table('users')->insert(['name' => $value, 'email' => 'user@example.com']);
+        }
+
+        config()->set('database.connections.replicated', [
+            'driver' => 'sqlite',
+            'read' => ['database' => $replica],
+            'write' => ['database' => $primary],
+            'sticky' => true,
+            'prefix' => '',
+        ]);
+
+        try {
+            $this->fetch(self::USERS_URI, ['connection' => 'replicated']);
+            [$replicaHit] = $this->fetch(self::USERS_URI, ['connection' => 'replicated']);
+            [$writePdo] = $this->fetch(self::USERS_URI, ['connection' => 'replicated', 'primary' => 1]);
+
+            DB::connection('replicated')->table('users')->where('id', 1)->update(['name' => 'Written']);
+            [$sticky] = $this->fetch(self::USERS_URI, ['connection' => 'replicated']);
+
+            $this->assertSame(['count:hit', 'rows:hit'], $this->statuses($replicaHit));
+            $this->assertSame('Replica', $replicaHit['data'][0]['name']);
+            $this->assertSame(['count:bypass', 'rows:bypass'], $this->statuses($writePdo));
+            $this->assertSame('primary_read', $writePdo['cache'][1]['reason']);
+            $this->assertSame('Record-1', $writePdo['data'][0]['name']);
+            $this->assertSame(['count:bypass', 'rows:bypass'], $this->statuses($sticky));
+            $this->assertSame('Written', $sticky['data'][0]['name']);
+        } finally {
+            DB::purge('replicated');
+            DB::purge('replica');
+            DB::purge('primary');
+            unlink($replica);
+            unlink($primary);
+        }
+    }
+
+    #[Test]
+    public function it_bypasses_the_cache_for_custom_fetch_modes()
+    {
+        $query = fn () => DB::table('users')->select('id', 'name')->orderBy('id');
+        $rows = fn (bool $numeric) => app(DataTables::class)
+            ->query($numeric ? $query()->fetchUsing(PDO::FETCH_NUM) : $query())
+            ->cache('users')
+            ->results();
+
+        $rows(false);
+        $numeric = $rows(true);
+
+        $this->assertSame([1, 'Record-1'], $numeric->first());
+        $this->assertEquals($query()->fetchUsing(PDO::FETCH_NUM)->get(), $numeric);
+        $this->assertSame(
+            'custom_fetch_mode',
+            app(ResultCache::class)->lookup(CacheOptions::make('users', 60), 'rows', $query()->fetchUsing(PDO::FETCH_NUM))->reason
+        );
+    }
+
+    #[Test]
+    public function it_can_cache_the_counts_only()
+    {
+        [$first] = $this->fetch(self::USERS_URI, ['counts_only' => 1]);
+        DB::table('users')->where('id', 1)->update(['name' => 'Renamed']);
+        [$second, $queries] = $this->fetch(self::USERS_URI, ['counts_only' => 1]);
+
+        $this->assertSame(['count:miss'], $this->statuses($first));
+        $this->assertSame(['count:hit'], $this->statuses($second));
+        $this->assertCount(1, $queries);
+        $this->assertSame(20, $second['recordsTotal']);
+        $this->assertSame('Renamed', $second['data'][0]['name']);
+    }
+
+    #[Test]
     public function it_bypasses_queries_bound_to_values_that_are_not_scalar()
     {
         $cache = app(ResultCache::class);
@@ -641,8 +834,12 @@ class QueryDataTableCacheTest extends TestCase
                 $query->where('color', request('color'));
             }
 
+            if (request()->boolean('primary')) {
+                $query->useWritePdo();
+            }
+
             return $dataTables->query($query)
-                ->cache((array) request('tags', 'users'), (int) request('ttl', 60), (array) request('by', []))
+                ->cache((array) request('tags', 'users'), (int) request('ttl', 60), (array) request('by', []), rows: ! request()->boolean('counts_only'))
                 ->toJson();
         });
 
@@ -728,6 +925,14 @@ class QueryDataTableCacheTest extends TestCase
 class StoreUnavailableException extends RuntimeException
 {
     protected $message = 'Connection refused';
+}
+
+class UndeletableStore extends ArrayStore
+{
+    public function forget($key)
+    {
+        return false;
+    }
 }
 
 class ReadOnlyStore extends ArrayStore

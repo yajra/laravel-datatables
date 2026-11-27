@@ -134,12 +134,18 @@ The counts and the rows read by the query and Eloquent engines can be cached wit
 ```php
 use Yajra\DataTables\Facades\DataTables;
 
+// Orders of a team.
 return DataTables::eloquent(Order::query()->where('team_id', $team->id)->with('customer'))
     ->cache(['orders', "team:{$team->id}"], ttl: 120)
     ->toJson();
+
+// Late orders of every team.
+return DataTables::eloquent(Order::query()->where('status', 'late'))
+    ->cache('orders', ttl: 120)
+    ->toJson();
 ```
 
-Flush the tags when their data changes. Inside a transaction, the flush runs once it is committed and is discarded on rollback:
+Flush the tags when their data changes. A tag flushes every result that declared it: flushing `orders` refreshes both tables above, flushing `team:1` only refreshes the orders of team 1. Inside a transaction, the flush runs once it is committed and is discarded on rollback:
 
 ```php
 // Flush the previous and the new team when an order moves.
@@ -151,6 +157,18 @@ Order::saved(fn (Order $order) => DataTables::flushCache(array_unique([
 // Mass updates and raw SQL do not fire model events.
 Order::query()->where('status', 'pending')->update(['status' => 'late']);
 DataTables::flushCache('orders');
+
+// Writing on another connection than the default one.
+DB::connection('billing')->transaction(function () {
+    Invoice::on('billing')->where('paid', false)->update(['status' => 'late']);
+    DataTables::flushCache('invoices', connection: 'billing');
+});
+```
+
+`flushCache()` throws a `CacheFlushException` when the cache store fails or keeps a flushed tag, since the previous results may still be served. To cache the counts only, often the slowest reads, and read the rows of every page from the database, pass `rows: false`:
+
+```php
+return DataTables::eloquent(Order::query())->cache('orders', ttl: 300, rows: false)->toJson();
 ```
 
 Any cache store works, even without tag support. Keep in mind that:
@@ -158,11 +176,12 @@ Any cache store works, even without tag support. Keep in mind that:
 - An entry is reused by the requests sending the same SQL and bindings to the same connection with the same tags. Keep authorization in the query, or after it, e.g. in `editColumn()`.
 - Every table read by the query must be tagged and flushed: a change that is not flushed, e.g. a mass update or a write from another system, is served from the cache until the TTL expires.
 - When the database itself returns different rows for the same SQL, e.g. with row level security or a per tenant `search_path`, segment the cache with `by: ['schema' => $schema]`. Do not cache queries using `NOW()`, `RAND()` or `CURRENT_USER`: pass such values as bindings.
-- Eager loads, the queries of your callbacks, the reads inside a transaction, the locking reads and the queries with `afterQuery()` callbacks are never cached.
+- Eager loads, the queries of your callbacks, the reads inside a transaction, the locking reads, the reads routed to the primary (`useWritePdo()`, or after a write on a `sticky` connection), the queries with a custom fetch mode (`fetchUsing()`) and the queries with `afterQuery()` callbacks are never cached.
 - Only cache the expensive reads: for a fast query, reading the cache can be slower than reading the database. Reads returning more than `datatables.cache.max_rows` rows (1000 by default), e.g. exports, are not stored.
 - Rows cached before a migration are served without its new columns: flush the tags of the changed tables in the migration, or add the release to `datatables.cache.prefix`. Using the model class as tag, e.g. `cache(User::class)`, avoids typos between `cache()` and `flushCache()`.
+- With an eventually consistent store, e.g. DynamoDB, whose reads are not strongly consistent, a read right after a flush may still see the flushed tag and serve the previous results, or `flushCache()` may throw although the deletion succeeded. Use a strongly consistent store, e.g. Redis, Memcached or a database, when the results must be fresh right after a flush.
 
-The store, the default TTL, the write and row limits and a switch to bypass every cache are set in the `cache` section of `config/datatables.php`. When `APP_DEBUG` is enabled, the response includes the status of every cached read.
+The store, the default TTL, the write and row limits and a switch to bypass every cache are set in the `cache` section of `config/datatables.php`, or with the `DATATABLES_CACHE_*` environment variables. If the cache store fails while reading or storing, a warning is logged and the data is read from the database. When `APP_DEBUG` is enabled, the response includes the status of every cached read.
 
 ## PHP ARTISAN SERVE BUG
 

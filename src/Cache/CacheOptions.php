@@ -20,13 +20,15 @@ final readonly class CacheOptions
         public array $tags,
         public int $ttl,
         public array $by,
+        public bool $rows,
     ) {}
 
     /**
      * @param  string|array<array-key, string>  $tags
      * @param  array<array-key, mixed>  $by
+     * @param  bool  $rows  Whether the rows are cached, or only the counts.
      */
-    public static function make(string|array $tags, DateTimeInterface|DateInterval|int $ttl, array $by = []): self
+    public static function make(string|array $tags, DateTimeInterface|DateInterval|int $ttl, array $by = [], bool $rows = true): self
     {
         $seconds = self::seconds($ttl);
 
@@ -36,7 +38,7 @@ final readonly class CacheOptions
 
         self::assertScalarTree($by);
 
-        return new self(self::tags($tags), $seconds, $by);
+        return new self(self::tags($tags), $seconds, $by, $rows);
     }
 
     /**

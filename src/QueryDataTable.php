@@ -172,7 +172,7 @@ class QueryDataTable extends DataTableAbstract
      */
     public function results(): Collection
     {
-        return $this->results ??= is_null($this->cacheOptions)
+        return $this->results ??= is_null($this->cacheOptions) || ! $this->cacheOptions->rows
             ? $this->query->get()
             : $this->cachedResults($this->cacheOptions);
     }
@@ -220,14 +220,16 @@ class QueryDataTable extends DataTableAbstract
      *
      * Use $by to segment the cache by any value that changes the result of the
      * database without changing the query, e.g. a row level security role.
+     * Set $rows to false to only cache the counts, and read the rows of every
+     * page from the database.
      *
      * @param  string|array<array-key, string>  $tags
      * @param  array<array-key, mixed>  $by
      * @return $this
      */
-    public function cache(string|array $tags, DateTimeInterface|DateInterval|int|null $ttl = null, array $by = []): static
+    public function cache(string|array $tags, DateTimeInterface|DateInterval|int|null $ttl = null, array $by = [], bool $rows = true): static
     {
-        $this->cacheOptions = CacheOptions::make($tags, $ttl ?? $this->resultCache()->defaultTtl(), $by);
+        $this->cacheOptions = CacheOptions::make($tags, $ttl ?? $this->resultCache()->defaultTtl(), $by, $rows);
 
         return $this;
     }

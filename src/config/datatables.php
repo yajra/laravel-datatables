@@ -147,13 +147,15 @@ return [
 
         /*
          * Cache store from config/cache.php, null to use the default store.
+         * With an eventually consistent store, e.g. DynamoDB, a read right after
+         * a flush may still see the flushed tags and serve the previous results.
          */
         'store' => env('DATATABLES_CACHE_STORE'),
 
         /*
          * Default time to live of the cached reads, in seconds.
          */
-        'ttl' => 60,
+        'ttl' => env('DATATABLES_CACHE_TTL', 60),
 
         /*
          * Maximum number of entries a DataTable may write per minute, null for no limit.
@@ -161,14 +163,14 @@ return [
          * sending random values from filling the cache store. Use a dedicated store
          * so that the entries never evict the sessions or other data of the application.
          */
-        'max_writes_per_minute' => 1000,
+        'max_writes_per_minute' => env('DATATABLES_CACHE_MAX_WRITES_PER_MINUTE', 1000),
 
         /*
          * Maximum number of rows a cached read may store, null for no limit. Reads
          * without paging, e.g. exports, may return the whole table: beyond the
          * limit, the rows are read from the database and not stored.
          */
-        'max_rows' => 1000,
+        'max_rows' => env('DATATABLES_CACHE_MAX_ROWS', 1000),
 
         /*
          * Prefix of the cache keys. Changing it discards every cached read at once.
