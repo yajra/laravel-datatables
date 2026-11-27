@@ -2,6 +2,8 @@
 
 namespace Yajra\DataTables\Contracts;
 
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 
@@ -10,7 +12,7 @@ interface DataTable
     /**
      * Get results.
      *
-     * @return \Illuminate\Support\Collection<int, array>
+     * @return Collection<int, \stdClass>|EloquentCollection<int, Model>|Collection<array-key, array>
      */
     public function results(): Collection;
 
