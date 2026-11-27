@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
+use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\Contracts\Formatter;
@@ -1054,6 +1055,10 @@ abstract class DataTableAbstract implements DataTable
 
         if (is_null($column)) {
             return null;
+        }
+
+        if (! preg_match('/\A[a-zA-Z0-9_.> -]+\z/', $column)) {
+            throw new InvalidArgumentException("Invalid column name: \"$column\".");
         }
 
         // DataTables is using make(false)
