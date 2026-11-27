@@ -10,7 +10,7 @@ interface DataTable
     /**
      * Get results.
      *
-     * @return \Illuminate\Support\Collection<int, \stdClass>|\Illuminate\Support\Collection<array-key, array>
+     * @return Collection<int, \stdClass>|Collection<array-key, array>
      */
     public function results(): Collection;
 
