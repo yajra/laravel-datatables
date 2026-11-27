@@ -4,6 +4,7 @@ namespace Yajra\DataTables;
 
 use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -87,7 +88,7 @@ class EloquentDataTable extends QueryDataTable
         $parts = explode('.', $column);
         $attribute = array_pop($parts);
         if (count($parts) > 1) {
-            $rootTable = $this->matchingTableName($this->query->getQuery()->from, implode('.', $parts));
+            $rootTable = $this->matchingTableName($this->query->getQuery(), implode('.', $parts));
             if ($rootTable !== null) {
                 parent::compileQuerySearch($query, $rootTable.'.'.$attribute, $keyword, $boolean);
 
@@ -106,7 +107,7 @@ class EloquentDataTable extends QueryDataTable
         $parts = explode('.', $relation);
         $filter = function (EloquentBuilder $query) use ($qualifier, $attribute, $keyword) {
             if ($qualifier !== null) {
-                $table = $this->matchingTableName($query->getQuery()->from, $qualifier);
+                $table = $this->matchingTableName($query->getQuery(), $qualifier);
                 if ($table === null) {
                     // A different polymorphic type cannot match this table's column.
                     $query->whereRaw('1 = 0');
@@ -132,8 +133,9 @@ class EloquentDataTable extends QueryDataTable
     /**
      * Match the qualifier to the FROM table and return the name used in SQL.
      */
-    private function matchingTableName(mixed $from, string $qualifier): ?string
+    private function matchingTableName(BaseQueryBuilder $query, string $qualifier): ?string
     {
+        $from = $query->from;
         if (! is_string($from) || $qualifier === '') {
             return null;
         }
@@ -141,8 +143,16 @@ class EloquentDataTable extends QueryDataTable
         $names = preg_split('/\s+as\s+/i', $from, 2) ?: [$from];
         $table = $names[0];
         $alias = $names[1] ?? $table;
+        $sqlName = $alias;
 
-        return $qualifier === $alias || $qualifier === $table || str_ends_with($table, '.'.$qualifier) ? $alias : null;
+        $connection = $query->getConnection();
+        if ($connection instanceof Connection && $connection->getDriverName() === 'sqlite') {
+            $qualifier = strtolower($qualifier);
+            $table = strtolower($table);
+            $alias = strtolower($alias);
+        }
+
+        return $qualifier === $alias || $qualifier === $table || str_ends_with($table, '.'.$qualifier) ? $sqlName : null;
     }
 
     /**
