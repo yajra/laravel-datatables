@@ -152,6 +152,91 @@ class DeepRelationTest extends TestCase
         $response->assertJson(['recordsTotal' => 60, 'recordsFiltered' => 30]);
     }
 
+    /** @test */
+    public function it_searches_only_the_related_type_matching_the_table_qualifier(): void
+    {
+        $this->app['router']->get('/relations/qualified', fn (DataTables $datatables) => $datatables
+            ->eloquent(User::with('user'))
+            ->toJson());
+
+        $response = $this->call('GET', '/relations/qualified', [
+            'columns' => [['data' => 'user.human_users.id', 'searchable' => 'true']],
+            'search' => ['value' => '1'],
+        ]);
+
+        $response->assertJsonMissingPath('error');
+        $response->assertJson(['recordsTotal' => 20, 'recordsFiltered' => 10]);
+        $this->assertSame([HumanUser::class], collect($response->json('data'))->pluck('user_type')->unique()->values()->all());
+    }
+
+    /** @test */
+    public function it_rejects_a_qualifier_that_does_not_match_the_related_table(): void
+    {
+        $this->app['router']->get('/relations/qualified', fn (DataTables $datatables) => $datatables
+            ->eloquent(User::with('user'))
+            ->toJson());
+
+        $response = $this->call('GET', '/relations/qualified', [
+            'columns' => [['data' => 'user.users.id', 'searchable' => 'true']],
+            'search' => ['value' => '1'],
+        ]);
+
+        $response->assertJsonMissingPath('error');
+        $response->assertJson(['recordsTotal' => 20, 'recordsFiltered' => 0]);
+    }
+
+    /** @test */
+    public function it_preserves_post_ids_when_filtering_a_nested_column(): void
+    {
+        $response = $this->getJsonResponse([
+            'columns' => [['data' => 'user.roles.role', 'searchable' => 'true', 'search' => ['value' => 'Administrator']]],
+        ]);
+
+        $response->assertJson(['recordsTotal' => 60, 'recordsFiltered' => 30]);
+        $expected = Post::whereHas('user.roles', fn ($roles) => $roles->where('role', 'Administrator'))->pluck('id');
+        $this->assertEqualsCanonicalizing($expected->all(), collect($response->json('data'))->pluck('id')->all());
+    }
+
+    /** @test */
+    public function it_searches_a_schema_qualified_root_table_before_a_relation_with_the_schema_name(): void
+    {
+        Post::resolveRelationUsing('main', static fn (Post $post) => $post->user());
+
+        $this->app['router']->get('/relations/root-qualified', fn (DataTables $datatables) => $datatables
+            ->eloquent(Post::with('main')->withTrashed()->from('main.posts AS p'))
+            ->toJson());
+
+        $response = $this->call('GET', '/relations/root-qualified', [
+            'columns' => [['data' => 'main.posts.title', 'searchable' => 'true']],
+            'search' => ['value' => 'User-19 Post-1'],
+        ]);
+
+        $response->assertJsonMissingPath('error');
+        $response->assertJson(['recordsTotal' => 60, 'recordsFiltered' => 1]);
+    }
+
+    /** @test */
+    public function it_accepts_a_short_table_qualifier_for_a_schema_qualified_related_model(): void
+    {
+        $user = new class extends User
+        {
+            protected $table = 'main.users';
+        };
+        Post::resolveRelationUsing('schemaUser', static fn (Post $post) => $post->belongsTo($user::class, 'user_id'));
+
+        $this->app['router']->get('/relations/schema-user', fn (DataTables $datatables) => $datatables
+            ->eloquent(Post::with('schemaUser'))
+            ->toJson());
+
+        $response = $this->call('GET', '/relations/schema-user', [
+            'columns' => [['data' => 'schemaUser.users.email', 'searchable' => 'true']],
+            'search' => ['value' => 'email-19@example.com'],
+        ]);
+
+        $response->assertJsonMissingPath('error');
+        $response->assertJson(['recordsTotal' => 60, 'recordsFiltered' => 3]);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
