@@ -27,6 +27,8 @@ return DataTables::eloquent($query)
     ->toJson();
 ```
 
+To limit global search on a polymorphic relationship to one related table, set the searchable column's `name` to `relation.table.column`. For example, with `User::with('user')` and a `morphTo` relationship named `user`, the column `user.human_users.id` matches IDs only in the `human_users` table.
+
 ## Migrating custom Eloquent engines
 
 If your engine extends `EloquentDataTable` and overrides `compileQuerySearch()`, delegate with `parent::compileQuerySearch($query, $column, $keyword, $boolean)`. Pass the full client column name and remove the former `nested:` argument. The parent validates the relationship path against eager loads on the root query before traversing it.
